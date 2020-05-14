@@ -1,0 +1,29 @@
+name: 'tip'
+
+on:
+  push:
+    tags:
+      - '*'
+      - '!tip'
+    branches:
+      - '*'
+  pull_request:
+
+env:
+  CI: true
+
+jobs:
+
+  tip:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+        echo "Build some tool and generate some artifacts" > artifact.txt
+    - uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          artifact.txt
+          README.md

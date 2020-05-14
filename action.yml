@@ -1,0 +1,16 @@
+name: 'tip'
+description: "keep a pre-release always up-to-date"
+inputs:
+  token:
+    description: 'Token to make authenticated API calls; can be passed in using {{ secrets.GITHUB_TOKEN }}'
+    required: true
+  files:
+    description: 'Multi-line list of glob patterns describing the artifacts to be uploaded'
+    required: true
+  tag:
+    description: 'Name of the tag that corresponds to the tip/nightly pre-release'
+    required: false
+    default: tip
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
