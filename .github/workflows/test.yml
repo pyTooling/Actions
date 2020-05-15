@@ -1,0 +1,56 @@
+name: 'test'
+
+on:
+  push:
+    tags:
+      - '*'
+      - '!tip'
+    branches:
+      - '*'
+  pull_request:
+
+env:
+  CI: true
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: echo "Build some tool and generate some artifacts" > artifact.txt
+
+    - name: Single
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifact.txt
+
+    - name: List
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          artifact.txt
+          README.md
+
+    - run: |
+        mkdir artifacts
+        echo "Build some tool and generate some artifacts" > artifacts/artifact.txt
+
+    - name: Single in subdir
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifacts/artifact.txt
+
+    - run: |
+        echo "tip hello" > artifacts/hello.md
+        echo "tip world" > artifacts/world.md
+
+    - name: Directory wildcard
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifacts/*

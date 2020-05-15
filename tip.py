@@ -2,9 +2,10 @@
 
 from os import environ, getenv
 from sys import argv, stdout
-from github import Github
 from subprocess import check_call
 from glob import glob
+from pathlib import Path
+from github import Github
 
 print("· Get list of artifacts to be uploaded")
 
@@ -70,18 +71,19 @@ artifacts = files
 for asset in gh_release.get_assets():
     print(">", asset)
     print(" ", asset.name)
-    for fname in artifacts:
-        if asset.name == fname:
+    for artifact in artifacts:
+        aname = str(Path(artifact).name)
+        if asset.name == aname:
             print(" removing '%s'..." % asset.name)
             asset.delete_asset()
-            print(" uploading '%s'..." % fname)
-            gh_release.upload_asset(fname)
-            artifacts.remove(fname)
+            print(" uploading '%s'..." % artifact)
+            gh_release.upload_asset(artifact, name=aname)
+            artifacts.remove(artifact)
             break
 
-for fname in artifacts:
-    print(" uploading '%s'..." % fname)
-    gh_release.upload_asset(fname)
+for artifact in artifacts:
+    print(" uploading '%s'..." % artifact)
+    gh_release.upload_asset(artifact)
 
 stdout.flush()
 print("· Update Release reference (force-push tag)")
