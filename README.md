@@ -36,3 +36,5 @@ jobs:
 Note that the tag and the pre-release need to be created manually the first time. The workflow above will fail if the release does not exist.
 
 The default tag name is `tip`, but it can be optionally overriden through option `tag` or setting envvar `INPUT_TAG`.
+
+If you systematically want to remove previous artifacts (e.g. old versions), set the `rm` option to true.

@@ -18,21 +18,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
-    - run: echo "Build some tool and generate some artifacts" > artifact.txt
+      
+    - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
 
     - name: Single
       uses: ./
       with:
+        rm: true
         token: ${{ secrets.GITHUB_TOKEN }}
-        files: artifact.txt
+        files: artifact-*.txt
 
     - name: List
       uses: ./
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
-          artifact.txt
+          artifact-*.txt
           README.md
 
     - run: |

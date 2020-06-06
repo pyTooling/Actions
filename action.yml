@@ -11,6 +11,10 @@ inputs:
     description: 'Name of the tag that corresponds to the tip/nightly pre-release'
     required: false
     default: tip
+  rm:
+    description: 'Whether to delete all the previous artifacts, or only replacing the ones with the same name'
+    required: false
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
