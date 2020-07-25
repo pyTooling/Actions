@@ -68,27 +68,32 @@ print("· Upload artifacts")
 
 artifacts = files
 
+assets = gh_release.get_assets()
+
 if getenv('INPUT_RM', 'false') == 'true':
     print("· RM set. All previous assets are being cleared...")
-    for asset in gh_release.get_assets():
+    for asset in assets:
         print(" ", asset.name)
         asset.delete_asset()
 else:
-    for asset in gh_release.get_assets():
-        print(">", asset)
-        print(" ", asset.name)
+    for asset in assets:
+        print(" >", asset)
+        print("   %s:" % asset.name)
         for artifact in artifacts:
             aname = str(Path(artifact).name)
             if asset.name == aname:
-                print(" removing '%s'..." % asset.name)
+                print("   - uploading tmp...")
+                new_asset = gh_release.upload_asset(artifact, name='%s.tmp' % aname)
+                print("   - removing...")
                 asset.delete_asset()
-                print(" uploading '%s'..." % artifact)
-                gh_release.upload_asset(artifact, name=aname)
+                print("   - renaming tmp...")
+                new_asset.update_asset(aname, label=aname)
                 artifacts.remove(artifact)
                 break
 
 for artifact in artifacts:
-    print(" uploading '%s'..." % artifact)
+    print(" >", artifact)
+    print("   - uploading...")
     gh_release.upload_asset(artifact)
 
 stdout.flush()
