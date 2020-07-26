@@ -116,7 +116,7 @@ else:
             aname = str(Path(artifact).name)
             if asset.name == aname:
                 print("   - uploading tmp...")
-                new_asset = gh_release.upload_asset(artifact, name='%s.tmp' % aname)
+                new_asset = gh_release.upload_asset(artifact, name='tmp.%s' % aname)
                 print("   - removing...")
                 asset.delete_asset()
                 print("   - renaming tmp...")
