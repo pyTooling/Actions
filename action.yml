@@ -15,6 +15,10 @@ inputs:
     description: 'Whether to delete all the previous artifacts, or only replacing the ones with the same name'
     required: false
     default: false
+  snapshots:
+    description: 'Whether to create releases from any tag or to treat some as snapshots'
+    required: false
+    default: true
 runs:
   using: 'docker'
   image: 'Dockerfile'

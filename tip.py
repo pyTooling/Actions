@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
-from os import environ, getenv
+import re
+import sys
 from sys import argv, stdout
+from os import environ, getenv
 from subprocess import check_call
 from glob import glob
 from pathlib import Path
@@ -55,14 +57,45 @@ print("· Get Release handler")
 
 tag = getenv('INPUT_TAG', 'tip')
 
+env_tag = None
+gh_ref = environ['GITHUB_REF']
+is_prerelease = True
+is_draft = False
+
+if gh_ref[0:10] == 'refs/tags/':
+    env_tag = gh_ref[10:]
+    if env_tag != tag:
+        semver = re.search(r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$", env_tag)
+        if semver.group('prerelease') is None:
+            # is a regular semver compilant tag
+            is_prerelease = False
+            tag = env_tag
+        elif getenv('INPUT_SNAPSHOTS', 'true') == 'true':
+            # is semver compilant prerelease tag, thus a snapshot (we skip it)
+            sys.exit()
+
+gh_tag = None
 try:
     gh_tag = gh_repo.get_git_ref('tags/%s' % tag)
 except Exception as e:
     stdout.flush()
-    # TODO: create the tag/release, instead of raising an exception
-    raise(Exception("Tag '%s' does not exist!" % tag))
-
-gh_release = gh_repo.get_release(tag)
+    pass
+if gh_tag:
+    try:
+        gh_release = gh_repo.get_release(tag)
+    except Exception as e:
+        gh_release = gh_repo.create_git_release(tag, tag, "", draft=True, prerelease=is_prerelease)
+        is_draft = True
+        pass
+else:
+    err_msg = "Tag/release '%s' does not exist and could not create it!" % tag
+    if 'GITHUB_SHA' not in environ:
+        raise(Exception(err_msg))
+    try:
+        gh_release = gh_repo.create_git_tag_and_release(tag,  "", tag, "", environ['GITHUB_SHA'], 'commit', draft=True, prerelease=is_prerelease)
+        is_draft = True
+    except Exception as e:
+        raise(Exception(err_msg))
 
 print("· Upload artifacts")
 
@@ -99,17 +132,19 @@ for artifact in artifacts:
 stdout.flush()
 print("· Update Release reference (force-push tag)")
 
-if ('GITHUB_SHA' in environ) and ('GITHUB_REF' in environ) and environ['GITHUB_REF'] != 'refs/tags/%s' % tag:
-    sha = environ['GITHUB_SHA']
-    print("force-push '%s' to %s" % (tag, sha))
-    gh_repo.get_git_ref('tags/%s' % tag).edit(sha)
+if is_draft:
+    # Unfortunately, it seems not possible to update fields 'created_at' or 'published_at'.
+    print(" > Update (pre-)release")
+    gh_release.update_release(
+        gh_release.title,
+        "" if gh_release.body is None else gh_release.body,
+        draft=False,
+        prerelease=is_prerelease,
+        tag_name=gh_release.tag_name,
+        target_commitish=gh_release.target_commitish
+    )
 
-    # TODO: alternatively, update the title/body of the release (while keeping the tag or not)
-    # gh_release.update_release(
-    #     gh_release.title,
-    #     gh_release.body,
-    #     draft=False,
-    #     prerelease=True,
-    #     tag_name=gh_release.tag_name,
-    #     target_commitish=gh_release.target_commitish
-    # )
+if ('GITHUB_SHA' in environ) and (env_tag is None):
+    sha = environ['GITHUB_SHA']
+    print(" > Force-push '%s' to %s" % (tag, sha))
+    gh_repo.get_git_ref('tags/%s' % tag).edit(sha)

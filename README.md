@@ -1,4 +1,8 @@
-**tip** is a Docker GitHub Action written in Python. **tip** allows to keep a pre-release and its artifacts up to date with latest builds. Combined with a workflow that is executed periodically, **tip** allows to provide a fixed release name for users willing to use daily/nightly artifacts of a project.
+**tip** is a Docker GitHub Action written in Python.
+
+**tip** allows to keep a GitHub Release of type pre-release and its artifacts up to date with latest builds. Combined with a workflow that is executed periodically, **tip** allows to provide a fixed release name for users willing to use daily/nightly artifacts of a project.
+
+Furthermore, when any [semver](https://semver.org) compilant tagged commit is pushed, **tip** can create a release and upload assets.
 
 # Usage
 
@@ -35,11 +39,9 @@ jobs:
           README.md
 ```
 
-Note that the tag and the pre-release need to be created manually the first time. The workflow above will fail if the release does not exist.
-
 # Options
 
-All options can be optionally provided as environment variables: `INPUT_TOKEN`, `INPUT_FILES`, `INPUT_TAG` and/or `INPUT_RM`.
+All options can be optionally provided as environment variables: `INPUT_TOKEN`, `INPUT_FILES`, `INPUT_TAG`, `INPUT_RM` and/or `INPUT_SNAPSHOTS`.
 
 ## token (required)
 
@@ -56,3 +58,7 @@ The default tag name for the tip/nightly pre-release is `tip`, but it can be opt
 ## rm
 
 Set option `rm` to `true` for systematically removing previous artifacts (e.g. old versions). Otherwise (by default), all previours artifacts are preserved or overwritten.
+
+## snapshots
+
+Whether to create releases from any tag or to treat some as snapshots. By default, all the tags with non-empty `prerelease` field (see [semver.org: Is there a suggested regular expression (RegEx) to check a SemVer string?](https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string)) are considered snapshots; neither a release is created nor assets are uploaded.
