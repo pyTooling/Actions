@@ -70,10 +70,10 @@ if gh_ref[0:10] == 'refs/tags/':
     env_tag = gh_ref[10:]
     if env_tag != tag:
         semver = re.search(r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$", env_tag)
+        tag = env_tag
         if semver.group('prerelease') is None:
             # is a regular semver compilant tag
             is_prerelease = False
-            tag = env_tag
         elif getenv('INPUT_SNAPSHOTS', 'true') == 'true':
             # is semver compilant prerelease tag, thus a snapshot (we skip it)
             sys.exit()
