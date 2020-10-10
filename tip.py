@@ -69,7 +69,10 @@ is_draft = False
 if gh_ref[0:10] == 'refs/tags/':
     env_tag = gh_ref[10:]
     if env_tag != tag:
-        semver = re.search(r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$", env_tag)
+        rexp = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+        semver = re.search(rexp, env_tag)
+        if semver == None and env_tag[0] == 'v':
+            semver = re.search(rexp, env_tag[1:])
         tag = env_tag
         if semver.group('prerelease') is None:
             # is a regular semver compilant tag
