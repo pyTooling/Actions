@@ -76,6 +76,7 @@ if gh_ref[0:10] == 'refs/tags/':
             is_prerelease = False
         elif getenv('INPUT_SNAPSHOTS', 'true') == 'true':
             # is semver compilant prerelease tag, thus a snapshot (we skip it)
+            print("! Skipping snapshot prerelease")
             sys.exit()
 
 gh_tag = None
