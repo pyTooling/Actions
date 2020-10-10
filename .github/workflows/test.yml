@@ -6,7 +6,7 @@ on:
       - '*'
       - '!tip'
     branches:
-      - '*'
+      - '**'
   pull_request:
 
 env:
