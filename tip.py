@@ -25,7 +25,7 @@ if len(args) == 0:
     raise(Exception("Glob patterns need to be provided as positional arguments or through envvar 'INPUT_FILES'!"))
 
 for item in args:
-    items = glob(item)
+    items = [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]
     print("glob(%s)" % item, "->", items)
     files = files + items
 
