@@ -74,13 +74,16 @@ if gh_ref[0:10] == 'refs/tags/':
         if semver == None and env_tag[0] == 'v':
             semver = re.search(rexp, env_tag[1:])
         tag = env_tag
-        if semver.group('prerelease') is None:
-            # is a regular semver compilant tag
-            is_prerelease = False
-        elif getenv('INPUT_SNAPSHOTS', 'true') == 'true':
-            # is semver compilant prerelease tag, thus a snapshot (we skip it)
-            print("! Skipping snapshot prerelease")
-            sys.exit()
+        if semver == None:
+            print('! Could not get semver from %s' % gh_ref)
+        else:
+            if semver.group('prerelease') is None:
+                # is a regular semver compilant tag
+                is_prerelease = False
+            elif getenv('INPUT_SNAPSHOTS', 'true') == 'true':
+                # is semver compilant prerelease tag, thus a snapshot (we skip it)
+                print("! Skipping snapshot prerelease")
+                sys.exit()
 
 gh_tag = None
 try:
