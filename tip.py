@@ -27,7 +27,11 @@ if len(args) == 0:
 for item in args:
     items = [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]
     print("glob(%s)" % item, "->", items)
-    files = files + items
+    for fname in items:
+        if Path(fname).stat().st_size == 0:
+            print("! Skipping empty file %s" % fname)
+            continue
+        files += [fname]
 
 if len(files) < 1:
     stdout.flush()

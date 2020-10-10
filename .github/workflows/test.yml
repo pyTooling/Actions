@@ -36,10 +36,11 @@ jobs:
           artifact-*.txt
           README.md
 
-    - name: Add artifacts/artifact.txt
+    - name: Add artifacts/*.txt
       run: |
         mkdir artifacts
         echo "Build some tool and generate some artifacts" > artifacts/artifact.txt
+        touch artifacts/empty_file.txt
 
     - name: Single in subdir
       uses: ./
