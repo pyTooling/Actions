@@ -76,6 +76,8 @@ if gh_ref[0:10] == 'refs/tags/':
         tag = env_tag
         if semver == None:
             print('! Could not get semver from %s' % gh_ref)
+            print("! Treat tag '%s' as a release" % tag)
+            is_prerelease = False
         else:
             if semver.group('prerelease') is None:
                 # is a regular semver compilant tag
