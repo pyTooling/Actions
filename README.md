@@ -51,6 +51,8 @@ Token to make authenticated API calls; can be passed in using `{{ secrets.GITHUB
 
 Either a single filename/pattern or a multi-line list can be provided. All the artifacts are uploaded regardless of the hierarchy.
 
+For creating/updating a release without uploading assets, set `files: none`.
+
 ## tag
 
 The default tag name for the tip/nightly pre-release is `tip`, but it can be optionally overriden through option `tag`.

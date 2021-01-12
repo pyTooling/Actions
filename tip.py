@@ -20,22 +20,26 @@ if 'INPUT_FILES' in environ:
 if len(argv) > 1:
     args = args + argv[1:]
 
-if len(args) == 0:
-    stdout.flush()
-    raise(Exception("Glob patterns need to be provided as positional arguments or through envvar 'INPUT_FILES'!"))
+if len(args) == 1 and args[0] == 'none':
+    files = []
+    print("! Skipping 'files' because it's set to 'none")
+else:
+    if len(args) == 0:
+        stdout.flush()
+        raise(Exception("Glob patterns need to be provided as positional arguments or through envvar 'INPUT_FILES'!"))
 
-for item in args:
-    items = [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]
-    print("glob(%s)" % item, "->", items)
-    for fname in items:
-        if Path(fname).stat().st_size == 0:
-            print("! Skipping empty file %s" % fname)
-            continue
-        files += [fname]
+    for item in args:
+        items = [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]
+        print("glob(%s)" % item, "->", items)
+        for fname in items:
+            if Path(fname).stat().st_size == 0:
+                print("! Skipping empty file %s" % fname)
+                continue
+            files += [fname]
 
-if len(files) < 1:
-    stdout.flush()
-    raise(Exception('Empty list of files to upload/update!'))
+    if len(files) < 1:
+        stdout.flush()
+        raise(Exception('Empty list of files to upload/update!'))
 
 print("· Get GitHub API handler (authenticate)")
 
@@ -110,7 +114,7 @@ else:
     except Exception as e:
         raise(Exception(err_msg))
 
-print("· Upload artifacts")
+print("· Cleanup and/or upload artifacts")
 
 artifacts = files
 
