@@ -8,6 +8,9 @@ on:
     branches:
       - '**'
   pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 4'
 
 env:
   CI: true
