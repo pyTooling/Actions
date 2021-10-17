@@ -8,6 +8,7 @@ from subprocess import check_call
 from glob import glob
 from pathlib import Path
 from github import Github
+from github import GithubException
 
 print("· Get list of artifacts to be uploaded")
 
@@ -126,29 +127,57 @@ artifacts = files
 
 assets = gh_release.get_assets()
 
+
+def delete_asset_by_name(name):
+    for asset in assets:
+        if asset.name == name:
+            asset.delete_asset()
+            return
+
+
+def upload_asset(artifact, name):
+    try:
+        return gh_release.upload_asset(artifact, name=name)
+    except GithubException as ex:
+        if "already_exists" in [err["code"] for err in ex.data["errors"]]:
+            print(f"   - {name} exists already! deleting...")
+            delete_asset_by_name(name)
+        else:
+            print(f"   - uploading failed: {ex}")
+    except Exception as ex:
+        print(f"   - uploading failed: {ex}")
+
+    print(f"   - retry uploading {name}...")
+    return gh_release.upload_asset(artifact, name=name)
+
+
+def replace_asset(artifacts, asset):
+    print(f" > {asset!s}\n   {asset.name!s}:")
+    for artifact in artifacts:
+        aname = str(Path(artifact).name)
+        if asset.name == aname:
+            print(f"   - uploading tmp.{aname!s}...")
+            new_asset = upload_asset(artifact, name=f"tmp.{aname!s}")
+            print(f"   - removing...{aname!s}")
+            asset.delete_asset()
+            print(f"   - renaming tmp.{aname!s} to {aname!s}...")
+            new_asset.update_asset(aname, label=aname)
+            artifacts.remove(artifact)
+            return
+    print("   - keep")
+
+
 if getenv("INPUT_RM", "false") == "true":
     print("· RM set. All previous assets are being cleared...")
     for asset in assets:
-        print(" ", asset.name)
+        print(f" - {asset.name}")
         asset.delete_asset()
 else:
     for asset in assets:
-        print(f" > {asset!s}\n   {asset.name!s}:")
-        for artifact in artifacts:
-            aname = str(Path(artifact).name)
-            if asset.name == aname:
-                print("   - uploading tmp...")
-                new_asset = gh_release.upload_asset(artifact, name=f"tmp.{aname!s}")
-                print("   - removing...")
-                asset.delete_asset()
-                print("   - renaming tmp...")
-                new_asset.update_asset(aname, label=aname)
-                artifacts.remove(artifact)
-                break
+        replace_asset(artifacts, asset)
 
 for artifact in artifacts:
-    print(" >", artifact)
-    print("   - uploading...")
+    print(f" > {artifact!s}:\n   - uploading...")
     gh_release.upload_asset(artifact)
 
 stdout.flush()
