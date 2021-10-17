@@ -30,10 +30,10 @@ else:
 
     for item in args:
         items = [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]
-        print("glob(%s)" % item, "->", items)
+        print(f"glob({item!s})", "->", items)
         for fname in items:
             if Path(fname).stat().st_size == 0:
-                print("! Skipping empty file %s" % fname)
+                print(f"! Skipping empty file {fname!s}")
                 continue
             files += [fname]
 
@@ -79,8 +79,8 @@ if gh_ref[0:10] == 'refs/tags/':
             semver = re.search(rexp, env_tag[1:])
         tag = env_tag
         if semver == None:
-            print('! Could not get semver from %s' % gh_ref)
-            print("! Treat tag '%s' as a release" % tag)
+            print(f'! Could not get semver from {gh_ref!s}')
+            print(f"! Treat tag '{tag!s}' as a release")
             is_prerelease = False
         else:
             if semver.group('prerelease') is None:
@@ -93,7 +93,7 @@ if gh_ref[0:10] == 'refs/tags/':
 
 gh_tag = None
 try:
-    gh_tag = gh_repo.get_git_ref('tags/%s' % tag)
+    gh_tag = gh_repo.get_git_ref(f'tags/{tag!s}')
 except Exception as e:
     stdout.flush()
     pass
@@ -105,7 +105,7 @@ if gh_tag:
         is_draft = True
         pass
 else:
-    err_msg = "Tag/release '%s' does not exist and could not create it!" % tag
+    err_msg = f"Tag/release '{tag!s}' does not exist and could not create it!"
     if 'GITHUB_SHA' not in environ:
         raise(Exception(err_msg))
     try:
@@ -127,13 +127,12 @@ if getenv('INPUT_RM', 'false') == 'true':
         asset.delete_asset()
 else:
     for asset in assets:
-        print(" >", asset)
-        print("   %s:" % asset.name)
+        print(f" > {asset!s}\n   {asset.name!s}:")
         for artifact in artifacts:
             aname = str(Path(artifact).name)
             if asset.name == aname:
                 print("   - uploading tmp...")
-                new_asset = gh_release.upload_asset(artifact, name='tmp.%s' % aname)
+                new_asset = gh_release.upload_asset(artifact, name=f'tmp.{aname!s}')
                 print("   - removing...")
                 asset.delete_asset()
                 print("   - renaming tmp...")
@@ -163,5 +162,5 @@ if is_draft:
 
 if ('GITHUB_SHA' in environ) and (env_tag is None):
     sha = environ['GITHUB_SHA']
-    print(" > Force-push '%s' to %s" % (tag, sha))
-    gh_repo.get_git_ref('tags/%s' % tag).edit(sha)
+    print(f" > Force-push '{tag!s}' to {sha!s}")
+    gh_repo.get_git_ref(f'tags/{tag!s}').edit(sha)
