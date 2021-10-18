@@ -31,11 +31,12 @@ else:
 
     for item in args:
         items = [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]
-        print(f"glob({item!s})", "->", items)
+        print(f"  glob({item!s}):")
         for fname in items:
             if Path(fname).stat().st_size == 0:
-                print(f"! Skipping empty file {fname!s}")
+                print(f"  - ! Skipping empty file {fname!s}")
                 continue
+            print(f"  - {fname!s}")
             files += [fname]
 
     if len(files) < 1:
