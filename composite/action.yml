@@ -1,0 +1,30 @@
+name: 'tip'
+description: "keep a pre-release always up-to-date"
+inputs:
+  token:
+    description: 'Token to make authenticated API calls; can be passed in using {{ secrets.GITHUB_TOKEN }}'
+    required: true
+  files:
+    description: 'Multi-line list of glob patterns describing the artifacts to be uploaded'
+    required: true
+  tag:
+    description: 'Name of the tag that corresponds to the tip/nightly pre-release'
+    required: false
+    default: tip
+  rm:
+    description: 'Whether to delete all the previous artifacts, or only replacing the ones with the same name'
+    required: false
+    default: false
+  snapshots:
+    description: 'Whether to create releases from any tag or to treat some as snapshots'
+    required: false
+    default: true
+runs:
+  using: 'composite'
+  steps:
+
+  - shell: bash
+    run: pip install PyGithub --progress-bar off
+
+  - shell: bash
+    run: ${{ github.action_path }}/../tip.py
