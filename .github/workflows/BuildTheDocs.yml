@@ -1,0 +1,31 @@
+name: Documentation
+
+on:
+  workflow_call:
+    inputs:
+      artifact:
+        description: 'Name of the documentation artifact.'
+        required: true
+        type: string
+
+jobs:
+
+  BuildTheDocs:
+    name: 📓 Run BuildTheDocs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: 🛳️ Build documentation
+        uses: buildthedocs/btd@v0
+        with:
+          skip-deploy: true
+
+      - name: 📤 Upload 'documentation' artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ inputs.artifact }}
+          path: doc/_build/html
+          retention-days: 7

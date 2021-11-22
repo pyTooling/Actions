@@ -1,0 +1,42 @@
+name: Params
+
+on:
+  workflow_call:
+    inputs:
+      pyver:
+        description: 'Python version.'
+        required: false
+        default: '3.10'
+        type: string
+      name:
+        description: 'Name of the tool.'
+        required: true
+        type: string
+    outputs:
+      params:
+        description: "Parameters to be used in other jobs."
+        value: ${{ jobs.Params.outputs.params }}
+
+jobs:
+
+  Params:
+    runs-on: ubuntu-latest
+    outputs:
+      params: ${{ steps.params.outputs.params }}
+    steps:
+
+      - id: params
+        shell: python
+        run: |
+          name = '${{ inputs.name }}'
+          params = {
+            'package': name,
+            'pyver': '${{ inputs.pyver }}',
+            'artifacts': {
+              'coverage': f'{name}-coverage',
+              'typing': f'{name}-typing',
+              'wheel': f'{name}-wheel',
+              'doc': f'{name}-doc',
+            }
+          }
+          print(f'::set-output name=params::{params!s}')
