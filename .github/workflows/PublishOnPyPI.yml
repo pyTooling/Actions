@@ -45,8 +45,14 @@ jobs:
           python -m pip install -U pip
           python -m pip install ${{ inputs.requirements }}
 
-      - name: ⤴ Release Python package to PyPI
+      - name: ⤴ Release Python source package to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: twine upload dist/*
+        run: twine upload dist/*.tar.gz
+
+      - name: ⤴ Release Python wheel package to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: twine upload dist/*.whl
