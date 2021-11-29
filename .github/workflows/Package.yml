@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout repository
+      - name: ⏬ Checkout repository
         uses: actions/checkout@v2
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
