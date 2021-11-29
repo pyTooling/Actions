@@ -8,6 +8,11 @@ on:
         required: false
         default: '3.10'
         type: string
+      python_version_list:
+        description: 'Space separated list of Python versions to run tests with.'
+        required: false
+        default: '3.6 3.7 3.8 3.9 3.10'
+        type: string
       name:
         description: 'Name of the tool.'
         required: true
@@ -16,6 +21,9 @@ on:
       params:
         description: "Parameters to be used in other jobs."
         value: ${{ jobs.Params.outputs.params }}
+      python_jobs:
+        description: "List of Python versions to be used in the matrix of other jobs."
+        value: ${{ jobs.Params.outputs.python_jobs }}
 
 jobs:
 
@@ -23,9 +31,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       params: ${{ steps.params.outputs.params }}
+      python_jobs: ${{ steps.params.outputs.python_jobs }}
     steps:
 
-      - id: params
+      - name: Generate 'params' and 'python_jobs'
+        id: params
         shell: python
         run: |
           name = '${{ inputs.name }}'
@@ -40,3 +50,20 @@ jobs:
             }
           }
           print(f'::set-output name=params::{params!s}')
+          print("Params:")
+          print(params)
+
+          data = {
+             '3.6': { 'icon': '🔴', 'until': '23.12.2021' },
+             '3.7': { 'icon': '🟠', 'until': '27.06.2023' },
+             '3.8': { 'icon': '🟡', 'until': 'Oct. 2024' },
+             '3.9': { 'icon': '🟢', 'until': 'Oct. 2025' },
+            '3.10': { 'icon': '🟢', 'until': 'Oct. 2026' },
+          }
+          jobs = [
+              {'python': version, 'icon': data[version]['icon']}
+              for version in '${{ inputs.python_version_list }}'.split(' ')
+          ]
+          print(f'::set-output name=python_jobs::{jobs!s}')
+          print("Python jobs:")
+          print(jobs)
