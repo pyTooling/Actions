@@ -56,3 +56,8 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: twine upload dist/*.whl
+
+      - name: 🗑️ Delete packaging Artifacts
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: ${{ inputs.artifact }}
