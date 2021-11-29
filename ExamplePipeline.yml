@@ -8,7 +8,7 @@ jobs:
   # This job is a workaround for global variables
   # See https://github.com/actions/runner/issues/480
   Params:
-    uses: pyTooling/Actions/.github/workflows/Params.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Params.yml@main
     with:
       name: ToolName
       # Optional
@@ -16,7 +16,7 @@ jobs:
       python_version_list: '3.8 3.9 3.10'
 
   UnitTesting:
-    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
+    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@main
     with:
       jobs: ${{ needs.Params.outputs.python_jobs }}
       # Optional
@@ -24,7 +24,7 @@ jobs:
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}
 
   Coverage:
-    uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@dev
+    uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@main
     needs:
       - Params
     with:
@@ -36,7 +36,7 @@ jobs:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
   StaticTypeCheck:
-    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@dev
+    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@main
     needs:
       - Params
     with:
@@ -48,7 +48,7 @@ jobs:
       report: 'htmlmypy'
 
   Release:
-    uses: pyTooling/Actions/.github/workflows/Release.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Release.yml@main
     if: startsWith(github.ref, 'refs/tags')
     needs:
       - UnitTesting
@@ -56,7 +56,7 @@ jobs:
       - StaticTypeCheck
 
   Package:
-    uses: pyTooling/Actions/.github/workflows/Package.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Package.yml@main
     if: startsWith(github.ref, 'refs/tags')
     needs:
       - Params
@@ -68,7 +68,7 @@ jobs:
       requirements: 'wheel'
 
   PublishOnPyPI:
-    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@dev
+    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@main
     if: startsWith(github.ref, 'refs/tags')
     needs:
       - Params
@@ -83,7 +83,7 @@ jobs:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
   VerifyDocs:
-    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@dev
+    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@main
     needs:
       - Params
     with:
@@ -91,7 +91,7 @@ jobs:
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
 
   BuildTheDocs:
-    uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@dev
+    uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@main
     needs:
       - Params
       - VerifyDocs
@@ -99,7 +99,7 @@ jobs:
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}
 
   PublishToGitHubPages:
-    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@dev
+    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@main
     needs:
       - Params
       - BuildTheDocs
