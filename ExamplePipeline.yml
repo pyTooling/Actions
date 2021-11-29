@@ -11,10 +11,16 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Params.yml@dev
     with:
       name: ToolName
+      # Optional
+      python_version: '3.10'
+      python_version_list: '3.8 3.9 3.10'
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
     with:
+      jobs: ${{ needs.Params.outputs.python_jobs }}
+      # Optional
+      requirements: '-r tests/requirements.txt'
       TestReport: true
 
   Coverage:
@@ -22,8 +28,10 @@ jobs:
     needs:
       - Params
     with:
-      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
+      # Optional
+      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+      requirements: '-r tests/requirements.txt'
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
@@ -32,9 +40,12 @@ jobs:
     needs:
       - Params
     with:
-      package: ${{ fromJson(needs.Params.outputs.params).package }}
-      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+      mypy_args: -m ${{ fromJson(needs.Params.outputs.params).package }}
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
+      # Optional
+      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+      requirements: '-r tests/requirements.txt'
+      html_report: 'htmlmypy'
 
   Release:
     uses: pyTooling/Actions/.github/workflows/Release.yml@dev
@@ -51,8 +62,10 @@ jobs:
       - Params
       - Coverage
     with:
-      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.wheel }}
+      # Optional
+      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+      requirements: 'wheel'
 
   PublishOnPyPI:
     uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@dev
@@ -62,8 +75,10 @@ jobs:
       - Release
       - Package
     with:
-      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.wheel }}
+      # Optional
+      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+      requirements: 'wheel twine'
     secrets:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
@@ -72,6 +87,7 @@ jobs:
     needs:
       - Params
     with:
+      # Optional
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
 
   BuildTheDocs:
@@ -91,6 +107,7 @@ jobs:
       - StaticTypeCheck
     with:
       doc: ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}
+      # Optional
       coverage: ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
       typing: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
 
