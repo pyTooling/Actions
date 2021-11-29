@@ -28,4 +28,4 @@ jobs:
         with:
           name: ${{ inputs.artifact }}
           path: doc/_build/html
-          retention-days: 7
+          retention-days: 1
