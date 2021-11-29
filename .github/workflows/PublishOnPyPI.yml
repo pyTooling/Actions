@@ -14,7 +14,7 @@ on:
         default: 'wheel twine'
         type: string
       artifact:
-        description: 'Name of the wheel artifact.'
+        description: 'Name of the package artifact.'
         required: true
         type: string
     secrets:

@@ -14,14 +14,14 @@ on:
         default: 'wheel'
         type: string
       artifact:
-        description: 'Name of the wheel artifact.'
+        description: 'Name of the package artifact.'
         required: true
         type: string
 
 jobs:
 
   Package:
-    name: 📦 Package in Wheel Format
+    name: 📦 Package in Source and Wheel Format
     runs-on: ubuntu-latest
 
     steps:

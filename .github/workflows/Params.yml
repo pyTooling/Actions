@@ -40,12 +40,12 @@ jobs:
         run: |
           name = '${{ inputs.name }}'
           params = {
-            'package': name,
+            'name': name,
             'python_version': '${{ inputs.python_version }}',
             'artifacts': {
               'coverage': f'{name}-coverage',
               'typing': f'{name}-typing',
-              'wheel': f'{name}-wheel',
+              'package': f'{name}-package',
               'doc': f'{name}-doc',
             }
           }

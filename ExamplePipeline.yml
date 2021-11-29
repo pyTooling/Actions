@@ -40,7 +40,7 @@ jobs:
     needs:
       - Params
     with:
-      mypy_args: -m ${{ fromJson(needs.Params.outputs.params).package }}
+      mypy_args: -m ${{ fromJson(needs.Params.outputs.params).name }}
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
       # Optional
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
@@ -62,7 +62,7 @@ jobs:
       - Params
       - Coverage
     with:
-      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.wheel }}
+      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.package }}
       # Optional
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       requirements: 'wheel'
@@ -75,7 +75,7 @@ jobs:
       - Release
       - Package
     with:
-      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.wheel }}
+      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.package }}
       # Optional
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       requirements: 'wheel twine'
