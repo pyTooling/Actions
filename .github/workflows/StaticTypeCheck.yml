@@ -12,6 +12,11 @@ on:
         required: false
         default: '3.10'
         type: string
+      requirements:
+        description: 'Python dependencies to be installed through pip.'
+        required: false
+        default: '-r tests/requirements.txt'
+        type: string
       artifact:
         description: 'Name of the coverage artifact.'
         required: true
@@ -34,14 +39,12 @@ jobs:
 
       - name: 🗂 Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r tests/requirements.txt
+          python -m pip install -U pip
+          python -m pip install ${{ inputs.requirements }}
 
       - name: Check Static Typing
         continue-on-error: true
-        run: |
-          pwd
-          mypy --html-report htmlmypy -m ${{ inputs.package }}
+        run: mypy --html-report htmlmypy -m ${{ inputs.package }}
 
       - name: 📤 Upload 'Static Typing Report' artifact
         continue-on-error: true
