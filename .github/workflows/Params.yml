@@ -40,7 +40,6 @@ jobs:
         run: |
           name = '${{ inputs.name }}'
           params = {
-            'name': name,
             'python_version': '${{ inputs.python_version }}',
             'artifacts': {
               'unittesting': f'{name}-TestReport',

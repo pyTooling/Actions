@@ -13,13 +13,13 @@ on:
         required: false
         default: '-r tests/requirements.txt'
         type: string
-      html_report:
-        description: 'Directory for --html-report.'
+      report:
+        description: 'Directory to upload as an artifact.'
         required: false
         default: 'htmlmypy'
         type: string
-      mypy_args:
-        description: 'Arguments to mypy, except the HTML report (see option html_report).'
+      commands:
+        description: 'Commands to run the static type checks.'
         required: true
         type: string
       artifact:
@@ -49,16 +49,14 @@ jobs:
 
       - name: Check Static Typing
         continue-on-error: true
-        run: |
-          [ 'x${{ inputs.html_report }}' != 'x' ] && MYPY_HTML='--html-report=${{ inputs.html_report }}' || unset MYPY_HTML
-          mypy $MYPY_HTML ${{ inputs.mypy_args }}
+        run: ${{ inputs.commands }}
 
       - name: 📤 Upload 'Static Typing Report' artifact
-        if: ${{ inputs.html_report != '' }}
+        if: ${{ inputs.artifact != '' }}
         continue-on-error: true
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.artifact }}
-          path: ${{ inputs.html_report }}
+          path: ${{ inputs.report }}
           if-no-files-found: error
           retention-days: 1

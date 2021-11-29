@@ -40,12 +40,12 @@ jobs:
     needs:
       - Params
     with:
-      mypy_args: -m ${{ fromJson(needs.Params.outputs.params).name }}
+      commands: mypy --html-report htmlmypy -p ToolName
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
       # Optional
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       requirements: '-r tests/requirements.txt'
-      html_report: 'htmlmypy'
+      report: 'htmlmypy'
 
   Release:
     uses: pyTooling/Actions/.github/workflows/Release.yml@dev
