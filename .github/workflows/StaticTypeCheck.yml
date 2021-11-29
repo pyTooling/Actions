@@ -23,7 +23,7 @@ on:
         required: true
         type: string
       artifact:
-        description: 'Name of the coverage artifact.'
+        description: 'Name of the typing artifact.'
         required: true
         type: string
 
