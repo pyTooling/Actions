@@ -3,7 +3,7 @@ name: Params
 on:
   workflow_call:
     inputs:
-      pyver:
+      python_version:
         description: 'Python version.'
         required: false
         default: '3.10'
@@ -31,7 +31,7 @@ jobs:
           name = '${{ inputs.name }}'
           params = {
             'package': name,
-            'pyver': '${{ inputs.pyver }}',
+            'python_version': '${{ inputs.python_version }}',
             'artifacts': {
               'coverage': f'{name}-coverage',
               'typing': f'{name}-typing',

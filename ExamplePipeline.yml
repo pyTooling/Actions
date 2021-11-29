@@ -22,7 +22,7 @@ jobs:
     needs:
       - Params
     with:
-      pyver: ${{ fromJson(needs.Params.outputs.params).pyver }}
+      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
@@ -33,7 +33,7 @@ jobs:
       - Params
     with:
       package: ${{ fromJson(needs.Params.outputs.params).package }}
-      pyver: ${{ fromJson(needs.Params.outputs.params).pyver }}
+      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
 
   Release:
@@ -51,7 +51,7 @@ jobs:
       - Params
       - Coverage
     with:
-      pyver: ${{ fromJson(needs.Params.outputs.params).pyver }}
+      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.wheel }}
 
   PublishOnPyPI:
@@ -62,7 +62,7 @@ jobs:
       - Release
       - Package
     with:
-      pyver: ${{ fromJson(needs.Params.outputs.params).pyver }}
+      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.wheel }}
     secrets:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
@@ -72,7 +72,7 @@ jobs:
     needs:
       - Params
     with:
-      pyver: ${{ fromJson(needs.Params.outputs.params).pyver }}
+      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
 
   BuildTheDocs:
     uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@dev

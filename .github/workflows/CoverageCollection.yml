@@ -3,7 +3,7 @@ name: Coverage Collection
 on:
   workflow_call:
     inputs:
-      pyver:
+      python_version:
         description: 'Python version.'
         required: false
         default: '3.10'
@@ -20,17 +20,17 @@ on:
 jobs:
 
   Coverage:
-    name: 📈 Collect Coverage Data using Python ${{ inputs.pyver }}
+    name: 📈 Collect Coverage Data using Python ${{ inputs.python_version }}
     runs-on: ubuntu-latest
 
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v2
 
-      - name: 🐍 Setup Python ${{ inputs.pyver }}
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ inputs.pyver }}
+          python-version: ${{ inputs.python_version }}
 
       - name: 🗂 Install dependencies
         run: |
