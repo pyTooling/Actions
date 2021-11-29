@@ -111,31 +111,18 @@ jobs:
       coverage: ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
       typing: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
 
-
   ArtifactCleanUp:
-    name: 🗑️ Artifact Cleanup
-    runs-on: ubuntu-latest
+    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@main
     needs:
       - Params
       - Coverage
       - StaticTypeCheck
       - BuildTheDocs
       - PublishToGitHubPages
-
-    steps:
-
-      - name: 🗑️ Delete package Artifacts
-        if: ${{ ! startsWith(github.ref, 'refs/tags') }}
-        uses: geekyeggo/delete-artifact@v1
-        with:
-          name: |
-            ${{ fromJson(needs.Params.outputs.params).artifacts.package }}
-
-      - name: 🗑️ Delete remaining Artifacts
-        uses: geekyeggo/delete-artifact@v1
-        with:
-          name: |
-            ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-*
-            ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
-            ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
-            ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}
+    with:
+      package: ${{ fromJson(needs.Params.outputs.params).artifacts.package }}
+      remaining: |
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-*
+        ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
+        ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
+        ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}
