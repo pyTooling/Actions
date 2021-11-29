@@ -3,10 +3,6 @@ name: Static Type Check
 on:
   workflow_call:
     inputs:
-      package:
-        description: 'Name of the Python package.'
-        required: true
-        type: string
       python_version:
         description: 'Python version.'
         required: false
@@ -16,6 +12,15 @@ on:
         description: 'Python dependencies to be installed through pip.'
         required: false
         default: '-r tests/requirements.txt'
+        type: string
+      html_report:
+        description: 'Directory for --html-report.'
+        required: false
+        default: 'htmlmypy'
+        type: string
+      mypy_args:
+        description: 'Arguments to mypy, except the HTML report (see option html_report).'
+        required: true
         type: string
       artifact:
         description: 'Name of the coverage artifact.'
@@ -44,13 +49,16 @@ jobs:
 
       - name: Check Static Typing
         continue-on-error: true
-        run: mypy --html-report htmlmypy -m ${{ inputs.package }}
+        run: |
+          [ 'x${{ inputs.html_report }}' != 'x' ] && MYPY_HTML='--html-report=${{ inputs.html_report }}' || unset MYPY_HTML
+          mypy $MYPY_HTML ${{ inputs.mypy_args }}
 
       - name: 📤 Upload 'Static Typing Report' artifact
+        if: ${{ inputs.html_report != '' }}
         continue-on-error: true
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.artifact }}
-          path: htmlmypy
+          path: ${{ inputs.html_report }}
           if-no-files-found: error
           retention-days: 1
