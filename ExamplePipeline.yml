@@ -21,7 +21,7 @@ jobs:
       jobs: ${{ needs.Params.outputs.python_jobs }}
       # Optional
       requirements: '-r tests/requirements.txt'
-      TestReport: true
+      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}
 
   Coverage:
     uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@dev

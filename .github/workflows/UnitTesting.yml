@@ -12,10 +12,10 @@ on:
         required: false
         default: '-r tests/requirements.txt'
         type: string
-      TestReport:
+      artifact:
         description: "Generate unit test report with junitxml and upload results as an artifact."
         required: false
-        default: false
+        default: ''
         type: string
 
 jobs:
@@ -45,14 +45,14 @@ jobs:
 
       - name: ☑ Run unit tests
         run: |
-          [ '${{ inputs.TestReport }}' = 'true' ] && PYTEST_ARGS='--junitxml=TestReport.xml' || unset PYTEST_ARGS
+          [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReport.xml' || unset PYTEST_ARGS
           python -m pytest -rA tests/unit $PYTEST_ARGS --color=yes
 
       - name: 📤 Upload 'TestReport.xml' artifact
         if: inputs.TestReport == 'true'
         uses: actions/upload-artifact@v2
         with:
-          name: TestReport-${{ matrix.python }}
+          name: ${{ inputs.artifact }}-${{ matrix.python }}
           path: TestReport.xml
           if-no-files-found: error
           retention-days: 1

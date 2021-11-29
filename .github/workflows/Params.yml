@@ -43,6 +43,7 @@ jobs:
             'name': name,
             'python_version': '${{ inputs.python_version }}',
             'artifacts': {
+              'unittesting': f'{name}-TestReport',
               'coverage': f'{name}-coverage',
               'typing': f'{name}-typing',
               'package': f'{name}-package',
