@@ -49,17 +49,8 @@ jobs:
       requirements: '-r tests/requirements.txt'
       report: 'htmlmypy'
 
-  Release:
-    uses: pyTooling/Actions/.github/workflows/Release.yml@main
-    if: startsWith(github.ref, 'refs/tags')
-    needs:
-      - UnitTesting
-      - Coverage
-      - StaticTypeCheck
-
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@main
-    if: startsWith(github.ref, 'refs/tags')
     needs:
       - Params
       - Coverage
@@ -68,6 +59,15 @@ jobs:
       # Optional
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       requirements: 'wheel'
+
+  Release:
+    uses: pyTooling/Actions/.github/workflows/Release.yml@main
+    if: startsWith(github.ref, 'refs/tags')
+    needs:
+      - UnitTesting
+      - Coverage
+      - StaticTypeCheck
+      - Package
 
   PublishOnPyPI:
     uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@main
