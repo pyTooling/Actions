@@ -17,6 +17,8 @@ jobs:
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@main
+    needs:
+      - Params
     with:
       jobs: ${{ needs.Params.outputs.python_jobs }}
       # Optional
