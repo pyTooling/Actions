@@ -1,0 +1,80 @@
+name: Coverage Collection
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        description: 'Python version.'
+        required: false
+        default: '3.10'
+        type: string
+      requirements:
+        description: 'Python dependencies to be installed through pip.'
+        required: false
+        default: '-r tests/requirements.txt'
+        type: string
+      artifact:
+        description: 'Name of the coverage artifact.'
+        required: true
+        type: string
+    secrets:
+      codacy_token:
+        description: 'Token to push result to codacy.'
+        required: true
+
+jobs:
+
+  Coverage:
+    name: 📈 Collect Coverage Data using Python ${{ inputs.python_version }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v2
+
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: 🗂 Install dependencies
+        run: |
+          python -m pip install -U pip
+          python -m pip install ${{ inputs.requirements }}
+
+      - name: Collect coverage
+        continue-on-error: true
+        run: |
+          python -m pytest -rA --cov=.. --cov-config=tests/.coveragerc tests/unit --color=yes
+
+      - name: Convert to cobertura format
+        run: coverage xml
+
+      - name: Convert to HTML format
+        run: |
+          coverage html
+          rm htmlcov/.gitignore
+
+      - name: 📤 Upload 'Coverage Report' artifact
+        continue-on-error: true
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.artifact }}
+          path: htmlcov
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: 📊 Publish coverage at CodeCov
+        continue-on-error: true
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          env_vars: PYTHON
+
+      - name: 📉 Publish coverage at Codacy
+        continue-on-error: true
+        uses: codacy/codacy-coverage-reporter-action@master
+        with:
+          project-token: ${{ secrets.codacy_token }}
+          coverage-reports: ./coverage.xml
