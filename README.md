@@ -97,6 +97,30 @@ As shown in the screenshot above, the expected order is:
     results to Codecov and Codacy.
   - [StaticTypeCheck](.github/workflows/StaticTypeCheck.yml): collect static type check result with `mypy`, and
     optionally upload results as an HTML report.
+    Example `commands`:
+
+    1. Regular package
+
+      ```yml
+      commands: mypy --html-report htmlmypy -p ToolName
+      ```
+
+    2. Parent namespace package
+
+      ```yml
+      commands: |
+        touch Parent/__init__.py
+        mypy --html-report htmlmypy -p ToolName
+      ```
+
+    3. Child namespace package
+
+      ```yml
+      commands: |
+        cd Parent
+        mypy --html-report ../htmlmypy -p ToolName
+      ```
+
   - [VerifyDocs](.github/workflows/VerifyDocs.yml): extract code examples from the README and test.
 - Packaging and releasing:
   - [Release](.github/workflows/Release.yml): publish GitHub Release.
