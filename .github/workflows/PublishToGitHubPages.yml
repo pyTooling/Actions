@@ -1,0 +1,62 @@
+name: Publish to GitHub Pages
+
+on:
+  workflow_call:
+    inputs:
+      doc:
+        description: 'Name of the documentation artifact.'
+        required: true
+        type: string
+      coverage:
+        description: 'Name of the coverage artifact.'
+        required: false
+        default: ''
+        type: string
+      typing:
+        description: 'Name of the typing artifact.'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+
+  PublishToGitHubPages:
+    name: 📚 Publish to GH-Pages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v2
+
+      - name: 📥 Download artifacts '${{ inputs.doc }}' from 'BuildTheDocs' job
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ inputs.doc }}
+          path: public
+
+      - name: 📥 Download artifacts '${{ inputs.coverage }}' from 'Coverage' job
+        if: ${{ inputs.coverage != '' }}
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ inputs.coverage }}
+          path: public/coverage
+
+      - name: 📥 Download artifacts '${{ inputs.typing }}' from 'StaticTypeCheck' job
+        if: ${{ inputs.typing != '' }}
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ inputs.typing }}
+          path: public/typing
+
+      - name: '📓 Publish site to GitHub Pages'
+        if: github.event_name != 'pull_request'
+        run: |
+          cd public
+          touch .nojekyll
+          git init
+          cp ../.git/config ./.git/config
+          git add .
+          git config --local user.email "BuildTheDocs@GitHubActions"
+          git config --local user.name "GitHub Actions"
+          git commit -a -m "update ${{ github.sha }}"
+          git push -u origin +HEAD:gh-pages

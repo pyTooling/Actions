@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  workflow_call:
+
+jobs:
+
+  Release:
+    name: 📝 Create 'Release Page' on GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔁 Extract Git tag from GITHUB_REF
+        id: getVariables
+        run: |
+          GIT_TAG=${GITHUB_REF#refs/*/}
+          RELEASE_VERSION=${GIT_TAG#v}
+          RELEASE_DATETIME="$(date --utc '+%d.%m.%Y - %H:%M:%S')"
+          # write to step outputs
+          echo ::set-output name=gitTag::${GIT_TAG}
+          echo ::set-output name=version::${RELEASE_VERSION}
+          echo ::set-output name=datetime::${RELEASE_DATETIME}
+
+      - name: 📑 Create Release Page
+        id: createReleasePage
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: ${{ steps.getVariables.outputs.gitTag }}
+#          release_name: ${{ steps.getVariables.outputs.gitTag }}
+          body: |
+            **Automated Release created on: ${{ steps.getVariables.outputs.datetime }}**
+
+            # New Features
+            * tbd
+
+            # Changes
+            * tbd
+
+            # Bug Fixes
+            * tbd
+          draft: false
+          prerelease: false
