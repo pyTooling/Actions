@@ -25,14 +25,14 @@ jobs:
     - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
 
     - name: Single
-      uses: ./
+      uses: ./tip
       with:
         rm: true
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifact-*.txt
 
     - name: List
-      uses: ./
+      uses: ./tip
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
@@ -46,7 +46,7 @@ jobs:
         touch artifacts/empty_file.txt
 
     - name: Single in subdir
-      uses: ./
+      uses: ./tip
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/artifact.txt
@@ -57,7 +57,7 @@ jobs:
         echo "tip world" > artifacts/world.md
 
     - name: Directory wildcard
-      uses: ./
+      uses: ./tip
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/*
@@ -68,7 +68,7 @@ jobs:
         echo "Test recursive glob" > artifacts/subdir/deep_file.txt
 
     - name: Directory wildcard (recursive)
-      uses: ./
+      uses: ./tip
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/**
@@ -83,14 +83,14 @@ jobs:
     - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
 
     - name: Single
-      uses: ./composite
+      uses: ./tip/composite
       with:
         rm: true
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifact-*.txt
 
     - name: List
-      uses: ./composite
+      uses: ./tip/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
@@ -104,7 +104,7 @@ jobs:
         touch artifacts/empty_file.txt
 
     - name: Single in subdir
-      uses: ./composite
+      uses: ./tip/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/artifact.txt
@@ -115,7 +115,7 @@ jobs:
         echo "tip world" > artifacts/world.md
 
     - name: Directory wildcard
-      uses: ./composite
+      uses: ./tip/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/*
@@ -126,7 +126,7 @@ jobs:
         echo "Test recursive glob" > artifacts/subdir/deep_file.txt
 
     - name: Directory wildcard (recursive)
-      uses: ./composite
+      uses: ./tip/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/**
