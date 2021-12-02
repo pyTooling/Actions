@@ -22,15 +22,13 @@ if len(argv) > 1:
 if len(args) == 1 and args[0] == "none":
     files = []
     print("! Skipping 'files' because it's set to 'none")
+elif len(args) == 0:
+    stdout.flush()
+    raise (Exception("Glob patterns need to be provided as positional arguments or through envvar 'INPUT_FILES'!"))
 else:
-    if len(args) == 0:
-        stdout.flush()
-        raise (Exception("Glob patterns need to be provided as positional arguments or through envvar 'INPUT_FILES'!"))
-
     for item in args:
-        items = [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]
         print(f"  glob({item!s}):")
-        for fname in items:
+        for fname in [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]:
             if Path(fname).stat().st_size == 0:
                 print(f"  - ! Skipping empty file {fname!s}")
                 continue
