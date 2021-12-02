@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
 import re
-import sys
-from sys import argv, stdout
+from sys import argv, stdout, exit as sys_exit
 from os import environ, getenv
-from subprocess import check_call
 from glob import glob
 from pathlib import Path
 from github import Github
@@ -95,21 +93,20 @@ if gh_ref[0:10] == "refs/tags/":
             elif getenv("INPUT_SNAPSHOTS", "true") == "true":
                 # is semver compilant prerelease tag, thus a snapshot (we skip it)
                 print("! Skipping snapshot prerelease")
-                sys.exit()
+                sys_exit()
 
 gh_tag = None
 try:
     gh_tag = gh_repo.get_git_ref(f"tags/{tag!s}")
 except Exception as e:
     stdout.flush()
-    pass
+
 if gh_tag:
     try:
         gh_release = gh_repo.get_release(tag)
     except Exception as e:
         gh_release = gh_repo.create_git_release(tag, tag, "", draft=True, prerelease=is_prerelease)
         is_draft = True
-        pass
 else:
     err_msg = f"Tag/release '{tag!s}' does not exist and could not create it!"
     if "GITHUB_SHA" not in environ:
