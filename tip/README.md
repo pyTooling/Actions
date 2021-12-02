@@ -80,6 +80,15 @@ jobs:
           README.md
 ```
 
+### Composite Action
+
+The default implementation of **Tip** is a Container Action.
+Therefore, in each run, the container image is built before starting the job.
+Alternatively, a Composite Action version is available: `uses: pyTooling/Actions/tip/composite@main`.
+The Composite version installs the dependencies on the host (the runner environment), instead of using a container.
+Both implementations are functionally equivalent from **Tip**'s point of view; however, the Composite Action allows users
+to tweak the version of Python by using [actions/setup-python](https://github.com/actions/setup-python) before.
+
 ## Options
 
 All options can be optionally provided as environment variables: `INPUT_TOKEN`, `INPUT_FILES`, `INPUT_TAG`, `INPUT_RM` and/or `INPUT_SNAPSHOTS`.
