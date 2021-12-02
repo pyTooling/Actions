@@ -80,6 +80,40 @@ jobs:
           README.md
 ```
 
+### Troubleshooting
+
+GitHub's internal connections seem not to be very stable; as a result, uploading artifacts as assets does produce
+failures rather frequently, particularly if large tarballs are to be published.
+When failures are produced, some assets are left in a broken state within the release.
+**Releaser** tries to handle those cases by first uploading assets with a `tmp.*` name and then renaming them; if an existing
+`tmp.*` is found, it is removed and the upload is retried.
+Therefore, restarting the **Releaser** job should suffice for "fixing" a failing run.
+
+Note:
+  Currently, GitHub Actions does not allow restarting a single job.
+  That is unfortunate, because **Releaser** is typically used as the last dependent job in the workflows.
+  Hence, running **Releaser** again requires restarting the whole workflow.
+  Fortunately, restarting individual jobs is expected to be supported on GitHub Actions in the future.
+  See [github/roadmap#271](https://github.com/github/roadmap/issues/271) and [actions/runner#432](https://github.com/actions/runner/issues/432).
+
+If the tip/nightly release generated with **Releaser** is broken, and restarting the run cannot fix it, the recommended
+procedure is the following:
+
+1. Go to `https://github.com/<name>/<repo>/releases/edit/<tag>`.
+2. Edit the assets to:
+  - Remove the ones with a warning symbol and/or named starting with `tmp.*`.
+  - Or, remove all of them.
+3. Save the changes (click the `Update release` button) and restart the **Releaser** job in CI.
+5. If that does still not work, remove the release and restart the **Releaser** job in CI.
+
+See also [eine/tip#160](https://github.com/eine/tip/issues/160).
+
+Note:
+  If all the assets are removed, or if the release itself is removed, tip/nightly assets won't be available for
+  users until the workflow is successfully run.
+  For instance, Action [setup-ghdl-ci](https://github.com/ghdl/setup-ghdl-ci) uses assets from [ghdl/ghdl: releases/tag/nightly](https://github.com/ghdl/ghdl/releases/tag/nightly).
+  Hence, it is recommended to try removing the conflictive assets only, in order to maximise the availability.
+
 ### Composite Action
 
 The default implementation of **Releaser** is a Container Action.
