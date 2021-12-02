@@ -35,7 +35,7 @@ else:
                 print(f"  - ! Skipping empty file {fname!s}")
                 continue
             print(f"  - {fname!s}")
-            files += [fname]
+            files.append(fname)
 
     if len(files) < 1:
         stdout.flush()
