@@ -31,7 +31,7 @@ jobs:
     # Update tag and pre-release
     # - Update (force-push) tag to the commit that is used in the workflow.
     # - Upload artifacts defined by the user.
-    - uses: eine/tip@master
+    - uses: pyTooling/Actions/tip@main
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
