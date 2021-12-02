@@ -1,0 +1,132 @@
+name: Tip
+
+on:
+  push:
+    tags:
+      - '*'
+      - '!tip'
+    branches:
+      - '**'
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 4'
+
+env:
+  CI: true
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
+
+    - name: Single
+      uses: ./
+      with:
+        rm: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifact-*.txt
+
+    - name: List
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          artifact-*.txt
+          README.md
+
+    - name: Add artifacts/*.txt
+      run: |
+        mkdir artifacts
+        echo "Build some tool and generate some artifacts" > artifacts/artifact.txt
+        touch artifacts/empty_file.txt
+
+    - name: Single in subdir
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifacts/artifact.txt
+
+    - name: Add artifacts/*.md
+      run: |
+        echo "tip hello" > artifacts/hello.md
+        echo "tip world" > artifacts/world.md
+
+    - name: Directory wildcard
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifacts/*
+
+    - name: Add artifacts/subdir
+      run: |
+        mkdir artifacts/subdir
+        echo "Test recursive glob" > artifacts/subdir/deep_file.txt
+
+    - name: Directory wildcard (recursive)
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifacts/**
+
+
+  test-composite:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
+
+    - name: Single
+      uses: ./composite
+      with:
+        rm: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifact-*.txt
+
+    - name: List
+      uses: ./composite
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          artifact-*.txt
+          README.md
+
+    - name: Add artifacts/*.txt
+      run: |
+        mkdir artifacts
+        echo "Build some tool and generate some artifacts" > artifacts/artifact.txt
+        touch artifacts/empty_file.txt
+
+    - name: Single in subdir
+      uses: ./composite
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifacts/artifact.txt
+
+    - name: Add artifacts/*.md
+      run: |
+        echo "tip hello" > artifacts/hello.md
+        echo "tip world" > artifacts/world.md
+
+    - name: Directory wildcard
+      uses: ./composite
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifacts/*
+
+    - name: Add artifacts/subdir
+      run: |
+        mkdir artifacts/subdir
+        echo "Test recursive glob" > artifacts/subdir/deep_file.txt
+
+    - name: Directory wildcard (recursive)
+      uses: ./composite
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: artifacts/**
