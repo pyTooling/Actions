@@ -49,6 +49,11 @@ jobs:
       requirements: '-r tests/requirements.txt'
       report: 'htmlmypy'
 
+  PublishTestResults:
+    uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@main
+    needs:
+      - UnitTesting
+
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@main
     needs:
