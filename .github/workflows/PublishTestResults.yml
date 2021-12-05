@@ -40,12 +40,6 @@ jobs:
         with:
           path: artifacts
 
-# TODO: @umarcor do we want to make it optional or just kick it out?
-#      - name: 💬 Comment Unit Test Results in Pull Request
-#        uses: EnricoMi/publish-unit-test-result-action@v1
-#        with:
-#          files: artifacts/**/*.xml
-
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v1
         with:
