@@ -27,7 +27,7 @@ on:
 
 jobs:
   PublishTestResults:
-    name: 📊 Publish Test Results to Issue Comment
+    name: 📊 Publish Test Results
     runs-on: ubuntu-latest
     if: always()
 
