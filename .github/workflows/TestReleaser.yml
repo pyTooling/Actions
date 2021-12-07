@@ -1,4 +1,4 @@
-name: Tip
+name: Test Releaser
 
 on:
   push:
@@ -25,14 +25,14 @@ jobs:
     - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
 
     - name: Single
-      uses: ./tip
+      uses: ./releaser
       with:
         rm: true
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifact-*.txt
 
     - name: List
-      uses: ./tip
+      uses: ./releaser
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
@@ -46,18 +46,18 @@ jobs:
         touch artifacts/empty_file.txt
 
     - name: Single in subdir
-      uses: ./tip
+      uses: ./releaser
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/artifact.txt
 
     - name: Add artifacts/*.md
       run: |
-        echo "tip hello" > artifacts/hello.md
-        echo "tip world" > artifacts/world.md
+        echo "releaser hello" > artifacts/hello.md
+        echo "releaser world" > artifacts/world.md
 
     - name: Directory wildcard
-      uses: ./tip
+      uses: ./releaser
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/*
@@ -68,7 +68,7 @@ jobs:
         echo "Test recursive glob" > artifacts/subdir/deep_file.txt
 
     - name: Directory wildcard (recursive)
-      uses: ./tip
+      uses: ./releaser
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/**
@@ -83,14 +83,14 @@ jobs:
     - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
 
     - name: Single
-      uses: ./tip/composite
+      uses: ./releaser/composite
       with:
         rm: true
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifact-*.txt
 
     - name: List
-      uses: ./tip/composite
+      uses: ./releaser/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
@@ -104,18 +104,18 @@ jobs:
         touch artifacts/empty_file.txt
 
     - name: Single in subdir
-      uses: ./tip/composite
+      uses: ./releaser/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/artifact.txt
 
     - name: Add artifacts/*.md
       run: |
-        echo "tip hello" > artifacts/hello.md
-        echo "tip world" > artifacts/world.md
+        echo "releaser hello" > artifacts/hello.md
+        echo "releaser world" > artifacts/world.md
 
     - name: Directory wildcard
-      uses: ./tip/composite
+      uses: ./releaser/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/*
@@ -126,7 +126,7 @@ jobs:
         echo "Test recursive glob" > artifacts/subdir/deep_file.txt
 
     - name: Directory wildcard (recursive)
-      uses: ./tip/composite
+      uses: ./releaser/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/**

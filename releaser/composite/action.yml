@@ -1,5 +1,5 @@
-name: 'tip'
-description: "keep a pre-release always up-to-date"
+name: 'Releaser'
+description: 'Publish releases, upload assets and update tip/nightly tags'
 inputs:
   token:
     description: 'Token to make authenticated API calls; can be passed in using {{ secrets.GITHUB_TOKEN }}'
@@ -20,5 +20,17 @@ inputs:
     required: false
     default: true
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'composite'
+  steps:
+
+  - shell: bash
+    run: pip install PyGithub --progress-bar off
+
+  - shell: bash
+    run: ${{ github.action_path }}/../releaser.py
+    env:
+      INPUT_TOKEN: ${{ inputs.token }}
+      INPUT_FILES: ${{ inputs.files }}
+      INPUT_TAG: ${{ inputs.tag }}
+      INPUT_RM: ${{ inputs.rm }}
+      INPUT_SNAPSHOTS: ${{ inputs.snapshots }}

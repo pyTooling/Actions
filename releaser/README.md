@@ -1,12 +1,12 @@
-# Tip
+# Releaser
 
-**Tip** is a Docker GitHub Action written in Python.
+**Releaser** is a Docker GitHub Action written in Python.
 
-**Tip** allows to keep a GitHub Release of type pre-release and its artifacts up to date with latest builds.
-Combined with a workflow that is executed periodically, **Tip** allows to provide a fixed release name for users willing
+**Releaser** allows to keep a GitHub Release of type pre-release and its artifacts up to date with latest builds.
+Combined with a workflow that is executed periodically, **Releaser** allows to provide a fixed release name for users willing
 to use daily/nightly artifacts of a project.
 
-Furthermore, when any [semver](https://semver.org) compilant tagged commit is pushed, **Tip** can create a release and
+Furthermore, when any [semver](https://semver.org) compilant tagged commit is pushed, **Releaser** can create a release and
 upload assets.
 
 ## Context
@@ -30,9 +30,9 @@ From a practical point of view, [actions/github-script](https://github.com/actio
 Still, it requires writing plain JavaScript.
 
 Alternatively, there are non-official GitHub API libraries available in other languages (see [docs.github.com: rest/overview/libraries](https://docs.github.com/en/rest/overview/libraries)).
-**Tip** is based on [PyGithub/PyGithub](https://github.com/PyGithub/PyGithub), a Python client for the GitHub API.
+**Releaser** is based on [PyGithub/PyGithub](https://github.com/PyGithub/PyGithub), a Python client for the GitHub API.
 
-**Tip** was originally created in [eine/tip](https://github.com/eine/tip), as an enhanced alternative to using
+**Releaser** was originally created in [eine/tip](https://github.com/eine/tip), as an enhanced alternative to using
 `actions/create-release` and `actions/upload-release-asset`, in order to cover certain use cases that were being
 migrated from Travis CI to GitHub Actions.
 The main limitation of GitHub's Actions was/is verbosity and not being possible to dynamically define the list of assets
@@ -42,7 +42,7 @@ On the other hand, GitHub Actions artifacts do require login in order to downloa
 Conversely, assets of GitHub Releases can be downloaded without login.
 Therefore, in order to make CI results available to the widest audience, some projects prefer having tarballs available
 as assets.
-In this context, one of the main use cases of **Tip** is pushing artifacts as release assets.
+In this context, one of the main use cases of **Releaser** is pushing artifacts as release assets.
 Thus, the name of the Action.
 
 ## Usage
@@ -72,7 +72,7 @@ jobs:
     # Update tag and pre-release
     # - Update (force-push) tag to the commit that is used in the workflow.
     # - Upload artifacts defined by the user.
-    - uses: pyTooling/Actions/tip@main
+    - uses: pyTooling/Actions/releaser@main
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
@@ -82,11 +82,11 @@ jobs:
 
 ### Composite Action
 
-The default implementation of **Tip** is a Container Action.
+The default implementation of **Releaser** is a Container Action.
 Therefore, in each run, the container image is built before starting the job.
-Alternatively, a Composite Action version is available: `uses: pyTooling/Actions/tip/composite@main`.
+Alternatively, a Composite Action version is available: `uses: pyTooling/Actions/releaser/composite@main`.
 The Composite version installs the dependencies on the host (the runner environment), instead of using a container.
-Both implementations are functionally equivalent from **Tip**'s point of view; however, the Composite Action allows users
+Both implementations are functionally equivalent from **Releaser**'s point of view; however, the Composite Action allows users
 to tweak the version of Python by using [actions/setup-python](https://github.com/actions/setup-python) before.
 
 ## Options
@@ -117,10 +117,10 @@ Whether to create releases from any tag or to treat some as snapshots. By defaul
 
 ## Advanced/complex use cases
 
-**Tip** is essentially a very fine wrapper to use the GitHub Actions context data along with the classes
+**Releaser** is essentially a very fine wrapper to use the GitHub Actions context data along with the classes
 and methods of PyGithub.
 
-Similarly to [actions/github-script](https://github.com/actions/github-script), users with advanced/complex requirements might find it desirable to write their own Python script, instead of using **Tip**.
+Similarly to [actions/github-script](https://github.com/actions/github-script), users with advanced/complex requirements might find it desirable to write their own Python script, instead of using **Releaser**.
 In fact, since `shell: python` is supported in GitHub Actions, using Python does *not* require any Action.
 For prototyping purposes, the following job might be useful:
 

@@ -1,4 +1,4 @@
 FROM python:3.9-slim-bullseye
-COPY tip.py /tip.py
+COPY releaser.py /releaser.py
 RUN pip install PyGithub --progress-bar off
-CMD ["/tip.py"]
+CMD ["/releaser.py"]
