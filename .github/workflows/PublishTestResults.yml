@@ -24,6 +24,12 @@ name: Publish Unit Test Results
 
 on:
   workflow_call:
+    inputs:
+      report_files:
+        description: 'Pattern of report files to upload. Can be a comma separated list.'
+        required: false
+        default: 'artifacts/**/*.xml'
+        type: string
 
 jobs:
   PublishTestResults:
@@ -44,5 +50,5 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: Unit Test Results
-          path: artifacts/**/*.xml
+          path: ${{ inputs.report_files }}
           reporter: java-junit

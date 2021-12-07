@@ -53,6 +53,9 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@main
     needs:
       - UnitTesting
+    with:
+      # Optional
+      report_files: artifacts/**/*.xml
 
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@main
