@@ -148,3 +148,21 @@ Find further usage cases in the following list of projects:
 - [edaa-org/pyEDAA.ProjectModel](https://github.com/edaa-org/pyEDAA.ProjectModel/tree/main/.github/workflows)
 - [edaa-org/pySVModel](https://github.com/edaa-org/pySVModel/tree/main/.github/workflows)
 - [VHDL/pyVHDLModel](https://github.com/VHDL/pyVHDLModel/tree/main/.github/workflows)
+
+
+## Contributors
+
+* [Patrick Lehmann](https://GitHub.com/Paebbels)
+* [Unai Martinez-Corral](https://GitHub.com/umarcor) (Maintainer)
+* [and more...](https://GitHub.com/pyTooling/Actions/graphs/contributors) 
+
+
+## License
+
+This Python package (source code) licensed under [Apache License 2.0](LICENSE.md).  
+The accompanying documentation is licensed under [Creative Commons - Attribution 4.0 (CC-BY 4.0)](doc/Doc-License.rst).
+
+
+-------------------------
+
+SPDX-License-Identifier: Apache-2.0
