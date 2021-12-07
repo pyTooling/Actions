@@ -126,6 +126,7 @@ As shown in the screenshot above, the expected order is:
   - [Release](.github/workflows/Release.yml): publish GitHub Release.
   - [Package](.github/workflows/Package.yml): generate source and wheel packages, and upload them as an artifact.
   - [PublishOnPyPI](.github/workflows/PublishOnPyPI.yml): publish source and wheel packages to PyPI.
+  - [PublishTestResults](.github/workflows/PublishTestResults.yml): publish unit test results through GH action `dorny/test-reporter`.
 - Documentation:
   - [BuildTheDocs](.github/workflows/BuildTheDocs.yml): build Sphinx documentation with BuildTheDocs, and upload HTML as
     an artifact.
