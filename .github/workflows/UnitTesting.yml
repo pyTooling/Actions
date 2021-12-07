@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       jobs:
-        description: 'Space separated list of Python versions to run tests with.'
+        description: 'JSON list with field <python>, telling the versions to run tests with.'
         required: true
         type: string
       requirements:
@@ -49,7 +49,7 @@ jobs:
           python -m pytest -rA tests/unit $PYTEST_ARGS --color=yes
 
       - name: 📤 Upload 'TestReport.xml' artifact
-        if: inputs.TestReport == 'true'
+        if: inputs.artifact != ''
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.artifact }}-${{ matrix.python }}
