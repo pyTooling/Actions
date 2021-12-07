@@ -20,65 +20,35 @@
 #                                                                                                                      #
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
-name: Static Type Check
+name: Publish Unit Test Results
 
 on:
   workflow_call:
     inputs:
-      python_version:
-        description: 'Python version.'
+      report_files:
+        description: 'Pattern of report files to upload. Can be a comma separated list.'
         required: false
-        default: '3.10'
-        type: string
-      requirements:
-        description: 'Python dependencies to be installed through pip.'
-        required: false
-        default: '-r tests/requirements.txt'
-        type: string
-      report:
-        description: 'Directory to upload as an artifact.'
-        required: false
-        default: 'htmlmypy'
-        type: string
-      commands:
-        description: 'Commands to run the static type checks.'
-        required: true
-        type: string
-      artifact:
-        description: 'Name of the typing artifact.'
-        required: true
+        default: 'artifacts/**/*.xml'
         type: string
 
 jobs:
-
-  StaticTypeCheck:
-    name: 👀 Check Static Typing using Python ${{ inputs.python_version }}
+  PublishTestResults:
+    name: 📊 Publish Test Results
     runs-on: ubuntu-latest
+    if: always()
 
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v2
 
-      - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v2
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
         with:
-          python-version: ${{ inputs.python_version }}
+          path: artifacts
 
-      - name: 🗂 Install dependencies
-        run: |
-          python -m pip install -U pip
-          python -m pip install ${{ inputs.requirements }}
-
-      - name: Check Static Typing
-        continue-on-error: true
-        run: ${{ inputs.commands }}
-
-      - name: 📤 Upload 'Static Typing Report' artifact
-        if: ${{ inputs.artifact != '' }}
-        continue-on-error: true
-        uses: actions/upload-artifact@v2
+      - name: 📊 Publish Unit Test Results
+        uses: dorny/test-reporter@v1
         with:
-          name: ${{ inputs.artifact }}
-          path: ${{ inputs.report }}
-          if-no-files-found: error
-          retention-days: 1
+          name: Unit Test Results
+          path: ${{ inputs.report_files }}
+          reporter: java-junit
