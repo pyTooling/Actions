@@ -1,4 +1,4 @@
-name: Params
+name: Parameters
 
 on:
   workflow_call:
@@ -20,14 +20,14 @@ on:
     outputs:
       params:
         description: "Parameters to be used in other jobs."
-        value: ${{ jobs.Params.outputs.params }}
+        value: ${{ jobs.Parameters.outputs.params }}
       python_jobs:
         description: "List of Python versions to be used in the matrix of other jobs."
-        value: ${{ jobs.Params.outputs.python_jobs }}
+        value: ${{ jobs.Parameters.outputs.python_jobs }}
 
 jobs:
 
-  Params:
+  Parameters:
     runs-on: ubuntu-latest
     outputs:
       params: ${{ steps.params.outputs.params }}
@@ -50,7 +50,7 @@ jobs:
             }
           }
           print(f'::set-output name=params::{params!s}')
-          print("Params:")
+          print("Parameters:")
           print(params)
 
           data = {

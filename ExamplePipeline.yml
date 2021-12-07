@@ -8,7 +8,7 @@ jobs:
   # This job is a workaround for global variables
   # See https://github.com/actions/runner/issues/480
   Params:
-    uses: pyTooling/Actions/.github/workflows/Params.yml@main
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
       name: ToolName
       # Optional
