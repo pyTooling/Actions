@@ -53,7 +53,7 @@ In dispatchable Workflows, the object is `${{ github.event.inputs }}`, while cal
 
 As a result, in order to make a reusable workflow dispatchable, a wrapper workflow is required.
 See, for instance, [hdl/containers: .github/workflows/common.yml](https://github.com/hdl/containers/blob/main/.github/workflows/common.yml) and [hdl/containers: .github/workflows/dispatch.yml](https://github.com/hdl/containers/blob/main/.github/workflows/dispatch.yml).
-Alternatively, a normalisation job might be used, similar to the `Params` in this repo.
+Alternatively, a normalisation job might be used, similar to the `Parameters` in this repo.
 
 ### Call hierarchy
 
@@ -86,7 +86,7 @@ Optionally, coverage and static type check reports can be gathered.
 As shown in the screenshot above, the expected order is:
 
 - Global:
-  - [Params](.github/workflows/Params.yml): a workaround for the limitations to handle global variables in
+  - [Parameters](.github/workflows/Parameters.yml): a workaround for the limitations to handle global variables in
     GitHub Actions workflows (see [actions/runner#480](https://github.com/actions/runner/issues/480)).
     It generates outputs with artifact names and job matrices to be used in other jobs.
 - Code testing/analysis:
@@ -139,7 +139,7 @@ As shown in the screenshot above, the expected order is:
 Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
 Minimal required modifications are the following:
 
-- Set the `name` input of job `Params`.
+- Set the `name` input of job `Parameters`.
 - Specify the `commands` input of job `StaticTypeCheck`.
 
 Find further usage cases in the following list of projects:
