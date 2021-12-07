@@ -26,8 +26,7 @@ from sys import argv, stdout, exit as sys_exit
 from os import environ, getenv
 from glob import glob
 from pathlib import Path
-from github import Github
-from github import GithubException
+from github import Github, GithubException
 
 print("· Get list of artifacts to be uploaded")
 
@@ -117,13 +116,13 @@ if gh_ref[0:10] == "refs/tags/":
 gh_tag = None
 try:
     gh_tag = gh_repo.get_git_ref(f"tags/{tag!s}")
-except Exception as e:
+except Exception:
     stdout.flush()
 
 if gh_tag:
     try:
         gh_release = gh_repo.get_release(tag)
-    except Exception as e:
+    except Exception:
         gh_release = gh_repo.create_git_release(tag, tag, "", draft=True, prerelease=is_prerelease)
         is_draft = True
 else:
@@ -135,7 +134,7 @@ else:
             tag, "", tag, "", environ["GITHUB_SHA"], "commit", draft=True, prerelease=is_prerelease
         )
         is_draft = True
-    except Exception as e:
+    except Exception:
         raise (Exception(err_msg))
 
 print("· Cleanup and/or upload artifacts")
