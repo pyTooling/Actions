@@ -49,7 +49,7 @@ jobs:
           python -m pytest -rA tests/unit $PYTEST_ARGS --color=yes
 
       - name: 📤 Upload 'TestReport.xml' artifact
-        if: inputs.TestReport == 'true'
+        if: inputs.artifact != ''
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.artifact }}-${{ matrix.python }}
