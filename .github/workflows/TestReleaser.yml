@@ -7,7 +7,6 @@ on:
       - '!tip'
     branches:
       - '**'
-  pull_request:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * 4'
