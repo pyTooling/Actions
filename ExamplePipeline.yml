@@ -70,6 +70,7 @@ jobs:
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       requirements: '-r tests/requirements.txt'
       report: 'htmlmypy'
+      allow_failure: true
 
   PublishTestResults:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@main
