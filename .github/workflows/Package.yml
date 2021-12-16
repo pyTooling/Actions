@@ -31,7 +31,7 @@ on:
         default: '3.10'
         type: string
       requirements:
-        description: 'Python dependencies to be installed through pip.'
+        description: 'Python dependencies to be installed through pip; if empty, use pyproject.toml through build.'
         required: false
         default: ''
         type: string
