@@ -44,11 +44,6 @@ on:
         description: 'Commands to run the static type checks.'
         required: true
         type: string
-      allow_failure:
-        description: 'Allow a type checking to be failing without failing the overall workflow.'
-        required: false
-        default: false
-        type: boolean
       artifact:
         description: 'Name of the typing artifact.'
         required: true
@@ -75,12 +70,12 @@ jobs:
           python -m pip install ${{ inputs.requirements }}
 
       - name: Check Static Typing
-        continue-on-error: ${{ inputs.allow_failure }}
+        continue-on-error: true
         run: ${{ inputs.commands }}
 
       - name: 📤 Upload 'Static Typing Report' artifact
         if: ${{ inputs.artifact != '' }}
-        continue-on-error: ${{ inputs.allow_failure }}
+        continue-on-error: true
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.artifact }}
