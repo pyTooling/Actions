@@ -36,7 +36,7 @@ on:
         default: '3.6 3.7 3.8 3.9 3.10'
         type: string
       name:
-        description: 'Name of the tool/package.'
+        description: 'Name of the tool.'
         required: true
         type: string
     outputs:
