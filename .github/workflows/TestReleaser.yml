@@ -115,6 +115,7 @@ jobs:
       uses: ./releaser/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        use-gh-cli: true
         files: |
           artifact-*.txt
           README.md

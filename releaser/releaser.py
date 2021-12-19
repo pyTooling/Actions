@@ -27,6 +27,7 @@ from os import environ, getenv
 from glob import glob
 from pathlib import Path
 from github import Github, GithubException
+from subprocess import check_call
 
 
 def GetListOfArtifacts(argv):
@@ -104,6 +105,7 @@ def GetReleaseHandler(gh):
                         # is semver compilant prerelease tag, thus a snapshot (we skip it)
                         print("! Skipping snapshot prerelease")
                         sys_exit()
+
         return (tag, env_tag, True)
 
     def GetRepositoryHandler(repo):
@@ -152,6 +154,12 @@ def UploadArtifacts(gh_release, artifacts):
 
     assets = gh_release.get_assets()
 
+    def delete_all_assets(assets):
+        print("· RM set. All previous assets are being cleared...")
+        for asset in assets:
+            print(f" - {asset.name}")
+            asset.delete_asset()
+
     def delete_asset_by_name(name):
         for asset in assets:
             if asset.name == name:
@@ -188,18 +196,25 @@ def UploadArtifacts(gh_release, artifacts):
                 return
         print("   - keep")
 
-    if getenv("INPUT_RM", "false") == "true":
-        print("· RM set. All previous assets are being cleared...")
-        for asset in assets:
-            print(f" - {asset.name}")
-            asset.delete_asset()
-    else:
-        for asset in assets:
-            replace_asset(artifacts, asset)
+    UseGitHubCLI = getenv("INPUT_USE-GH-CLI", "false").lower() == 'true'
 
-    for artifact in artifacts:
-        print(f" > {artifact!s}:\n   - uploading...")
-        gh_release.upload_asset(artifact)
+    if getenv("INPUT_RM", "false") == "true":
+        delete_all_assets(assets)
+    else:
+        if not UseGitHubCLI:
+            for asset in assets:
+                replace_asset(artifacts, asset)
+
+    if UseGitHubCLI:
+        env = environ.copy()
+        env["GITHUB_TOKEN"] = environ["INPUT_TOKEN"]
+        cmd = ["gh", "release", "upload", "--clobber", tag] + artifacts
+        print(f" > {' '.join(cmd)}")
+        check_call(cmd, env=env)
+    else:
+        for artifact in artifacts:
+            print(f" > {artifact!s}:\n   - uploading...")
+            gh_release.upload_asset(artifact)
 
 
 def UpdateReference(gh_release, tag, sha, is_prerelease, is_draft):

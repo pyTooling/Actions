@@ -149,9 +149,16 @@ Set option `rm` to `true` for systematically removing previous artifacts (e.g. o
 
 Whether to create releases from any tag or to treat some as snapshots. By default, all the tags with non-empty `prerelease` field (see [semver.org: Is there a suggested regular expression (RegEx) to check a SemVer string?](https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string)) are considered snapshots; neither a release is created nor assets are uploaded.
 
+### use-gh-cli
+
+In order to work around the reliability issues explained in section *Troubleshooting* above, option *use-gh-cli* allows
+using GitHub's official command line tool ([cli/cli](https://github.com/cli/cli)) for uploading/updating assets.
+
+IMPORTANT: Using this option requires the repository to be cloned (preferredly through [actions/checkout](https://github.com/actions/checkout)).
+
 ## Advanced/complex use cases
 
-**Releaser** is essentially a very fine wrapper to use the GitHub Actions context data along with the classes
+**Releaser** is essentially a very thin wrapper to use the GitHub Actions context data along with the classes
 and methods of PyGithub.
 
 Similarly to [actions/github-script](https://github.com/actions/github-script), users with advanced/complex requirements might find it desirable to write their own Python script, instead of using **Releaser**.
