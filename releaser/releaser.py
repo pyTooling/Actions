@@ -80,71 +80,75 @@ def GetGitHubAPIHandler():
         return Github(environ["GITHUB_USER"], environ["GITHUB_PASS"])
 
 
-files = GetListOfArtifacts(sys_argv)
-gh = GetGitHubAPIHandler()
+def GetReleaseHandler(gh):
+    print("· Get Repository handler")
 
+    if "GITHUB_REPOSITORY" not in environ:
+        stdout.flush()
+        raise (Exception("Repository name not defined! Please set 'GITHUB_REPOSITORY"))
 
-print("· Get Repository handler")
+    gh_repo = gh.get_repo(environ["GITHUB_REPOSITORY"])
 
-if "GITHUB_REPOSITORY" not in environ:
-    stdout.flush()
-    raise (Exception("Repository name not defined! Please set 'GITHUB_REPOSITORY"))
+    print("· Get Release handler")
 
-gh_repo = gh.get_repo(environ["GITHUB_REPOSITORY"])
+    tag = getenv("INPUT_TAG", "tip")
 
-print("· Get Release handler")
+    env_tag = None
+    gh_ref = environ["GITHUB_REF"]
+    is_prerelease = True
+    is_draft = False
 
-tag = getenv("INPUT_TAG", "tip")
-
-env_tag = None
-gh_ref = environ["GITHUB_REF"]
-is_prerelease = True
-is_draft = False
-
-if gh_ref[0:10] == "refs/tags/":
-    env_tag = gh_ref[10:]
-    if env_tag != tag:
-        rexp = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
-        semver = re.search(rexp, env_tag)
-        if semver == None and env_tag[0] == "v":
-            semver = re.search(rexp, env_tag[1:])
-        tag = env_tag
-        if semver == None:
-            print(f"! Could not get semver from {gh_ref!s}")
-            print(f"! Treat tag '{tag!s}' as a release")
-            is_prerelease = False
-        else:
-            if semver.group("prerelease") is None:
-                # is a regular semver compilant tag
+    if gh_ref[0:10] == "refs/tags/":
+        env_tag = gh_ref[10:]
+        if env_tag != tag:
+            rexp = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+            semver = re.search(rexp, env_tag)
+            if semver == None and env_tag[0] == "v":
+                semver = re.search(rexp, env_tag[1:])
+            tag = env_tag
+            if semver == None:
+                print(f"! Could not get semver from {gh_ref!s}")
+                print(f"! Treat tag '{tag!s}' as a release")
                 is_prerelease = False
-            elif getenv("INPUT_SNAPSHOTS", "true") == "true":
-                # is semver compilant prerelease tag, thus a snapshot (we skip it)
-                print("! Skipping snapshot prerelease")
-                sys_exit()
+            else:
+                if semver.group("prerelease") is None:
+                    # is a regular semver compilant tag
+                    is_prerelease = False
+                elif getenv("INPUT_SNAPSHOTS", "true") == "true":
+                    # is semver compilant prerelease tag, thus a snapshot (we skip it)
+                    print("! Skipping snapshot prerelease")
+                    sys_exit()
 
-gh_tag = None
-try:
-    gh_tag = gh_repo.get_git_ref(f"tags/{tag!s}")
-except Exception:
-    stdout.flush()
+    gh_tag = None
+    try:
+        gh_tag = gh_repo.get_git_ref(f"tags/{tag!s}")
+    except Exception:
+        stdout.flush()
 
-if gh_tag:
-    try:
-        gh_release = gh_repo.get_release(tag)
-    except Exception:
-        gh_release = gh_repo.create_git_release(tag, tag, "", draft=True, prerelease=is_prerelease)
-        is_draft = True
-else:
-    err_msg = f"Tag/release '{tag!s}' does not exist and could not create it!"
-    if "GITHUB_SHA" not in environ:
-        raise (Exception(err_msg))
-    try:
-        gh_release = gh_repo.create_git_tag_and_release(
-            tag, "", tag, "", environ["GITHUB_SHA"], "commit", draft=True, prerelease=is_prerelease
-        )
-        is_draft = True
-    except Exception:
-        raise (Exception(err_msg))
+    if gh_tag:
+        try:
+            gh_release = gh_repo.get_release(tag)
+        except Exception:
+            gh_release = gh_repo.create_git_release(tag, tag, "", draft=True, prerelease=is_prerelease)
+            is_draft = True
+    else:
+        err_msg = f"Tag/release '{tag!s}' does not exist and could not create it!"
+        if "GITHUB_SHA" not in environ:
+            raise (Exception(err_msg))
+        try:
+            gh_release = gh_repo.create_git_tag_and_release(
+                tag, "", tag, "", environ["GITHUB_SHA"], "commit", draft=True, prerelease=is_prerelease
+            )
+            is_draft = True
+        except Exception:
+            raise (Exception(err_msg))
+
+    return (gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft)
+
+
+files = GetListOfArtifacts(sys_argv)
+[gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft] = GetReleaseHandler(GetGitHubAPIHandler())
+
 
 print("· Cleanup and/or upload artifacts")
 
