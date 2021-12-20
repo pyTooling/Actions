@@ -39,7 +39,27 @@ env:
 
 jobs:
 
-  test:
+
+  Image:
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_BUILDKIT: 1
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build container image
+      run: docker build -t ghcr.io/pytooling/releaser -f releaser/Dockerfile releaser
+
+    - name: Push container image
+      uses: ./with-post-step
+      with:
+        main: |
+          echo '${{ github.token }}' | docker login ghcr.io -u GitHub-Actions --password-stdin
+          docker push ghcr.io/pytooling/releaser
+        post: docker logout ghcr.io
+
+
+  Composite:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -47,14 +67,14 @@ jobs:
     - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
 
     - name: Single
-      uses: ./releaser
+      uses: ./releaser/composite
       with:
         rm: true
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifact-*.txt
 
     - name: List
-      uses: ./releaser
+      uses: ./releaser/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
@@ -68,7 +88,7 @@ jobs:
         touch artifacts/empty_file.txt
 
     - name: Single in subdir
-      uses: ./releaser
+      uses: ./releaser/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/artifact.txt
@@ -79,7 +99,7 @@ jobs:
         echo "releaser world" > artifacts/world.md
 
     - name: Directory wildcard
-      uses: ./releaser
+      uses: ./releaser/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/*
@@ -90,14 +110,16 @@ jobs:
         echo "Test recursive glob" > artifacts/subdir/deep_file.txt
 
     - name: Directory wildcard (recursive)
-      uses: ./releaser
+      uses: ./releaser/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/**
 
 
-  test-composite:
-    needs: test
+  Test:
+    needs:
+      - Image
+      - Composite
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -105,14 +127,14 @@ jobs:
     - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
 
     - name: Single
-      uses: ./releaser/composite
+      uses: ./releaser
       with:
         rm: true
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifact-*.txt
 
     - name: List
-      uses: ./releaser/composite
+      uses: ./releaser
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
@@ -126,7 +148,7 @@ jobs:
         touch artifacts/empty_file.txt
 
     - name: Single in subdir
-      uses: ./releaser/composite
+      uses: ./releaser
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/artifact.txt
@@ -137,7 +159,7 @@ jobs:
         echo "releaser world" > artifacts/world.md
 
     - name: Directory wildcard
-      uses: ./releaser/composite
+      uses: ./releaser
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/*
@@ -148,7 +170,7 @@ jobs:
         echo "Test recursive glob" > artifacts/subdir/deep_file.txt
 
     - name: Directory wildcard (recursive)
-      uses: ./releaser/composite
+      uses: ./releaser
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/**
