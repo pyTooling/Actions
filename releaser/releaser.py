@@ -146,68 +146,59 @@ def GetReleaseHandler(gh):
     return (gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft)
 
 
-files = GetListOfArtifacts(sys_argv)
-[gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft] = GetReleaseHandler(GetGitHubAPIHandler())
+def UploadArtifacts(gh_release, artifacts):
+    print("· Cleanup and/or upload artifacts")
 
+    assets = gh_release.get_assets()
 
-print("· Cleanup and/or upload artifacts")
+    def delete_asset_by_name(name):
+        for asset in assets:
+            if asset.name == name:
+                asset.delete_asset()
+                return
 
-artifacts = files
-
-assets = gh_release.get_assets()
-
-
-def delete_asset_by_name(name):
-    for asset in assets:
-        if asset.name == name:
-            asset.delete_asset()
-            return
-
-
-def upload_asset(artifact, name):
-    try:
-        return gh_release.upload_asset(artifact, name=name)
-    except GithubException as ex:
-        if "already_exists" in [err["code"] for err in ex.data["errors"]]:
-            print(f"   - {name} exists already! deleting...")
-            delete_asset_by_name(name)
-        else:
+    def upload_asset(artifact, name):
+        try:
+            return gh_release.upload_asset(artifact, name=name)
+        except GithubException as ex:
+            if "already_exists" in [err["code"] for err in ex.data["errors"]]:
+                print(f"   - {name} exists already! deleting...")
+                delete_asset_by_name(name)
+            else:
+                print(f"   - uploading failed: {ex}")
+        except Exception as ex:
             print(f"   - uploading failed: {ex}")
-    except Exception as ex:
-        print(f"   - uploading failed: {ex}")
 
-    print(f"   - retry uploading {name}...")
-    return gh_release.upload_asset(artifact, name=name)
+        print(f"   - retry uploading {name}...")
+        return gh_release.upload_asset(artifact, name=name)
 
+    def replace_asset(artifacts, asset):
+        print(f" > {asset!s}\n   {asset.name!s}:")
+        for artifact in artifacts:
+            aname = str(Path(artifact).name)
+            if asset.name == aname:
+                print(f"   - uploading tmp.{aname!s}...")
+                new_asset = upload_asset(artifact, name=f"tmp.{aname!s}")
+                print(f"   - removing...{aname!s}")
+                asset.delete_asset()
+                print(f"   - renaming tmp.{aname!s} to {aname!s}...")
+                new_asset.update_asset(aname, label=aname)
+                artifacts.remove(artifact)
+                return
+        print("   - keep")
 
-def replace_asset(artifacts, asset):
-    print(f" > {asset!s}\n   {asset.name!s}:")
-    for artifact in artifacts:
-        aname = str(Path(artifact).name)
-        if asset.name == aname:
-            print(f"   - uploading tmp.{aname!s}...")
-            new_asset = upload_asset(artifact, name=f"tmp.{aname!s}")
-            print(f"   - removing...{aname!s}")
+    if getenv("INPUT_RM", "false") == "true":
+        print("· RM set. All previous assets are being cleared...")
+        for asset in assets:
+            print(f" - {asset.name}")
             asset.delete_asset()
-            print(f"   - renaming tmp.{aname!s} to {aname!s}...")
-            new_asset.update_asset(aname, label=aname)
-            artifacts.remove(artifact)
-            return
-    print("   - keep")
+    else:
+        for asset in assets:
+            replace_asset(artifacts, asset)
 
-
-if getenv("INPUT_RM", "false") == "true":
-    print("· RM set. All previous assets are being cleared...")
-    for asset in assets:
-        print(f" - {asset.name}")
-        asset.delete_asset()
-else:
-    for asset in assets:
-        replace_asset(artifacts, asset)
-
-for artifact in artifacts:
-    print(f" > {artifact!s}:\n   - uploading...")
-    gh_release.upload_asset(artifact)
+    for artifact in artifacts:
+        print(f" > {artifact!s}:\n   - uploading...")
+        gh_release.upload_asset(artifact)
 
 
 def UpdateReference(gh_release, tag, sha, is_prerelease, is_draft):
@@ -230,6 +221,10 @@ def UpdateReference(gh_release, tag, sha, is_prerelease, is_draft):
         gh_repo.get_git_ref(f"tags/{tag!s}").edit(sha)
 
 
+files = GetListOfArtifacts(sys_argv)
+[gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft] = GetReleaseHandler(GetGitHubAPIHandler())
+stdout.flush()
+UploadArtifacts(gh_release, files)
 stdout.flush()
 UpdateReference(
     gh_release,
