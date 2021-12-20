@@ -81,13 +81,12 @@ def GetGitHubAPIHandler():
 
 
 def GetReleaseHandler(gh):
-    print("· Get Repository handler")
-
-    if "GITHUB_REPOSITORY" not in environ:
-        stdout.flush()
-        raise (Exception("Repository name not defined! Please set 'GITHUB_REPOSITORY"))
-
-    gh_repo = gh.get_repo(environ["GITHUB_REPOSITORY"])
+    def GetRepositoryHandler(repo):
+        print("· Get Repository handler")
+        if repo is None:
+            stdout.flush()
+            raise (Exception("Repository name not defined! Please set 'GITHUB_REPOSITORY"))
+        return gh.get_repo(repo)
 
     def CheckRefSemVer(gh_ref, tag):
         print("· Check SemVer compliance of the reference/tag")
@@ -114,6 +113,7 @@ def GetReleaseHandler(gh):
                         sys_exit()
         return (tag, env_tag, True)
 
+    gh_repo = GetRepositoryHandler(getenv("GITHUB_REPOSITORY", None))
     [tag, env_tag, is_prerelease] = CheckRefSemVer(environ["GITHUB_REF"], getenv("INPUT_TAG", "tip"))
 
     print("· Get Release handler")
