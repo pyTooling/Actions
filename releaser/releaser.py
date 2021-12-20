@@ -62,24 +62,27 @@ def GetListOfArtifacts(argv):
         return files
 
 
-files = GetListOfArtifacts(sys_argv)
+def GetGitHubAPIHandler():
+    print("· Get GitHub API handler (authenticate)")
 
-
-print("· Get GitHub API handler (authenticate)")
-
-if "GITHUB_TOKEN" in environ:
-    gh = Github(environ["GITHUB_TOKEN"])
-elif "INPUT_TOKEN" in environ:
-    gh = Github(environ["INPUT_TOKEN"])
-else:
-    if "GITHUB_USER" not in environ or "GITHUB_PASS" not in environ:
-        stdout.flush()
-        raise (
-            Exception(
-                "Need credentials to authenticate! Please, provide 'GITHUB_TOKEN', 'INPUT_TOKEN', or 'GITHUB_USER' and 'GITHUB_PASS'"
+    if "GITHUB_TOKEN" in environ:
+        return Github(environ["GITHUB_TOKEN"])
+    elif "INPUT_TOKEN" in environ:
+        return Github(environ["INPUT_TOKEN"])
+    else:
+        if "GITHUB_USER" not in environ or "GITHUB_PASS" not in environ:
+            stdout.flush()
+            raise (
+                Exception(
+                    "Need credentials to authenticate! Please, provide 'GITHUB_TOKEN', 'INPUT_TOKEN', or 'GITHUB_USER' and 'GITHUB_PASS'"
+                )
             )
-        )
-    gh = Github(environ["GITHUB_USER"], environ["GITHUB_PASS"])
+        return Github(environ["GITHUB_USER"], environ["GITHUB_PASS"])
+
+
+files = GetListOfArtifacts(sys_argv)
+gh = GetGitHubAPIHandler()
+
 
 print("· Get Repository handler")
 
