@@ -26,7 +26,7 @@ However, those Actions were contributed by an employee in spare time, not offici
 Therefore, they were unmaintained before GitHub Actions was out of the private beta (see [actions/upload-release-asset#58](https://github.com/actions/upload-release-asset/issues/58)) and, a year later, archived.
 Those Actions are based on [actions/toolkit](https://github.com/actions/toolkit)'s hydrated version of octokit.js.
 
-From a practical point of view, [actions/github-script](https://github.com/actions/github-script) is the natural replacement to those Actions, since it allows to use a pre-authenticated octokit.js client along with the workflow run context.
+From a practical point of view, [actions/github-script](https://github.com/actions/github-script) is the natural replacement to those Actions, since it allows to use a pre-authenticated *octokit.js* client along with the workflow run context.
 Still, it requires writing plain JavaScript.
 
 Alternatively, there are non-official GitHub API libraries available in other languages (see [docs.github.com: rest/overview/libraries](https://docs.github.com/en/rest/overview/libraries)).
@@ -72,7 +72,7 @@ jobs:
     # Update tag and pre-release
     # - Update (force-push) tag to the commit that is used in the workflow.
     # - Upload artifacts defined by the user.
-    - uses: pyTooling/Actions/releaser@main
+    - uses: pyTooling/Actions/releaser@r0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: |
@@ -117,7 +117,7 @@ Note:
 ### Composite Action
 
 The default implementation of **Releaser** is a Container Action.
-Therefore, in each run, the container image is built before starting the job.
+Therefore, a pre-built container image is pulled before starting the job.
 Alternatively, a Composite Action version is available: `uses: pyTooling/Actions/releaser/composite@main`.
 The Composite version installs the dependencies on the host (the runner environment), instead of using a container.
 Both implementations are functionally equivalent from **Releaser**'s point of view; however, the Composite Action allows users

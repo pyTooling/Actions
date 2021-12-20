@@ -46,4 +46,4 @@ inputs:
     default: false
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://ghcr.io/pytooling/releaser'
