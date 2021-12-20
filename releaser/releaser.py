@@ -196,22 +196,32 @@ for artifact in artifacts:
     print(f" > {artifact!s}:\n   - uploading...")
     gh_release.upload_asset(artifact)
 
+
+def UpdateReference(gh_release, tag, sha, is_prerelease, is_draft):
+    print("· Update Release reference (force-push tag)")
+
+    if is_draft:
+        # Unfortunately, it seems not possible to update fields 'created_at' or 'published_at'.
+        print(" > Update (pre-)release")
+        gh_release.update_release(
+            gh_release.title,
+            "" if gh_release.body is None else gh_release.body,
+            draft=False,
+            prerelease=is_prerelease,
+            tag_name=gh_release.tag_name,
+            target_commitish=gh_release.target_commitish,
+        )
+
+    if sha is not None:
+        print(f" > Force-push '{tag!s}' to {sha!s}")
+        gh_repo.get_git_ref(f"tags/{tag!s}").edit(sha)
+
+
 stdout.flush()
-print("· Update Release reference (force-push tag)")
-
-if is_draft:
-    # Unfortunately, it seems not possible to update fields 'created_at' or 'published_at'.
-    print(" > Update (pre-)release")
-    gh_release.update_release(
-        gh_release.title,
-        "" if gh_release.body is None else gh_release.body,
-        draft=False,
-        prerelease=is_prerelease,
-        tag_name=gh_release.tag_name,
-        target_commitish=gh_release.target_commitish,
-    )
-
-if ("GITHUB_SHA" in environ) and (env_tag is None):
-    sha = environ["GITHUB_SHA"]
-    print(f" > Force-push '{tag!s}' to {sha!s}")
-    gh_repo.get_git_ref(f"tags/{tag!s}").edit(sha)
+UpdateReference(
+    gh_release,
+    tag,
+    getenv("GITHUB_SHA", None) if env_tag is None else None,
+    is_prerelease,
+    is_draft
+)
