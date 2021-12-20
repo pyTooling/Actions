@@ -113,35 +113,36 @@ def GetReleaseHandler(gh):
             raise (Exception("Repository name not defined! Please set 'GITHUB_REPOSITORY"))
         return gh.get_repo(repo)
 
+    def GetOrCreateRelease(gh_repo, tag):
+        print("· Get Release handler")
+        gh_tag = None
+        try:
+            gh_tag = gh_repo.get_git_ref(f"tags/{tag!s}")
+        except Exception:
+            stdout.flush()
+
+        if gh_tag:
+            try:
+                return (gh_repo.get_release(tag), False)
+            except Exception:
+                return (gh_repo.create_git_release(tag, tag, "", draft=True, prerelease=is_prerelease), True)
+        else:
+            err_msg = f"Tag/release '{tag!s}' does not exist and could not create it!"
+            if "GITHUB_SHA" not in environ:
+                raise (Exception(err_msg))
+            try:
+                return (
+                    gh_repo.create_git_tag_and_release(
+                        tag, "", tag, "", environ["GITHUB_SHA"], "commit", draft=True, prerelease=is_prerelease
+                    ),
+                    True,
+                )
+            except Exception:
+                raise (Exception(err_msg))
+
     [tag, env_tag, is_prerelease] = CheckRefSemVer(environ["GITHUB_REF"], getenv("INPUT_TAG", "tip"))
     gh_repo = GetRepositoryHandler(getenv("GITHUB_REPOSITORY", None))
-
-    print("· Get Release handler")
-
-    is_draft = False
-    gh_tag = None
-    try:
-        gh_tag = gh_repo.get_git_ref(f"tags/{tag!s}")
-    except Exception:
-        stdout.flush()
-
-    if gh_tag:
-        try:
-            gh_release = gh_repo.get_release(tag)
-        except Exception:
-            gh_release = gh_repo.create_git_release(tag, tag, "", draft=True, prerelease=is_prerelease)
-            is_draft = True
-    else:
-        err_msg = f"Tag/release '{tag!s}' does not exist and could not create it!"
-        if "GITHUB_SHA" not in environ:
-            raise (Exception(err_msg))
-        try:
-            gh_release = gh_repo.create_git_tag_and_release(
-                tag, "", tag, "", environ["GITHUB_SHA"], "commit", draft=True, prerelease=is_prerelease
-            )
-            is_draft = True
-        except Exception:
-            raise (Exception(err_msg))
+    [gh_release, is_draft] = GetOrCreateRelease(gh_repo, tag)
 
     return (gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft)
 
