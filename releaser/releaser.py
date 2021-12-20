@@ -30,17 +30,28 @@ from github import Github, GithubException
 from subprocess import check_call
 
 
-def GetListOfArtifacts(argv):
+paramTag = getenv("INPUT_TAG", "tip")
+paramFiles = getenv("INPUT_FILES", None).split()
+paramRM = getenv("INPUT_RM", "false") == "true"
+paramSnapshots = getenv("INPUT_SNAPSHOTS", "true").lower() == 'true'
+paramUseGitHubCLI = getenv("INPUT_USE-GH-CLI", "false").lower() == 'true'
+paramToken = (
+    environ["GITHUB_TOKEN"]
+    if "GITHUB_TOKEN" in environ else
+    environ["INPUT_TOKEN"]
+    if "INPUT_TOKEN" in environ else
+    None
+)
+paramRepo = getenv("GITHUB_REPOSITORY", None)
+paramRef = getenv("GITHUB_REF", None)
+paramSHA = getenv("GITHUB_SHA", None)
+
+
+def GetListOfArtifacts(argv, files):
     print("· Get list of artifacts to be uploaded")
-
-    args = []
-
-    if "INPUT_FILES" in environ:
-        args = environ["INPUT_FILES"].split()
-
+    args = files if files is not None else []
     if len(argv) > 1:
-        args = args + argv[1:]
-
+        args += argv[1:]
     if len(args) == 1 and args[0].lower() == "none":
         print("! Skipping 'files' because it's set to 'none")
         return []
@@ -48,7 +59,7 @@ def GetListOfArtifacts(argv):
         stdout.flush()
         raise (Exception("Glob patterns need to be provided as positional arguments or through envvar 'INPUT_FILES'!"))
     else:
-        files = []
+        flist = []
         for item in args:
             print(f"  glob({item!s}):")
             for fname in [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]:
@@ -56,33 +67,26 @@ def GetListOfArtifacts(argv):
                     print(f"  - ! Skipping empty file {fname!s}")
                     continue
                 print(f"  - {fname!s}")
-                files.append(fname)
-        if len(files) < 1:
+                flist.append(fname)
+        if len(flist) < 1:
             stdout.flush()
             raise (Exception("Empty list of files to upload/update!"))
-        return files
+        return flist
 
 
-def GetGitHubAPIHandler():
+def GetGitHubAPIHandler(token):
     print("· Get GitHub API handler (authenticate)")
-
-    if "GITHUB_TOKEN" in environ:
-        return Github(environ["GITHUB_TOKEN"])
-    elif "INPUT_TOKEN" in environ:
-        return Github(environ["INPUT_TOKEN"])
-    else:
-        if "GITHUB_USER" not in environ or "GITHUB_PASS" not in environ:
-            stdout.flush()
-            raise (
-                Exception(
-                    "Need credentials to authenticate! Please, provide 'GITHUB_TOKEN', 'INPUT_TOKEN', or 'GITHUB_USER' and 'GITHUB_PASS'"
-                )
-            )
-        return Github(environ["GITHUB_USER"], environ["GITHUB_PASS"])
+    if token is not None:
+        return Github(token)
+    raise (
+        Exception(
+            "Need credentials to authenticate! Please, provide 'GITHUB_TOKEN' or 'INPUT_TOKEN'"
+        )
+    )
 
 
-def GetReleaseHandler(gh):
-    def CheckRefSemVer(gh_ref, tag):
+def GetReleaseHandler(gh, repo, ref, tag, sha, snapshots):
+    def CheckRefSemVer(gh_ref, tag, snapshots):
         print("· Check SemVer compliance of the reference/tag")
         env_tag = None
         if gh_ref[0:10] == "refs/tags/":
@@ -101,7 +105,7 @@ def GetReleaseHandler(gh):
                     if semver.group("prerelease") is None:
                         # is a regular semver compilant tag
                         return (tag, env_tag, False)
-                    elif getenv("INPUT_SNAPSHOTS", "true") == "true":
+                    elif snapshots:
                         # is semver compilant prerelease tag, thus a snapshot (we skip it)
                         print("! Skipping snapshot prerelease")
                         sys_exit()
@@ -115,7 +119,7 @@ def GetReleaseHandler(gh):
             raise (Exception("Repository name not defined! Please set 'GITHUB_REPOSITORY"))
         return gh.get_repo(repo)
 
-    def GetOrCreateRelease(gh_repo, tag):
+    def GetOrCreateRelease(gh_repo, tag, sha, is_prerelease):
         print("· Get Release handler")
         gh_tag = None
         try:
@@ -130,26 +134,26 @@ def GetReleaseHandler(gh):
                 return (gh_repo.create_git_release(tag, tag, "", draft=True, prerelease=is_prerelease), True)
         else:
             err_msg = f"Tag/release '{tag!s}' does not exist and could not create it!"
-            if "GITHUB_SHA" not in environ:
+            if sha is None:
                 raise (Exception(err_msg))
             try:
                 return (
                     gh_repo.create_git_tag_and_release(
-                        tag, "", tag, "", environ["GITHUB_SHA"], "commit", draft=True, prerelease=is_prerelease
+                        tag, "", tag, "", sha, "commit", draft=True, prerelease=is_prerelease
                     ),
                     True,
                 )
             except Exception:
                 raise (Exception(err_msg))
 
-    [tag, env_tag, is_prerelease] = CheckRefSemVer(environ["GITHUB_REF"], getenv("INPUT_TAG", "tip"))
-    gh_repo = GetRepositoryHandler(getenv("GITHUB_REPOSITORY", None))
-    [gh_release, is_draft] = GetOrCreateRelease(gh_repo, tag)
+    [tag, env_tag, is_prerelease] = CheckRefSemVer(ref, tag, snapshots)
+    gh_repo = GetRepositoryHandler(repo)
+    [gh_release, is_draft] = GetOrCreateRelease(gh_repo, tag, sha, is_prerelease)
 
     return (gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft)
 
 
-def UploadArtifacts(gh_release, artifacts):
+def UploadArtifacts(gh_release, artifacts, remove, token, UseGitHubCLI):
     print("· Cleanup and/or upload artifacts")
 
     assets = gh_release.get_assets()
@@ -196,9 +200,7 @@ def UploadArtifacts(gh_release, artifacts):
                 return
         print("   - keep")
 
-    UseGitHubCLI = getenv("INPUT_USE-GH-CLI", "false").lower() == 'true'
-
-    if getenv("INPUT_RM", "false") == "true":
+    if remove:
         delete_all_assets(assets)
     else:
         if not UseGitHubCLI:
@@ -207,7 +209,7 @@ def UploadArtifacts(gh_release, artifacts):
 
     if UseGitHubCLI:
         env = environ.copy()
-        env["GITHUB_TOKEN"] = environ["INPUT_TOKEN"]
+        env["GITHUB_TOKEN"] = token
         cmd = ["gh", "release", "upload", "--clobber", tag] + artifacts
         print(f" > {' '.join(cmd)}")
         check_call(cmd, env=env)
@@ -237,15 +239,28 @@ def UpdateReference(gh_release, tag, sha, is_prerelease, is_draft):
         gh_repo.get_git_ref(f"tags/{tag!s}").edit(sha)
 
 
-files = GetListOfArtifacts(sys_argv)
-[gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft] = GetReleaseHandler(GetGitHubAPIHandler())
+files = GetListOfArtifacts(sys_argv, paramFiles)
+[gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft] = GetReleaseHandler(
+    GetGitHubAPIHandler(paramToken),
+    paramRepo,
+    paramRef,
+    paramTag,
+    paramSHA,
+    paramSnapshots
+)
 stdout.flush()
-UploadArtifacts(gh_release, files)
+UploadArtifacts(
+    gh_release,
+    files,
+    paramRM,
+    paramToken,
+    paramUseGitHubCLI
+)
 stdout.flush()
 UpdateReference(
     gh_release,
     tag,
-    getenv("GITHUB_SHA", None) if env_tag is None else None,
+    paramSHA if env_tag is None else None,
     is_prerelease,
     is_draft
 )
