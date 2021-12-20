@@ -89,36 +89,36 @@ def GetReleaseHandler(gh):
 
     gh_repo = gh.get_repo(environ["GITHUB_REPOSITORY"])
 
+    def CheckRefSemVer(gh_ref, tag):
+        print("· Check SemVer compliance of the reference/tag")
+        env_tag = None
+        if gh_ref[0:10] == "refs/tags/":
+            env_tag = gh_ref[10:]
+            if env_tag != tag:
+                rexp = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+                semver = re.search(rexp, env_tag)
+                if semver == None and env_tag[0] == "v":
+                    semver = re.search(rexp, env_tag[1:])
+                tag = env_tag
+                if semver == None:
+                    print(f"! Could not get semver from {gh_ref!s}")
+                    print(f"! Treat tag '{tag!s}' as a release")
+                    return (tag, env_tag, False)
+                else:
+                    if semver.group("prerelease") is None:
+                        # is a regular semver compilant tag
+                        return (tag, env_tag, False)
+                    elif getenv("INPUT_SNAPSHOTS", "true") == "true":
+                        # is semver compilant prerelease tag, thus a snapshot (we skip it)
+                        print("! Skipping snapshot prerelease")
+                        sys_exit()
+        return (tag, env_tag, True)
+
+    [tag, env_tag, is_prerelease] = CheckRefSemVer(environ["GITHUB_REF"], getenv("INPUT_TAG", "tip"))
+
     print("· Get Release handler")
 
-    tag = getenv("INPUT_TAG", "tip")
-
-    env_tag = None
-    gh_ref = environ["GITHUB_REF"]
-    is_prerelease = True
     is_draft = False
-
-    if gh_ref[0:10] == "refs/tags/":
-        env_tag = gh_ref[10:]
-        if env_tag != tag:
-            rexp = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
-            semver = re.search(rexp, env_tag)
-            if semver == None and env_tag[0] == "v":
-                semver = re.search(rexp, env_tag[1:])
-            tag = env_tag
-            if semver == None:
-                print(f"! Could not get semver from {gh_ref!s}")
-                print(f"! Treat tag '{tag!s}' as a release")
-                is_prerelease = False
-            else:
-                if semver.group("prerelease") is None:
-                    # is a regular semver compilant tag
-                    is_prerelease = False
-                elif getenv("INPUT_SNAPSHOTS", "true") == "true":
-                    # is semver compilant prerelease tag, thus a snapshot (we skip it)
-                    print("! Skipping snapshot prerelease")
-                    sys_exit()
-
     gh_tag = None
     try:
         gh_tag = gh_repo.get_git_ref(f"tags/{tag!s}")
