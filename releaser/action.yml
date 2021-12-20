@@ -40,10 +40,6 @@ inputs:
     description: 'Whether to create releases from any tag or to treat some as snapshots'
     required: false
     default: true
-  use-gh-cli:
-    description: 'Whether to use the GitHub CLI for uploading artifacts (requires actions/checkout)'
-    required: false
-    default: false
 runs:
   using: 'docker'
   image: 'docker://ghcr.io/pytooling/releaser'

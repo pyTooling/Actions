@@ -77,7 +77,6 @@ jobs:
       uses: ./releaser/composite
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        use-gh-cli: true
         files: |
           artifact-*.txt
           README.md
@@ -138,7 +137,6 @@ jobs:
       uses: ./releaser
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        use-gh-cli: true
         files: |
           artifact-*.txt
           README.md
@@ -176,5 +174,3 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: artifacts/**
-
-

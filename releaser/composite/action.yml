@@ -40,10 +40,6 @@ inputs:
     description: 'Whether to create releases from any tag or to treat some as snapshots'
     required: false
     default: true
-  use-gh-cli:
-    description: 'Whether to use the GitHub CLI for uploading artifacts (requires actions/checkout)'
-    required: false
-    default: false
 runs:
   using: 'composite'
   steps:
@@ -59,4 +55,3 @@ runs:
       INPUT_TAG: ${{ inputs.tag }}
       INPUT_RM: ${{ inputs.rm }}
       INPUT_SNAPSHOTS: ${{ inputs.snapshots }}
-      INPUT_USE-GH-CLI: ${{ inputs.use-gh-cli }}

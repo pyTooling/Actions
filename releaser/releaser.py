@@ -33,14 +33,13 @@ from subprocess import check_call
 paramTag = getenv("INPUT_TAG", "tip")
 paramFiles = getenv("INPUT_FILES", None).split()
 paramRM = getenv("INPUT_RM", "false") == "true"
-paramSnapshots = getenv("INPUT_SNAPSHOTS", "true").lower() == 'true'
-paramUseGitHubCLI = getenv("INPUT_USE-GH-CLI", "false").lower() == 'true'
+paramSnapshots = getenv("INPUT_SNAPSHOTS", "true").lower() == "true"
 paramToken = (
     environ["GITHUB_TOKEN"]
-    if "GITHUB_TOKEN" in environ else
-    environ["INPUT_TOKEN"]
-    if "INPUT_TOKEN" in environ else
-    None
+    if "GITHUB_TOKEN" in environ
+    else environ["INPUT_TOKEN"]
+    if "INPUT_TOKEN" in environ
+    else None
 )
 paramRepo = getenv("GITHUB_REPOSITORY", None)
 paramRef = getenv("GITHUB_REF", None)
@@ -78,145 +77,70 @@ def GetGitHubAPIHandler(token):
     print("· Get GitHub API handler (authenticate)")
     if token is not None:
         return Github(token)
-    raise (
-        Exception(
-            "Need credentials to authenticate! Please, provide 'GITHUB_TOKEN' or 'INPUT_TOKEN'"
-        )
-    )
+    raise (Exception("Need credentials to authenticate! Please, provide 'GITHUB_TOKEN' or 'INPUT_TOKEN'"))
 
 
-def GetReleaseHandler(gh, repo, ref, tag, sha, snapshots):
-    def CheckRefSemVer(gh_ref, tag, snapshots):
-        print("· Check SemVer compliance of the reference/tag")
-        env_tag = None
-        if gh_ref[0:10] == "refs/tags/":
-            env_tag = gh_ref[10:]
-            if env_tag != tag:
-                rexp = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
-                semver = re.search(rexp, env_tag)
-                if semver == None and env_tag[0] == "v":
-                    semver = re.search(rexp, env_tag[1:])
-                tag = env_tag
-                if semver == None:
-                    print(f"! Could not get semver from {gh_ref!s}")
-                    print(f"! Treat tag '{tag!s}' as a release")
-                    return (tag, env_tag, False)
-                else:
-                    if semver.group("prerelease") is None:
-                        # is a regular semver compilant tag
-                        return (tag, env_tag, False)
-                    elif snapshots:
-                        # is semver compilant prerelease tag, thus a snapshot (we skip it)
-                        print("! Skipping snapshot prerelease")
-                        sys_exit()
-
-        return (tag, env_tag, True)
-
-    def GetRepositoryHandler(repo):
-        print("· Get Repository handler")
-        if repo is None:
-            stdout.flush()
-            raise (Exception("Repository name not defined! Please set 'GITHUB_REPOSITORY"))
-        return gh.get_repo(repo)
-
-    def GetOrCreateRelease(gh_repo, tag, sha, is_prerelease):
-        print("· Get Release handler")
-        gh_tag = None
-        try:
-            gh_tag = gh_repo.get_git_ref(f"tags/{tag!s}")
-        except Exception:
-            stdout.flush()
-
-        if gh_tag:
-            try:
-                return (gh_repo.get_release(tag), False)
-            except Exception:
-                return (gh_repo.create_git_release(tag, tag, "", draft=True, prerelease=is_prerelease), True)
-        else:
-            err_msg = f"Tag/release '{tag!s}' does not exist and could not create it!"
-            if sha is None:
-                raise (Exception(err_msg))
-            try:
-                return (
-                    gh_repo.create_git_tag_and_release(
-                        tag, "", tag, "", sha, "commit", draft=True, prerelease=is_prerelease
-                    ),
-                    True,
-                )
-            except Exception:
-                raise (Exception(err_msg))
-
-    [tag, env_tag, is_prerelease] = CheckRefSemVer(ref, tag, snapshots)
-    gh_repo = GetRepositoryHandler(repo)
-    [gh_release, is_draft] = GetOrCreateRelease(gh_repo, tag, sha, is_prerelease)
-
-    return (gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft)
-
-
-def UploadArtifacts(gh_release, artifacts, remove, token, UseGitHubCLI):
-    print("· Cleanup and/or upload artifacts")
-
-    assets = gh_release.get_assets()
-
-    def delete_all_assets(assets):
-        print("· RM set. All previous assets are being cleared...")
-        for asset in assets:
-            print(f" - {asset.name}")
-            asset.delete_asset()
-
-    def delete_asset_by_name(name):
-        for asset in assets:
-            if asset.name == name:
-                asset.delete_asset()
-                return
-
-    def upload_asset(artifact, name):
-        try:
-            return gh_release.upload_asset(artifact, name=name)
-        except GithubException as ex:
-            if "already_exists" in [err["code"] for err in ex.data["errors"]]:
-                print(f"   - {name} exists already! deleting...")
-                delete_asset_by_name(name)
+def CheckRefSemVer(gh_ref, tag, snapshots):
+    print("· Check SemVer compliance of the reference/tag")
+    env_tag = None
+    if gh_ref[0:10] == "refs/tags/":
+        env_tag = gh_ref[10:]
+        if env_tag != tag:
+            rexp = r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+            semver = re.search(rexp, env_tag)
+            if semver == None and env_tag[0] == "v":
+                semver = re.search(rexp, env_tag[1:])
+            tag = env_tag
+            if semver == None:
+                print(f"! Could not get semver from {gh_ref!s}")
+                print(f"! Treat tag '{tag!s}' as a release")
+                return (tag, env_tag, False)
             else:
-                print(f"   - uploading failed: {ex}")
-        except Exception as ex:
-            print(f"   - uploading failed: {ex}")
+                if semver.group("prerelease") is None:
+                    # is a regular semver compilant tag
+                    return (tag, env_tag, False)
+                elif snapshots:
+                    # is semver compilant prerelease tag, thus a snapshot (we skip it)
+                    print("! Skipping snapshot prerelease")
+                    sys_exit()
 
-        print(f"   - retry uploading {name}...")
-        return gh_release.upload_asset(artifact, name=name)
+    return (tag, env_tag, True)
 
-    def replace_asset(artifacts, asset):
-        print(f" > {asset!s}\n   {asset.name!s}:")
-        for artifact in artifacts:
-            aname = str(Path(artifact).name)
-            if asset.name == aname:
-                print(f"   - uploading tmp.{aname!s}...")
-                new_asset = upload_asset(artifact, name=f"tmp.{aname!s}")
-                print(f"   - removing...{aname!s}")
-                asset.delete_asset()
-                print(f"   - renaming tmp.{aname!s} to {aname!s}...")
-                new_asset.update_asset(aname, label=aname)
-                artifacts.remove(artifact)
-                return
-        print("   - keep")
 
-    if remove:
-        delete_all_assets(assets)
+def GetRepositoryHandler(gh, repo):
+    print("· Get Repository handler")
+    if repo is None:
+        stdout.flush()
+        raise (Exception("Repository name not defined! Please set 'GITHUB_REPOSITORY"))
+    return gh.get_repo(repo)
+
+
+def GetOrCreateRelease(gh_repo, tag, sha, is_prerelease):
+    print("· Get Release handler")
+    gh_tag = None
+    try:
+        gh_tag = gh_repo.get_git_ref(f"tags/{tag!s}")
+    except Exception:
+        stdout.flush()
+
+    if gh_tag:
+        try:
+            return (gh_repo.get_release(tag), False)
+        except Exception:
+            return (gh_repo.create_git_release(tag, tag, "", draft=True, prerelease=is_prerelease), True)
     else:
-        if not UseGitHubCLI:
-            for asset in assets:
-                replace_asset(artifacts, asset)
-
-    if UseGitHubCLI:
-        env = environ.copy()
-        env["GITHUB_TOKEN"] = token
-        cmd = ["gh", "release", "upload", "--clobber", tag] + artifacts
-        print(f" > {' '.join(cmd)}")
-        check_call(cmd, env=env)
-    else:
-        for artifact in artifacts:
-            print(f" > {artifact!s}:\n   - uploading...")
-            gh_release.upload_asset(artifact)
+        err_msg = f"Tag/release '{tag!s}' does not exist and could not create it!"
+        if sha is None:
+            raise (Exception(err_msg))
+        try:
+            return (
+                gh_repo.create_git_tag_and_release(
+                    tag, "", tag, "", sha, "commit", draft=True, prerelease=is_prerelease
+                ),
+                True,
+            )
+        except Exception:
+            raise (Exception(err_msg))
 
 
 def UpdateReference(gh_release, tag, sha, is_prerelease, is_draft):
@@ -240,27 +164,27 @@ def UpdateReference(gh_release, tag, sha, is_prerelease, is_draft):
 
 
 files = GetListOfArtifacts(sys_argv, paramFiles)
-[gh_repo, gh_release, tag, env_tag, is_prerelease, is_draft] = GetReleaseHandler(
-    GetGitHubAPIHandler(paramToken),
-    paramRepo,
-    paramRef,
-    paramTag,
-    paramSHA,
-    paramSnapshots
-)
 stdout.flush()
-UploadArtifacts(
-    gh_release,
-    files,
-    paramRM,
-    paramToken,
-    paramUseGitHubCLI
-)
+[tag, env_tag, is_prerelease] = CheckRefSemVer(paramRef, paramTag, paramSnapshots)
 stdout.flush()
-UpdateReference(
-    gh_release,
-    tag,
-    paramSHA if env_tag is None else None,
-    is_prerelease,
-    is_draft
-)
+gh_repo = GetRepositoryHandler(GetGitHubAPIHandler(paramToken), paramRepo)
+stdout.flush()
+[gh_release, is_draft] = GetOrCreateRelease(gh_repo, tag, paramSHA, is_prerelease)
+stdout.flush()
+
+if paramRM:
+    print("· RM set. All previous assets are being cleared...")
+    for asset in gh_release.get_assets():
+        print(f" - {asset.name}")
+        asset.delete_asset()
+stdout.flush()
+
+print("· Cleanup and/or upload artifacts")
+env = environ.copy()
+env["GITHUB_TOKEN"] = paramToken
+cmd = ["gh", "release", "upload", "--repo", paramRepo, "--clobber", tag] + files
+print(f" > {' '.join(cmd)}")
+check_call(cmd, env=env)
+stdout.flush()
+
+UpdateReference(gh_release, tag, paramSHA if env_tag is None else None, is_prerelease, is_draft)
