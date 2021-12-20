@@ -22,42 +22,48 @@
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
 import re
-from sys import argv, stdout, exit as sys_exit
+from sys import argv as sys_argv, stdout, exit as sys_exit
 from os import environ, getenv
 from glob import glob
 from pathlib import Path
 from github import Github, GithubException
 
-print("· Get list of artifacts to be uploaded")
 
-args = []
-files = []
+def GetListOfArtifacts(argv):
+    print("· Get list of artifacts to be uploaded")
 
-if "INPUT_FILES" in environ:
-    args = environ["INPUT_FILES"].split()
+    args = []
 
-if len(argv) > 1:
-    args = args + argv[1:]
+    if "INPUT_FILES" in environ:
+        args = environ["INPUT_FILES"].split()
 
-if len(args) == 1 and args[0] == "none":
-    files = []
-    print("! Skipping 'files' because it's set to 'none")
-elif len(args) == 0:
-    stdout.flush()
-    raise (Exception("Glob patterns need to be provided as positional arguments or through envvar 'INPUT_FILES'!"))
-else:
-    for item in args:
-        print(f"  glob({item!s}):")
-        for fname in [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]:
-            if Path(fname).stat().st_size == 0:
-                print(f"  - ! Skipping empty file {fname!s}")
-                continue
-            print(f"  - {fname!s}")
-            files.append(fname)
+    if len(argv) > 1:
+        args = args + argv[1:]
 
-    if len(files) < 1:
+    if len(args) == 1 and args[0].lower() == "none":
+        print("! Skipping 'files' because it's set to 'none")
+        return []
+    elif len(args) == 0:
         stdout.flush()
-        raise (Exception("Empty list of files to upload/update!"))
+        raise (Exception("Glob patterns need to be provided as positional arguments or through envvar 'INPUT_FILES'!"))
+    else:
+        files = []
+        for item in args:
+            print(f"  glob({item!s}):")
+            for fname in [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]:
+                if Path(fname).stat().st_size == 0:
+                    print(f"  - ! Skipping empty file {fname!s}")
+                    continue
+                print(f"  - {fname!s}")
+                files.append(fname)
+        if len(files) < 1:
+            stdout.flush()
+            raise (Exception("Empty list of files to upload/update!"))
+        return files
+
+
+files = GetListOfArtifacts(sys_argv)
+
 
 print("· Get GitHub API handler (authenticate)")
 
