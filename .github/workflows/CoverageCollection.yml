@@ -98,7 +98,7 @@ jobs:
         continue-on-error: true
         run: |
           [ 'x${{ inputs.coverage_config }}' != 'x' ] && PYCOV_ARGS='--cov-config=${{ inputs.coverage_config }}' || unset PYCOV_ARGS
-          python -m pytest -rA --cov=.. $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
+          python -m pytest -rA --cov=. $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
 
       - name: Convert to cobertura format
         run: coverage xml
