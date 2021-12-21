@@ -64,6 +64,26 @@ jobs:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v2
 
+      - name: 🔁 Extract configurations from pyproject.toml
+        id: getVariables
+        run: |
+          function ReadToml() {
+            state=0;
+            RegExp="$2 = \"(.*)\""
+            while IFS=$'\r\n' read -r Line; do
+                if [[ $state -eq 0 && "$Line" == "[$1]" ]]; then
+                    state=1;
+                elif [[ $state -eq 1 && "$Line" =~ $RegExp ]]; then
+                    echo "${BASH_REMATCH[1]}";
+                    break;
+                fi
+            done < <(cat "pyproject.toml")
+          }
+          
+          # write to step outputs
+          echo ::set-output name=coverage_report_html_directory::$(ReadToml "tool.coverage.html" "directory")
+          echo ::set-output name=coverage_report_xml::$(ReadToml "tool.coverage.xml" "output")
+
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v2
         with:
@@ -86,14 +106,14 @@ jobs:
       - name: Convert to HTML format
         run: |
           coverage html
-          rm report/coverage/html/.gitignore
+          rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
 
       - name: 📤 Upload 'Coverage Report' artifact
         continue-on-error: true
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.artifact }}
-          path: report/coverage/html
+          path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
           if-no-files-found: error
           retention-days: 1
 
@@ -101,7 +121,7 @@ jobs:
         continue-on-error: true
         uses: codecov/codecov-action@v1
         with:
-          file: report/coverage/coverage.xml
+          file: ${{ steps.getVariables.outputs.coverage_report_xml }}
           flags: unittests
           env_vars: PYTHON
 
@@ -110,4 +130,4 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@master
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: report/coverage/coverage.xml
+          coverage-reports: ${{ steps.getVariables.outputs.coverage_report_xml }}
