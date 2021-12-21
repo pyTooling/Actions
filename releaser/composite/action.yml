@@ -48,7 +48,7 @@ runs:
     run: pip install PyGithub --progress-bar off
 
   - shell: bash
-    run: ${{ github.action_path }}/../releaser.py
+    run: '''${{ github.action_path }}/../releaser.py'''
     env:
       INPUT_TOKEN: ${{ inputs.token }}
       INPUT_FILES: ${{ inputs.files }}
