@@ -35,6 +35,16 @@ on:
         required: false
         default: '-r tests/requirements.txt'
         type: string
+      unittest_directory:
+        description: 'Path to the directory containing unit tests.'
+        required: false
+        default: 'tests/unit'
+        type: string
+      coverage_config:
+        description: 'Path to the .coveragerc file. Use pyproject.toml if empty.'
+        required: false
+        default: ''
+        type: string
       artifact:
         description: 'Name of the coverage artifact.'
         required: true
@@ -67,7 +77,8 @@ jobs:
       - name: Collect coverage
         continue-on-error: true
         run: |
-          python -m pytest -rA --cov=.. --cov-config=tests/.coveragerc tests/unit --color=yes
+          [ 'x${{ inputs.coverage_config }}' != 'x' ] && PYCOV_ARGS='--cov-config=${{ inputs.coverage_config }}' || unset PYCOV_ARGS
+          python -m pytest -rA --cov=.. $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
 
       - name: Convert to cobertura format
         run: coverage xml
@@ -75,14 +86,14 @@ jobs:
       - name: Convert to HTML format
         run: |
           coverage html
-          rm htmlcov/.gitignore
+          rm report/coverage/html/.gitignore
 
       - name: 📤 Upload 'Coverage Report' artifact
         continue-on-error: true
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.artifact }}
-          path: htmlcov
+          path: report/coverage/html
           if-no-files-found: error
           retention-days: 1
 
@@ -90,7 +101,7 @@ jobs:
         continue-on-error: true
         uses: codecov/codecov-action@v1
         with:
-          file: ./coverage.xml
+          file: report/coverage/coverage.xml
           flags: unittests
           env_vars: PYTHON
 
@@ -99,4 +110,4 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@master
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: ./coverage.xml
+          coverage-reports: report/coverage/coverage.xml
