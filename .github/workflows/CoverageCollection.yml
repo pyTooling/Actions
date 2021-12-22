@@ -66,23 +66,40 @@ jobs:
 
       - name: 🔁 Extract configurations from pyproject.toml
         id: getVariables
+        shell: python
         run: |
-          function ReadToml() {
-            state=0;
-            RegExp="$2 = \"(.*)\""
-            while IFS=$'\r\n' read -r Line; do
-                if [[ $state -eq 0 && "$Line" == "[$1]" ]]; then
-                    state=1;
-                elif [[ $state -eq 1 && "$Line" =~ $RegExp ]]; then
-                    echo "${BASH_REMATCH[1]}";
-                    break;
-                fi
-            done < <(cat "pyproject.toml")
-          }
+          from pathlib import Path
+          from tomli   import load as tomli_load
           
-          # write to step outputs
-          echo ::set-output name=coverage_report_html_directory::$(ReadToml "tool.coverage.html" "directory")
-          echo ::set-output name=coverage_report_xml::$(ReadToml "tool.coverage.xml" "output")
+          coverageRC = "${{ inputs.coverage_config }}".strip()
+
+          # Read output paths from 'pyproject.toml' file
+          if coverageRC == "":
+              pyProjectFile =  Path("pyproject.toml")
+              if pyProjectFile.exists():
+                  with pyProjectFile.open("rb") as file:
+                      pyProjectSettings = tomli_load(file)
+                  
+                  htmlDirectory = pyProjectSettings["tool.coverage.html"]["directory"]
+                  xmlFile       = pyProjectSettings["tool.coverage.xml"]["output"]
+              else:
+                  print(f"File '{pyProjectFile}' not found and no ' .coveragerc' file specified.")
+          
+          # Read output paths from '.coveragerc' file
+          else:
+              coverageRCFile = Path(coverageRC)
+              if coverageRCFile.exists():
+                  with coverageRCFile.open("rb") as file:
+                      coverageRCSettings = tomli_load(file)
+                  
+                  htmlDirectory = pyProjectSettings["html"]["directory"]
+                  xmlFile       = pyProjectSettings["xml"]["output"]
+              else:
+                  print(f"File '{coverageRCFile}' not found.")
+          
+          print(f"::set-output name=coverage_report_html_directory::{htmlDirectory}")
+          print(f"::set-output name=coverage_report_xml::{xmlFile}")
+          print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}")
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v2
