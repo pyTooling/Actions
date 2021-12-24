@@ -123,7 +123,7 @@ jobs:
 
       - name: Convert to HTML format
         run: |
-          coverage html
+          coverage html -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
           rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
 
       - name: 📤 Upload 'Coverage Report' artifact
