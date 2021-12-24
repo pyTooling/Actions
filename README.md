@@ -95,13 +95,16 @@ As shown in the screenshot above, the expected order is:
 - Global:
   - [Parameters](.github/workflows/Parameters.yml): a workaround for the limitations to handle global variables in
     GitHub Actions workflows (see [actions/runner#480](https://github.com/actions/runner/issues/480)).
-    It generates outputs with artifact names and job matrices to be used in other jobs.
+    It generates outputs with artifact names and job matrices to be used in later running jobs.
 - Code testing/analysis:
   - [UnitTesting](.github/workflows/UnitTesting.yml): run unit test with `pytest` using multiple versions of Python, and
-    optionally upload results as XML reports.
-  - [CoverageCollection](.github/workflows/CoverageCollection.yml): collect coverage data with `pytest` using a single
-    version of Python, generate HTML and Cobertura (XML) reports, upload the HTML report as an artifact, and upload the
-    results to Codecov and Codacy.
+    optionally upload results as XML reports. Configuration options to `pytest` should be given via section
+   `[tool.pytest.ini_options]` in a `pyproject.toml` file.
+  - [CoverageCollection](.github/workflows/CoverageCollection.yml): collect code coverage data (incl. branch coverage)
+    with `pytest`/`pytest-cov`/`coverage.py` using a single version of Python (latest). It generates HTML and Cobertura
+    (XML)reports, upload the HTML report as an artifact, and upload the test results to Codecov and Codacy. Configuration
+    options to `pytest` and `coverage.py` should be given via section `[tool.pytest.ini_options]` and `[tool.coverage.*]`
+    in a `pyproject.toml` file.
   - [StaticTypeCheck](.github/workflows/StaticTypeCheck.yml): collect static type check result with `mypy`, and
     optionally upload results as an HTML report.
     Example `commands`:
@@ -128,7 +131,7 @@ As shown in the screenshot above, the expected order is:
         mypy --html-report ../htmlmypy -p ToolName
       ```
 
-  - [VerifyDocs](.github/workflows/VerifyDocs.yml): extract code examples from the README and test.
+  - [VerifyDocs](.github/workflows/VerifyDocs.yml): extract code examples from the README and test these code snippets.
 - Packaging and releasing:
   - [Release](.github/workflows/Release.yml): publish GitHub Release.
   - [Package](.github/workflows/Package.yml): generate source and wheel packages, and upload them as an artifact.
