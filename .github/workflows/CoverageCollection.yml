@@ -83,6 +83,7 @@ jobs:
           from tomli   import load as tomli_load
 
           htmlDirectory = 'htmlcov'
+          xmlFile = './coverage.xml'
           coverageRC = "${{ inputs.coverage_config }}".strip()
 
           # Read output paths from 'pyproject.toml' file
