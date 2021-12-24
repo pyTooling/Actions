@@ -82,6 +82,7 @@ jobs:
           from pathlib import Path
           from tomli   import load as tomli_load
 
+          htmlDirectory = 'htmlcov'
           coverageRC = "${{ inputs.coverage_config }}".strip()
 
           # Read output paths from 'pyproject.toml' file
