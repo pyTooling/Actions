@@ -148,7 +148,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@main
     needs:
       - Params
-      - UnitTesting
+      - PublishTestResults
       - Coverage
       - StaticTypeCheck
       - BuildTheDocs
