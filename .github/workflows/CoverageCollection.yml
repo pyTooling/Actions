@@ -91,8 +91,8 @@ jobs:
                   with pyProjectFile.open("rb") as file:
                       pyProjectSettings = tomli_load(file)
                   
-                  htmlDirectory = pyProjectSettings["tool.coverage.html"]["directory"]
-                  xmlFile       = pyProjectSettings["tool.coverage.xml"]["output"]
+                  htmlDirectory = pyProjectSettings["tool"]["coverage"]["html"]["directory"]
+                  xmlFile       = pyProjectSettings["tool"]["coverage"]["xml"]["output"]
               else:
                   print(f"File '{pyProjectFile}' not found and no ' .coveragerc' file specified.")
           
