@@ -41,9 +41,9 @@ on:
         default: 'tests/unit'
         type: string
       coverage_config:
-        description: 'Path to the .coveragerc file. Use pyproject.toml if empty.'
+        description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
         required: false
-        default: ''
+        default: 'pyproject.toml'
         type: string
       artifact:
         description: 'Name of the coverage artifact.'
@@ -87,7 +87,7 @@ jobs:
           coverageRC = "${{ inputs.coverage_config }}".strip()
 
           # Read output paths from 'pyproject.toml' file
-          if coverageRC == "":
+          if coverageRC == "pyproject.toml":
               pyProjectFile =  Path("pyproject.toml")
               if pyProjectFile.exists():
                   with pyProjectFile.open("rb") as file:
