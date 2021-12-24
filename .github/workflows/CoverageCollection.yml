@@ -99,7 +99,7 @@ jobs:
                   print(f"File '{pyProjectFile}' not found and no ' .coveragerc' file specified.")
 
           # Read output paths from '.coveragerc' file
-          else:
+          elif len(coverageRC) > 0:
               coverageRCFile = Path(coverageRC)
               if coverageRCFile.exists():
                   with coverageRCFile.open("rb") as file:
