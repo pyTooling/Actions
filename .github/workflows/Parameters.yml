@@ -75,16 +75,19 @@ jobs:
           print("Parameters:")
           print(params)
 
+          versions = '${{ inputs.python_version_list }}'.split(' ')
+          if '3.6' in versions:
+              print('WARNING: support for Python 3.6 ended in 2021.12.23')
           data = {
-             '3.6': { 'icon': '🔴', 'until': '23.12.2021' },   # Black circle ⚫ for EOL versions.
-             '3.7': { 'icon': '🟠', 'until': '27.06.2023' },
-             '3.8': { 'icon': '🟡', 'until': 'Oct. 2024' },
-             '3.9': { 'icon': '🟢', 'until': 'Oct. 2025' },
-            '3.10': { 'icon': '🟢', 'until': 'Oct. 2026' },
+             '3.6': { 'icon': '⚫', 'until': '2021.12.23' },
+             '3.7': { 'icon': '🔴', 'until': '2023.06.27' },
+             '3.8': { 'icon': '🟠', 'until': '2024.10' },
+             '3.9': { 'icon': '🟡', 'until': '2025.10' },
+            '3.10': { 'icon': '🟢', 'until': '2026.10' },
           }
           jobs = [
               {'python': version, 'icon': data[version]['icon']}
-              for version in '${{ inputs.python_version_list }}'.split(' ')
+              for version in versions
           ]
           print(f'::set-output name=python_jobs::{jobs!s}')
           print("Python jobs:")
