@@ -34,6 +34,11 @@ on:
         required: false
         default: '-r tests/requirements.txt'
         type: string
+      unittest_directory:
+        description: 'Path to the directory containing unit tests.'
+        required: false
+        default: 'tests/unit'
+        type: string
       artifact:
         description: "Generate unit test report with junitxml and upload results as an artifact."
         required: false
@@ -68,7 +73,7 @@ jobs:
       - name: ☑ Run unit tests
         run: |
           [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReport.xml' || unset PYTEST_ARGS
-          python -m pytest -rA tests/unit $PYTEST_ARGS --color=yes
+          python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
 
       - name: 📤 Upload 'TestReport.xml' artifact
         if: inputs.artifact != ''
