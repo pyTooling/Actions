@@ -7,24 +7,30 @@ language for writing reusable CI code.
 However, Python being equally popular and capable, usage of JS/TS might be bypassed, with some caveats.
 This repository gathers reusable CI tooling for testing, packaging and distributing Python projects and documentation.
 
+
 ## Context
 
-GitHub Actions supports four types of reusable code:
+GitHub Actions supports five procedures to reuse code:
 
-- JavaScript Action.
+- JavaScript Action:
   - [docs.github.com: actions/creating-actions/creating-a-javascript-action](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action)
-- Container Action.
+- Container Action:
   - [docs.github.com: actions/creating-actions/creating-a-docker-container-action](https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action)
-- Composite Action.
+- Container Step:
+  - [docs.github.com: actions/learn-github-actions/workflow-syntax-for-github-actions#example-using-a-docker-public-registry-action](https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#example-using-a-docker-public-registry-action)
+  - [docs.github.com: actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepswithargs](https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepswithargs)
+- Composite Action:
   - [docs.github.com: actions/creating-actions/creating-a-composite-action](https://docs.github.com/en/actions/creating-actions/creating-a-composite-action)
   - [github.blog/changelog: 2020-08-07-github-actions-composite-run-steps](https://github.blog/changelog/2020-08-07-github-actions-composite-run-steps/)
   - [github.blog/changelog: 2021-08-25-github-actions-reduce-duplication-with-action-compositio](https://github.blog/changelog/2021-08-25-github-actions-reduce-duplication-with-action-composition/)
-- Reusable Workflows.
+- Reusable Workflow:
   - [docs.github.com: actions/learn-github-actions/reusing-workflows](https://docs.github.com/en/actions/learn-github-actions/reusing-workflows)
   - [github.blog/changelog: 2021-10-05-github-actions-dry-your-github-actions-configuration-by-reusing-workflows](https://github.blog/changelog/2021-10-05-github-actions-dry-your-github-actions-configuration-by-reusing-workflows/)
 
-Leaving JavaScript and Container Actions aside, the main differences between Composite Actions and Reusable Workflows
-are the following:
+Container Actions and Container Steps are almost equivalent: Actions use a configuration file (`action.yml`), while
+Steps do not.
+Leaving JavaScript and Container Actions and Steps aside, the main differences between Composite Actions and Reusable
+Workflows are the following:
 
 - Composite Actions can be executed from a remote/external path or from the checked out branch, and from any location.
   However, Reusable Workflows can only be used through a remote/external path (`{owner}/{repo}/{path}/{filename}@{ref}`),
@@ -74,6 +80,7 @@ It allows using the `post` feature with scripts written in bash, python or any o
 the environment.
 See: [actions/runner#1478](https://github.com/actions/runner/issues/1478).
 
+
 ## Reusable workflows
 
 This repository provides 10+ Reusable Workflows based on the CI pipelines of the repos in this organisation,
@@ -88,13 +95,16 @@ As shown in the screenshot above, the expected order is:
 - Global:
   - [Parameters](.github/workflows/Parameters.yml): a workaround for the limitations to handle global variables in
     GitHub Actions workflows (see [actions/runner#480](https://github.com/actions/runner/issues/480)).
-    It generates outputs with artifact names and job matrices to be used in other jobs.
+    It generates outputs with artifact names and job matrices to be used in later running jobs.
 - Code testing/analysis:
   - [UnitTesting](.github/workflows/UnitTesting.yml): run unit test with `pytest` using multiple versions of Python, and
-    optionally upload results as XML reports.
-  - [CoverageCollection](.github/workflows/CoverageCollection.yml): collect coverage data with `pytest` using a single
-    version of Python, generate HTML and Cobertura (XML) reports, upload the HTML report as an artifact, and upload the
-    results to Codecov and Codacy.
+    optionally upload results as XML reports. Configuration options to `pytest` should be given via section
+   `[tool.pytest.ini_options]` in a `pyproject.toml` file.
+  - [CoverageCollection](.github/workflows/CoverageCollection.yml): collect code coverage data (incl. branch coverage)
+    with `pytest`/`pytest-cov`/`coverage.py` using a single version of Python (latest). It generates HTML and Cobertura
+    (XML)reports, upload the HTML report as an artifact, and upload the test results to Codecov and Codacy. Configuration
+    options to `pytest` and `coverage.py` should be given via section `[tool.pytest.ini_options]` and `[tool.coverage.*]`
+    in a `pyproject.toml` file.
   - [StaticTypeCheck](.github/workflows/StaticTypeCheck.yml): collect static type check result with `mypy`, and
     optionally upload results as an HTML report.
     Example `commands`:
@@ -121,7 +131,7 @@ As shown in the screenshot above, the expected order is:
         mypy --html-report ../htmlmypy -p ToolName
       ```
 
-  - [VerifyDocs](.github/workflows/VerifyDocs.yml): extract code examples from the README and test.
+  - [VerifyDocs](.github/workflows/VerifyDocs.yml): extract code examples from the README and test these code snippets.
 - Packaging and releasing:
   - [Release](.github/workflows/Release.yml): publish GitHub Release.
   - [Package](.github/workflows/Package.yml): generate source and wheel packages, and upload them as an artifact.
@@ -150,19 +160,23 @@ Find further usage cases in the following list of projects:
 - [VHDL/pyVHDLModel](https://github.com/VHDL/pyVHDLModel/tree/main/.github/workflows)
 
 
+## References
+
+- [hdl/containers#48](https://github.com/hdl/containers/issues/48)
+
+
 ## Contributors
 
 * [Patrick Lehmann](https://GitHub.com/Paebbels)
 * [Unai Martinez-Corral](https://GitHub.com/umarcor) (Maintainer)
-* [and more...](https://GitHub.com/pyTooling/Actions/graphs/contributors) 
+* [and more...](https://GitHub.com/pyTooling/Actions/graphs/contributors)
 
 
 ## License
 
-This Python package (source code) licensed under [Apache License 2.0](LICENSE.md).  
+This Python package (source code) licensed under [Apache License 2.0](LICENSE.md).
 The accompanying documentation is licensed under [Creative Commons - Attribution 4.0 (CC-BY 4.0)](doc/Doc-License.rst).
 
-
--------------------------
+---
 
 SPDX-License-Identifier: Apache-2.0
