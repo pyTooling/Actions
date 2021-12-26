@@ -48,6 +48,20 @@ as assets.
 In this context, one of the main use cases of **Releaser** is pushing artifacts as release assets.
 Thus, the name of the Action.
 
+GitHub provides an official CLI tool, written in golang: [cli/cli](https://github.com/cli/cli).
+When the Python version of **Releaser** was written, `cli` was evaluated as an alternative to *PyGitHub*.
+`gh release` was (and still is) not flexible enough to update the reference of a release, without deleting and
+recreating it (see [cli.github.com: manual/gh_release_create](https://cli.github.com/manual/gh_release_create)).
+Deletion and recreation is unfortunate, because it notifies all the watchers of a repository
+(see [eine/tip#111](https://github.com/eine/tip/issues/111)).
+However, [cli.github.com: manual/gh_release_upload](https://cli.github.com/manual/gh_release_upload) handles uploading
+artifacts as assets faster and with better stability for larger files than *PyGitHub*
+(see [msys2/msys2-installer#36](https://github.com/msys2/msys2-installer/pull/36)).
+Furthermore, the GitHub CLI is installed on GitHub Actions' default virtual environments.
+Although `gh` does not support login through SSH (see [cli/cli#3715](https://github.com/cli/cli/issues/3715)), on GitHub
+Actions a token is available `${{ github.token }}`.
+Therefore, **Releaser** uses `gh release upload` internally.
+
 ## Usage
 
 The following block shows a minimal YAML workflow file:
