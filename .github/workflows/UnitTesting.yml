@@ -48,8 +48,8 @@ on:
 jobs:
 
   UnitTesting:
-    name: ${{ matrix.icon }} Unit Tests using Python ${{ matrix.python }}
-    runs-on: ubuntu-latest
+    name: ${{ matrix.sysicon }} ${{ matrix.pyicon }} Unit Tests using Python ${{ matrix.python }}
+    runs-on: ${{ matrix.system }}-latest
 
     strategy:
       fail-fast: false
@@ -71,6 +71,7 @@ jobs:
           python -m pip install ${{ inputs.requirements }}
 
       - name: ☑ Run unit tests
+        shell: bash
         run: |
           [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReport.xml' || unset PYTEST_ARGS
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
@@ -79,7 +80,7 @@ jobs:
         if: inputs.artifact != ''
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ inputs.artifact }}-${{ matrix.python }}
+          name: ${{ inputs.artifact }}-${{ matrix.system }}-${{ matrix.python }}
           path: TestReport.xml
           if-no-files-found: error
           retention-days: 1

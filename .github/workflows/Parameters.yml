@@ -35,6 +35,11 @@ on:
         required: false
         default: '3.7 3.8 3.9 3.10'
         type: string
+      system_list:
+        description: 'Space separated list of systems to run tests on.'
+        required: false
+        default: 'ubuntu windows macos'
+        type: string
       name:
         description: 'Name of the tool.'
         required: true
@@ -75,18 +80,32 @@ jobs:
           print("Parameters:")
           print(params)
 
+          systems = '${{ inputs.system_list }}'.split(' ')
           versions = '${{ inputs.python_version_list }}'.split(' ')
           if '3.6' in versions:
               print('WARNING: support for Python 3.6 ended in 2021.12.23')
           data = {
-             '3.6': { 'icon': '⚫', 'until': '2021.12.23' },
-             '3.7': { 'icon': '🔴', 'until': '2023.06.27' },
-             '3.8': { 'icon': '🟠', 'until': '2024.10' },
-             '3.9': { 'icon': '🟡', 'until': '2025.10' },
-            '3.10': { 'icon': '🟢', 'until': '2026.10' },
+              'python': {
+                  '3.6': { 'icon': '⚫', 'until': '2021.12.23' },
+                  '3.7': { 'icon': '🔴', 'until': '2023.06.27' },
+                  '3.8': { 'icon': '🟠', 'until': '2024.10' },
+                  '3.9': { 'icon': '🟡', 'until': '2025.10' },
+                 '3.10': { 'icon': '🟢', 'until': '2026.10' },
+              },
+              'sys': {
+                  'ubuntu': '🐧',
+                  'windows': '🧊',
+                  'macos': '🍎',
+              }
           }
           jobs = [
-              {'python': version, 'icon': data[version]['icon']}
+              {
+                  'sysicon': data['sys'][system],
+                  'system': system,
+                  'pyicon': data['python'][version]['icon'],
+                  'python': version
+              }
+              for system in systems
               for version in versions
           ]
           print(f'::set-output name=python_jobs::{jobs!s}')
