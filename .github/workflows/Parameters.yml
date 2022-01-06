@@ -33,7 +33,7 @@ on:
       python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.6 3.7 3.8 3.9 3.10'
+        default: '3.7 3.8 3.9 3.10'
         type: string
       name:
         description: 'Name of the tool.'
