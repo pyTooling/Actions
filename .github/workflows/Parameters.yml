@@ -38,7 +38,7 @@ on:
       system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu windows macos'
+        default: 'ubuntu windows msys2 macos'
         type: string
       name:
         description: 'Name of the tool.'
@@ -93,20 +93,23 @@ jobs:
                  '3.10': { 'icon': '🟢', 'until': '2026.10' },
               },
               'sys': {
-                  'ubuntu': '🐧',
-                  'windows': '🧊',
-                  'macos': '🍎',
+                  'ubuntu':  { 'icon': '🐧', 'runs-on': 'ubuntu-latest',  'shell': 'bash' },
+                  'windows': { 'icon': '🧊', 'runs-on': 'windows-latest', 'shell': 'pwsh' },
+                  'msys2':   { 'icon': '🟦', 'runs-on': 'windows-latest', 'shell': 'msys2 {0}' },
+                  'macos':   { 'icon': '🍎', 'runs-on': 'macos-latest',   'shell': 'bash' }
               }
           }
           jobs = [
               {
-                  'sysicon': data['sys'][system],
+                  'sysicon': data['sys'][system]['icon'],
                   'system': system,
+                  'runs-on': data['sys'][system]['runs-on'],
+                  'shell': data['sys'][system]['shell'],
                   'pyicon': data['python'][version]['icon'],
                   'python': version
               }
               for system in systems
-              for version in versions
+              for version in (versions if system != 'msys2' else ['3.9'])
           ]
           print(f'::set-output name=python_jobs::{jobs!s}')
           print("Python jobs:")

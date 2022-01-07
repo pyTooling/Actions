@@ -34,7 +34,7 @@ jobs:
     with:
       name: ToolName
       # Optional
-      system_list: 'ubuntu windows macos'
+      system_list: 'ubuntu windows msys2 macos'
       python_version: '3.10'
       python_version_list: '3.8 3.9 3.10'
 

@@ -49,18 +49,31 @@ jobs:
 
   UnitTesting:
     name: ${{ matrix.sysicon }} ${{ matrix.pyicon }} Unit Tests using Python ${{ matrix.python }}
-    runs-on: ${{ matrix.system }}-latest
+    runs-on: ${{ matrix.runs-on }}
 
     strategy:
       fail-fast: false
       matrix:
         include: ${{ fromJson(inputs.jobs) }}
 
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v2
 
-      - name: 🐍 Setup Python ${{ matrix.python }}
+      - if: matrix.system == 'msys2'
+        name: '🟦 Setup MSYS2'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          pacboy: python-pip:p
+
+      - if: matrix.system != 'msys2'
+        name: 🐍 Setup Python ${{ matrix.python }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
@@ -71,7 +84,6 @@ jobs:
           python -m pip install ${{ inputs.requirements }}
 
       - name: ☑ Run unit tests
-        shell: bash
         run: |
           [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReport.xml' || unset PYTEST_ARGS
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
