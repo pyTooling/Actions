@@ -70,7 +70,11 @@ jobs:
         with:
           msystem: MINGW64
           update: true
-          pacboy: python-pip:p
+          pacboy: >-
+            python-pip:p
+            python-wheel:p
+            python-coverage:p
+            python-lxml:p
 
       - name: 🐍 Setup Python ${{ matrix.python }}
         if: matrix.system != 'msys2'
@@ -78,20 +82,16 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: 🔧 Install dependencies
+      - name: ⚙️ Update pip
+        run: python -m pip install -U pip
+
+      - name: ⚙️ Install wheel
         if: matrix.system != 'msys2'
         run: |
-          python -m pip install -U pip wheel
-          python -m pip install ${{ inputs.requirements }}
+          python -m pip install -U wheel
 
       - name: 🔧 Install dependencies
-        if: matrix.system == 'msys2'
-        run: |
-          pacman -S --noconfirm mingw64/mingw-w64-x86_64-python-wheel
-          pacman -S --noconfirm mingw64/mingw-w64-x86_64-python-coverage
-          pacman -S --noconfirm mingw64/mingw-w64-x86_64-python-lxml
-          python -m pip install -U pip
-          python -m pip install ${{ inputs.requirements }}
+        run: python -m pip install ${{ inputs.requirements }}
 
       - name: ☑ Run unit tests
         if: matrix.system == 'windows'
