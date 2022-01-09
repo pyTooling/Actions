@@ -26,7 +26,7 @@ on:
   workflow_call:
     inputs:
       jobs:
-        description: 'JSON list with field <python>, telling the versions to run tests with.'
+        description: 'JSON list with environment fields, telling the system and Python versions to run tests with.'
         required: true
         type: string
       requirements:
