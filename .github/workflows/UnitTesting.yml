@@ -64,26 +64,33 @@ jobs:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v2
 
-      - if: matrix.system == 'msys2'
-        name: '🟦 Setup MSYS2'
+      - name: '🟦 Setup MSYS2'
+        if: matrix.system == 'msys2'
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
           update: true
           pacboy: python-pip:p
 
-      - if: matrix.system != 'msys2'
-        name: 🐍 Setup Python ${{ matrix.python }}
+      - name: 🐍 Setup Python ${{ matrix.python }}
+        if: matrix.system != 'msys2'
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
 
       - name: 🔧 Install dependencies
         run: |
-          python -m pip install -U pip
+          python -m pip install -U pip wheel
           python -m pip install ${{ inputs.requirements }}
 
       - name: ☑ Run unit tests
+        if: matrix.system == 'windows'
+        run: |
+          $PYTEST_ARGS = if ("${{ inputs.artifact }}".length -gt 0) { "--junitxml=TestReport.xml" } else { "" }
+          python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
+
+      - name: ☑ Run unit tests
+        if: matrix.system != 'windows'
         run: |
           [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReport.xml' || unset PYTEST_ARGS
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
