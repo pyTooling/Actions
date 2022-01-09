@@ -86,7 +86,7 @@ jobs:
       - name: ☑ Run unit tests
         if: matrix.system == 'windows'
         run: |
-          $PYTEST_ARGS = if (${{ inputs.artifact }} -eq "") { '--junitxml=TestReport.xml' } else { '' }
+          $PYTEST_ARGS = if ("${{ inputs.artifact }}".length -gt 0) { "--junitxml=TestReport.xml" } else { "" }
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
 
       - name: ☑ Run unit tests
