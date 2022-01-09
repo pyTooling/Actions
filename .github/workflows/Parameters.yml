@@ -107,7 +107,7 @@ jobs:
                   'runs-on': data['sys'][system]['runs-on'],
                   'shell': data['sys'][system]['shell'],
                   'pyicon': data['python'][version]['icon'],
-                  'python': version
+                  'python': '3.11.0-alpha.3' if version == '3.11' else version
               }
               for system in systems
               for version in (versions if system != 'msys2' else ['3.9'])
