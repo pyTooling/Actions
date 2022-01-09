@@ -33,7 +33,12 @@ on:
       python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.6 3.7 3.8 3.9 3.10'
+        default: '3.7 3.8 3.9 3.10'
+        type: string
+      system_list:
+        description: 'Space separated list of systems to run tests on.'
+        required: false
+        default: 'ubuntu windows msys2 macos'
         type: string
       name:
         description: 'Name of the tool.'
@@ -75,19 +80,39 @@ jobs:
           print("Parameters:")
           print(params)
 
+          systems = '${{ inputs.system_list }}'.split(' ')
           versions = '${{ inputs.python_version_list }}'.split(' ')
           if '3.6' in versions:
-              print('WARNING: support for Python 3.6 ended in 2021.12.23')
+              print("::warning title=Deprecated::Support for Python 3.6 ended in 2021.12.23.")
+          if '3.11' in versions:
+              print(f"::notice title=Experimental::Python 3.11 (3.11.0-alpha3) is a pre-release.")
           data = {
-             '3.6': { 'icon': '⚫', 'until': '2021.12.23' },
-             '3.7': { 'icon': '🔴', 'until': '2023.06.27' },
-             '3.8': { 'icon': '🟠', 'until': '2024.10' },
-             '3.9': { 'icon': '🟡', 'until': '2025.10' },
-            '3.10': { 'icon': '🟢', 'until': '2026.10' },
+              'python': {
+                  '3.6':  { 'icon': '⚫', 'until': '2021.12.23' },
+                  '3.7':  { 'icon': '🔴', 'until': '2023.06.27' },
+                  '3.8':  { 'icon': '🟠', 'until': '2024.10' },
+                  '3.9':  { 'icon': '🟡', 'until': '2025.10' },
+                  '3.10': { 'icon': '🟢', 'until': '2026.10' },
+                  '3.11': { 'icon': '🟣', 'until': '2027.10' },
+              },
+              'sys': {
+                  'ubuntu':  { 'icon': '🐧', 'runs-on': 'ubuntu-latest',  'shell': 'bash' },
+                  'windows': { 'icon': '🧊', 'runs-on': 'windows-latest', 'shell': 'pwsh' },
+                  'msys2':   { 'icon': '🟦', 'runs-on': 'windows-latest', 'shell': 'msys2 {0}' },
+                  'macos':   { 'icon': '🍎', 'runs-on': 'macos-latest',   'shell': 'bash' }
+              }
           }
           jobs = [
-              {'python': version, 'icon': data[version]['icon']}
-              for version in versions
+              {
+                  'sysicon': data['sys'][system]['icon'],
+                  'system': system,
+                  'runs-on': data['sys'][system]['runs-on'],
+                  'shell': data['sys'][system]['shell'],
+                  'pyicon': data['python'][version]['icon'],
+                  'python': '3.11.0-alpha.3' if version == '3.11' else version
+              }
+              for system in systems
+              for version in (versions if system != 'msys2' else ['3.9'])
           ]
           print(f'::set-output name=python_jobs::{jobs!s}')
           print("Python jobs:")
