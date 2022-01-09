@@ -26,7 +26,7 @@ on:
   workflow_call:
     inputs:
       jobs:
-        description: 'JSON list with field <python>, telling the versions to run tests with.'
+        description: 'JSON list with environment fields, telling the system and Python versions to run tests with.'
         required: true
         type: string
       requirements:
@@ -48,29 +48,59 @@ on:
 jobs:
 
   UnitTesting:
-    name: ${{ matrix.icon }} Unit Tests using Python ${{ matrix.python }}
-    runs-on: ubuntu-latest
+    name: ${{ matrix.sysicon }} ${{ matrix.pyicon }} Unit Tests using Python ${{ matrix.python }}
+    runs-on: ${{ matrix.runs-on }}
 
     strategy:
       fail-fast: false
       matrix:
         include: ${{ fromJson(inputs.jobs) }}
 
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v2
 
+      - name: '🟦 Setup MSYS2'
+        if: matrix.system == 'msys2'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          pacboy: >-
+            python-pip:p
+            python-wheel:p
+            python-coverage:p
+            python-lxml:p
+
       - name: 🐍 Setup Python ${{ matrix.python }}
+        if: matrix.system != 'msys2'
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
 
-      - name: 🔧 Install dependencies
+      - name: ⚙️ Update pip
+        run: python -m pip install -U pip
+
+      - name: ⚙️ Install wheel
+        if: matrix.system != 'msys2'
         run: |
-          python -m pip install -U pip
-          python -m pip install ${{ inputs.requirements }}
+          python -m pip install -U wheel
+
+      - name: 🔧 Install dependencies
+        run: python -m pip install ${{ inputs.requirements }}
 
       - name: ☑ Run unit tests
+        if: matrix.system == 'windows'
+        run: |
+          $PYTEST_ARGS = if ("${{ inputs.artifact }}".length -gt 0) { "--junitxml=TestReport.xml" } else { "" }
+          python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
+
+      - name: ☑ Run unit tests
+        if: matrix.system != 'windows'
         run: |
           [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReport.xml' || unset PYTEST_ARGS
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
@@ -79,7 +109,7 @@ jobs:
         if: inputs.artifact != ''
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ inputs.artifact }}-${{ matrix.python }}
+          name: ${{ inputs.artifact }}-${{ matrix.system }}-${{ matrix.python }}
           path: TestReport.xml
           if-no-files-found: error
           retention-days: 1
