@@ -46,6 +46,13 @@ jobs:
       jobs: ${{ needs.Params.outputs.python_jobs }}
       # Optional
       requirements: '-r tests/requirements.txt'
+      pacboy: >-
+        python-pip:p
+        python-wheel:p
+        python-coverage:p
+        python-lxml:p
+      mingw_requirements: '-r tests/requirements.mingw.txt'
+      unittest_directory: 'tests/unit'
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}
 
   Coverage:

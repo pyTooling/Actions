@@ -34,6 +34,20 @@ on:
         required: false
         default: '-r tests/requirements.txt'
         type: string
+      pacboy:
+        description: 'MSYS2 dependencies to be installed through pacboy (pacman).'
+        required: false
+        default: >-
+            python-pip:p
+            python-wheel:p
+            python-coverage:p
+            python-lxml:p
+        type: string
+      mingw_requirements:
+        description: 'Override Python dependencies to be installed through pip on MSYS2 (MINGW64) only.'
+        required: false
+        default: ''
+        type: string
       unittest_directory:
         description: 'Path to the directory containing unit tests.'
         required: false
@@ -70,11 +84,7 @@ jobs:
         with:
           msystem: MINGW64
           update: true
-          pacboy: >-
-            python-pip:p
-            python-wheel:p
-            python-coverage:p
-            python-lxml:p
+          pacboy: ${{ inputs.pacboy }}
 
       - name: 🐍 Setup Python ${{ matrix.python }}
         if: matrix.system != 'msys2'
@@ -85,13 +95,20 @@ jobs:
       - name: ⚙️ Update pip
         run: python -m pip install -U pip
 
-      - name: ⚙️ Install wheel
+      - name: 🔧 Install wheel and pip dependencies
         if: matrix.system != 'msys2'
         run: |
           python -m pip install -U wheel
+          python -m pip install ${{ inputs.requirements }}
 
-      - name: 🔧 Install dependencies
-        run: python -m pip install ${{ inputs.requirements }}
+      - name: 🔧 Install pip dependencies
+        if: matrix.system == 'msys2'
+        run: |
+          if [ 'x${{ inputs.mingw_requirements }}' != 'x' ]; then
+            python -m pip install ${{ inputs.mingw_requirements }}
+          else
+            python -m pip install ${{ inputs.requirements }}
+          fi
 
       - name: ☑ Run unit tests
         if: matrix.system == 'windows'
