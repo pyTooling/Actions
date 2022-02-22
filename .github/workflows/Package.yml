@@ -66,11 +66,11 @@ jobs:
 
       - name: 🔨 [build] Build Python package (source distribution)
         if: inputs.requirements == ''
-        run: python -m build --sdist
+        run: python -m build --no-isolation --sdist
 
       - name: 🔨 [build] Build Python package (binary distribution - wheel)
         if: inputs.requirements == ''
-        run: python -m build --wheel
+        run: python -m build --no-isolation --wheel
 
       # setuptools
 
