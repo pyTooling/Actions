@@ -35,10 +35,15 @@ on:
         required: false
         default: '-r tests/requirements.txt'
         type: string
-      unittest_directory:
-        description: 'Path to the directory containing unit tests.'
+      test_directory:
+        description: 'Path to the directory containing tests (test working directory).'
         required: false
-        default: 'tests/unit'
+        default: 'tests'
+        type: string
+      unittest_directory:
+        description: 'Path to the directory containing unit tests (from test_directory).'
+        required: false
+        default: 'unit'
         type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
@@ -117,6 +122,7 @@ jobs:
       - name: Collect coverage
         continue-on-error: true
         run: |
+          cd ${{ inputs.test_directory }}
           [ 'x${{ inputs.coverage_config }}' != 'x' ] && PYCOV_ARGS='--cov-config=${{ inputs.coverage_config }}' || unset PYCOV_ARGS
           python -m pytest -rA --cov=. $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
 
