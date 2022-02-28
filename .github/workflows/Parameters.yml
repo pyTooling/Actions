@@ -69,11 +69,12 @@ jobs:
           params = {
             'python_version': '${{ inputs.python_version }}',
             'artifacts': {
-              'unittesting': f'{name}-TestReport',
-              'coverage': f'{name}-coverage',
-              'typing': f'{name}-typing',
-              'package': f'{name}-package',
-              'doc': f'{name}-doc',
+              'unittesting':  f'{name}-test-summary',
+              'coverage':     f'{name}-coverage',
+              'typing_html':  f'{name}-typing',
+              'typing_junit': f'{name}-typing-summary',
+              'package':      f'{name}-package',
+              'doc':          f'{name}-doc',
             }
           }
           print(f'::set-output name=params::{params!s}')
