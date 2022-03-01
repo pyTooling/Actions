@@ -66,24 +66,38 @@ jobs:
 
       - name: 🔨 [build] Build Python package (source distribution)
         if: inputs.requirements == ''
-        run: python -m build --no-isolation --sdist
+        run: python -m build --sdist
 
       - name: 🔨 [build] Build Python package (binary distribution - wheel)
         if: inputs.requirements == ''
+        run: python -m build --wheel
+
+      # build (not isolated)
+
+      - name: 🔧 [build] Install dependencies for packaging and release
+        if: inputs.requirements == 'no-isolation'
+        run: python -m pip install build
+
+      - name: 🔨 [build] Build Python package (source distribution)
+        if: inputs.requirements == 'no-isolation'
+        run: python -m build --no-isolation --sdist
+
+      - name: 🔨 [build] Build Python package (binary distribution - wheel)
+        if: inputs.requirements == 'no-isolation'
         run: python -m build --no-isolation --wheel
 
       # setuptools
 
       - name: 🔧 [setuptools] Install dependencies for packaging and release
-        if: inputs.requirements != ''
+        if: inputs.requirements != '' && inputs.requirements != 'no-isolation'
         run: python -m pip install ${{ inputs.requirements }}
 
       - name: 🔨 [setuptools] Build Python package (source distribution)
-        if: inputs.requirements != ''
+        if: inputs.requirements != '' && inputs.requirements != 'no-isolation'
         run: python setup.py sdist
 
       - name: 🔨 [setuptools] Build Python package (binary distribution - wheel)
-        if: inputs.requirements != ''
+        if: inputs.requirements != '' && inputs.requirements != 'no-isolation'
         run: python setup.py bdist_wheel
 
 
