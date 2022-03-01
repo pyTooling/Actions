@@ -41,7 +41,7 @@ on:
         default: 'tests'
         type: string
       unittest_directory:
-        description: 'Path to the directory containing unit tests (from test_directory).'
+        description: 'Path to the directory containing unit tests (relative to test_directory).'
         required: false
         default: 'unit'
         type: string
