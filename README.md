@@ -88,9 +88,11 @@ This repository provides 10+ Reusable Workflows based on the CI pipelines of the
 By combining them, Python packages can be continuously tested and released along with Sphinx documentation sites, to GitHub Releases, GitHub Pages and PyPI.
 Optionally, coverage and static type check reports can be gathered.
 
-[![](ExamplePipeline.png)](ExamplePipeline.png)
+[![](ExamplePipeline_dark.png)](ExamplePipeline_dark.png)
 
-As shown in the screenshot above, the expected order is:
+[![](ExamplePipeline_light.png)](ExamplePipeline_light.png)
+
+As shown in the screenshots above, the expected order is:
 
 - Global:
   - [Parameters](.github/workflows/Parameters.yml): a workaround for the limitations to handle global variables in
