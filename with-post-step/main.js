@@ -24,15 +24,15 @@
  * * https://github.com/docker/login-action/issues/72                                                                 *
  * * https://github.com/actions/runner/issues/1478                                                                    *
  * ================================================================================================================== */
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 
 function run(cmdline) {
-  var args = cmdline.split(' ');
+  var args = cmdline.split(" ");
   const cmd = args.shift();
 
-  const subprocess = spawn(cmd, args, { stdio: 'inherit' });
-  subprocess.on('exit', (exit_code) => {
-    process.exitCode = exit_code
+  const subprocess = spawn(cmd, args, { stdio: "inherit" });
+  subprocess.on("exit", (exitCode) => {
+    process.exitCode = exitCode;
   });
 }
 
