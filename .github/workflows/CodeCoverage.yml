@@ -20,7 +20,7 @@
 #                                                                                                                      #
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
-name: Coverage Collection
+name: Code Coverage Collection
 
 on:
   workflow_call:
@@ -49,10 +49,20 @@ on:
         description: 'Name of the coverage artifact.'
         required: true
         type: string
+      publish_to_codecov:
+        description: 'Publish coverage results to CodeCov.'
+        required: false
+        default: 'true'
+        type: string
+      publish_to_codacy:
+        description: 'Publish coverage results to Codacy.'
+        required: false
+        default: 'true'
+        type: string
     secrets:
       codacy_token:
         description: 'Token to push result to codacy.'
-        required: true
+        required: false
 
 jobs:
 
@@ -96,7 +106,10 @@ jobs:
                   htmlDirectory = pyProjectSettings["tool"]["coverage"]["html"]["directory"]
                   xmlFile       = pyProjectSettings["tool"]["coverage"]["xml"]["output"]
               else:
-                  print(f"File '{pyProjectFile}' not found and no ' .coveragerc' file specified.")
+                  print(f"File '{pyProjectFile}' not found.")
+                  print(f"::warning title=Configuration file not found::Project configuration file '{pyProjectFile}' not found.")
+                  print(f"::notice title=Using default coverage HTML directory::Using default HTML directory '{htmlDirectory}'.")
+                  print(f"::notice title=Using default coverage XML report::Using default XML report '{xmlFile}'.")
 
           # Read output paths from '.coveragerc' file
           elif len(coverageRC) > 0:
@@ -109,6 +122,9 @@ jobs:
                   xmlFile       = coverageRCSettings["xml"]["output"]
               else:
                   print(f"File '{coverageRCFile}' not found.")
+                  print(f"::warning title=Configuration file not found::Project configuration file '{coverageRCFile}' not found.")
+                  print(f"::notice title=Using default coverage HTML directory::Using default HTML directory '{htmlDirectory}'.")
+                  print(f"::notice title=Using default coverage XML report::Using default XML report '{xmlFile}'.")
 
           print(f"::set-output name=coverage_report_html_directory::{htmlDirectory}")
           print(f"::set-output name=coverage_report_xml::{xmlFile}")
@@ -128,11 +144,20 @@ jobs:
           coverage html -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
           rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
 
-      - name: 📤 Upload 'Coverage Report' artifact
+      - name: 📤 Upload 'Coverage XML Report' artifact
         continue-on-error: true
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ inputs.artifact }}
+          name: ${{ inputs.artifact }}-xml
+          path: ${{ steps.getVariables.outputs.coverage_report_xml }}
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: 📤 Upload 'Coverage HTML Report' artifact
+        continue-on-error: true
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.artifact }}-html
           path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
           if-no-files-found: error
           retention-days: 1
@@ -140,6 +165,7 @@ jobs:
       - name: 📊 Publish coverage at CodeCov
         continue-on-error: true
         uses: codecov/codecov-action@v1
+        if: inputs.publish_to_codecov == 'true'
         with:
           file: ${{ steps.getVariables.outputs.coverage_report_xml }}
           flags: unittests
@@ -148,6 +174,7 @@ jobs:
       - name: 📉 Publish coverage at Codacy
         continue-on-error: true
         uses: codacy/codacy-coverage-reporter-action@master
+        if: inputs.publish_to_codacy == 'true'
         with:
           project-token: ${{ secrets.codacy_token }}
           coverage-reports: ${{ steps.getVariables.outputs.coverage_report_xml }}

@@ -56,7 +56,7 @@ jobs:
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}
 
   Coverage:
-    uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@main
+    uses: pyTooling/Actions/.github/workflows/CodeCoverage.yml@main
     needs:
       - Params
     with:

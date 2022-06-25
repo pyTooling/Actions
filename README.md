@@ -102,7 +102,7 @@ As shown in the screenshots above, the expected order is:
   - [UnitTesting](.github/workflows/UnitTesting.yml): run unit test with `pytest` using multiple versions of Python, and
     optionally upload results as XML reports. Configuration options to `pytest` should be given via section
    `[tool.pytest.ini_options]` in a `pyproject.toml` file.
-  - [CoverageCollection](.github/workflows/CoverageCollection.yml): collect code coverage data (incl. branch coverage)
+  - [CodeCoverage](.github/workflows/CodeCoverage.yml): collect code coverage data (incl. branch coverage)
     with `pytest`/`pytest-cov`/`coverage.py` using a single version of Python (latest). It generates HTML and Cobertura
     (XML)reports, upload the HTML report as an artifact, and upload the test results to Codecov and Codacy. Configuration
     options to `pytest` and `coverage.py` should be given via section `[tool.pytest.ini_options]` and `[tool.coverage.*]`
