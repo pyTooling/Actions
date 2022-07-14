@@ -10,7 +10,9 @@ updates:
       - Dependencies
     assignees:
       - Paebbels
+      - Umarcor
     reviewers:
       - Paebbels
+      - Umarcor
     schedule:
       interval: "daily"    # Checks on Monday trough Friday.
