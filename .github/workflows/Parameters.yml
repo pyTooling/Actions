@@ -112,7 +112,7 @@ jobs:
                   'python': '3.11.0-alpha.3' if version == '3.11' else version
               }
               for system in systems
-              for version in (versions if system != 'msys2' else ['3.9'])
+              for version in (versions if system != 'msys2' else ['3.10'])
           ]
           print(f'::set-output name=python_jobs::{jobs!s}')
           print("Python jobs:")
