@@ -96,20 +96,20 @@ jobs:
                   '3.11': { 'icon': '🟣', 'until': '2027.10' },
               },
               'sys': {
-                  'ubuntu':  { 'icon': '🐧', 'runs-on': 'ubuntu-latest',  'shell': 'bash' },
+                  'ubuntu':  { 'icon': '🐧',  'runs-on': 'ubuntu-latest',  'shell': 'bash' },
                   'windows': { 'icon': '🧊', 'runs-on': 'windows-latest', 'shell': 'pwsh' },
                   'msys2':   { 'icon': '🟦', 'runs-on': 'windows-latest', 'shell': 'msys2 {0}' },
-                  'macos':   { 'icon': '🍎', 'runs-on': 'macos-latest',   'shell': 'bash' }
+                  'macos':   { 'icon': '🍎',  'runs-on': 'macos-latest',   'shell': 'bash' }
               }
           }
           jobs = [
               {
                   'sysicon': data['sys'][system]['icon'],
-                  'system': system,
+                  'system':  system,
                   'runs-on': data['sys'][system]['runs-on'],
-                  'shell': data['sys'][system]['shell'],
-                  'pyicon': data['python'][version]['icon'],
-                  'python': '3.11.0-alpha.3' if version == '3.11' else version
+                  'shell':   data['sys'][system]['shell'],
+                  'pyicon':  data['python'][version]['icon'],
+                  'python':  '3.11.0-alpha.3' if version == '3.11' else version
               }
               for system in systems
               for version in (versions if system != 'msys2' else ['3.10'])
