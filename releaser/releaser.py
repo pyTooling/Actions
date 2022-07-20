@@ -70,7 +70,7 @@ def GetListOfArtifacts(argv, files):
         if len(flist) < 1:
             stdout.flush()
             raise (Exception("Empty list of files to upload/update!"))
-        return flist
+        return sorted(flist)
 
 
 def GetGitHubAPIHandler(token):
