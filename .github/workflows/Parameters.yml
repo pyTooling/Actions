@@ -28,12 +28,12 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.10'
+        default: '3.11'
         type: string
       python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.7 3.8 3.9 3.10 pypy-3.7 pypy-3.8 pypy-3.9'
+        default: '3.7 3.8 3.9 3.10 3.11 pypy-3.7 pypy-3.8 pypy-3.9'
         type: string
       system_list:
         description: 'Space separated list of systems to run tests on.'
@@ -65,27 +65,44 @@ jobs:
         id: params
         shell: python
         run: |
-          name = '${{ inputs.name }}'
+          name =          "${{ inputs.name }}".strip()
+          pythonVersion = "${{ inputs.python_version }}".strip()
+          systems =       "${{ inputs.system_list }}".strip()
+          versions =      "${{ inputs.python_version_list }}".strip()
+          
+          currentMSYS2Version = "3.10"
+          currentAlphaVersion = "3.12"
+          currentAlphaRelease = "3.12.0-alpha.1"
+          
           params = {
-            'python_version': '${{ inputs.python_version }}',
+            'python_version': pythonVersion,
             'artifacts': {
-              'unittesting': f'{name}-TestReport',
-              'coverage': f'{name}-coverage',
-              'typing': f'{name}-typing',
-              'package': f'{name}-package',
-              'doc': f'{name}-doc',
+              'unittesting': f"{name}-TestReport",
+              'coverage':    f"{name}-Coverage",
+              'typing':      f"{name}-Typing",
+              'package':     f"{name}-Package",
+              'doc':         f"{name}-Documentation",
             }
           }
-          print(f'::set-output name=params::{params!s}')
+          print(f"::set-output name=params::{params!s}")
           print("Parameters:")
           print(params)
 
-          systems = '${{ inputs.system_list }}'.split(' ')
-          versions = '${{ inputs.python_version_list }}'.split(' ')
-          if '3.6' in versions:
+          if systems == "":
+            print("::error title=Parameter::system_list is empty.")
+          else:
+            systems = [sys.strip() for sys in systems.split(" ")]
+          
+          if versions == "":
+            versions = [ pythonVersion ]
+          else:
+            versions = [ver.strip() for ver in versions.split(" ")]
+          
+          if "3.6" in versions:
               print("::warning title=Deprecated::Support for Python 3.6 ended in 2021.12.23.")
-          if '3.11' in versions:
-              print(f"::notice title=Experimental::Python 3.11 (3.11.0-alpha3) is a pre-release.")
+          if currentAlphaVersion in versions:
+              print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
+          
           data = {
               'python': {
                   '3.6':       { 'icon': '⚫',  'until': '2021.12.23' },
@@ -93,7 +110,8 @@ jobs:
                   '3.8':       { 'icon': '🟠',  'until': '2024.10' },
                   '3.9':       { 'icon': '🟡',  'until': '2025.10' },
                   '3.10':      { 'icon': '🟢',  'until': '2026.10' },
-                  '3.11':      { 'icon': '🟣',  'until': '2027.10' },
+                  '3.11':      { 'icon': '🟢',  'until': '2027.10' },
+                  '3.11':      { 'icon': '🟣',  'until': '2028.10' },
                   'pypy-3.7':  { 'icon': '⟲🔴', 'until': '??' },
                   'pypy-3.8':  { 'icon': '⟲🟠', 'until': '??' },
                   'pypy-3.9':  { 'icon': '⟲🟡', 'until': '??' },
@@ -105,17 +123,18 @@ jobs:
                   'macos':   { 'icon': '🍎', 'runs-on': 'macos-latest',   'shell': 'bash' }
               }
           }
+          
           jobs = [
               {
                   'sysicon': data['sys'][system]['icon'],
-                  'system': system,
+                  'system':  system,
                   'runs-on': data['sys'][system]['runs-on'],
-                  'shell': data['sys'][system]['shell'],
-                  'pyicon': data['python'][version]['icon'],
-                  'python': '3.11.0-alpha.3' if version == '3.11' else version
+                  'shell':   data['sys'][system]['shell'],
+                  'pyicon':  data['python'][version]['icon'],
+                  'python': currentAlphaRelease if version == currentAlphaVersion else version
               }
               for system in systems
-              for version in (versions if system != 'msys2' else ['3.10'])
+              for version in (versions if system != 'msys2' else [currentMSYS2Version])
           ]
           print(f'::set-output name=python_jobs::{jobs!s}')
           print("Python jobs:")
