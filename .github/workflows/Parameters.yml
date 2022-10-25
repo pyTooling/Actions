@@ -28,17 +28,17 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.10'
+        default: '3.11'
         type: string
       python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.7 3.8 3.9 3.10 pypy-3.7 pypy-3.8 pypy-3.9'
+        default: '3.7 3.8 3.9 3.10 3.11 pypy-3.7 pypy-3.8 pypy-3.9'
         type: string
       system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu windows msys2 macos'
+        default: 'ubuntu windows mingw64 macos'
         type: string
       name:
         description: 'Name of the tool.'
@@ -65,57 +65,101 @@ jobs:
         id: params
         shell: python
         run: |
-          name = '${{ inputs.name }}'
+          name =          "${{ inputs.name }}".strip()
+          pythonVersion = "${{ inputs.python_version }}".strip()
+          systems =       "${{ inputs.system_list }}".strip()
+          versions =      "${{ inputs.python_version_list }}".strip()
+          
+          currentMSYS2Version = "3.10"
+          currentAlphaVersion = "3.12"
+          currentAlphaRelease = "3.12.0-alpha.1"
+          
           params = {
-            'python_version': '${{ inputs.python_version }}',
+            'python_version': pythonVersion,
             'artifacts': {
-              'unittesting': f'{name}-TestReport',
-              'coverage': f'{name}-coverage',
-              'typing': f'{name}-typing',
-              'package': f'{name}-package',
-              'doc': f'{name}-doc',
+              'unittesting': f"{name}-TestReport",
+              'coverage':    f"{name}-Coverage",
+              'typing':      f"{name}-Typing",
+              'package':     f"{name}-Package",
+              'doc':         f"{name}-Documentation",
             }
           }
-          print(f'::set-output name=params::{params!s}')
+          print(f"::set-output name=params::{params!s}")
           print("Parameters:")
           print(params)
 
-          systems = '${{ inputs.system_list }}'.split(' ')
-          versions = '${{ inputs.python_version_list }}'.split(' ')
-          if '3.6' in versions:
+          if systems == "":
+            print("::error title=Parameter::system_list is empty.")
+          else:
+            systems = [sys.strip() for sys in systems.split(" ")]
+          
+          if versions == "":
+            versions = [ pythonVersion ]
+          else:
+            versions = [ver.strip() for ver in versions.split(" ")]
+          
+          if "3.6" in versions:
               print("::warning title=Deprecated::Support for Python 3.6 ended in 2021.12.23.")
-          if '3.11' in versions:
-              print(f"::notice title=Experimental::Python 3.11 (3.11.0-alpha3) is a pre-release.")
+          if "msys2" in systems:
+              print("::warning title=Deprecated::System 'msys2' will be replaced by 'mingw64'.")
+          if currentAlphaVersion in versions:
+              print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
+          
           data = {
+              # Python and PyPy versions supported by "setup-python" action
               'python': {
                   '3.6':       { 'icon': '⚫',  'until': '2021.12.23' },
                   '3.7':       { 'icon': '🔴',  'until': '2023.06.27' },
                   '3.8':       { 'icon': '🟠',  'until': '2024.10' },
                   '3.9':       { 'icon': '🟡',  'until': '2025.10' },
                   '3.10':      { 'icon': '🟢',  'until': '2026.10' },
-                  '3.11':      { 'icon': '🟣',  'until': '2027.10' },
-                  'pypy-3.7':  { 'icon': '⟲🔴', 'until': '??' },
-                  'pypy-3.8':  { 'icon': '⟲🟠', 'until': '??' },
-                  'pypy-3.9':  { 'icon': '⟲🟡', 'until': '??' },
+                  '3.11':      { 'icon': '🟢',  'until': '2027.10' },
+                  '3.11':      { 'icon': '🟣',  'until': '2028.10' },
+                  'pypy-3.7':  { 'icon': '⟲🔴', 'until': '????.??' },
+                  'pypy-3.8':  { 'icon': '⟲🟠', 'until': '????.??' },
+                  'pypy-3.9':  { 'icon': '⟲🟡', 'until': '????.??' },
               },
+              # Runner systems (runner images) supported by GitHub Actions
               'sys': {
-                  'ubuntu':  { 'icon': '🐧', 'runs-on': 'ubuntu-latest',  'shell': 'bash' },
-                  'windows': { 'icon': '🧊', 'runs-on': 'windows-latest', 'shell': 'pwsh' },
-                  'msys2':   { 'icon': '🟦', 'runs-on': 'windows-latest', 'shell': 'msys2 {0}' },
-                  'macos':   { 'icon': '🍎', 'runs-on': 'macos-latest',   'shell': 'bash' }
+                  'ubuntu':  { 'icon': '🐧', 'runs-on': 'ubuntu-latest',  'shell': 'bash', 'name': "Linux (x86-64)"   },
+                  'windows': { 'icon': '🧊', 'runs-on': 'windows-latest', 'shell': 'pwsh', 'name': "Windows (x86-64)" },
+                  'macos':   { 'icon': '🍎', 'runs-on': 'macos-latest',   'shell': 'bash', 'name': "MacOS (x86-64)"   },
+              },
+              # Runtimes provided by MSYS2
+              'runtime': {
+                  'msys':    { 'icon': '🟪', 'name': 'Windows+MSYS2 (x86-64) - MSYS'    },
+                  'mingw32': { 'icon': '⬛', 'name': 'Windows+MSYS2 (x86-64) - MinGW32' },
+                  'mingw64': { 'icon': '🟦', 'name': 'Windows+MSYS2 (x86-64) - MinGW64' },
+                  'clang32': { 'icon': '🟫', 'name': 'Windows+MSYS2 (x86-64) - Clang32' },
+                  'clang64': { 'icon': '🟧', 'name': 'Windows+MSYS2 (x86-64) - Clang64' },
+                  'ucrt64':  { 'icon': '🟨', 'name': 'Windows+MSYS2 (x86-64) - UCRT64'  },
               }
           }
+          
           jobs = [
               {
                   'sysicon': data['sys'][system]['icon'],
-                  'system': system,
+                  'system':  system,
                   'runs-on': data['sys'][system]['runs-on'],
-                  'shell': data['sys'][system]['shell'],
-                  'pyicon': data['python'][version]['icon'],
-                  'python': '3.11.0-alpha.3' if version == '3.11' else version
+                  'shell':   data['sys'][system]['shell'],
+                  'pyicon':  data['python'][version]['icon'],
+                  'python':  currentAlphaRelease if version == currentAlphaVersion else version
+                  'envname'  data['sys'][system]['name']
               }
-              for system in systems
-              for version in (versions if system != 'msys2' else ['3.10'])
+              for system in systems if system in data['sys'] 
+              for version in versions
+          ] + [
+              {
+                  'sysicon': data['runtime'][runtime]['icon'],
+                  'system':  "msys2",
+                  'runs-on': "windows-latest",
+                  'runtime': runtime.upper(),
+                  'shell':   "msys2 {0}",
+                  'pyicon':  data['python'][currentMSYS2Version]['icon'],
+                  'python':  currentMSYS2Version
+                  'envname'  data['runtime'][runtime]['name']
+              }
+              for runtime in systems if runtime not in data['sys']
           ]
           print(f'::set-output name=python_jobs::{jobs!s}')
           print("Python jobs:")
