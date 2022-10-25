@@ -1,8 +1,8 @@
 .. _DOCLICENSE:
 
-.. Note:: This is a local copy of the `Creative Commons - Attribution 4.0 International (CC BY 4.0) <https://creativecommons.org/licenses/by/4.0/legalcode>`__.
+.. note:: This is a local copy of the `Creative Commons - Attribution 4.0 International (CC BY 4.0) <https://creativecommons.org/licenses/by/4.0/legalcode>`__.
 
-.. Attention:: This **CC BY 4.0** license applies only to the **documentation** of this project.
+.. attention:: This **CC BY 4.0** license applies only to the **documentation** of this project.
 
 
 Creative Commons Attribution 4.0 International
