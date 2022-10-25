@@ -33,7 +33,7 @@ on:
       python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.7 3.8 3.9 3.10'
+        default: '3.7 3.8 3.9 3.10 pypy-3.7 pypy-3.8 pypy-3.9'
         type: string
       system_list:
         description: 'Space separated list of systems to run tests on.'
@@ -88,12 +88,15 @@ jobs:
               print(f"::notice title=Experimental::Python 3.11 (3.11.0-alpha3) is a pre-release.")
           data = {
               'python': {
-                  '3.6':  { 'icon': '⚫', 'until': '2021.12.23' },
-                  '3.7':  { 'icon': '🔴', 'until': '2023.06.27' },
-                  '3.8':  { 'icon': '🟠', 'until': '2024.10' },
-                  '3.9':  { 'icon': '🟡', 'until': '2025.10' },
-                  '3.10': { 'icon': '🟢', 'until': '2026.10' },
-                  '3.11': { 'icon': '🟣', 'until': '2027.10' },
+                  '3.6':       { 'icon': '⚫',  'until': '2021.12.23' },
+                  '3.7':       { 'icon': '🔴',  'until': '2023.06.27' },
+                  '3.8':       { 'icon': '🟠',  'until': '2024.10' },
+                  '3.9':       { 'icon': '🟡',  'until': '2025.10' },
+                  '3.10':      { 'icon': '🟢',  'until': '2026.10' },
+                  '3.11':      { 'icon': '🟣',  'until': '2027.10' },
+                  'pypy-3.7':  { 'icon': '⟲🔴', 'until': '??' },
+                  'pypy-3.8':  { 'icon': '⟲🟠', 'until': '??' },
+                  'pypy-3.9':  { 'icon': '⟲🟡', 'until': '??' },
               },
               'sys': {
                   'ubuntu':  { 'icon': '🐧', 'runs-on': 'ubuntu-latest',  'shell': 'bash' },
