@@ -25,6 +25,10 @@ name: Parameters
 on:
   workflow_call:
     inputs:
+      name:
+        description: 'Name of the tool.'
+        required: true
+        type: string
       python_version:
         description: 'Python version.'
         required: false
@@ -33,16 +37,22 @@ on:
       python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.7 3.8 3.9 3.10 3.11 pypy-3.7 pypy-3.8 pypy-3.9'
+        default: '3.7 3.8 3.9 3.10 3.11'
         type: string
       system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
         default: 'ubuntu windows mingw64 macos'
         type: string
-      name:
-        description: 'Name of the tool.'
-        required: true
+      include_list:
+        description: 'Space separated list of system:python items to be included into the list of test.'
+        required: false
+        default: ''
+        type: string
+      exclude_list:
+        description: 'Space separated list of system:python items to be excluded from the list of test.'
+        required: false
+        default: ''
         type: string
     outputs:
       params:
@@ -66,11 +76,14 @@ jobs:
         shell: python
         run: |
           from pprint import pprint
+          from textwrap import dedent
           
           name =          "${{ inputs.name }}".strip()
           pythonVersion = "${{ inputs.python_version }}".strip()
           systems =       "${{ inputs.system_list }}".strip()
           versions =      "${{ inputs.python_version_list }}".strip()
+          include_list =  "${{ inputs.include_list }}".strip()
+          exclude_list =  "${{ inputs.exclude_list }}".strip()
           
           currentMSYS2Version = "3.10"
           currentAlphaVersion = "3.12"
@@ -100,69 +113,110 @@ jobs:
           else:
             versions = [ver.strip() for ver in versions.split(" ")]
           
+          if include_list == "":
+            includes = []
+          else:
+            includes = [tuple(include.strip().split(":")) for include in include_list.split(" ")]
+          
+          if exclude_list == "":
+            excludes = []
+          else:
+            excludes = [exclude.strip() for exclude in exclude_list.split(" ")]
+          
           if "3.6" in versions:
-              print("::warning title=Deprecated::Support for Python 3.6 ended in 2021.12.23.")
+            print("::warning title=Deprecated::Support for Python 3.6 ended in 2021.12.23.")
           if "msys2" in systems:
-              print("::warning title=Deprecated::System 'msys2' will be replaced by 'mingw64'.")
+            print("::warning title=Deprecated::System 'msys2' will be replaced by 'mingw64'.")
           if currentAlphaVersion in versions:
-              print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
+            print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
           
           data = {
-              # Python and PyPy versions supported by "setup-python" action
-              'python': {
-                  '3.6':       { 'icon': '⚫',  'until': '2021.12.23' },
-                  '3.7':       { 'icon': '🔴',  'until': '2023.06.27' },
-                  '3.8':       { 'icon': '🟠',  'until': '2024.10' },
-                  '3.9':       { 'icon': '🟡',  'until': '2025.10' },
-                  '3.10':      { 'icon': '🟢',  'until': '2026.10' },
-                  '3.11':      { 'icon': '🟢',  'until': '2027.10' },
-                  '3.12':      { 'icon': '🟣',  'until': '2028.10' },
-                  'pypy-3.7':  { 'icon': '⟲🔴', 'until': '????.??' },
-                  'pypy-3.8':  { 'icon': '⟲🟠', 'until': '????.??' },
-                  'pypy-3.9':  { 'icon': '⟲🟡', 'until': '????.??' },
-              },
-              # Runner systems (runner images) supported by GitHub Actions
-              'sys': {
-                  'ubuntu':  { 'icon': '🐧', 'runs-on': 'ubuntu-latest',  'shell': 'bash', 'name': "Linux (x86-64)"   },
-                  'windows': { 'icon': '🧊', 'runs-on': 'windows-latest', 'shell': 'pwsh', 'name': "Windows (x86-64)" },
-                  'macos':   { 'icon': '🍎', 'runs-on': 'macos-latest',   'shell': 'bash', 'name': "MacOS (x86-64)"   },
-              },
-              # Runtimes provided by MSYS2
-              'runtime': {
-                  'msys':    { 'icon': '🟪', 'name': 'Windows+MSYS2 (x86-64) - MSYS'    },
-                  'mingw32': { 'icon': '⬛', 'name': 'Windows+MSYS2 (x86-64) - MinGW32' },
-                  'mingw64': { 'icon': '🟦', 'name': 'Windows+MSYS2 (x86-64) - MinGW64' },
-                  'clang32': { 'icon': '🟫', 'name': 'Windows+MSYS2 (x86-64) - Clang32' },
-                  'clang64': { 'icon': '🟧', 'name': 'Windows+MSYS2 (x86-64) - Clang64' },
-                  'ucrt64':  { 'icon': '🟨', 'name': 'Windows+MSYS2 (x86-64) - UCRT64'  },
-              }
+            # Python and PyPy versions supported by "setup-python" action
+            'python': {
+              '3.6':       { 'icon': '⚫',  'until': '2021.12.23' },
+              '3.7':       { 'icon': '🔴',  'until': '2023.06.27' },
+              '3.8':       { 'icon': '🟠',  'until': '2024.10' },
+              '3.9':       { 'icon': '🟡',  'until': '2025.10' },
+              '3.10':      { 'icon': '🟢',  'until': '2026.10' },
+              '3.11':      { 'icon': '🟢',  'until': '2027.10' },
+              '3.12':      { 'icon': '🟣',  'until': '2028.10' },
+              'pypy-3.7':  { 'icon': '⟲🔴', 'until': '????.??' },
+              'pypy-3.8':  { 'icon': '⟲🟠', 'until': '????.??' },
+              'pypy-3.9':  { 'icon': '⟲🟡', 'until': '????.??' },
+            },
+            # Runner systems (runner images) supported by GitHub Actions
+            'sys': {
+              'ubuntu':  { 'icon': '🐧', 'runs-on': 'ubuntu-latest',  'shell': 'bash', 'name': "Linux (x86-64)"   },
+              'windows': { 'icon': '🧊', 'runs-on': 'windows-latest', 'shell': 'pwsh', 'name': "Windows (x86-64)" },
+              'macos':   { 'icon': '🍎', 'runs-on': 'macos-latest',   'shell': 'bash', 'name': "MacOS (x86-64)"   },
+            },
+            # Runtimes provided by MSYS2
+            'runtime': {
+              'msys':    { 'icon': '🟪', 'name': 'Windows+MSYS2 (x86-64) - MSYS'    },
+              'mingw32': { 'icon': '⬛', 'name': 'Windows+MSYS2 (x86-64) - MinGW32' },
+              'mingw64': { 'icon': '🟦', 'name': 'Windows+MSYS2 (x86-64) - MinGW64' },
+              'clang32': { 'icon': '🟫', 'name': 'Windows+MSYS2 (x86-64) - Clang32' },
+              'clang64': { 'icon': '🟧', 'name': 'Windows+MSYS2 (x86-64) - Clang64' },
+              'ucrt64':  { 'icon': '🟨', 'name': 'Windows+MSYS2 (x86-64) - UCRT64'  },
+            }
           }
           
-          jobs = [
-              {
-                  'sysicon': data['sys'][system]['icon'],
-                  'system':  system,
-                  'runs-on': data['sys'][system]['runs-on'],
-                  'shell':   data['sys'][system]['shell'],
-                  'pyicon':  data['python'][version]['icon'],
-                  'python':  currentAlphaRelease if version == currentAlphaVersion else version,
-                  'envname': data['sys'][system]['name'],
-              }
-              for system in systems if system in data['sys'] 
-              for version in versions
+          print("includes:")
+          for system,version in includes:
+            print(f"- {system}:{version}")
+          print("excludes:")
+          for exclude in excludes:
+            print(f"- {exclude}")
+          
+          combinations = [
+            (system, version)
+            for system in systems
+              if system in data['sys'] or system in data['runtime']
+            for version in versions
+              if version in data['python']
+              and f"{system}:{version}" not in excludes
           ] + [
-              {
-                  'sysicon': data['runtime'][runtime]['icon'],
-                  'system':  "msys2",
-                  'runs-on': "windows-latest",
-                  'runtime': runtime.upper(),
-                  'shell':   "msys2 {0}",
-                  'pyicon':  data['python'][currentMSYS2Version]['icon'],
-                  'python':  currentMSYS2Version,
-                  'envname': data['runtime'][runtime]['name'],
-              }
-              for runtime in systems if runtime not in data['sys']
+            (system, version)
+            for system, version in includes
+              if system in data['sys']
+              and version in data['python']
+          ]
+          #print("combinations:")
+          #print(combinations)
+          
+          jobs = [
+            {
+              'sysicon': data['sys'][system]['icon'],
+              'system':  system,
+              'runs-on': data['sys'][system]['runs-on'],
+              'shell':   data['sys'][system]['shell'],
+              'pyicon':  data['python'][version]['icon'],
+              'python':  currentAlphaRelease if version == currentAlphaVersion else version,
+              'envname': data['sys'][system]['name'],
+            }
+            for system, version in combinations if system in data['sys']
+          ] + [
+            {
+              'sysicon': data['runtime'][runtime]['icon'],
+              'system':  "msys2",
+              'runs-on': "windows-latest",
+              'runtime': runtime.upper(),
+              'shell':   "msys2 {0}",
+              'pyicon':  data['python'][currentMSYS2Version]['icon'],
+              'python':  currentMSYS2Version,
+              'envname': data['runtime'][runtime]['name'],
+            }
+            for runtime, version in combinations if runtime not in data['sys']
           ]
           print(f'::set-output name=python_jobs::{jobs!s}')
-          print("Python jobs:")
-          pprint(jobs, indent=2)
+          
+          # Format jobs as list of dictionaries
+          buffer = ""
+          for job in jobs:
+            buffer += f"    {{ " + ", ".join([f"\"{key}\": \"{value}\"" for key, value in job.items()]) + f" }},\n"
+          
+          print(dedent(f"""\
+            Python jobs:
+            [
+          {buffer}  ]
+          """))
