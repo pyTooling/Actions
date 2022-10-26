@@ -143,8 +143,8 @@ jobs:
                   'runs-on': data['sys'][system]['runs-on'],
                   'shell':   data['sys'][system]['shell'],
                   'pyicon':  data['python'][version]['icon'],
-                  'python':  currentAlphaRelease if version == currentAlphaVersion else version
-                  'envname'  data['sys'][system]['name']
+                  'python':  currentAlphaRelease if version == currentAlphaVersion else version,
+                  'envname': data['sys'][system]['name'],
               }
               for system in systems if system in data['sys'] 
               for version in versions
@@ -156,8 +156,8 @@ jobs:
                   'runtime': runtime.upper(),
                   'shell':   "msys2 {0}",
                   'pyicon':  data['python'][currentMSYS2Version]['icon'],
-                  'python':  currentMSYS2Version
-                  'envname'  data['runtime'][runtime]['name']
+                  'python':  currentMSYS2Version,
+                  'envname': data['runtime'][runtime]['name'],
               }
               for runtime in systems if runtime not in data['sys']
           ]
