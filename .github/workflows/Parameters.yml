@@ -65,6 +65,8 @@ jobs:
         id: params
         shell: python
         run: |
+          from pprint import pprint
+          
           name =          "${{ inputs.name }}".strip()
           pythonVersion = "${{ inputs.python_version }}".strip()
           systems =       "${{ inputs.system_list }}".strip()
@@ -86,7 +88,7 @@ jobs:
           }
           print(f"::set-output name=params::{params!s}")
           print("Parameters:")
-          print(params)
+          pprint(params, indent=2)
 
           if systems == "":
             print("::error title=Parameter::system_list is empty.")
@@ -163,4 +165,4 @@ jobs:
           ]
           print(f'::set-output name=python_jobs::{jobs!s}')
           print("Python jobs:")
-          print(jobs)
+          pprint(jobs, indent=2)
