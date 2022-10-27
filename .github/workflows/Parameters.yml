@@ -209,6 +209,9 @@ jobs:
             for runtime, version in combinations if runtime not in data['sys']
           ]
           print(f'::set-output name=python_jobs::{jobs!s}')
+          print("${{ GITHUB_OUTPUT }}")
+          with Path("${{ GITHUB_OUTPUT }}").open("a+") as f:
+            f.write(f"python_jobs2={jobs!s}")
           
           # Format jobs as list of dictionaries
           buffer = ""
