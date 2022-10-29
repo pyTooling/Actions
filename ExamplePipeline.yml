@@ -52,7 +52,8 @@ jobs:
         python-coverage:p
         python-lxml:p
       mingw_requirements: '-r tests/requirements.mingw.txt'
-      unittest_directory: 'tests/unit'
+      test_directory: 'tests'
+      unittest_directory: 'unit'
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}
 
   Coverage:
@@ -64,6 +65,8 @@ jobs:
       # Optional
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       requirements: '-r tests/requirements.txt'
+      test_directory: 'tests'
+      unittest_directory: 'unit'
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
@@ -164,7 +167,16 @@ jobs:
     with:
       package: ${{ fromJson(needs.Params.outputs.params).artifacts.package }}
       remaining: |
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-*
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-ubuntu-3.8
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-ubuntu-3.9
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-ubuntu-3.10
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-windows-3.8
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-windows-3.9
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-windows-3.10
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-msys2-3.9
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-macos-3.8
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-macos-3.9
+        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-macos-3.10
         ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
         ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
         ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}

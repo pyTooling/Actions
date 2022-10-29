@@ -48,10 +48,15 @@ on:
         required: false
         default: ''
         type: string
-      unittest_directory:
-        description: 'Path to the directory containing unit tests.'
+      tests_directory:
+        description: 'Path to the directory containing tests (test working directory).'
         required: false
-        default: 'tests/unit'
+        default: 'tests'
+        type: string
+      unittest_directory:
+        description: 'Path to the directory containing unit tests (relative to tests_directory).'
+        required: false
+        default: 'unit'
         type: string
       artifact:
         description: "Generate unit test report with junitxml and upload results as an artifact."
@@ -113,20 +118,22 @@ jobs:
       - name: ☑ Run unit tests
         if: matrix.system == 'windows'
         run: |
-          $PYTEST_ARGS = if ("${{ inputs.artifact }}".length -gt 0) { "--junitxml=TestReport.xml" } else { "" }
+          cd ${{ inputs.tests_directory }}
+          $PYTEST_ARGS = if ("${{ inputs.artifact }}".length -gt 0) { "--junitxml=TestReportSummary.xml" } else { "" }
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
 
       - name: ☑ Run unit tests
         if: matrix.system != 'windows'
         run: |
-          [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReport.xml' || unset PYTEST_ARGS
+          cd ${{ inputs.tests_directory }}
+          [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReportSummary.xml' || unset PYTEST_ARGS
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
 
-      - name: 📤 Upload 'TestReport.xml' artifact
+      - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.artifact != ''
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.artifact }}-${{ matrix.system }}-${{ matrix.python }}
-          path: TestReport.xml
+          path: ${{ inputs.tests_directory }}/TestReportSummary.xml
           if-no-files-found: error
           retention-days: 1
