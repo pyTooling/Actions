@@ -17,11 +17,15 @@ jobs:
     with:
       doc: Documentation
 
-#  ArtifactCleanUp:
-#    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r0
-#    needs:
-#      - BuildTheDocs
-#      - PublishToGitHubPages
-#    with:
-#      remaining: |
-#        Documentation
+  ArtifactCleanUp:
+    name: 🗑️ Artifact Cleanup
+    needs:
+      - BuildTheDocs
+      - PublishToGitHubPages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🗑️ Delete artifacts
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: Documentation

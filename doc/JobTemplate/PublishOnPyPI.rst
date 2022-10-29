@@ -1,13 +1,31 @@
 PublishOnPyPI
 #############
 
-Publish a source (``*.tar.gz``) and wheel (``*.whl``) packages to `PyPI <https://pypi.org/>`__.
+Publish a source (``*.tar.gz``) package and/or wheel (``*.whl``) packages to `PyPI <https://pypi.org/>`__.
+
+**Behavior:**
+
+1. Download package artifact
+2. Publish source package(s) (``*.tar.gz``)
+3. Publish wheel package(s) (``*.whl``)
+4. Delete the artifact
+
+**Preconditions:**
+
+A PyPI account was created and the package name is either not occupied or the user has access rights for that package.
+
+**Requirements:**
+
+Setup a secret (e.g. ``PYPI_TOKEN``) in GitHub to handover the PyPI token to the job.
 
 Instantiation
 *************
 
 Simple Example
 ==============
+
+The following example demonstrates how to publish the artifact named ``Package`` to PyPI on every pipeline run triggered
+by a Git tag. A secret is forwarded from GitHub secrets to a job secret.
 
 .. code-block:: yaml
 
@@ -25,10 +43,18 @@ Simple Example
 Complex Example
 ===============
 
+In this more complex example, the job depends on a parameter creation (``Params``) and packaging job (``Package``). The
+used Python version is overwritten by a parameter calculated in the ``Params`` jobs. Also the artifact name is managed
+by that job. Finally, the list of requirements is overwritten to load a list of requirements from ``dist/requirements.txt``.
+
 .. code-block:: yaml
 
    jobs:
-     # ...
+     Params:
+       # ...
+
+     Package:
+       # ...
 
      PublishOnPyPI:
        uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r0
@@ -43,8 +69,8 @@ Complex Example
        secrets:
          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
-Template Parameters
-*******************
+Parameters
+**********
 
 python_version
 ==============
@@ -73,8 +99,8 @@ PYPI_TOKEN
 
 The token to access the package at PyPI for uploading new data.
 
-Template Results
-****************
+Results
+*******
 
 *None*
 

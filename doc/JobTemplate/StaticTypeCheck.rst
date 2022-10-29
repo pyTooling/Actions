@@ -1,31 +1,33 @@
 StaticTypeCheck
 ###############
 
-collect static type check result with `mypy`, and
-    optionally upload results as an HTML report.
-    Example `commands`:
+collect static type check result with mypy, and optionally upload results as an HTML report.
 
-    1. Regular package
+Example ``commands``:
 
-      ```yml
+1. Regular package
+
+   .. code-block:: yaml
+
       commands: mypy --html-report htmlmypy -p ToolName
-      ```
 
-    2. Parent namespace package
 
-      ```yml
+2. Parent namespace package
+
+   .. code-block:: yaml
+
       commands: |
         touch Parent/__init__.py
         mypy --html-report htmlmypy -p ToolName
-      ```
 
-    3. Child namespace package
+3. Child namespace package
 
-      ```yml
+   .. code-block:: yaml
+
       commands: |
         cd Parent
         mypy --html-report ../htmlmypy -p ToolName
-      ```
+
 
 Instantiation
 *************

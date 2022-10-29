@@ -35,7 +35,7 @@ Complex Example
 The following instantiation example creates 3 jobs from the same template, but with differing input parameters. The
 first job `UnitTestingParams` might be used to create a job matrix of unit tests. It creates the cross of default
 systems (Windows, Ubuntu, MacOS, MinGW64) and the given list of Python versions including some mypy versions. In
-addition a list of excludes (marked as :deletetion:`deletion`) and includes (marked as :additions:`additions`) is handed
+addition a list of excludes (marked as :deletion:`deletions`) and includes (marked as :addition:`additions`) is handed
 over resulting in the following combinations:
 
 +---------+-------------+-------------+-------------+--------------+-------------------------+---------+----------+------------------------------+------------------------------+
