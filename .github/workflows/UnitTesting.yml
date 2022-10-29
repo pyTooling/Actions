@@ -48,13 +48,13 @@ on:
         required: false
         default: ''
         type: string
-      test_directory:
+      tests_directory:
         description: 'Path to the directory containing tests (test working directory).'
         required: false
         default: 'tests'
         type: string
       unittest_directory:
-        description: 'Path to the directory containing unit tests (relative to test_directory).'
+        description: 'Path to the directory containing unit tests (relative to tests_directory).'
         required: false
         default: 'unit'
         type: string
@@ -118,14 +118,14 @@ jobs:
       - name: ☑ Run unit tests
         if: matrix.system == 'windows'
         run: |
-          cd ${{ inputs.test_directory }}
+          cd ${{ inputs.tests_directory }}
           $PYTEST_ARGS = if ("${{ inputs.artifact }}".length -gt 0) { "--junitxml=TestReportSummary.xml" } else { "" }
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
 
       - name: ☑ Run unit tests
         if: matrix.system != 'windows'
         run: |
-          cd ${{ inputs.test_directory }}
+          cd ${{ inputs.tests_directory }}
           [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReportSummary.xml' || unset PYTEST_ARGS
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
 
@@ -134,6 +134,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ inputs.artifact }}-${{ matrix.system }}-${{ matrix.python }}
-          path: ${{ inputs.test_directory }}/TestReportSummary.xml
+          path: ${{ inputs.tests_directory }}/TestReportSummary.xml
           if-no-files-found: error
           retention-days: 1
