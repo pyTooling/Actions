@@ -1,3 +1,5 @@
+.. _JOBTMPL/PublishTestResults:
+
 PublishTestResults
 ##################
 

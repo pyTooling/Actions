@@ -26,14 +26,13 @@ pyTooling Actions Documentation
 **pyTooling Actions** are reusable steps and workflows for GitHub Actions easing the creation and maintenance of
 workflows for Python projects on GitHub.
 
+Introduction
+************
+
 GitHub Actions workflows, actions and documentation are mostly focused on JavaScript/TypeScript as the scripting
 language for writing reusable CI code.
 However, Python being equally popular and capable, usage of JS/TS might be bypassed, with some caveats.
 This repository gathers reusable CI tooling for testing, packaging and distributing Python projects and documentation.
-
-Introduction
-************
-
 
 
 GitHub Action Job Templates
@@ -47,7 +46,7 @@ GitHub Action Job Templates
 
 * :ref:`JOBTMPL/UnitTesting`
 * :ref:`JOBTMPL/CodeCoverage`
-* Static type checking
+* :ref:`JOBTMPL/StaticTypeChecking`
 
 **Build and Packaging**
 
@@ -55,15 +54,15 @@ GitHub Action Job Templates
 
 **Documentation**
 
-* Verify docs
+* :ref:`JOBTMPL/VerifyDocumentation`
 * :ref:`JOBTMPL/BuildTheDocs`
 
 **Publishing**
 
 * :ref:`JOBTMPL/GitHubReleasePage`
 * :ref:`JOBTMPL/PyPI`
-* Publish test results
-* Publish to github pages
+* :ref:`JOBTMPL/PublishTestResults`
+* :ref:`JOBTMPL/PublishToGitHubPages`
 
 **Cleanups**
 
@@ -116,6 +115,14 @@ License
    \part{Main Documentation}
 
 .. toctree::
+   :caption: Actions
+   :hidden:
+
+   Action/index
+   Action/Releaser
+   Action/With-post-step
+
+.. toctree::
    :caption: Job Templates
    :hidden:
 
@@ -132,14 +139,6 @@ License
    JobTemplate/PublishToGitHubPages
    JobTemplate/Release
    JobTemplate/ArtifactCleanUp
-
-.. toctree::
-   :caption: Actions
-   :hidden:
-
-   Action/index
-   Action/Releaser
-   Action/With-post-step
 
 .. raw:: latex
 
