@@ -1,3 +1,5 @@
+.. _JOBTMPL/UnitTesting:
+
 UnitTesting
 ###########
 
@@ -67,11 +69,11 @@ requirements
 
 Python dependencies to be installed through pip.
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
++----------+----------+---------------------------------+
+| Required | Type     | Default                         |
++==========+==========+=================================+
 | optional | string   | ``-r tests/requirements.txt``   |
-+----------+----------+----------+
++----------+----------+---------------------------------+
 
 
 pacboy

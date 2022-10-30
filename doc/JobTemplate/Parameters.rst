@@ -1,8 +1,10 @@
+.. _JOBTMPL/Parameters:
+
 Parameters
 ##########
 
-The `Parameters` job template is a workaround for the limitations of GitHub Actions to handle global variables in
-GitHub Actions workflows (see [actions/runner#480](https://github.com/actions/runner/issues/480)).
+The ``Parameters`` job template is a workaround for the limitations of GitHub Actions to handle global variables in
+GitHub Actions workflows (see `actions/runner#480 <https://github.com/actions/runner/issues/480>`__.
 
 It generates output parameters with artifact names and a job matrix to be used in later running jobs.
 
