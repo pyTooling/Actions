@@ -93,40 +93,98 @@ over resulting in the following combinations:
          python_version_list: "3.10"
          system_list: "ubuntu windows macos mingw32 mingw64 clang64 ucrt64"
 
-Template Parameters
-*******************
+Parameters
+**********
 
 Name
-======
+====
+
 The name of the library or package.
 
- It's used to create artifact names.
+It's used to create artifact names.
 
++----------+----------+--------------+
+| Required | Type     | Default      |
++==========+==========+==============+
+| yes      | string   | — — — —      |
++----------+----------+--------------+
+
+python_version
+==============
+
+Python version.
+
++----------+----------+----------+
+| Required | Type     | Default  |
++==========+==========+==========+
+| optional | string   | ``3.11`` |
++----------+----------+----------+
 
 python_version_list
 ===================
 
-TBD
+Space separated list of Python versions to run tests with.
+
+Possible values:
+
+* ``3.7``, ``3.8``, ..., ``3.11``, ``3.12``
+* ``mypy-3.7``, ``mypy-3.8``, ``mypy-3.9``
+
+For ``3.12``, Python 3.12 alpha will be used.
+
++----------+----------+---------------------------+
+| Required | Type     | Default                   |
++==========+==========+===========================+
+| optional | string   | ``3.7 3.8 3.9 3.10 3.11`` |
++----------+----------+---------------------------+
 
 
 system_list
 ===========
 
-TBD
+Space separated list of systems to run tests on.
+
+Possible values:
+
+* Native systems: ``ubuntu``, ``windows``, ``macos``
+* MSYS2: ``msys``, ``mingw32``, ``mingw64``, ``clang32``, ``clang64``, ``ucrt64``
+
++----------+----------+----------------------------------+
+| Required | Type     | Default                          |
++==========+==========+==================================+
+| optional | string   | ``ubuntu windows mingw64 macos`` |
++----------+----------+----------------------------------+
 
 
 include_list
 ============
 
-TBD
+Space separated list of ``system:python`` items to be included into the list of test.
+
++----------+----------+----------+
+| Required | Type     | Default  |
++==========+==========+==========+
+| optional | string   | ``""``   |
++----------+----------+----------+
 
 exclude_list
 ============
 
-TBD
+Space separated list of ``system:python`` items to be excluded from the list of test.
 
-Template Results
-****************
++----------+----------+----------+
+| Required | Type     | Default  |
++==========+==========+==========+
+| optional | string   | ``""``   |
++----------+----------+----------+
+
+Secrets
+*******
+
+This job template needs no secrets.
+
+Results
+*******
 
 Params
 ======

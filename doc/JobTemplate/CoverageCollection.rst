@@ -18,8 +18,9 @@ Configuration options to ``pytest`` and ``coverage.py`` should be given via sect
 4. Run unit tests and collect code coverage
 5. Convert coverage data to a Cobertura XML file
 6. Convert coverage data to a HTML report
-7. Publish Cobertura file to CodeCov
-8. Publish Cobertura file to Codacy
+7. Upload HTML report as an artifact
+8. Publish Cobertura file to CodeCov
+9. Publish Cobertura file to Codacy
 
 **Preconditions:**
 
@@ -29,6 +30,14 @@ Configuration options to ``pytest`` and ``coverage.py`` should be given via sect
 **Requirements:**
 
 Setup a secret (e.g. ``codacy_token``) in GitHub to handover the Codacy project token to the job.
+
+**Dependencies:**
+
+* actions/checkout@v2
+* actions/setup-python@v2
+* actions/upload-artifact@v2
+* codecov/codecov-action@v1
+* codacy/codacy-coverage-reporter-action@master
 
 
 Instantiation
@@ -63,8 +72,8 @@ Complex Example
        secrets:
          codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
-Template Parameters
-*******************
+Parameters
+**********
 
 python_version
 ==============
@@ -152,7 +161,7 @@ Token to push result to codacy.
 +----------+----------+--------------+
 
 
-Template Results
-****************
+Results
+*******
 
-*None*
+This job template has no output parameters.

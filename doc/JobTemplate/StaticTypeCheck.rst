@@ -48,8 +48,8 @@ Complex Example
 
    TBD
 
-Template Parameters
-*******************
+Parameters
+**********
 
 TBD 1
 =====
@@ -61,7 +61,12 @@ TBD 1
 
 TBD
 
-Template Results
-****************
+Secrets
+*******
 
-*None*
+This job template needs no secrets.
+
+Results
+*******
+
+This job template has no output parameters.
