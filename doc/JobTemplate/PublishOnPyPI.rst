@@ -77,19 +77,35 @@ python_version
 
 Python version used for uploading the package contents via `twine` to PyPI.
 
-**Default:** 3.11
++----------+----------+----------+
+| Required | Type     | Default  |
++==========+==========+==========+
+| optional | string   | 3.11     |
++----------+----------+----------+
+
 
 requirements
 ============
 
 List of requirements to be installed for uploading the package contents to PyPI.
 
-**Default:** wheel, twine
++----------+----------+--------------+
+| Required | Type     | Default      |
++==========+==========+==============+
+| optional | string   | wheel, twine |
++----------+----------+--------------+
+
 
 artifact
 ========
 
 Name of the artifact containing the package(s).
+
++----------+----------+--------------+
+| Required | Type     | Default      |
++==========+==========+==============+
+| yes      | string   | — — — —      |
++----------+----------+--------------+
 
 Secrets
 *******
@@ -98,6 +114,12 @@ PYPI_TOKEN
 ==========
 
 The token to access the package at PyPI for uploading new data.
+
++----------+----------+--------------+
+| Required | Type     | Default      |
++==========+==========+==============+
+| yes      | string   | — — — —      |
++----------+----------+--------------+
 
 Results
 *******
