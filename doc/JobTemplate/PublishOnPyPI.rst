@@ -18,6 +18,13 @@ A PyPI account was created and the package name is either not occupied or the us
 
 Setup a secret (e.g. ``PYPI_TOKEN``) in GitHub to handover the PyPI token to the job.
 
+**Dependencies:**
+
+* actions/download-artifact
+* actions/setup-python
+* geekyeggo/delete-artifact
+
+
 Instantiation
 *************
 
@@ -80,7 +87,7 @@ Python version used for uploading the package contents via `twine` to PyPI.
 +----------+----------+----------+
 | Required | Type     | Default  |
 +==========+==========+==========+
-| optional | string   | 3.11     |
+| optional | string   | ``3.11`` |
 +----------+----------+----------+
 
 
@@ -89,11 +96,11 @@ requirements
 
 List of requirements to be installed for uploading the package contents to PyPI.
 
-+----------+----------+--------------+
-| Required | Type     | Default      |
-+==========+==========+==============+
-| optional | string   | wheel, twine |
-+----------+----------+--------------+
++----------+----------+-----------------+
+| Required | Type     | Default         |
++==========+==========+=================+
+| optional | string   | ``wheel twine`` |
++----------+----------+-----------------+
 
 
 artifact
@@ -124,11 +131,4 @@ The token to access the package at PyPI for uploading new data.
 Results
 *******
 
-*None*
-
-Dependencies
-************
-
-* actions/download-artifact
-* actions/setup-python
-* geekyeggo/delete-artifact
+This job template has no output parameters.
