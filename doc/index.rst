@@ -107,7 +107,8 @@ License
    :caption: Overview
    :hidden:
 
-   Introduction
+   Background
+   Releases
    Dependency
 
 .. raw:: latex
