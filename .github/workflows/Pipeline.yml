@@ -1,0 +1,31 @@
+name: Pipeline
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  BuildTheDocs:
+    uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@r0
+    with:
+      artifact: Documentation
+
+  PublishToGitHubPages:
+    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r0
+    needs:
+      - BuildTheDocs
+    with:
+      doc: Documentation
+
+  ArtifactCleanUp:
+    name: 🗑️ Artifact Cleanup
+    needs:
+      - BuildTheDocs
+      - PublishToGitHubPages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🗑️ Delete artifacts
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: Documentation

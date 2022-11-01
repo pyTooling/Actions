@@ -28,7 +28,7 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.10'
+        default: '3.11'
         type: string
       requirements:
         description: 'Python dependencies to be installed through pip; if empty, use pyproject.toml through build.'
@@ -99,7 +99,6 @@ jobs:
       - name: 🔨 [setuptools] Build Python package (binary distribution - wheel)
         if: inputs.requirements != '' && inputs.requirements != 'no-isolation'
         run: python setup.py bdist_wheel
-
 
       - name: 📤 Upload wheel artifact
         uses: actions/upload-artifact@v2

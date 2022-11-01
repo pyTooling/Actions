@@ -1,10 +1,17 @@
 # ==================================================================================================================== #
+#             _____           _ _               ____                                                                   #
+#  _ __  _   |_   _|__   ___ | (_)_ __   __ _  / ___|___  _ __ ___  _ __ ___   ___  _ __                               #
+# | '_ \| | | || |/ _ \ / _ \| | | '_ \ / _` || |   / _ \| '_ ` _ \| '_ ` _ \ / _ \| '_ \                              #
+# | |_) | |_| || | (_) | (_) | | | | | | (_| || |__| (_) | | | | | | | | | | | (_) | | | |                             #
+# | .__/ \__, ||_|\___/ \___/|_|_|_| |_|\__, (_)____\___/|_| |_| |_|_| |_| |_|\___/|_| |_|                             #
+# |_|    |___/                          |___/                                                                          #
+# ==================================================================================================================== #
 # Authors:                                                                                                             #
 #   Patrick Lehmann                                                                                                    #
-#   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
+# License:                                                                                                             #
 # ==================================================================================================================== #
-# Copyright 2020-2022 The pyTooling Authors                                                                            #
+# Copyright 2017-2022 Patrick Lehmann - Bötzingen, Germany                                                             #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -20,65 +27,11 @@
 #                                                                                                                      #
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
-name: Static Type Check
-
-on:
-  workflow_call:
-    inputs:
-      python_version:
-        description: 'Python version.'
-        required: false
-        default: '3.11'
-        type: string
-      requirements:
-        description: 'Python dependencies to be installed through pip.'
-        required: false
-        default: '-r tests/requirements.txt'
-        type: string
-      report:
-        description: 'Directory to upload as an artifact.'
-        required: false
-        default: 'htmlmypy'
-        type: string
-      commands:
-        description: 'Commands to run the static type checks.'
-        required: true
-        type: string
-      artifact:
-        description: 'Name of the typing artifact.'
-        required: true
-        type: string
-
-jobs:
-
-  StaticTypeCheck:
-    name: 👀 Check Static Typing using Python ${{ inputs.python_version }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: ⏬ Checkout repository
-        uses: actions/checkout@v2
-
-      - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ inputs.python_version }}
-
-      - name: 🗂 Install dependencies
-        run: |
-          python -m pip install -U pip
-          python -m pip install ${{ inputs.requirements }}
-
-      - name: Check Static Typing
-        continue-on-error: true
-        run: ${{ inputs.commands }}
-
-      - name: 📤 Upload 'Static Typing Report' artifact
-        if: ${{ inputs.artifact != '' }}
-        continue-on-error: true
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ inputs.artifact }}
-          path: ${{ inputs.report }}
-          if-no-files-found: error
-          retention-days: 1
+#
+"""Placeholder"""
+__author__ =    "Patrick Lehmann"
+__email__ =     "Paebbels@gmail.com"
+__copyright__ = "2017-2022, Patrick Lehmann"
+__license__ =   "Apache License, Version 2.0"
+__version__ =   "0.4.4"
+__keywords__ =  []
