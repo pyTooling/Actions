@@ -5,6 +5,17 @@ PublishToGitHubPages
 
 This job publishes HTML content from artifacts of other jobs to GitHub Pages.
 
+**Behavior:**
+
+1. Checkout repository.
+2. Download artifacts.
+3. Push HTML files to branch ``gh-pages``.
+
+**Dependencies:**
+
+* :gh:`actions/checkout`
+* :gh:`actions/download-artifact`
+
 Instantiation
 *************
 

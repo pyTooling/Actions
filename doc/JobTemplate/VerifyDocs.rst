@@ -3,7 +3,15 @@
 VerifyDocs
 ##########
 
-extract code examples from the README and test these code snippets.
+This job extracts code examples from the README and tests these code snippets.
+
+**Behavior:**
+
+TBD
+
+**Dependencies:**
+
+TBD
 
 Instantiation
 *************
@@ -11,33 +19,24 @@ Instantiation
 Simple Example
 ==============
 
-.. code-block:: yaml
-
-   TBD
+.. todo:: VerifyDocs:SimpleExample Needs documentation.
 
 Complex Example
 ===============
 
-
-
-.. code-block:: yaml
-
-   TBD
+.. todo:: VerifyDocs:ComplexExample Needs documentation.
 
 Parameters
 **********
 
-TBD 1
-=====
+.. todo:: VerifyDocs:Parameters Needs documentation.
 
-TBD
+Secrets
+*******
 
-TBD 1
-=====
+This job template needs no secrets.
 
-TBD
+Results
+*******
 
-Template Results
-****************
-
-*None*
+This job template has no output parameters.
