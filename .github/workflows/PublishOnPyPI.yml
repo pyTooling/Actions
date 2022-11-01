@@ -52,13 +52,13 @@ jobs:
 
     steps:
       - name: 📥 Download artifacts '${{ inputs.artifact }}' from 'Package' job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.artifact }}
           path: dist/
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ inputs.python_version }}
 
@@ -80,6 +80,6 @@ jobs:
         run: twine upload dist/*.whl
 
       - name: 🗑️ Delete packaging Artifacts
-        uses: geekyeggo/delete-artifact@v1
+        uses: geekyeggo/delete-artifact@v2
         with:
           name: ${{ inputs.artifact }}

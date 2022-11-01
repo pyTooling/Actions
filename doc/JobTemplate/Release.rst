@@ -27,7 +27,7 @@ This job creates a Release Page on GitHub.
 
 **Dependencies:**
 
-* :gh:`actions/create-release`
+* :gh:`actions/create-release` (unmaintained)
 
 Instantiation
 *************

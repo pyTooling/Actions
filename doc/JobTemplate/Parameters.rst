@@ -8,6 +8,14 @@ GitHub Actions workflows (see `actions/runner#480 <https://github.com/actions/ru
 
 It generates output parameters with artifact names and a job matrix to be used in later running jobs.
 
+**Behavior:**
+
+.. todo:: Parameters:Behavior Needs documentation.
+
+**Dependencies:**
+
+*None*
+
 Instantiation
 *************
 

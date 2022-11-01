@@ -48,24 +48,24 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 📥 Download artifacts '${{ inputs.doc }}' from 'BuildTheDocs' job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.doc }}
           path: public
 
       - name: 📥 Download artifacts '${{ inputs.coverage }}' from 'Coverage' job
         if: ${{ inputs.coverage != '' }}
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.coverage }}
           path: public/coverage
 
       - name: 📥 Download artifacts '${{ inputs.typing }}' from 'StaticTypeCheck' job
         if: ${{ inputs.typing != '' }}
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.typing }}
           path: public/typing

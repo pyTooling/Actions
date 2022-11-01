@@ -81,7 +81,7 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: '🟦 Setup MSYS2'
         if: matrix.system == 'msys2'
@@ -93,7 +93,7 @@ jobs:
 
       - name: 🐍 Setup Python ${{ matrix.python }}
         if: matrix.system != 'msys2'
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
 
@@ -131,7 +131,7 @@ jobs:
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.artifact != ''
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifact }}-${{ matrix.system }}-${{ matrix.python }}
           path: ${{ inputs.tests_directory }}/TestReportSummary.xml
