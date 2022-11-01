@@ -12,7 +12,7 @@ This job removes artifacts used to exchange data from job to job.
 
 **Dependencies:**
 
-* geekyeggo/delete-artifact@v1
+* :gh:`geekyeggo/delete-artifact`
 
 
 Instantiation

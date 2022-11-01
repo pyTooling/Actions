@@ -18,9 +18,9 @@ file.
 
 **Dependencies:**
 
-* actions/checkout@v2
-* actions/setup-python@v2
-* actions/upload-artifact@v2
+* :gh:`actions/checkout`
+* :gh:`actions/setup-python`
+* :gh:`actions/upload-artifact`
 
 Instantiation
 *************
