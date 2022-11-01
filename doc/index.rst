@@ -69,9 +69,33 @@ GitHub Action Job Templates
 * :ref:`JOBTMPL/ArtifactCleanup`
 
 
+Example Pipelines
+=================
+
+``ExamplePipeline.yml`` is an example Workflow which uses all of the Reusable Workflows.
+Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
+Minimal required modifications are the following:
+
+- Set the ``name`` input of job ``Parameters``.
+- Specify the ``commands`` input of job ``StaticTypeCheck``.
+
+Find further usage cases in the following list of projects:
+
+- `edaa-org/pyEDAA.ProjectModel <https://github.com/edaa-org/pyEDAA.ProjectModel/tree/main/.github/workflows>`__
+- `edaa-org/pySVModel <https://github.com/edaa-org/pySVModel/tree/main/.github/workflows>`__
+- `VHDL/pyVHDLModel <https://github.com/VHDL/pyVHDLModel/tree/main/.github/workflows>`__
+
+
 GitHub Actions
 **************
 
+* :ref:`ACTION/Releaser`
+* :ref:`ACTION/WithPostStep`
+
+References
+**********
+
+- `hdl/containers#48 <https://github.com/hdl/containers/issues/48>`__
 
 Contributors
 ************
