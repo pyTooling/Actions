@@ -22,9 +22,9 @@ Setup a secret (e.g. ``PYPI_TOKEN``) in GitHub to handover the PyPI token to the
 
 **Dependencies:**
 
-* actions/download-artifact
-* actions/setup-python
-* geekyeggo/delete-artifact
+* :gh:`actions/download-artifact`
+* :gh:`actions/setup-python`
+* :gh:`geekyeggo/delete-artifact`
 
 
 Instantiation
