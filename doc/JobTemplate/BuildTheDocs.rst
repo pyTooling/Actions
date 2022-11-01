@@ -46,8 +46,8 @@ Complex Example
          artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}
 
 
-Template Parameters
-*******************
+Parameters
+**********
 
 artifact
 ========

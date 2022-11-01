@@ -54,8 +54,8 @@ Complex Example
          - CodeCoverage
          - UnitTesting
 
-Template Parameters
-*******************
+Parameters
+**********
 
 report_files
 ============

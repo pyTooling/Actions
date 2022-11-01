@@ -24,8 +24,8 @@ Complex Example
 
    TBD
 
-Template Parameters
-*******************
+Parameters
+**********
 
 TBD 1
 =====
