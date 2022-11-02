@@ -113,7 +113,7 @@ jobs:
 
           print("Parameters:")
           print(f"  python_version: {python_version}")
-          print(f"  artifact_names:")
+          print(f"  artifact_names ({len(artifact_names)}):")
           for id, name in artifact_names.items():
             print(f"    {id:>14}: {name}")
 
@@ -175,10 +175,10 @@ jobs:
             }
           }
 
-          print("includes:")
+          print(f"includes ({len(includes)}):")
           for system,version in includes:
             print(f"- {system}:{version}")
-          print("excludes:")
+          print(f"excludes ({len(excludes)}):")
           for exclude in excludes:
             print(f"- {exclude}")
 
@@ -195,7 +195,7 @@ jobs:
               if system in data['sys']
               and version in data['python']
           ]
-          print("combinations:")
+          print(f"combinations ({len(combinations)}):")
           print(combinations)
 
           jobs = [
@@ -229,13 +229,15 @@ jobs:
             buffer += f"    {{ " + ", ".join([f"\"{key}\": \"{value}\"" for key, value in job.items()]) + f" }},\n"
 
           print(dedent(f"""\
-            Python jobs:
+            Python jobs ({len(jobs)}):
             [
           {buffer}  ]
           """))
 
           # Write jobs to special file
-          with Path(getenv("GITHUB_OUTPUT")).open("a+") as f:
+          github_output = Path(getenv("GITHUB_OUTPUT"))
+          print(f"GITHUB_OUTPUT: {github_output}")
+          with github_output.open("a+") as f:
             f.write(f"python_version={python_version}")
             f.write(f"artifact_names={params['artifacts']!s}")
             f.write(f"params={params!s}")
