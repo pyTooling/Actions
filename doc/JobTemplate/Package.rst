@@ -41,7 +41,6 @@ Simple Example
 Complex Example
 ===============
 
-
 .. code-block:: yaml
 
    jobs:
@@ -62,40 +61,44 @@ Parameters
 python_version
 ==============
 
++----------------+----------+----------+----------+
+| Parameter Name | Required | Type     | Default  |
++================+==========+==========+==========+
+| python_version | optional | string   | 3.11     |
++----------------+----------+----------+----------+
+
 Python version.
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
-| optional | string   | 3.11     |
-+----------+----------+----------+
 
 requirements
 ============
 
++----------------+----------+----------+----------+
+| Parameter Name | Required | Type     | Default  |
++================+==========+==========+==========+
+| requirements   | optional | string   | ``""``   |
++----------------+----------+----------+----------+
+
 Python dependencies to be installed through pip; if empty, use pyproject.toml through build.
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
-| optional | string   | ``""``   |
-+----------+----------+----------+
 
 artifact
 ========
 
++----------------+----------+----------+----------+
+| Parameter Name | Required | Type     | Default  |
++================+==========+==========+==========+
+| artifact       | yes      | string   | — — — —  |
++----------------+----------+----------+----------+
+
 Name of the package artifact.
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
-| yes      | string   | — — — —  |
-+----------+----------+----------+
 
 Secrets
 *******
 
 This job template needs no secrets.
+
 
 Results
 *******

@@ -35,8 +35,6 @@ The simplest variant just uses the artifact name for the package.
 Complex Example
 ===============
 
-
-
 .. code-block:: yaml
 
    jobs:
@@ -61,24 +59,26 @@ Parameters
 package
 =======
 
++----------------+----------+----------+----------+
+| Parameter Name | Required | Type     | Default  |
++================+==========+==========+==========+
+| package        | yes      | string   | — — — —  |
++----------------+----------+----------+----------+
+
 Artifacts to be removed on not tagged runs.
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
-| yes      | string   | — — — —  |
-+----------+----------+----------+
 
 remaining
 =========
 
++----------------+----------+----------+----------+
+| Parameter Name | Required | Type     | Default  |
++================+==========+==========+==========+
+| remaining      | optional | string   | ``""``   |
++----------------+----------+----------+----------+
+
 Artifacts to be removed unconditionally.
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
-| optional | string   | ``""``   |
-+----------+----------+----------+
 
 Secrets
 *******

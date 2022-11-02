@@ -54,42 +54,45 @@ Complex Example
          coverage: ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
          typing: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
 
+
 Parameters
 **********
 
 doc
 ===
 
++----------------+----------+----------+--------------+
+| Parameter Name | Required | Type     | Default      |
++================+==========+==========+==============+
+| doc            | yes      | string   | — — — —      |
++----------------+----------+----------+--------------+
+
 Name of the documentation artifact.
 
-+----------+----------+--------------+
-| Required | Type     | Default      |
-+==========+==========+==============+
-| yes      | string   | — — — —      |
-+----------+----------+--------------+
 
 coverage
 ========
 
-Name of the coverage artifact.
++----------------+----------+----------+-----------------+
+| Parameter Name | Required | Type     | Default         |
++================+==========+==========+=================+
+| coverage       | optional | string   | ``""``          |
++----------------+----------+----------+-----------------+
 
-+----------+----------+-----------------+
-| Required | Type     | Default         |
-+==========+==========+=================+
-| optional | string   | ``""``          |
-+----------+----------+-----------------+
+Name of the coverage artifact.
 
 
 typing
 ======
 
++----------------+----------+----------+-----------------+
+| Parameter Name | Required | Type     | Default         |
++================+==========+==========+=================+
+| typing         | optional | string   | ``""``          |
++----------------+----------+----------+-----------------+
+
 Name of the typing artifact.
 
-+----------+----------+-----------------+
-| Required | Type     | Default         |
-+==========+==========+=================+
-| optional | string   | ``""``          |
-+----------+----------+-----------------+
 
 
 Secrets

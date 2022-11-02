@@ -80,73 +80,74 @@ Parameters
 python_version
 ==============
 
-Python version used for running unit tests.
++----------------+----------+----------+----------+
+| Parameter Name | Required | Type     | Default  |
++================+==========+==========+==========+
+| python_version | optional | string   | 3.11     |
++----------------+----------+----------+----------+
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
-| optional | string   | 3.11     |
-+----------+----------+----------+
+Python version used for running unit tests.
 
 
 requirements
 ============
 
-Python dependencies to be installed through pip.
++----------------+----------+----------+-------------------------------+
+| Parameter Name | Required | Type     | Default                       |
++================+==========+==========+===============================+
+| requirements   | optional | string   | ``-r tests/requirements.txt`` |
++----------------+----------+----------+-------------------------------+
 
-+----------+----------+-------------------------------+
-| Required | Type     | Default                       |
-+==========+==========+===============================+
-| optional | string   | ``-r tests/requirements.txt`` |
-+----------+----------+-------------------------------+
+Python dependencies to be installed through pip.
 
 
 tests_directory
 ===============
 
-Path to the directory containing tests (test working directory).
++-----------------+----------+----------+-----------+
+| Parameter Name  | Required | Type     | Default   |
++=================+==========+==========+===========+
+| tests_directory | optional | string   | ``tests`` |
++-----------------+----------+----------+-----------+
 
-+----------+----------+-----------+
-| Required | Type     | Default   |
-+==========+==========+===========+
-| optional | string   | ``tests`` |
-+----------+----------+-----------+
+Path to the directory containing tests (test working directory).
 
 
 unittest_directory
 ==================
 
-Path to the directory containing unit tests (relative to test_directory).
++--------------------+----------+----------+-----------+
+| Parameter Name     | Required | Type     | Default   |
++====================+==========+==========+===========+
+| unittest_directory | optional | string   | ``unit``  |
++--------------------+----------+----------+-----------+
 
-+----------+----------+-----------+
-| Required | Type     | Default   |
-+==========+==========+===========+
-| optional | string   | ``unit``  |
-+----------+----------+-----------+
+Path to the directory containing unit tests (relative to test_directory).
 
 
 coverage_config
 ===============
 
-Path to the ``.coveragerc`` file. Use ``pyproject.toml`` by default.
++-----------------+----------+----------+--------------------+
+| Parameter Name  | Required | Type     | Default            |
++=================+==========+==========+====================+
+| coverage_config | optional | string   | ``pyproject.toml`` |
++-----------------+----------+----------+--------------------+
 
-+----------+----------+--------------------+
-| Required | Type     | Default            |
-+==========+==========+====================+
-| optional | string   | ``pyproject.toml`` |
-+----------+----------+--------------------+
+Path to the ``.coveragerc`` file. Use ``pyproject.toml`` by default.
 
 
 artifact
 ========
 
++----------------+----------+----------+--------------+
+| Parameter Name | Required | Type     | Default      |
++================+==========+==========+==============+
+| artifact       | yes      | string   | — — — —      |
++----------------+----------+----------+--------------+
+
 Name of the coverage artifact.
 
-+----------+----------+--------------+
-| Required | Type     | Default      |
-+==========+==========+==============+
-| yes      | string   | — — — —      |
-+----------+----------+--------------+
 
 Secrets
 *******
@@ -154,13 +155,13 @@ Secrets
 codacy_token
 ============
 
-Token to push result to codacy.
++----------------+----------+----------+--------------+
+| Secret Name    | Required | Type     | Default      |
++================+==========+==========+==============+
+| codacy_token   | yes      | string   | — — — —      |
++----------------+----------+----------+--------------+
 
-+----------+----------+--------------+
-| Required | Type     | Default      |
-+==========+==========+==============+
-| yes      | string   | — — — —      |
-+----------+----------+--------------+
+Token to push result to codacy.
 
 
 Results

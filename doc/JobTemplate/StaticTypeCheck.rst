@@ -89,65 +89,68 @@ Parameters
 python_version
 ==============
 
-Python version.
++----------------+----------+----------+-----------------+
+| Parameter Name | Required | Type     | Default         |
++================+==========+==========+=================+
+| python_version | optional | string   | ``3.11``        |
++----------------+----------+----------+-----------------+
 
-+----------+----------+-----------------+
-| Required | Type     | Default         |
-+==========+==========+=================+
-| optional | string   | ``3.11``        |
-+----------+----------+-----------------+
+Python version.
 
 
 requirements
 ============
 
-Python dependencies to be installed through pip.
++----------------+----------+----------+-------------------------------+
+| Parameter Name | Required | Type     | Default                       |
++================+==========+==========+===============================+
+| requirements   | optional | string   | ``-r tests/requirements.txt`` |
++----------------+----------+----------+-------------------------------+
 
-+----------+----------+-------------------------------+
-| Required | Type     | Default                       |
-+==========+==========+===============================+
-| optional | string   | ``-r tests/requirements.txt`` |
-+----------+----------+-------------------------------+
+Python dependencies to be installed through pip.
 
 
 report
 ======
 
-Directory to upload as an artifact.
++----------------+----------+----------+-----------------+
+| Parameter Name | Required | Type     | Default         |
++================+==========+==========+=================+
+| report         | optional | string   | ``htmlmypy``    |
++----------------+----------+----------+-----------------+
 
-+----------+----------+-----------------+
-| Required | Type     | Default         |
-+==========+==========+=================+
-| optional | string   | ``htmlmypy``    |
-+----------+----------+-----------------+
+Directory to upload as an artifact.
 
 
 commands
 ========
 
++----------------+----------+----------+--------------+
+| Parameter Name | Required | Type     | Default      |
++================+==========+==========+==============+
+| commands       | yes      | string   | — — — —      |
++----------------+----------+----------+--------------+
+
 Commands to run the static type checks.
 
-+----------+----------+--------------+
-| Required | Type     | Default      |
-+==========+==========+==============+
-| yes      | string   | — — — —      |
-+----------+----------+--------------+
 
 artifact
 ========
 
++----------------+----------+----------+--------------+
+| Parameter Name | Required | Type     | Default      |
++================+==========+==========+==============+
+| artifact       | yes      | string   | — — — —      |
++----------------+----------+----------+--------------+
+
 Name of the typing artifact.
 
-+----------+----------+--------------+
-| Required | Type     | Default      |
-+==========+==========+==============+
-| yes      | string   | — — — —      |
-+----------+----------+--------------+
 
 Secrets
 *******
 
 This job template needs no secrets.
+
 
 Results
 *******

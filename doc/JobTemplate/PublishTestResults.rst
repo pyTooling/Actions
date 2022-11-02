@@ -54,11 +54,18 @@ Complex Example
          - CodeCoverage
          - UnitTesting
 
+
 Parameters
 **********
 
 report_files
 ============
+
++----------------+----------+----------+---------------------------------+
+| Parameter Name | Required | Type     | Default                         |
++================+==========+==========+=================================+
+| report_files   | optional | string   | ``artifacts/**/*.xml``          |
++----------------+----------+----------+---------------------------------+
 
 Pattern of jUnit report files to publish as Markdown.
 
@@ -68,12 +75,6 @@ The parameter can be a comma separated list. Wildcards are supported.
 
    All artifacts are downloaded into directory ``artifacts``, thus the pattern should include this directory as a
    prefix.
-
-+----------+----------+---------------------------------+
-| Required | Type     | Default                         |
-+==========+==========+=================================+
-| optional | string   | ``artifacts/**/*.xml``          |
-+----------+----------+---------------------------------+
 
 
 Secrets

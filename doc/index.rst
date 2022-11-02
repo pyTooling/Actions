@@ -175,5 +175,4 @@ License
 
    License
    Doc-License
-   genindex
    TODO

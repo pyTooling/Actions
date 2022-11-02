@@ -78,43 +78,45 @@ by that job. Finally, the list of requirements is overwritten to load a list of 
        secrets:
          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
+
 Parameters
 **********
 
 python_version
 ==============
 
-Python version used for uploading the package contents via `twine` to PyPI.
++----------------+----------+----------+----------+
+| Parameter Name | Required | Type     | Default  |
++================+==========+==========+==========+
+| python_version | optional | string   | ``3.11`` |
++----------------+----------+----------+----------+
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
-| optional | string   | ``3.11`` |
-+----------+----------+----------+
+Python version used for uploading the package contents via `twine` to PyPI.
 
 
 requirements
 ============
 
-List of requirements to be installed for uploading the package contents to PyPI.
++----------------+----------+----------+-----------------+
+| Parameter Name | Required | Type     | Default         |
++================+==========+==========+=================+
+| requirements   | optional | string   | ``wheel twine`` |
++----------------+----------+----------+-----------------+
 
-+----------+----------+-----------------+
-| Required | Type     | Default         |
-+==========+==========+=================+
-| optional | string   | ``wheel twine`` |
-+----------+----------+-----------------+
+List of requirements to be installed for uploading the package contents to PyPI.
 
 
 artifact
 ========
 
++----------------+----------+----------+--------------+
+| Parameter Name | Required | Type     | Default      |
++================+==========+==========+==============+
+| artifact       | yes      | string   | — — — —      |
++----------------+----------+----------+--------------+
+
 Name of the artifact containing the package(s).
 
-+----------+----------+--------------+
-| Required | Type     | Default      |
-+==========+==========+==============+
-| yes      | string   | — — — —      |
-+----------+----------+--------------+
 
 Secrets
 *******
@@ -122,13 +124,14 @@ Secrets
 PYPI_TOKEN
 ==========
 
++----------------+----------+----------+--------------+
+| Secret Name    | Required | Type     | Default      |
++================+==========+==========+==============+
+| PYPI_TOKEN     | yes      | string   | — — — —      |
++----------------+----------+----------+--------------+
+
 The token to access the package at PyPI for uploading new data.
 
-+----------+----------+--------------+
-| Required | Type     | Default      |
-+==========+==========+==============+
-| yes      | string   | — — — —      |
-+----------+----------+--------------+
 
 Results
 *******

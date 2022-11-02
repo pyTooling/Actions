@@ -17,7 +17,37 @@ Versions
 Branches
 ********
 
-.. todo:: Releases:Branches Needs documentation.
+.. mermaid::
+
+   %%{init: { 'logLevel': 'debug', 'theme': 'neutral', 'gitGraph': {'rotateCommitLabel': false} } }%%
+   gitGraph
+     commit id: "-"
+     branch dev
+     commit id: "B"
+     commit id: "C"
+     checkout main
+     merge dev tag: "v0.4.0"
+     checkout dev
+     commit id: "D"
+     commit id: "E"
+     commit id: "F"
+     checkout main
+     merge dev tag: "v0.5.0"
+
+``dev``
+=======
+
+Development is done on branch ``dev``.
+
+All merge requests need to target this branch.
+
+``main``
+========
+
+Finished development is merged to branch ``main``.
+
+Each merge-commit is tagged with a semantic version.
+
 
 Tagging
 *******

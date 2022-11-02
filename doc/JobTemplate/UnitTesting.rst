@@ -56,36 +56,37 @@ Parameters
 jobs
 ====
 
++----------------+----------+----------+--------------+
+| Parameter Name | Required | Type     | Default      |
++================+==========+==========+==============+
+| jobs           | yes      | string   | — — — —      |
++----------------+----------+----------+--------------+
+
 JSON list with environment fields, telling the system and Python versions to run tests with.
 
-+----------+----------+--------------+
-| Required | Type     | Default      |
-+==========+==========+==============+
-| yes      | string   | — — — —      |
-+----------+----------+--------------+
 
 requirements
 ============
 
-Python dependencies to be installed through pip.
++----------------+----------+----------+---------------------------------+
+| Parameter Name | Required | Type     | Default                         |
++================+==========+==========+=================================+
+| requirements   | optional | string   | ``-r tests/requirements.txt``   |
++----------------+----------+----------+---------------------------------+
 
-+----------+----------+---------------------------------+
-| Required | Type     | Default                         |
-+==========+==========+=================================+
-| optional | string   | ``-r tests/requirements.txt``   |
-+----------+----------+---------------------------------+
+Python dependencies to be installed through pip.
 
 
 pacboy
 ======
 
-MSYS2 dependencies to be installed through pacboy (pacman).
++----------------+----------+----------+-----------------------------------------------------------------+
+| Parameter Name | Required | Type     | Default                                                         |
++================+==========+==========+=================================================================+
+| pacboy         | optional | string   | ``python-pip:p python-wheel:p python-coverage:p python-lxml:p`` |
++----------------+----------+----------+-----------------------------------------------------------------+
 
-+----------+----------+-----------------------------------------------------------------+
-| Required | Type     | Default                                                         |
-+==========+==========+=================================================================+
-| optional | string   | ``python-pip:p python-wheel:p python-coverage:p python-lxml:p`` |
-+----------+----------+-----------------------------------------------------------------+
+MSYS2 dependencies to be installed through pacboy (pacman).
 
 .. code-block:: yaml
 
@@ -99,55 +100,56 @@ MSYS2 dependencies to be installed through pacboy (pacman).
 mingw_requirements
 ==================
 
-Override Python dependencies to be installed through pip on MSYS2 (MINGW64) only.
++--------------------+----------+----------+----------+
+| Parameter Name     | Required | Type     | Default  |
++====================+==========+==========+==========+
+| mingw_requirements | optional | string   | ``""``   |
++--------------------+----------+----------+----------+
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
-| optional | string   | ``""``   |
-+----------+----------+----------+
+Override Python dependencies to be installed through pip on MSYS2 (MINGW64) only.
 
 
 tests_directory
 ===============
 
-Path to the directory containing tests (test working directory).
++-----------------+----------+----------+-----------+
+| Parameter Name  | Required | Type     | Default   |
++=================+==========+==========+===========+
+| tests_directory | optional | string   | ``tests`` |
++-----------------+----------+----------+-----------+
 
-+----------+----------+-----------+
-| Required | Type     | Default   |
-+==========+==========+===========+
-| optional | string   | ``tests`` |
-+----------+----------+-----------+
+Path to the directory containing tests (test working directory).
 
 
 unittest_directory
 ==================
 
-Path to the directory containing unit tests (relative to tests_directory).
++--------------------+----------+----------+----------+
+| Parameter Name     | Required | Type     | Default  |
++====================+==========+==========+==========+
+| unittest_directory | optional | string   | ``unit`` |
++--------------------+----------+----------+----------+
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
-| optional | string   | ``unit`` |
-+----------+----------+----------+
+Path to the directory containing unit tests (relative to tests_directory).
 
 
 artifact
 ========
 
-Generate unit test report with junitxml and upload results as an artifact.
++----------------+----------+----------+----------+
+| Parameter Name | Required | Type     | Default  |
++================+==========+==========+==========+
+| artifact       | optional | string   | ``""``   |
++----------------+----------+----------+----------+
 
-+----------+----------+----------+
-| Required | Type     | Default  |
-+==========+==========+==========+
-| optional | string   | ``""``   |
-+----------+----------+----------+
+Generate unit test report with junitxml and upload results as an artifact.
 
 
 Secrets
 *******
 
 This job template needs no secrets.
+
 
 Results
 *******
