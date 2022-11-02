@@ -14,7 +14,7 @@ sphinxcontrib-mermaid>=0.7.1
 #sphinxcontrib-spelling>=2.2.0
 autoapi
 sphinx_fontawesome>=0.0.6
-sphinx_autodoc_typehints>=1.19.4
+sphinx_autodoc_typehints>=1.19.5
 # changelog>=0.3.5
 
 # BuildTheDocs Extensions (mostly patched Sphinx extensions)
