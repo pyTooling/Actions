@@ -193,10 +193,15 @@ jobs:
           combinations = [
             (system, version)
             for system in systems
-              if system in data['sys'] or system in data['runtime']
+              if system in data['sys']
             for version in versions
               if version in data['python']
               and f"{system}:{version}" not in excludes
+          ] + [
+            (system, currentMSYS2Version)
+            for system in systems
+              if system in data['runtime']
+              and f"{system}:{currentMSYS2Version}" not in excludes
           ] + [
             (system, version)
             for system, version in includes
@@ -225,7 +230,7 @@ jobs:
               'runtime': runtime.upper(),
               'shell':   "msys2 {0}",
               'pyicon':  data['python'][currentMSYS2Version]['icon'],
-              'python':  currentMSYS2Version,
+              'python':  version,
               'envname': data['runtime'][runtime]['name'],
             }
             for runtime, version in combinations if runtime not in data['sys']
