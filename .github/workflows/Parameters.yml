@@ -254,7 +254,7 @@ jobs:
           with github_output.open("a+") as f:
             f.write(f"python_version={python_version}\n")
             f.write(f"python_jobs={jobs!s}\n")
-            f.write(f"artifact_names={params['artifacts']!s}\n")
+            f.write(f"artifact_names={artifact_names!s}\n")
             f.write(f"params={params!s}\n")
 
       - name: Verify out parameters
