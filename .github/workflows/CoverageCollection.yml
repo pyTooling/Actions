@@ -132,11 +132,11 @@ jobs:
           python -m pytest -rA --cov=. $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
 
       - name: Convert to cobertura format
-        run: coverage xml
+        run: coverage xml --data-file=${{ inputs.tests_directory }}/.coverage
 
       - name: Convert to HTML format
         run: |
-          coverage html -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          coverage html --data-file=${{ inputs.tests_directory }}/.coverage -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
           rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
 
       - name: 📤 Upload 'Coverage Report' artifact
