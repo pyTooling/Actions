@@ -1,0 +1,83 @@
+name: Example Pipeline
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  Params_Default:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      name: Example
+
+  Params_PythonVersions:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      name: Example
+      python_version_list: "3.9 3.10 pypy-3.8 pypy-3.9"
+
+  Params_Systems:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      name: Example
+      system_list: "windows mingw32 mingw64"
+
+  Params_Include:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      name: Example
+      python_version_list: "3.10"
+      system_list: "ubuntu windows macos"
+      include_list: "ubuntu:3.11 ubuntu:3.12"
+
+  Params_Exclude:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      name: Example
+      python_version_list: "3.10"
+      system_list: "ubuntu windows macos"
+      exclude_list: "windows:3.10 windows:3.11"
+
+  Params_All:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      name: Example
+      python_version_list: "3.10 3.11"
+      system_list: "ubuntu windows macos"
+      include_list: "windows:3.8 windows:3.9 windows:3.12"
+      exclude_list: "macos:3.10 macos:3.11"
+
+  Params_Check:
+    needs:
+      - Params_Default
+      - Params_PythonVersions
+      - Params_Systems
+      - Params_Include
+      - Params_Exclude
+      - Params_All
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "python_version: ${{ needs.Params_Default.outputs.python_version }}"
+          echo "python_jobs:    ${{ needs.Params_Default.outputs.python_jobs }}"
+          echo "artifact_names: ${{ needs.Params_Default.outputs.artifact_names }}"
+      - run: |
+          echo "python_version: ${{ needs.Params_PythonVersions.outputs.python_version }}"
+          echo "python_jobs:    ${{ needs.Params_PythonVersions.outputs.python_jobs }}"
+          echo "artifact_names: ${{ needs.Params_PythonVersions.outputs.artifact_names }}"
+      - run: |
+          echo "python_version: ${{ needs.Params_Systems.outputs.python_version }}"
+          echo "python_jobs:    ${{ needs.Params_Systems.outputs.python_jobs }}"
+          echo "artifact_names: ${{ needs.Params_Systems.outputs.artifact_names }}"
+      - run: |
+          echo "python_version: ${{ needs.Params_Include.outputs.python_version }}"
+          echo "python_jobs:    ${{ needs.Params_Include.outputs.python_jobs }}"
+          echo "artifact_names: ${{ needs.Params_Include.outputs.artifact_names }}"
+      - run: |
+          echo "python_version: ${{ needs.Params_Exclude.outputs.python_version }}"
+          echo "python_jobs:    ${{ needs.Params_Exclude.outputs.python_jobs }}"
+          echo "artifact_names: ${{ needs.Params_Exclude.outputs.artifact_names }}"
+      - run: |
+          echo "python_version: ${{ needs.Params_All.outputs.python_version }}"
+          echo "python_jobs:    ${{ needs.Params_All.outputs.python_jobs }}"
+          echo "artifact_names: ${{ needs.Params_All.outputs.artifact_names }}"
