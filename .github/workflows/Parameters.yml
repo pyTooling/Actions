@@ -246,10 +246,10 @@ jobs:
           github_output = Path(getenv("GITHUB_OUTPUT"))
           print(f"GITHUB_OUTPUT: {github_output}")
           with github_output.open("a+") as f:
-            f.write(f"python_version={python_version}")
-            f.write(f"artifact_names={params['artifacts']!s}")
-            f.write(f"params={params!s}")
-            f.write(f"python_jobs={jobs!s}")
+            f.write(f"python_version={python_version}\n")
+            f.write(f"artifact_names={params['artifacts']!s}\n")
+            f.write(f"params={params!s}\n")
+            f.write(f"python_jobs={jobs!s}\n")
 
       - name: Verify out parameters
         id: verify
