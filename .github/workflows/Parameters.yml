@@ -55,20 +55,28 @@ on:
         default: ''
         type: string
     outputs:
+      python_version:
+        description: "Default Python version for other jobs."
+        value: ${{ jobs.Parameters.outputs.python_version }}
+      artifact_names:
+        description: "Pre-defined artifact names for other jobs."
+        value: ${{ jobs.Parameters.outputs.artifact_names }}
+      python_jobs:
+        description: "List of Python versions (and system combinations) to be used in the matrix of other jobs."
+        value: ${{ jobs.Parameters.outputs.python_jobs }}
       params:
         description: "Parameters to be used in other jobs."
         value: ${{ jobs.Parameters.outputs.params }}
-      python_jobs:
-        description: "List of Python versions to be used in the matrix of other jobs."
-        value: ${{ jobs.Parameters.outputs.python_jobs }}
 
 jobs:
 
   Parameters:
     runs-on: ubuntu-latest
     outputs:
-      params: ${{ steps.params.outputs.params }}
-      python_jobs: ${{ steps.params.outputs.python_jobs }}
+      python_version: ${{ steps.params.outputs.python_version }}
+      artifact_names: ${{ steps.params.outputs.artifact_names }}
+      params:         ${{ steps.params.outputs.params }}
+      python_jobs:    ${{ steps.params.outputs.python_jobs }}
     steps:
 
       - name: Generate 'params' and 'python_jobs'
@@ -242,3 +250,10 @@ jobs:
             f.write(f"artifact_names={params['artifacts']!s}")
             f.write(f"params={params!s}")
             f.write(f"python_jobs={jobs!s}")
+
+      - name: Verify out parameters
+        id: verify
+        run: |
+          echo pyver ${{ steps.params.outputs.python_version }}
+          echo $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
