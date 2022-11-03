@@ -97,13 +97,13 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: 🔧 Install wheel and pip dependencies
+      - name: 🔧 Install wheel and pip dependencies (native)
         if: matrix.system != 'msys2'
         run: |
           python -m pip install --disable-pip-version-check -U wheel
           python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
-      - name: 🔧 Install pip dependencies
+      - name: 🔧 Install pip dependencies (MSYS2)
         if: matrix.system == 'msys2'
         run: |
           if [ 'x${{ inputs.mingw_requirements }}' != 'x' ]; then
@@ -112,14 +112,14 @@ jobs:
             python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
           fi
 
-      - name: ☑ Run unit tests
+      - name: ☑ Run unit tests (Windows)
         if: matrix.system == 'windows'
         run: |
           cd ${{ inputs.tests_directory }}
           $PYTEST_ARGS = if ("${{ inputs.artifact }}".length -gt 0) { "--junitxml=TestReportSummary.xml" } else { "" }
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
 
-      - name: ☑ Run unit tests
+      - name: ☑ Run unit tests (Ubuntu/macOS)
         if: matrix.system != 'windows'
         run: |
           cd ${{ inputs.tests_directory }}

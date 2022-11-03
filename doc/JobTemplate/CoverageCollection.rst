@@ -122,7 +122,7 @@ unittest_directory
 | unittest_directory | optional | string   | ``unit``  |
 +--------------------+----------+----------+-----------+
 
-Path to the directory containing unit tests (relative to test_directory).
+Path to the directory containing unit tests (relative to tests_directory).
 
 
 coverage_config

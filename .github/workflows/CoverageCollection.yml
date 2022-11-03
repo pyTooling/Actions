@@ -35,13 +35,13 @@ on:
         required: false
         default: '-r tests/requirements.txt'
         type: string
-      test_directory:
+      tests_directory:
         description: 'Path to the directory containing tests (test working directory).'
         required: false
         default: 'tests'
         type: string
       unittest_directory:
-        description: 'Path to the directory containing unit tests (relative to test_directory).'
+        description: 'Path to the directory containing unit tests (relative to tests_directory).'
         required: false
         default: 'unit'
         type: string
@@ -127,8 +127,8 @@ jobs:
       - name: Collect coverage
         continue-on-error: true
         run: |
-          cd ${{ inputs.test_directory }}
-          [ 'x${{ inputs.coverage_config }}' != 'x' ] && PYCOV_ARGS='--cov-config=${{ inputs.coverage_config }}' || unset PYCOV_ARGS
+          cd ${{ inputs.tests_directory }}
+          [ 'x${{ inputs.coverage_config }}' != 'x' ] && PYCOV_ARGS='--cov-config=../${{ inputs.coverage_config }}' || unset PYCOV_ARGS
           python -m pytest -rA --cov=. $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
 
       - name: Convert to cobertura format

@@ -52,7 +52,7 @@ jobs:
         python-coverage:p
         python-lxml:p
       mingw_requirements: '-r tests/requirements.mingw.txt'
-      test_directory: 'tests'
+      tests_directory: 'tests'
       unittest_directory: 'unit'
       artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}
 
@@ -65,7 +65,7 @@ jobs:
       # Optional
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       requirements: '-r tests/requirements.txt'
-      test_directory: 'tests'
+      tests_directory: 'tests'
       unittest_directory: 'unit'
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
