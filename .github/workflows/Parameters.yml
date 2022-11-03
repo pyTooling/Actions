@@ -54,6 +54,7 @@ on:
         required: false
         default: ''
         type: string
+
     outputs:
       python_version:
         description: "Default Python version for other jobs."
@@ -69,7 +70,6 @@ on:
         value: ${{ jobs.Parameters.outputs.params }}
 
 jobs:
-
   Parameters:
     runs-on: ubuntu-latest
     outputs:
@@ -77,8 +77,8 @@ jobs:
       python_jobs:    ${{ steps.params.outputs.python_jobs }}
       artifact_names: ${{ steps.params.outputs.artifact_names }}
       params:         ${{ steps.params.outputs.params }}
-    steps:
 
+    steps:
       - name: Generate 'params' and 'python_jobs'
         id: params
         shell: python
@@ -208,8 +208,9 @@ jobs:
               if system in data['sys']
               and version in data['python']
           ]
-          print(f"combinations ({len(combinations)}):")
-          print(combinations)
+          print(f"Combinations ({len(combinations)}):")
+          for system, version in combinations:
+            print(f"  {system}:{version}")
 
           jobs = [
             {
@@ -260,6 +261,6 @@ jobs:
         id: verify
         run: |
           echo "python_version: ${{ steps.params.outputs.python_version }}"
-          echo "python_jobs: ${{ steps.params.outputs.python_version }}"
+          echo "python_jobs: ${{ steps.params.outputs.python_jobs }}"
           echo "artifact_names: ${{ steps.params.outputs.artifact_names }}"
           echo "params: ${{ steps.params.outputs.params }}"
