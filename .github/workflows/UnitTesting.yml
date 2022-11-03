@@ -97,22 +97,19 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: ⚙️ Update pip
-        run: python -m pip install -U pip
-
       - name: 🔧 Install wheel and pip dependencies
         if: matrix.system != 'msys2'
         run: |
-          python -m pip install -U wheel
-          python -m pip install ${{ inputs.requirements }}
+          python -m pip install --disable-pip-version-check -U wheel
+          python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 🔧 Install pip dependencies
         if: matrix.system == 'msys2'
         run: |
           if [ 'x${{ inputs.mingw_requirements }}' != 'x' ]; then
-            python -m pip install ${{ inputs.mingw_requirements }}
+            python -m pip install --disable-pip-version-check ${{ inputs.mingw_requirements }}
           else
-            python -m pip install ${{ inputs.requirements }}
+            python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
           fi
 
       - name: ☑ Run unit tests

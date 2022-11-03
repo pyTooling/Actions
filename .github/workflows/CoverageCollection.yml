@@ -76,14 +76,14 @@ jobs:
 
       - name: 🗂 Install dependencies
         run: |
-          python -m pip install -U pip
-          python -m pip install tomli
-          python -m pip install ${{ inputs.requirements }}
+          python -m pip install --disable-pip-version-check tomli
+          python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 🔁 Extract configurations from pyproject.toml
         id: getVariables
         shell: python
         run: |
+          from os      import getenv
           from pathlib import Path
           from tomli   import load as tomli_load
 

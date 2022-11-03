@@ -45,7 +45,7 @@ runs:
   steps:
 
   - shell: bash
-    run: pip install PyGithub --progress-bar off
+    run: pip install --disable-pip-version-check PyGithub --progress-bar off
 
   - shell: bash
     run: '''${{ github.action_path }}/../releaser.py'''

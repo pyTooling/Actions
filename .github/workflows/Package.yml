@@ -55,14 +55,11 @@ jobs:
         with:
           python-version: ${{ inputs.python_version }}
 
-      - name: 🐍 Update pip
-        run: python -m pip install -U pip
-
       # build
 
       - name: 🔧 [build] Install dependencies for packaging and release
         if: inputs.requirements == ''
-        run: python -m pip install build
+        run: python -m pip install --disable-pip-version-check build
 
       - name: 🔨 [build] Build Python package (source distribution)
         if: inputs.requirements == ''
@@ -76,7 +73,7 @@ jobs:
 
       - name: 🔧 [build] Install dependencies for packaging and release
         if: inputs.requirements == 'no-isolation'
-        run: python -m pip install build
+        run: python -m pip install --disable-pip-version-check build
 
       - name: 🔨 [build] Build Python package (source distribution)
         if: inputs.requirements == 'no-isolation'
@@ -90,7 +87,7 @@ jobs:
 
       - name: 🔧 [setuptools] Install dependencies for packaging and release
         if: inputs.requirements != '' && inputs.requirements != 'no-isolation'
-        run: python -m pip install ${{ inputs.requirements }}
+        run: python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 🔨 [setuptools] Build Python package (source distribution)
         if: inputs.requirements != '' && inputs.requirements != 'no-isolation'

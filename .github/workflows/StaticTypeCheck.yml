@@ -65,9 +65,7 @@ jobs:
           python-version: ${{ inputs.python_version }}
 
       - name: 🗂 Install dependencies
-        run: |
-          python -m pip install -U pip
-          python -m pip install ${{ inputs.requirements }}
+        run: python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: Check Static Typing
         continue-on-error: true
