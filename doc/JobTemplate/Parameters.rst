@@ -255,12 +255,43 @@ This job template needs no secrets.
 Results
 *******
 
+python_version
+==============
+
+A single string parameter representing the default Python version that should be used across multiple jobs in the same
+pipeline.
+
+Such a parameter is needed as a workaround, because GitHub Actions doesn't support proper handling of global pipeline
+variables. Thus, this job is used to compute an output parameter that can be reused in many other jobs.
+
+**Usage Example:**
+
+.. code-block:: yaml
+
+   jobs:
+     Params:
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       with:
+         name: pyTooling
+
+     CodeCoverage:
+       uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r0
+       needs:
+         - Params
+       with:
+         python_version: ${{ needs.Params.outputs.python_version }}
+
+python_jobs
+===========
+
+.. todo:: Parameters:python_jobs Needs documentation.
+
+artifact_names
+==============
+
+.. todo:: Parameters:artifact_names Needs documentation.
+
 Params
 ======
 
-.. todo:: Parameters:Params Needs documentation.
-
-Jobs
-====
-
-.. todo:: Parameters:Jobs Needs documentation.
+.. attention:: ``Params`` is deprecated.
