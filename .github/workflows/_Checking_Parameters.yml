@@ -79,9 +79,9 @@ jobs:
             "documentation": f"{expectedName}-Documentation"
           }
 
-          actualPythonVersion =            "${{ needs.Params_Default.outputs.python_version }}"
-          actualPythonJobs =    json_loads("${{ needs.Params_Default.outputs.python_jobs }}".replace("'", '"'))
-          actualArtifactNames = json_loads("${{ needs.Params_Default.outputs.artifact_names }}".replace("'", '"'))
+          actualPythonVersion =            """${{ needs.Params_Default.outputs.python_version }}"""
+          actualPythonJobs =    json_loads("""${{ needs.Params_Default.outputs.python_jobs }}""".replace("'", '"'))
+          actualArtifactNames = json_loads("""${{ needs.Params_Default.outputs.artifact_names }}""".replace("'", '"'))
           errors = 0
 
           if actualPythonVersion != expectedPythonVersion:
@@ -121,9 +121,9 @@ jobs:
             "documentation": f"{expectedName}-Documentation"
           }
 
-          actualPythonVersion =            "${{ needs.Params_PythonVersions.outputs.python_version }}"
-          actualPythonJobs =    json_loads("${{ needs.Params_PythonVersions.outputs.python_jobs }}".replace("'", '"'))
-          actualArtifactNames = json_loads("${{ needs.Params_PythonVersions.outputs.artifact_names }}".replace("'", '"'))
+          actualPythonVersion =            """${{ needs.Params_PythonVersions.outputs.python_version }}"""
+          actualPythonJobs =    json_loads("""${{ needs.Params_PythonVersions.outputs.python_jobs }}""".replace("'", '"'))
+          actualArtifactNames = json_loads("""${{ needs.Params_PythonVersions.outputs.artifact_names }}""".replace("'", '"'))
           errors = 0
 
           if actualPythonVersion != expectedPythonVersion:
@@ -163,9 +163,9 @@ jobs:
             "documentation": f"{expectedName}-Documentation"
           }
 
-          actualPythonVersion =            "${{ needs.Params_Systems.outputs.python_version }}"
-          actualPythonJobs =    json_loads("${{ needs.Params_Systems.outputs.python_jobs }}".replace("'", '"'))
-          actualArtifactNames = json_loads("${{ needs.Params_Systems.outputs.artifact_names }}".replace("'", '"'))
+          actualPythonVersion =            """${{ needs.Params_Systems.outputs.python_version }}"""
+          actualPythonJobs =    json_loads("""${{ needs.Params_Systems.outputs.python_jobs }}""".replace("'", '"'))
+          actualArtifactNames = json_loads("""${{ needs.Params_Systems.outputs.artifact_names }}""".replace("'", '"'))
           errors = 0
 
           if actualPythonVersion != expectedPythonVersion:
@@ -205,9 +205,9 @@ jobs:
             "documentation": f"{expectedName}-Documentation"
           }
 
-          actualPythonVersion =            "${{ needs.Params_Include.outputs.python_version }}"
-          actualPythonJobs =    json_loads("${{ needs.Params_Include.outputs.python_jobs }}".replace("'", '"'))
-          actualArtifactNames = json_loads("${{ needs.Params_Include.outputs.artifact_names }}".replace("'", '"'))
+          actualPythonVersion =            """${{ needs.Params_Include.outputs.python_version }}"""
+          actualPythonJobs =    json_loads("""${{ needs.Params_Include.outputs.python_jobs }}""".replace("'", '"'))
+          actualArtifactNames = json_loads("""${{ needs.Params_Include.outputs.artifact_names }}""".replace("'", '"'))
           errors = 0
 
           if actualPythonVersion != expectedPythonVersion:
@@ -247,9 +247,9 @@ jobs:
             "documentation": f"{expectedName}-Documentation"
           }
 
-          actualPythonVersion =            "${{ needs.Params_Exclude.outputs.python_version }}"
-          actualPythonJobs =    json_loads("${{ needs.Params_Exclude.outputs.python_jobs }}".replace("'", '"'))
-          actualArtifactNames = json_loads("${{ needs.Params_Exclude.outputs.artifact_names }}".replace("'", '"'))
+          actualPythonVersion =            """${{ needs.Params_Exclude.outputs.python_version }}"""
+          actualPythonJobs =    json_loads("""${{ needs.Params_Exclude.outputs.python_jobs }}""".replace("'", '"'))
+          actualArtifactNames = json_loads("""${{ needs.Params_Exclude.outputs.artifact_names }}""".replace("'", '"'))
           errors = 0
 
           if actualPythonVersion != expectedPythonVersion:
@@ -289,9 +289,9 @@ jobs:
             "documentation": f"{expectedName}-Documentation"
           }
 
-          actualPythonVersion =            "${{ needs.Params_All.outputs.python_version }}"
-          actualPythonJobs =    json_loads("${{ needs.Params_All.outputs.python_jobs }}".replace("'", '"'))
-          actualArtifactNames = json_loads("${{ needs.Params_All.outputs.artifact_names }}".replace("'", '"'))
+          actualPythonVersion =            """${{ needs.Params_All.outputs.python_version }}"""
+          actualPythonJobs =    json_loads("""${{ needs.Params_All.outputs.python_jobs }}""".replace("'", '"'))
+          actualArtifactNames = json_loads("""${{ needs.Params_All.outputs.artifact_names }}""".replace("'", '"'))
           errors = 0
 
           if actualPythonVersion != expectedPythonVersion:

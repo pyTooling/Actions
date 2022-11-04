@@ -262,7 +262,7 @@ A single string parameter representing the default Python version that should be
 pipeline.
 
 Such a parameter is needed as a workaround, because GitHub Actions doesn't support proper handling of global pipeline
-variables. Thus, this job is used to compute an output parameter that can be reused in many other jobs.
+variables. Thus, this job is used to compute an output parameter that can be reused in other jobs.
 
 **Usage Example:**
 
@@ -284,12 +284,73 @@ variables. Thus, this job is used to compute an output parameter that can be reu
 python_jobs
 ===========
 
-.. todo:: Parameters:python_jobs Needs documentation.
+A list of dictionaries containing a job description.
+
+A job description contains the following key-value pairs:
+
+* ``sysicon`` - icon to display
+* ``system`` -  name of the system
+* ``runs-on`` - virtual machine image and base operating system
+* ``runtime`` - name of the runtime environment if not running natively on the VM image
+* ``shell`` -   name of the shell
+* ``pyicon`` -  icon for CPython or pypy
+* ``python`` -  Python version
+* ``envname`` - full name of the selected environment
+
+**Usage Example:**
+
+.. code-block:: yaml
+
+   jobs:
+     Params:
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       with:
+         name: pyTooling
+
+     UnitTesting:
+       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
+       needs:
+         - Params
+       with:
+         jobs: ${{ needs.Params.outputs.python_jobs }}
+
+This list can be unpacked with ``fromJson(...)`` in a job ``strategy:matrix:include``:
+
+.. code-block:: yaml
+
+   UnitTesting:
+     name: ${{ matrix.sysicon }} ${{ matrix.pyicon }} Unit Tests using Python ${{ matrix.python }}
+     runs-on: ${{ matrix.runs-on }}
+
+     strategy:
+       matrix:
+         include: ${{ fromJson(inputs.jobs) }}
+
+     defaults:
+       run:
+         shell: ${{ matrix.shell }}
+
+     steps:
+       - name: 🐍 Setup Python ${{ matrix.python }}
+         if: matrix.system != 'msys2'
+         uses: actions/setup-python@v4
+         with:
+           python-version: ${{ matrix.python }}
+
 
 artifact_names
 ==============
 
-.. todo:: Parameters:artifact_names Needs documentation.
+A dictionary of artifact names sharing a common prefix.
+
+The supported artifacts are:
+
+* ``unittesting`` - UnitTesting XML summary report
+* ``codecoverage`` - Code Coverage HTML report
+* ``statictyping`` - Static Type Checking HTML report
+* ``package`` - Packaged Python project
+* ``documentation`` - Documentation in HTML format
+
 
 Params
 ======

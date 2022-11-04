@@ -83,6 +83,7 @@ jobs:
         id: params
         shell: python
         run: |
+          from json import dumps as json_dumps
           from os import getenv
           from pathlib import Path
           from pprint import pprint
@@ -109,13 +110,13 @@ jobs:
 
           # Deprecated structure
           params = {
-            'python_version': python_version,
-            'artifacts': {
-              'unittesting': f"{artifact_names['unittesting']}",
-              'coverage':    f"{artifact_names['codecoverage']}",
-              'typing':      f"{artifact_names['statictyping']}",
-              'package':     f"{artifact_names['package']}",
-              'doc':         f"{artifact_names['documentation']}",
+            "python_version": python_version,
+            "artifacts": {
+              "unittesting": f"{artifact_names['unittesting']}",
+              "coverage":    f"{artifact_names['codecoverage']}",
+              "typing":      f"{artifact_names['statictyping']}",
+              "package":     f"{artifact_names['package']}",
+              "doc":         f"{artifact_names['documentation']}",
             }
           }
 
@@ -154,32 +155,32 @@ jobs:
 
           data = {
             # Python and PyPy versions supported by "setup-python" action
-            'python': {
-              '3.6':       { 'icon': '⚫',  'until': '2021.12.23' },
-              '3.7':       { 'icon': '🔴',  'until': '2023.06.27' },
-              '3.8':       { 'icon': '🟠',  'until': '2024.10' },
-              '3.9':       { 'icon': '🟡',  'until': '2025.10' },
-              '3.10':      { 'icon': '🟢',  'until': '2026.10' },
-              '3.11':      { 'icon': '🟢',  'until': '2027.10' },
-              '3.12':      { 'icon': '🟣',  'until': '2028.10' },
-              'pypy-3.7':  { 'icon': '⟲🔴', 'until': '????.??' },
-              'pypy-3.8':  { 'icon': '⟲🟠', 'until': '????.??' },
-              'pypy-3.9':  { 'icon': '⟲🟡', 'until': '????.??' },
+            "python": {
+              "3.6":       { "icon": "⚫",  "until": "2021.12.23" },
+              "3.7":       { "icon": "🔴",  "until": "2023.06.27" },
+              "3.8":       { "icon": "🟠",  "until": "2024.10" },
+              "3.9":       { "icon": "🟡",  "until": "2025.10" },
+              "3.10":      { "icon": "🟢",  "until": "2026.10" },
+              "3.11":      { "icon": "🟢",  "until": "2027.10" },
+              "3.12":      { "icon": "🟣",  "until": "2028.10" },
+              "pypy-3.7":  { "icon": "⟲🔴", "until": "????.??" },
+              "pypy-3.8":  { "icon": "⟲🟠", "until": "????.??" },
+              "pypy-3.9":  { "icon": "⟲🟡", "until": "????.??" },
             },
             # Runner systems (runner images) supported by GitHub Actions
-            'sys': {
-              'ubuntu':  { 'icon': '🐧', 'runs-on': 'ubuntu-latest',  'shell': 'bash', 'name': "Linux (x86-64)"   },
-              'windows': { 'icon': '🧊', 'runs-on': 'windows-latest', 'shell': 'pwsh', 'name': "Windows (x86-64)" },
-              'macos':   { 'icon': '🍎', 'runs-on': 'macos-latest',   'shell': 'bash', 'name': "MacOS (x86-64)"   },
+            "sys": {
+              "ubuntu":  { "icon": "🐧", "runs-on": "ubuntu-latest",  "shell": "bash", "name": "Linux (x86-64)"   },
+              "windows": { "icon": "🧊", "runs-on": "windows-latest", "shell": "pwsh", "name": "Windows (x86-64)" },
+              "macos":   { "icon": "🍎", "runs-on": "macos-latest",   "shell": "bash", "name": "MacOS (x86-64)"   },
             },
             # Runtimes provided by MSYS2
-            'runtime': {
-              'msys':    { 'icon': '🟪', 'name': 'Windows+MSYS2 (x86-64) - MSYS'    },
-              'mingw32': { 'icon': '⬛', 'name': 'Windows+MSYS2 (x86-64) - MinGW32' },
-              'mingw64': { 'icon': '🟦', 'name': 'Windows+MSYS2 (x86-64) - MinGW64' },
-              'clang32': { 'icon': '🟫', 'name': 'Windows+MSYS2 (x86-64) - Clang32' },
-              'clang64': { 'icon': '🟧', 'name': 'Windows+MSYS2 (x86-64) - Clang64' },
-              'ucrt64':  { 'icon': '🟨', 'name': 'Windows+MSYS2 (x86-64) - UCRT64'  },
+            "runtime": {
+              "msys":    { "icon": "🟪", "name": "Windows+MSYS2 (x86-64) - MSYS"    },
+              "mingw32": { "icon": "⬛", "name": "Windows+MSYS2 (x86-64) - MinGW32" },
+              "mingw64": { "icon": "🟦", "name": "Windows+MSYS2 (x86-64) - MinGW64" },
+              "clang32": { "icon": "🟫", "name": "Windows+MSYS2 (x86-64) - Clang32" },
+              "clang64": { "icon": "🟧", "name": "Windows+MSYS2 (x86-64) - Clang64" },
+              "ucrt64":  { "icon": "🟨", "name": "Windows+MSYS2 (x86-64) - UCRT64"  },
             }
           }
 
@@ -193,20 +194,20 @@ jobs:
           combinations = [
             (system, version)
             for system in systems
-              if system in data['sys']
+              if system in data["sys"]
             for version in versions
-              if version in data['python']
+              if version in data["python"]
               and f"{system}:{version}" not in excludes
           ] + [
             (system, currentMSYS2Version)
             for system in systems
-              if system in data['runtime']
+              if system in data["runtime"]
               and f"{system}:{currentMSYS2Version}" not in excludes
           ] + [
             (system, version)
             for system, version in includes
-              if system in data['sys']
-              and version in data['python']
+              if system in data["sys"]
+              and version in data["python"]
           ]
           print(f"Combinations ({len(combinations)}):")
           for system, version in combinations:
@@ -214,27 +215,27 @@ jobs:
 
           jobs = [
             {
-              'sysicon': data['sys'][system]['icon'],
-              'system':  system,
-              'runs-on': data['sys'][system]['runs-on'],
-              'shell':   data['sys'][system]['shell'],
-              'pyicon':  data['python'][version]['icon'],
-              'python':  currentAlphaRelease if version == currentAlphaVersion else version,
-              'envname': data['sys'][system]['name'],
+              "sysicon": data["sys"][system]["icon"],
+              "system":  system,
+              "runs-on": data["sys"][system]["runs-on"],
+              "shell":   data["sys"][system]["shell"],
+              "pyicon":  data["python"][version]["icon"],
+              "python":  currentAlphaRelease if version == currentAlphaVersion else version,
+              "envname": data["sys"][system]["name"],
             }
-            for system, version in combinations if system in data['sys']
+            for system, version in combinations if system in data["sys"]
           ] + [
             {
-              'sysicon': data['runtime'][runtime]['icon'],
-              'system':  "msys2",
-              'runs-on': "windows-latest",
-              'runtime': runtime.upper(),
-              'shell':   "msys2 {0}",
-              'pyicon':  data['python'][currentMSYS2Version]['icon'],
-              'python':  version,
-              'envname': data['runtime'][runtime]['name'],
+              "sysicon": data["runtime"][runtime]["icon"],
+              "system":  "msys2",
+              "runs-on": "windows-latest",
+              "runtime": runtime.upper(),
+              "shell":   "msys2 {0}",
+              "pyicon":  data["python"][currentMSYS2Version]["icon"],
+              "python":  version,
+              "envname": data["runtime"][runtime]["name"],
             }
-            for runtime, version in combinations if runtime not in data['sys']
+            for runtime, version in combinations if runtime not in data["sys"]
           ]
 
           # Format jobs as list of dictionaries
@@ -253,14 +254,14 @@ jobs:
           print(f"GITHUB_OUTPUT: {github_output}")
           with github_output.open("a+") as f:
             f.write(f"python_version={python_version}\n")
-            f.write(f"python_jobs={jobs!s}\n")
-            f.write(f"artifact_names={artifact_names!s}\n")
-            f.write(f"params={params!s}\n")
+            f.write(f"python_jobs={json_dumps(jobs)}\n")
+            f.write(f"artifact_names={json_dumps(artifact_names)}\n")
+            f.write(f"params={json_dumps(params)}\n")
 
       - name: Verify out parameters
         id: verify
         run: |
-          echo "python_version: ${{ steps.params.outputs.python_version }}"
-          echo "python_jobs: ${{ steps.params.outputs.python_jobs }}"
-          echo "artifact_names: ${{ steps.params.outputs.artifact_names }}"
-          echo "params: ${{ steps.params.outputs.params }}"
+          echo 'python_version: ${{ steps.params.outputs.python_version }}'
+          echo 'python_jobs: ${{ steps.params.outputs.python_jobs }}'
+          echo 'artifact_names: ${{ steps.params.outputs.artifact_names }}'
+          echo 'params: ${{ steps.params.outputs.params }}'
