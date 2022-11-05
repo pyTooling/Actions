@@ -155,7 +155,7 @@ html_artifact
 | html_artifact  | yes      | string   | — — — —      |
 +----------------+----------+----------+--------------+
 
-Name of the typing artifact.
+Name of the typing artifact (HTML report).
 
 
 junit_artifact
@@ -167,7 +167,7 @@ junit_artifact
 | junit_artifact | optional | string   | ``""``       |
 +----------------+----------+----------+--------------+
 
-Name of the typing artifact.
+Name of the typing junit artifact (junit XML).
 
 
 Secrets

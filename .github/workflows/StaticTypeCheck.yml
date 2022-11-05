@@ -50,11 +50,11 @@ on:
         default: 'StaticTypingSummary.xml'
         type: string
       html_artifact:
-        description: 'Name of the typing artifact.'
+        description: 'Name of the typing artifact (HTML report).'
         required: true
         type: string
       junit_artifact:
-        description: 'Name of the typing artifact.'
+        description: 'Name of the typing junit artifact (junit XML).'
         required: false
         default: ''
         type: string
