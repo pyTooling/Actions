@@ -73,10 +73,10 @@ jobs:
   Parameters:
     runs-on: ubuntu-latest
     outputs:
-      python_version: ${{ steps.params.outputs.python_version }}
-      python_jobs:    ${{ steps.params.outputs.python_jobs }}
-      artifact_names: ${{ steps.params.outputs.artifact_names }}
-      params:         ${{ steps.params.outputs.params }}
+      python_version:   ${{ steps.params.outputs.python_version }}
+      python_jobs:      ${{ steps.params.outputs.python_jobs }}
+      artifact_names:   ${{ steps.params.outputs.artifact_names }}
+      params:           ${{ steps.params.outputs.params }}
 
     steps:
       - name: Generate 'params' and 'python_jobs'
@@ -236,14 +236,12 @@ jobs:
 
           print("Parameters:")
           print(f"  python_version: {python_version}")
+          print(f"  python_jobs ({len(jobs)}):\n" +
+            "".join([f"    {{ " + ", ".join([f"\"{key}\": \"{value}\"" for key, value in job.items()]) + f" }},\n" for job in jobs])
+          )
           print(f"  artifact_names ({len(artifact_names)}):")
           for id, name in artifact_names.items():
             print(f"    {id:>14}: {name}")
-
-          buffer = "".join([f"  {{ " + ", ".join([f"\"{key}\": \"{value}\"" for key, value in job.items()]) + f" }},\n" for job in jobs])
-          print(dedent(f"""\
-            Python jobs ({len(jobs)}):
-          {buffer}"""))
 
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))

@@ -1,0 +1,61 @@
+name: Verification Pipeline for ArtifactCleanup
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  Params:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      name: Example
+      python_version_list: "3.10 3.11"
+      system_list: "ubuntu windows"
+
+  Testing:
+    name: Artifact generation ${{ matrix.system }}-${{ matrix.python }}
+    needs:
+      - Params
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.Params.outputs.python_jobs) }}
+    steps:
+      - name: Content creation for ${{ matrix.system }}-${{ matrix.python }}
+        run: echo "${{ matrix.runs-on }}-${{ matrix.python }}" >> artifact.txt
+
+      - name: 📤 Upload artifact for ${{ matrix.system }}-${{ matrix.python }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}-${{ matrix.system }}-${{ matrix.python }}
+          path: artifact.txt
+          if-no-files-found: error
+          retention-days: 1
+
+  Package:
+    name: Package generation
+    needs:
+      - Params
+    runs-on: ubuntu-latest
+    steps:
+      - name: Package creation
+        run: echo "Package" >> package.txt
+
+      - name: 📤 Upload artifact for ${{ matrix.system }}-${{ matrix.python }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
+          path: package.txt
+          if-no-files-found: error
+          retention-days: 1
+
+  ArtifactCleanUp:
+    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@dev
+    needs:
+      - Params
+      - Testing
+      - Package
+    with:
+      package: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
+      remaining: |
+        ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}-*
