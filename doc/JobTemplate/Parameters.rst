@@ -345,14 +345,39 @@ A dictionary of artifact names sharing a common prefix.
 
 The supported artifacts are:
 
-* ``unittesting`` - UnitTesting XML summary report
-* ``codecoverage`` - Code Coverage HTML report
-* ``statictyping`` - Static Type Checking HTML report
-* ``package`` - Packaged Python project
-* ``documentation`` - Documentation in HTML format
+* ``unittesting_xml`` - UnitTesting XML summary report
+* ``codecoverage_xml`` - Code Coverage XML report
+* ``codecoverage_html`` - Code Coverage HTML report
+* ``statictyping_html`` - Static Type Checking HTML report
+* ``package_all`` - Packaged Python project (multiple formats)
+* ``documentation_pdf`` - Documentation in PDF format
+* ``documentation_html`` - Documentation in HTML format
+
+**Usage Example:**
+
+.. code-block:: yaml
+
+   jobs:
+     Params:
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       with:
+         name: pyTooling
+
+     Coverage:
+       uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@dev
+       needs:
+         - Params
+       with:
+         artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
 
 
 Params
 ======
 
 .. attention:: ``Params`` is deprecated.
+
+* ``params['unittesting']`` |rarr| ``artifact_names['unittesting_xml']``
+* ``params['coverage']`` |rarr| ``artifact_names['codecoverage_xml']``
+* ``params['typing']`` |rarr| ``artifact_names['statictyping_html']``
+* ``params['package']`` |rarr| ``artifact_names['package_all']``
+* ``params['doc']`` |rarr| ``artifact_names['documentation_html']``
