@@ -110,18 +110,6 @@ requirements
 Python dependencies to be installed through pip.
 
 
-report
-======
-
-+----------------+----------+----------+-----------------+
-| Parameter Name | Required | Type     | Default         |
-+================+==========+==========+=================+
-| report         | optional | string   | ``htmlmypy``    |
-+----------------+----------+----------+-----------------+
-
-Directory to upload as an artifact.
-
-
 commands
 ========
 
@@ -134,13 +122,49 @@ commands
 Commands to run the static type checks.
 
 
-artifact
-========
+html_report
+===========
+
++----------------+----------+----------+-----------------+
+| Parameter Name | Required | Type     | Default         |
++================+==========+==========+=================+
+| report         | optional | string   | ``htmlmypy``    |
++----------------+----------+----------+-----------------+
+
+HTML output directory to upload as an artifact.
+
+
+junit_report
+============
+
++----------------+----------+----------+-----------------------------+
+| Parameter Name | Required | Type     | Default                     |
++================+==========+==========+=============================+
+| report         | optional | string   | ``StaticTypingSummary.xml`` |
++----------------+----------+----------+-----------------------------+
+
+junit file to upload as an artifact.
+
+
+html_artifact
+=============
 
 +----------------+----------+----------+--------------+
 | Parameter Name | Required | Type     | Default      |
 +================+==========+==========+==============+
-| artifact       | yes      | string   | — — — —      |
+| html_artifact  | yes      | string   | — — — —      |
++----------------+----------+----------+--------------+
+
+Name of the typing artifact.
+
+
+junit_artifact
+==============
+
++----------------+----------+----------+--------------+
+| Parameter Name | Required | Type     | Default      |
++================+==========+==========+==============+
+| junit_artifact | optional | string   | ``""``       |
 +----------------+----------+----------+--------------+
 
 Name of the typing artifact.

@@ -127,9 +127,12 @@ jobs:
       - name: Collect coverage
         continue-on-error: true
         run: |
+          RELDIR="$(realpath --relative-to=${{ inputs.tests_directory }} .)"
+          echo "relative: ${RELDIR}"
           cd ${{ inputs.tests_directory }}
-          [ 'x${{ inputs.coverage_config }}' != 'x' ] && PYCOV_ARGS='--cov-config=../${{ inputs.coverage_config }}' || unset PYCOV_ARGS
-          python -m pytest -rA --cov=. $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
+          [ 'x${{ inputs.coverage_config }}' != 'x' ] && PYCOV_ARGS="--cov-config=${RELDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
+          echo "python -m pytest -rA --cov=${RELDIR} ${PYCOV_ARGS} ${{ inputs.unittest_directory }} --color=yes"
+          python -m pytest -rA --cov=${RELDIR} $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
 
       - name: Convert to cobertura format
         run: coverage xml --data-file=${{ inputs.tests_directory }}/.coverage

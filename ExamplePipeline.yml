@@ -75,18 +75,22 @@ jobs:
     needs:
       - Params
     with:
-      commands: mypy --html-report htmlmypy -p ToolName
-      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
+      commands: |
+        mypy --junit-xml StaticTypingSummary.xml --html-report htmlmypy -p ToolName
+      html_artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.typing_html }}
+      junit_artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.typing_junit }}
       # Optional
       python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
       requirements: '-r tests/requirements.txt'
-      report: 'htmlmypy'
+      html_report: 'htmlmypy'
+      junit_report: 'StaticTypingSummary.xml'
       allow_failure: true
 
   PublishTestResults:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@main
     needs:
       - UnitTesting
+      - StaticTypeCheck
     with:
       # Optional
       report_files: artifacts/**/*.xml
@@ -178,5 +182,6 @@ jobs:
         ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-macos-3.9
         ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-macos-3.10
         ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
-        ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
+        ${{ fromJson(needs.Params.outputs.params).artifacts.typing_html }}
+        ${{ fromJson(needs.Params.outputs.params).artifacts.typing_junit }}
         ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}

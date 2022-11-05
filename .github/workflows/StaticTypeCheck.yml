@@ -35,18 +35,28 @@ on:
         required: false
         default: '-r tests/requirements.txt'
         type: string
-      report:
-        description: 'Directory to upload as an artifact.'
-        required: false
-        default: 'htmlmypy'
-        type: string
       commands:
         description: 'Commands to run the static type checks.'
         required: true
         type: string
-      artifact:
+      html_report:
+        description: 'Directory to upload as an artifact.'
+        required: false
+        default: 'htmlmypy'
+        type: string
+      junit_report:
+        description: 'junit file to upload as an artifact.'
+        required: false
+        default: 'StaticTypingSummary.xml'
+        type: string
+      html_artifact:
         description: 'Name of the typing artifact.'
         required: true
+        type: string
+      junit_artifact:
+        description: 'Name of the typing artifact.'
+        required: false
+        default: ''
         type: string
 
 jobs:
@@ -71,12 +81,22 @@ jobs:
         continue-on-error: true
         run: ${{ inputs.commands }}
 
-      - name: 📤 Upload 'Static Typing Report' artifact
-        if: ${{ inputs.artifact != '' }}
+      - name: 📤 Upload 'Static Typing Report' HTML artifact
+        if: ${{ inputs.html_artifact != '' }}
         continue-on-error: true
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ inputs.artifact }}
-          path: ${{ inputs.report }}
+          name: ${{ inputs.html_artifact }}
+          path: ${{ inputs.html_report }}
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: 📤 Upload 'Static Typing Report' JUnit artifact
+        if: ${{ inputs.junit_artifact != '' }}
+        continue-on-error: true
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ inputs.junit_artifact }}
+          path: ${{ inputs.junit_report }}
           if-no-files-found: error
           retention-days: 1
