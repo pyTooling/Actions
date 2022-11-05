@@ -38,35 +38,44 @@ This repository gathers reusable CI tooling for testing, packaging and distribut
 GitHub Action Job Templates
 ***************************
 
-**Global Templates**
+The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
+Workflow):
 
-* :ref:`JOBTMPL/Parameters`
+.. hlist::
+   :columns: 2
 
-**Unit Tests, Code Coverage, ...**
+   * **Global Templates**
 
-* :ref:`JOBTMPL/UnitTesting`
-* :ref:`JOBTMPL/CodeCoverage`
-* :ref:`JOBTMPL/StaticTypeChecking`
+     * :ref:`JOBTMPL/Parameters`
 
-**Build and Packaging**
+   * **Unit Tests, Code Coverage, Code Quality, ...**
 
-* :ref:`JOBTMPL/Package`
+     * :ref:`JOBTMPL/UnitTesting`
+     * :ref:`JOBTMPL/CodeCoverage`
+     * :ref:`JOBTMPL/StaticTypeChecking`
+     * *code formatting (planned)*
+     * *coding style (planned)*
+     * *code linting (planned)*
 
-**Documentation**
+   * **Build and Packaging**
 
-* :ref:`JOBTMPL/VerifyDocumentation`
-* :ref:`JOBTMPL/BuildTheDocs`
+     * :ref:`JOBTMPL/Package`
 
-**Publishing**
+   * **Documentation**
 
-* :ref:`JOBTMPL/GitHubReleasePage`
-* :ref:`JOBTMPL/PyPI`
-* :ref:`JOBTMPL/PublishTestResults`
-* :ref:`JOBTMPL/PublishToGitHubPages`
+     * :ref:`JOBTMPL/VerifyDocumentation`
+     * :ref:`JOBTMPL/BuildTheDocs`
 
-**Cleanups**
+   * **Releasing, Publishing**
 
-* :ref:`JOBTMPL/ArtifactCleanup`
+     * :ref:`JOBTMPL/GitHubReleasePage`
+     * :ref:`JOBTMPL/PyPI`
+     * :ref:`JOBTMPL/PublishTestResults`
+     * :ref:`JOBTMPL/PublishToGitHubPages`
+
+   * **Cleanups**
+
+     * :ref:`JOBTMPL/ArtifactCleanup`
 
 
 Example Pipelines
@@ -132,6 +141,7 @@ License
    :hidden:
 
    Background
+   RepositoryStructure
    Releases
    Dependency
 

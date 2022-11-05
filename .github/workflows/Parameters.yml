@@ -100,32 +100,6 @@ jobs:
           currentAlphaVersion = "3.12"
           currentAlphaRelease = "3.12.0-alpha.1"
 
-          artifact_names = {
-            "unittesting":   f"{name}-TestReport",
-            "codecoverage":  f"{name}-Coverage",
-            "statictyping":  f"{name}-Typing",
-            "package":       f"{name}-Package",
-            "documentation": f"{name}-Documentation",
-          }
-
-          # Deprecated structure
-          params = {
-            "python_version": python_version,
-            "artifacts": {
-              "unittesting": f"{artifact_names['unittesting']}",
-              "coverage":    f"{artifact_names['codecoverage']}",
-              "typing":      f"{artifact_names['statictyping']}",
-              "package":     f"{artifact_names['package']}",
-              "doc":         f"{artifact_names['documentation']}",
-            }
-          }
-
-          print("Parameters:")
-          print(f"  python_version: {python_version}")
-          print(f"  artifact_names ({len(artifact_names)}):")
-          for id, name in artifact_names.items():
-            print(f"    {id:>14}: {name}")
-
           if systems == "":
             print("::error title=Parameter::system_list is empty.")
           else:
@@ -238,16 +212,38 @@ jobs:
             for runtime, version in combinations if runtime not in data["sys"]
           ]
 
-          # Format jobs as list of dictionaries
-          buffer = ""
-          for job in jobs:
-            buffer += f"    {{ " + ", ".join([f"\"{key}\": \"{value}\"" for key, value in job.items()]) + f" }},\n"
+          artifact_names = {
+            "unittesting_xml":    f"{name}-TestReportSummary-XML",
+            "codecoverage_xml":   f"{name}-CodeCoverage-XML",
+            "codecoverage_html":  f"{name}-CodeCoverage-HTML",
+            "statictyping_html":  f"{name}-StaticTyping-HTML",
+            "package_all":        f"{name}-Packages",
+            "documentation_pdf":  f"{name}-Documentation-PDF",
+            "documentation_html": f"{name}-Documentation-HTML",
+          }
 
+          # Deprecated structure
+          params = {
+            "python_version": python_version,
+            "artifacts": {
+              "unittesting": f"{artifact_names['unittesting_xml']}",
+              "coverage":    f"{artifact_names['codecoverage_html']}",
+              "typing":      f"{artifact_names['statictyping_html']}",
+              "package":     f"{artifact_names['package_all']}",
+              "doc":         f"{artifact_names['documentation_html']}",
+            }
+          }
+
+          print("Parameters:")
+          print(f"  python_version: {python_version}")
+          print(f"  artifact_names ({len(artifact_names)}):")
+          for id, name in artifact_names.items():
+            print(f"    {id:>14}: {name}")
+
+          buffer = "".join([f"  {{ " + ", ".join([f"\"{key}\": \"{value}\"" for key, value in job.items()]) + f" }},\n" for job in jobs])
           print(dedent(f"""\
             Python jobs ({len(jobs)}):
-            [
-          {buffer}  ]
-          """))
+          {buffer}"""))
 
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))

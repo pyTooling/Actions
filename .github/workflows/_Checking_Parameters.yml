@@ -60,11 +60,16 @@ jobs:
       run:
         shell: python
     steps:
+      - name: Install dependencies
+        shell: bash
+        run: pip install pyTooling
       # Params_Default
       - name: Checking results from 'Params_Default'
         run: |
           from json import loads as json_loads
           from sys  import exit
+
+          from pyTooling.Common import zipdicts
 
           expectedPythonVersion = "3.11"
           expectedPythons = ["3.7", "3.8", "3.9", "3.10", "3.11"]
@@ -72,11 +77,13 @@ jobs:
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.10"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting":   f"{expectedName}-TestReport",
-            "codecoverage":  f"{expectedName}-Coverage",
-            "statictyping":  f"{expectedName}-Typing",
-            "package":       f"{expectedName}-Package",
-            "documentation": f"{expectedName}-Documentation"
+            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
+            "package_all":        f"{expectedName}-Packages",
+            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
+            "documentation_html": f"{expectedName}-Documentation-HTML",
           }
 
           actualPythonVersion =            """${{ needs.Params_Default.outputs.python_version }}"""
@@ -94,9 +101,12 @@ jobs:
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            for name in actualArtifactNames:
-              print(f"  {name}")
             errors += 1
+          else:
+            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
+              if actual != expected:
+                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
+                errors += 1
 
           if errors == 0:
             print(f"All checks PASSED.")
@@ -108,17 +118,21 @@ jobs:
           from json import loads as json_loads
           from sys  import exit
 
+          from pyTooling.Common import zipdicts
+
           expectedPythonVersion = "3.11"
           expectedPythons = ["3.9", "3.10", "pypy-3.8", "pypy-3.9"]
           expectedSystems = ["ubuntu", "windows", "macos"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.10"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting":   f"{expectedName}-TestReport",
-            "codecoverage":  f"{expectedName}-Coverage",
-            "statictyping":  f"{expectedName}-Typing",
-            "package":       f"{expectedName}-Package",
-            "documentation": f"{expectedName}-Documentation"
+            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
+            "package_all":        f"{expectedName}-Packages",
+            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
+            "documentation_html": f"{expectedName}-Documentation-HTML",
           }
 
           actualPythonVersion =            """${{ needs.Params_PythonVersions.outputs.python_version }}"""
@@ -136,9 +150,12 @@ jobs:
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            for name in actualArtifactNames:
-              print(f"  {name}")
             errors += 1
+          else:
+            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
+              if actual != expected:
+                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
+                errors += 1
 
           if errors == 0:
             print(f"All checks PASSED.")
@@ -150,17 +167,21 @@ jobs:
           from json import loads as json_loads
           from sys  import exit
 
+          from pyTooling.Common import zipdicts
+
           expectedPythonVersion = "3.11"
           expectedPythons = ["3.7", "3.8", "3.9", "3.10", "3.11"]
           expectedSystems = ["windows"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw32:3.10", "mingw64:3.10"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting":   f"{expectedName}-TestReport",
-            "codecoverage":  f"{expectedName}-Coverage",
-            "statictyping":  f"{expectedName}-Typing",
-            "package":       f"{expectedName}-Package",
-            "documentation": f"{expectedName}-Documentation"
+            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
+            "package_all":        f"{expectedName}-Packages",
+            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
+            "documentation_html": f"{expectedName}-Documentation-HTML",
           }
 
           actualPythonVersion =            """${{ needs.Params_Systems.outputs.python_version }}"""
@@ -178,9 +199,12 @@ jobs:
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            for name in actualArtifactNames:
-              print(f"  {name}")
             errors += 1
+          else:
+            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
+              if actual != expected:
+                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
+                errors += 1
 
           if errors == 0:
             print(f"All checks PASSED.")
@@ -192,17 +216,21 @@ jobs:
           from json import loads as json_loads
           from sys  import exit
 
+          from pyTooling.Common import zipdicts
+
           expectedPythonVersion = "3.11"
           expectedPythons = ["3.10"]
           expectedSystems = ["ubuntu", "windows", "macos"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["ubuntu:3.11", "ubuntu:3.12"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting":   f"{expectedName}-TestReport",
-            "codecoverage":  f"{expectedName}-Coverage",
-            "statictyping":  f"{expectedName}-Typing",
-            "package":       f"{expectedName}-Package",
-            "documentation": f"{expectedName}-Documentation"
+            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
+            "package_all":        f"{expectedName}-Packages",
+            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
+            "documentation_html": f"{expectedName}-Documentation-HTML",
           }
 
           actualPythonVersion =            """${{ needs.Params_Include.outputs.python_version }}"""
@@ -220,9 +248,12 @@ jobs:
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            for name in actualArtifactNames:
-              print(f"  {name}")
             errors += 1
+          else:
+            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
+              if actual != expected:
+                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
+                errors += 1
 
           if errors == 0:
             print(f"All checks PASSED.")
@@ -234,17 +265,21 @@ jobs:
           from json import loads as json_loads
           from sys  import exit
 
+          from pyTooling.Common import zipdicts
+
           expectedPythonVersion = "3.11"
           expectedPythons = ["3.10"]
           expectedSystems = ["ubuntu", "macos"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting":   f"{expectedName}-TestReport",
-            "codecoverage":  f"{expectedName}-Coverage",
-            "statictyping":  f"{expectedName}-Typing",
-            "package":       f"{expectedName}-Package",
-            "documentation": f"{expectedName}-Documentation"
+            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
+            "package_all":        f"{expectedName}-Packages",
+            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
+            "documentation_html": f"{expectedName}-Documentation-HTML",
           }
 
           actualPythonVersion =            """${{ needs.Params_Exclude.outputs.python_version }}"""
@@ -262,9 +297,12 @@ jobs:
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            for name in actualArtifactNames:
-              print(f"  {name}")
             errors += 1
+          else:
+            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
+              if actual != expected:
+                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
+                errors += 1
 
           if errors == 0:
             print(f"All checks PASSED.")
@@ -276,17 +314,21 @@ jobs:
           from json import loads as json_loads
           from sys  import exit
 
+          from pyTooling.Common import zipdicts
+
           expectedPythonVersion = "3.11"
           expectedPythons = ["3.10", "3.11"]
           expectedSystems = ["ubuntu", "windows"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["windows:3.8", "windows:3.9", "windows:3.12"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting":   f"{expectedName}-TestReport",
-            "codecoverage":  f"{expectedName}-Coverage",
-            "statictyping":  f"{expectedName}-Typing",
-            "package":       f"{expectedName}-Package",
-            "documentation": f"{expectedName}-Documentation"
+            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
+            "package_all":        f"{expectedName}-Packages",
+            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
+            "documentation_html": f"{expectedName}-Documentation-HTML",
           }
 
           actualPythonVersion =            """${{ needs.Params_All.outputs.python_version }}"""
@@ -304,9 +346,12 @@ jobs:
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            for name in actualArtifactNames:
-              print(f"  {name}")
             errors += 1
+          else:
+            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
+              if actual != expected:
+                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
+                errors += 1
 
           if errors == 0:
             print(f"All checks PASSED.")
