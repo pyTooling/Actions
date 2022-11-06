@@ -54,16 +54,16 @@ jobs:
       mingw_requirements: '-r tests/requirements.mingw.txt'
       tests_directory: 'tests'
       unittest_directory: 'unit'
-      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}
+      artifact: ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}
 
   Coverage:
     uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@main
     needs:
       - Params
     with:
-      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
+      artifact: ${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_html }}
       # Optional
-      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+      python_version: ${{ needs..Params.outputs.python_version }}
       requirements: '-r tests/requirements.txt'
       tests_directory: 'tests'
       unittest_directory: 'unit'
@@ -77,10 +77,10 @@ jobs:
     with:
       commands: |
         mypy --junit-xml StaticTypingSummary.xml --html-report htmlmypy -p ToolName
-      html_artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.typing_html }}
-      junit_artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.typing_junit }}
+      html_artifact: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
+      junit_artifact: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_junit }}
       # Optional
-      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+      python_version: ${{ needs..Params.outputs.python_version }}
       requirements: '-r tests/requirements.txt'
       html_report: 'htmlmypy'
       junit_report: 'StaticTypingSummary.xml'
@@ -101,9 +101,9 @@ jobs:
       - Params
       - Coverage
     with:
-      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.package }}
+      artifact: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
       # Optional
-      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+      python_version: ${{ needs..Params.outputs.python_version }}
       requirements: 'wheel'
 
   Release:
@@ -123,9 +123,9 @@ jobs:
       - Release
       - Package
     with:
-      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.package }}
+      artifact: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
       # Optional
-      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+      python_version: ${{ needs..Params.outputs.python_version }}
       requirements: 'wheel twine'
     secrets:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
@@ -136,7 +136,7 @@ jobs:
       - Params
     with:
       # Optional
-      python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+      python_version: ${{ needs..Params.outputs.python_version }}
 
   BuildTheDocs:
     uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@main
@@ -144,7 +144,7 @@ jobs:
       - Params
       - VerifyDocs
     with:
-      artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}
+      artifact: ${{ fromJson(needs.Params.outputs.artifact_names).documentation_html }}
 
   PublishToGitHubPages:
     uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@main
@@ -154,10 +154,10 @@ jobs:
       - Coverage
       - StaticTypeCheck
     with:
-      doc: ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}
+      doc: ${{ fromJson(needs.Params.outputs.artifact_names).documentation_html }}
       # Optional
-      coverage: ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
-      typing: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
+      coverage: ${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_html }}
+      typing: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
 
   ArtifactCleanUp:
     uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@main
@@ -169,19 +169,10 @@ jobs:
       - BuildTheDocs
       - PublishToGitHubPages
     with:
-      package: ${{ fromJson(needs.Params.outputs.params).artifacts.package }}
+      package: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
       remaining: |
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-ubuntu-3.8
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-ubuntu-3.9
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-ubuntu-3.10
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-windows-3.8
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-windows-3.9
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-windows-3.10
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-msys2-3.9
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-macos-3.8
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-macos-3.9
-        ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-macos-3.10
-        ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
-        ${{ fromJson(needs.Params.outputs.params).artifacts.typing_html }}
-        ${{ fromJson(needs.Params.outputs.params).artifacts.typing_junit }}
-        ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}
+        ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}-*
+        ${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_html }}
+        ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
+        ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_junit }}
+        ${{ fromJson(needs.Params.outputs.artifact_names).documentation_html }}
