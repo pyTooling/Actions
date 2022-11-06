@@ -79,10 +79,6 @@ jobs:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install dependencies for compute step
-        if: matrix.system == 'msys2'
-        run: pip install pyTooling
-
       - name: Compute pacman/pacboy packages
         id: pacboy
         if: matrix.system == 'msys2'
@@ -92,23 +88,45 @@ jobs:
           from pathlib import Path
           from re      import compile
 
-          from pyTooling.Packageing import loadRequirementsFile
+          def loadRequirementsFile(requirementsFile: Path):
+            requirements = []
+            with requirementsFile.open("r") as file:
+              for line in file.readlines():
+                line = line.strip()
+                if line.startswith("#") or line.startswith("https") or line == "":
+                  continue
+                elif line.startswith("-r"):
+                  # Remove the first word/argument (-r)
+                  requirements += loadRequirementsFile(requirementsFile.parent / line[2:].lstrip())
+                else:
+                  requirements.append(line)
 
-          requirementsFile = Path("${{ inputs.requirements }}")
-          dependencies = loadRequirementsFile(requirementsFile)
+            return requirements
+
+          requirements = "${{ inputs.requirements }}"
+          if requirements.startswith("-r"):
+            requirementsFile = Path(requirements[2:].lstrip())
+            dependencies = loadRequirementsFile(requirementsFile)
+          else:
+            dependencies = [req.strip() for req in requirements.split(" ")]
+
+          print(f"Dependencies ({len(dependencies)}):")
+          for dependency in dependencies:
+            print(f"  {dependency}")
 
           filter = {
-            "pip": "python-pip:p",
-            "wheel": "python-wheel:p",
-            "coverage": "python-coverage:p",
-            "lxml": "python-lxml:p",
-            "ruamel-yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-            "numpy": "python-numpy:p",
+            "pip":         "python-pip:p",
+            "wheel":       "python-wheel:p",
+            "coverage":    "python-coverage:p",
+            "lxml":        "python-lxml:p",
+            "ruamel.yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+            "numpy":       "python-numpy:p",
+            "igraph":      "igraph:p",
           }
 
           regExp = compile(r"([\w_\-\.]+)(\s*(?:[<>=]+)\s*)(\d+(?:.\d+)*)")
 
-          packages = []
+          packages = set(("python-pip:p", "python-wheel:p"))
           print(f"Processing requirements ({len(dependencies)}):")
           for dependency in dependencies:
             match = regExp.match(dependency)
@@ -116,12 +134,11 @@ jobs:
               print(f"  Wrong format: {dependency}")
               continue
 
+            package = match[1]
             try:
-              package = match[0]
               rewrite = filter[package]
-
               print(f"  Found rewrite rule for '{package}': {rewrite}")
-              packages.append(rewrite)
+              packages.add(rewrite)
             except KeyError:
               continue
 
