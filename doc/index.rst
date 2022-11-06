@@ -88,12 +88,6 @@ Minimal required modifications are the following:
 - Set the ``name`` input of job ``Parameters``.
 - Specify the ``commands`` input of job ``StaticTypeCheck``.
 
-Find further usage cases in the following list of projects:
-
-- `edaa-org/pyEDAA.ProjectModel <https://github.com/edaa-org/pyEDAA.ProjectModel/tree/main/.github/workflows>`__
-- `edaa-org/pySVModel <https://github.com/edaa-org/pySVModel/tree/main/.github/workflows>`__
-- `VHDL/pyVHDLModel <https://github.com/VHDL/pyVHDLModel/tree/main/.github/workflows>`__
-
 
 GitHub Actions
 **************
@@ -137,13 +131,15 @@ License
    This document was generated on |docdate|.
 
 .. toctree::
-   :caption: Overview
+   :caption: Introduction
    :hidden:
 
    Background
    RepositoryStructure
-   Releases
+   Instantiation
+   Deveopment
    Dependency
+   Releases
 
 .. raw:: latex
 

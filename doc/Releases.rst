@@ -4,6 +4,13 @@ Releases Management
 Releases
 ********
 
+r1
+==
+
+.. note:: Upcoming next release based in `v1.x.y`.
+
+.. attention:: This release introduces breaking changes.
+
 r0
 ==
 
@@ -52,7 +59,7 @@ Each merge-commit is tagged with a semantic version.
 Tagging
 *******
 
-See context in `#5 <https://github.com/pyTooling/Actions/issues/5>`__.
+See context in :ghissue:`#5 Tagging/versioning of this repo <5>`.
 
 Tag new releases in the ``main`` branch using a semver compatible value, starting with ``v``:
 

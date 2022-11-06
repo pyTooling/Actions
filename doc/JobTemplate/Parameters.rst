@@ -368,7 +368,7 @@ The supported artifacts are:
        needs:
          - Params
        with:
-         artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+         artifact: ${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_html }}
 
 
 Params
