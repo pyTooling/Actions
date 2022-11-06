@@ -80,20 +80,21 @@ Python dependencies to be installed through pip.
 pacboy
 ======
 
-+----------------+----------+----------+-----------------------------------------------------------------+
-| Parameter Name | Required | Type     | Default                                                         |
-+================+==========+==========+=================================================================+
-| pacboy         | optional | string   | ``python-pip:p python-wheel:p python-coverage:p python-lxml:p`` |
-+----------------+----------+----------+-----------------------------------------------------------------+
++----------------+----------+----------+-----------+
+| Parameter Name | Required | Type     | Default   |
++================+==========+==========+===========+
+| pacboy         | optional | string   | ``""``    |
++----------------+----------+----------+-----------+
 
-MSYS2 dependencies to be installed through pacboy (pacman).
+Additional MSYS2 dependencies to be installed through pacboy (pacman).
+
+Internally, a workflow step reads the requirements file for Python and compares requested packages with a list of
+packages that should be installed through pacman/pacboy compared to installation via pip. These are mainly core packages
+or packages with embedded C code.
 
 .. code-block:: yaml
 
    pacboy: >-
-     python-pip:p
-     python-wheel:p
-     python-coverage:p
      python-lxml:p
 
 
