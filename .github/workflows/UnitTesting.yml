@@ -189,6 +189,7 @@ jobs:
       - name: ☑ Run unit tests (Ubuntu/macOS)
         if: matrix.system != 'windows'
         run: |
+          export ENVIRONMENT_NAME="${{ matrix.envname }}"
           cd ${{ inputs.tests_directory }}
           [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReportSummary.xml' || unset PYTEST_ARGS
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
