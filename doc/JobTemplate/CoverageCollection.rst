@@ -69,8 +69,8 @@ Complex Example
        needs:
          - Params
        with:
-         python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
-         artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.Coverage }}
+         python_version: ${{ needs.Params.outputs.python_version }}
+         artifact: ${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_html }}
        secrets:
          codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 

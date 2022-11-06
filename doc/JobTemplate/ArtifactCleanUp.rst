@@ -47,10 +47,9 @@ Complex Example
          - PublishToGitHubPages
          - PublishTestResults
        with:
-         package: ${{ fromJson(needs.Params.outputs.params).artifacts.package }}
+         package: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
          remaining: |
-           ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-ubuntu-3.9
-           ${{ fromJson(needs.Params.outputs.params).artifacts.unittesting }}-ubuntu-3.10
+           ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}-*
 
 
 Parameters

@@ -50,9 +50,9 @@ Complex Example
          - Coverage
          - StaticTypeCheck
        with:
-         doc: ${{ fromJson(needs.Params.outputs.params).artifacts.doc }}
-         coverage: ${{ fromJson(needs.Params.outputs.params).artifacts.coverage }}
-         typing: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
+         doc: ${{ fromJson(needs.Params.outputs.artifact_names).documentation_html }}
+         coverage: ${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_html }}
+         typing: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
 
 
 Parameters

@@ -48,12 +48,12 @@ Complex Example
        needs:
          - Params
        with:
-         python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+         python_version: ${{ needs.Params.outputs.python_version }}
          commands: |
            touch pyTooling/__init__.py
            mypy --html-report htmlmypy -p pyTooling
          report: 'htmlmypy'
-         artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.typing }}
+         artifact: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
 
 Commands
 ========

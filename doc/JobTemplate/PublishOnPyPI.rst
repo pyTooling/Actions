@@ -72,9 +72,9 @@ by that job. Finally, the list of requirements is overwritten to load a list of 
          - Params
          - Package
        with:
-         python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+         python_version: ${{ needs.Params.outputs.python_version }}
          requirements: -r dist/requirements.txt
-         artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.Package }}
+         artifact: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
        secrets:
          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 

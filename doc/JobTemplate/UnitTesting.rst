@@ -40,7 +40,7 @@ Simple Example
          - Params
        with:
          jobs: ${{ needs.Params.outputs.python_jobs }}
-         artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.Unittesting }}
+         artifact: ${{ fromJson(needs.Params.outputs.artifact_names).unittesting }}
 
 
 Complex Example

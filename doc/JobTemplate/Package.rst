@@ -50,9 +50,9 @@ Complex Example
          - Params
          - Coverage
        with:
-         python_version: ${{ fromJson(needs.Params.outputs.params).python_version }}
+         python_version: ${{ needs.Params.outputs.python_version }}
          requirements: -r build/requirements.txt
-         artifact: ${{ fromJson(needs.Params.outputs.params).artifacts.Package }}
+         artifact: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
 
 
 Parameters
