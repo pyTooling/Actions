@@ -143,9 +143,9 @@ jobs:
 
       - name: 📊 Publish coverage at CodeCov
         continue-on-error: true
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
-          file: ${{ steps.getVariables.outputs.coverage_report_xml }}
+          files: ${{ steps.getVariables.outputs.coverage_report_xml }}
           flags: unittests
           env_vars: PYTHON
 
