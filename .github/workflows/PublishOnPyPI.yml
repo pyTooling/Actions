@@ -52,7 +52,7 @@ jobs:
 
     steps:
       - name: 📥 Download artifacts '${{ inputs.artifact }}' from 'Package' job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.artifact }}
           path: dist/
