@@ -25,6 +25,7 @@
  * * https://github.com/actions/runner/issues/1478                                                                    *
  * ================================================================================================================== */
 const { spawn } = require("child_process");
+const fs = require('fs');
 
 function run(cmdline) {
   var args = cmdline.split(" ");
@@ -41,6 +42,6 @@ const key = process.env.INPUT_KEY.toUpperCase();
 if ( process.env[`STATE_${key}`] !== undefined ) { // Are we in the 'post' step?
   run(process.env.INPUT_POST);
 } else { // Otherwise, this is the main step
-  console.log(`::save-state name=${key}::true`);
+  fs.appendFileSync(process.env.GITHUB_STATE, `${key}=true`);
   run(process.env.INPUT_MAIN);
 }
