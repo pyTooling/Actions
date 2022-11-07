@@ -69,11 +69,6 @@ Find further usage cases in the following list of projects:
 - [VHDL/pyVHDLModel](https://github.com/VHDL/pyVHDLModel/tree/main/.github/workflows)
 
 
-## References
-
-- [hdl/containers#48](https://github.com/hdl/containers/issues/48)
-
-
 ## Contributors
 
 * [Patrick Lehmann](https://GitHub.com/Paebbels)

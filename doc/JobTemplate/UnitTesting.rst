@@ -19,6 +19,7 @@ file.
 **Dependencies:**
 
 * :gh:`actions/checkout`
+* :gh:`msys2/setup-msys2`
 * :gh:`actions/setup-python`
 * :gh:`actions/upload-artifact`
 

@@ -26,4 +26,5 @@ This is a summary of dependencies used by the provided job templates. For more d
 
 * Miscellaneous
 
+  * :gh:`msys2/setup-msys2`
   * :gh:`geekyeggo/delete-artifact`
