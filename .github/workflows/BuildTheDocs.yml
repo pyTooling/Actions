@@ -46,7 +46,7 @@ jobs:
           skip-deploy: true
 
       - name: 📤 Upload 'documentation' artifacts
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifact }}
           path: doc/_build/html

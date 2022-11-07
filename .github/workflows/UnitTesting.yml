@@ -124,7 +124,7 @@ jobs:
 
       - name: 📤 Upload 'TestReport.xml' artifact
         if: inputs.artifact != ''
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifact }}-${{ matrix.system }}-${{ matrix.python }}
           path: TestReport.xml
