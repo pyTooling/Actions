@@ -3,7 +3,8 @@
  *   Unai Martinez-Corral                                                                                             *
  *                                                                                                                    *
  * ================================================================================================================== *
- * Copyright 2021 Unai Martinez-Corral <unai.martinezcorral@ehu.eus>                                                  *
+ * Copyright 2021-2022 Unai Martinez-Corral <unai.martinezcorral@ehu.eus>                                             *
+ * Copyright 2022 Unai Martinez-Corral <umartinezcorral@antmicro.com>                                                 *
  *                                                                                                                    *
  * Licensed under the Apache License, Version 2.0 (the "License");                                                    *
  * you may not use this file except in compliance with the License.                                                   *
@@ -27,11 +28,8 @@
 const { spawn } = require("child_process");
 const fs = require('fs');
 
-function run(cmdline) {
-  var args = cmdline.split(" ");
-  const cmd = args.shift();
-
-  const subprocess = spawn(cmd, args, { stdio: "inherit" });
+function run(cmd) {
+  const subprocess = spawn(cmd, { stdio: "inherit", shell: true });
   subprocess.on("exit", (exitCode) => {
     process.exitCode = exitCode;
   });
