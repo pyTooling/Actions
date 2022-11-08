@@ -57,10 +57,10 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ inputs.python_version }}
 
@@ -76,7 +76,7 @@ jobs:
       - name: 📤 Upload 'Static Typing Report' artifact
         if: ${{ inputs.artifact != '' }}
         continue-on-error: true
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifact }}
           path: ${{ inputs.report }}
