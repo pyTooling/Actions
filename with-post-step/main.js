@@ -27,11 +27,8 @@
 const { spawn } = require("child_process");
 const fs = require('fs');
 
-function run(cmdline) {
-  var args = cmdline.split(" ");
-  const cmd = args.shift();
-
-  const subprocess = spawn(cmd, args, { stdio: "inherit" });
+function run(cmd) {
+  const subprocess = spawn(cmd, { stdio: "inherit", shell: true });
   subprocess.on("exit", (exitCode) => {
     process.exitCode = exitCode;
   });
