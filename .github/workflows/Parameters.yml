@@ -65,6 +65,8 @@ jobs:
         id: params
         shell: python
         run: |
+          from os import environ
+
           name = '${{ inputs.name }}'
           params = {
             'python_version': '${{ inputs.python_version }}',
@@ -76,7 +78,9 @@ jobs:
               'doc': f'{name}-doc',
             }
           }
-          print(f'::set-output name=params::{params!s}')
+
+          with open(environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as gho:
+              gho.write(f"params={params!s}\n")
           print("Parameters:")
           print(params)
 
@@ -112,8 +116,9 @@ jobs:
                   'python': '3.11.0-alpha.3' if version == '3.11' else version
               }
               for system in systems
-              for version in (versions if system != 'msys2' else ['3.9'])
+              for version in (versions if system != 'msys2' else ['3.10'])
           ]
-          print(f'::set-output name=python_jobs::{jobs!s}')
+          with open(environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as gho:
+              gho.write(f"python_jobs={jobs!s}\n")
           print("Python jobs:")
           print(jobs)

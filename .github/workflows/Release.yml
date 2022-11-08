@@ -39,9 +39,11 @@ jobs:
           RELEASE_VERSION=${GIT_TAG#v}
           RELEASE_DATETIME="$(date --utc '+%d.%m.%Y - %H:%M:%S')"
           # write to step outputs
-          echo ::set-output name=gitTag::${GIT_TAG}
-          echo ::set-output name=version::${RELEASE_VERSION}
-          echo ::set-output name=datetime::${RELEASE_DATETIME}
+          cat >> "$GITHUB_OUTPUT" << EOF
+          gitTag=${GIT_TAG}
+          version=${RELEASE_VERSION}
+          datetime=${RELEASE_DATETIME}
+          EOF
 
       - name: 📑 Create Release Page
         id: createReleasePage
