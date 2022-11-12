@@ -246,11 +246,13 @@ jobs:
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))
           print(f"GITHUB_OUTPUT: {github_output}")
-          with github_output.open("a+") as f:
-            f.write(f"python_version={python_version}\n")
-            f.write(f"python_jobs={json_dumps(jobs)}\n")
-            f.write(f"artifact_names={json_dumps(artifact_names)}\n")
-            f.write(f"params={json_dumps(params)}\n")
+          with github_output.open("a+", encoding="utf-8") as f:
+            f.write(dedent(f"""\
+              python_version={python_version}
+              python_jobs={json_dumps(jobs)}
+              artifact_names={json_dumps(artifact_names)}
+              params={json_dumps(params)}
+          """))
 
       - name: Verify out parameters
         id: verify

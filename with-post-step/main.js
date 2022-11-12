@@ -3,7 +3,8 @@
  *   Unai Martinez-Corral                                                                                             *
  *                                                                                                                    *
  * ================================================================================================================== *
- * Copyright 2021 Unai Martinez-Corral <unai.martinezcorral@ehu.eus>                                                  *
+ * Copyright 2021-2022 Unai Martinez-Corral <unai.martinezcorral@ehu.eus>                                             *
+ * Copyright 2022 Unai Martinez-Corral <umartinezcorral@antmicro.com>                                                 *
  *                                                                                                                    *
  * Licensed under the Apache License, Version 2.0 (the "License");                                                    *
  * you may not use this file except in compliance with the License.                                                   *
@@ -25,12 +26,10 @@
  * * https://github.com/actions/runner/issues/1478                                                                    *
  * ================================================================================================================== */
 const { spawn } = require("child_process");
+const fs = require('fs');
 
-function run(cmdline) {
-  var args = cmdline.split(" ");
-  const cmd = args.shift();
-
-  const subprocess = spawn(cmd, args, { stdio: "inherit" });
+function run(cmd) {
+  const subprocess = spawn(cmd, { stdio: "inherit", shell: true });
   subprocess.on("exit", (exitCode) => {
     process.exitCode = exitCode;
   });
@@ -41,6 +40,6 @@ const key = process.env.INPUT_KEY.toUpperCase();
 if ( process.env[`STATE_${key}`] !== undefined ) { // Are we in the 'post' step?
   run(process.env.INPUT_POST);
 } else { // Otherwise, this is the main step
-  console.log(`::save-state name=${key}::true`);
+  fs.appendFileSync(process.env.GITHUB_STATE, `${key}=true`);
   run(process.env.INPUT_MAIN);
 }

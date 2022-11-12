@@ -37,6 +37,6 @@ inputs:
     default: POST
 
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'main.js'
   post: 'main.js'
