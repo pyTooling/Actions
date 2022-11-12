@@ -54,6 +54,11 @@ on:
         required: false
         default: ''
         type: string
+      disable_list:
+        description: 'Space separated list of system:python items to be disabled from the list of test.'
+        required: false
+        default: ''
+        type: string
 
     outputs:
       python_version:
@@ -95,6 +100,7 @@ jobs:
           versions =       "${{ inputs.python_version_list }}".strip()
           include_list =   "${{ inputs.include_list }}".strip()
           exclude_list =   "${{ inputs.exclude_list }}".strip()
+          disable_list =   "${{ inputs.disable_list }}".strip()
 
           currentMSYS2Version = "3.10"
           currentAlphaVersion = "3.12"
@@ -120,12 +126,19 @@ jobs:
           else:
             excludes = [exclude.strip() for exclude in exclude_list.split(" ")]
 
+          if disable_list == "":
+            disabled = []
+          else:
+            disabled = [disable.strip() for disable in disable_list.split(" ")]
+
           if "3.6" in versions:
             print("::warning title=Deprecated::Support for Python 3.6 ended in 2021.12.23.")
           if "msys2" in systems:
             print("::warning title=Deprecated::System 'msys2' will be replaced by 'mingw64'.")
           if currentAlphaVersion in versions:
             print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
+          for disable in disabled:
+            print(f"::warning title=Disabled Python Job::System '{disable}' temporary disabled.")
 
           data = {
             # Python and PyPy versions supported by "setup-python" action
@@ -164,6 +177,9 @@ jobs:
           print(f"excludes ({len(excludes)}):")
           for exclude in excludes:
             print(f"- {exclude}")
+          print(f"disabled ({len(disabled)}):")
+          for disable in disabled:
+            print(f"- {disable}")
 
           combinations = [
             (system, version)
@@ -172,20 +188,23 @@ jobs:
             for version in versions
               if version in data["python"]
               and f"{system}:{version}" not in excludes
+              and f"{system}:{version}" not in disabled
           ] + [
             (system, currentMSYS2Version)
             for system in systems
               if system in data["runtime"]
               and f"{system}:{currentMSYS2Version}" not in excludes
+              and f"{system}:{currentMSYS2Version}" not in disabled
           ] + [
             (system, version)
             for system, version in includes
               if system in data["sys"]
               and version in data["python"]
+              and f"{system}:{version}" not in disabled
           ]
           print(f"Combinations ({len(combinations)}):")
           for system, version in combinations:
-            print(f"  {system}:{version}")
+            print(f"- {system}:{version}")
 
           jobs = [
             {
@@ -241,7 +260,7 @@ jobs:
           )
           print(f"  artifact_names ({len(artifact_names)}):")
           for id, name in artifact_names.items():
-            print(f"    {id:>14}: {name}")
+            print(f"    {id:>20}: {name}")
 
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))
