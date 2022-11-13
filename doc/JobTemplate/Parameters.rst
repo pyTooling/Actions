@@ -247,6 +247,30 @@ Space separated list of ``system:python`` items to be excluded from the list of 
    exclude_list: "windows:pypy-3.8 windows:pypy-3.9"
 
 
+disable_list
+============
+
++----------------+----------+----------+----------+
+| Parameter Name | Required | Type     | Default  |
++================+==========+==========+==========+
+| disable_list   | optional | string   | ``""``   |
++----------------+----------+----------+----------+
+
+Space separated list of ``system:python`` items to be temporarily disabled from the list of test.
+
+Each disabled item creates a warning in the workflow log:
+
+.. image:: /_static/GH_Workflow_DisabledJobsWarnings.png
+   :scale: 80 %
+
+
+**Example:**
+
+.. code-block:: yaml
+
+   disable_list: "windows:3.10 windows:3.11"
+
+
 Secrets
 *******
 
