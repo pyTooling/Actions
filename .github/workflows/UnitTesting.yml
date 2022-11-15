@@ -110,11 +110,7 @@ jobs:
           else:
             dependencies = [req.strip() for req in requirements.split(" ")]
 
-          print(f"Dependencies ({len(dependencies)}):")
-          for dependency in dependencies:
-            print(f"  {dependency}")
-
-          filter = {
+          packages = {
             "pip":         "python-pip:p",
             "wheel":       "python-wheel:p",
             "coverage":    "python-coverage:p",
@@ -123,30 +119,43 @@ jobs:
             "numpy":       "python-numpy:p",
             "igraph":      "igraph:p",
           }
+          subPackages = {
+            "pyTooling": {
+              "yaml":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+            }
+          }
 
-          regExp = compile(r"([\w_\-\.]+)(\s*(?:[<>=]+)\s*)(\d+(?:.\d+)*)")
+          regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:,\w+)*)\])?(?:\s*(?P<Comperator>[<>=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
 
-          packages = set(("python-pip:p", "python-wheel:p"))
-          print(f"Processing requirements ({len(dependencies)}):")
+          pacboyPackages = set(("python-pip:p", "python-wheel:p"))
+          print(f"Processing dependencies ({len(dependencies)}):")
           for dependency in dependencies:
+            print(f"  {dependency}")
+
             match = regExp.match(dependency)
             if not match:
-              print(f"  Wrong format: {dependency}")
+              print(f"    Wrong format: {dependency}")
+              print(f"::error title=Identifying Pacboy Packages::Unrecognized dependency format '{dependency}'")
               continue
 
-            package = match[1]
-            try:
-              rewrite = filter[package]
-              print(f"  Found rewrite rule for '{package}': {rewrite}")
-              packages.add(rewrite)
-            except KeyError:
-              continue
+            package = match["PackageName"]
+            if package in packages:
+              rewrite = packages[package]
+              print(f"    Found rewrite rule for '{package}': {rewrite}")
+              pacboyPackages.add(rewrite)
+
+            if match["SubPackages"] and package in subPackages:
+              for subPackage in match["SubPackages"].split(","):
+                if subPackage in subPackages[package]:
+                  rewrite = subPackages[package][subPackage]
+                  print(f"    Found rewrite rule for '{package}[..., {subPackage}, ...]': {rewrite}")
+                  pacboyPackages.add(rewrite)
 
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))
           print(f"GITHUB_OUTPUT: {github_output}")
           with github_output.open("a+") as f:
-            f.write(f"pacboy_packages={' '.join(packages)}\n")
+            f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
 
       - name: '🟦 Setup MSYS2'
         if: matrix.system == 'msys2'
