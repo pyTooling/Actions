@@ -191,6 +191,7 @@ jobs:
       - name: ☑ Run unit tests (Windows)
         if: matrix.system == 'windows'
         run: |
+          $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
           cd ${{ inputs.tests_directory }}
           $PYTEST_ARGS = if ("${{ inputs.artifact }}".length -gt 0) { "--junitxml=TestReportSummary.xml" } else { "" }
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
@@ -199,7 +200,9 @@ jobs:
         if: matrix.system != 'windows'
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
+          RELDIR="$(realpath --relative-to=${{ inputs.tests_directory }} .)"
           cd ${{ inputs.tests_directory }}
+          [ 'x${{ inputs.coverage_config }}' != 'x' ] && PYCOV_ARGS="--cov-config=${RELDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
           [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReportSummary.xml' || unset PYTEST_ARGS
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
 
