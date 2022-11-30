@@ -157,11 +157,11 @@ jobs:
           with github_output.open("a+") as f:
             f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
 
-      - name: '🟦 Setup MSYS2'
+      - name: '🟦 Setup MSYS2 for ${{ matrix.runtime }}'
         if: matrix.system == 'msys2'
         uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: ${{ matrix.runtime }}
           update: true
           pacboy: >-
             ${{ steps.pacboy.outputs.pacboy_packages }}
