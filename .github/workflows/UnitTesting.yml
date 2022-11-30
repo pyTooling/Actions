@@ -182,7 +182,7 @@ jobs:
       - name: 🔧 Install pip dependencies (MSYS2)
         if: matrix.system == 'msys2'
         run: |
-          if [ 'x${{ inputs.mingw_requirements }}' != 'x' ]; then
+          if [ -n '${{ inputs.mingw_requirements }}' ]; then
             python -m pip install --disable-pip-version-check ${{ inputs.mingw_requirements }}
           else
             python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
@@ -200,10 +200,10 @@ jobs:
         if: matrix.system != 'windows'
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
-          RELDIR="$(realpath --relative-to=${{ inputs.tests_directory }} .)"
-          cd ${{ inputs.tests_directory }}
-          [ 'x${{ inputs.coverage_config }}' != 'x' ] && PYCOV_ARGS="--cov-config=${RELDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
-          [ 'x${{ inputs.artifact }}' != 'x' ] && PYTEST_ARGS='--junitxml=TestReportSummary.xml' || unset PYTEST_ARGS
+          ABSDIR=$(pwd)
+          [ -n '${{ inputs.tests_directory }}' ] && cd "${{ inputs.tests_directory }}"
+          [ -n '${{ inputs.coverage_config }}' ] && PYCOV_ARGS="--cov-config=${ABSDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
+          [ -n '${{ inputs.artifact }}' ] && PYTEST_ARGS='--junitxml=TestReportSummary.xml' || unset PYTEST_ARGS
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
