@@ -132,17 +132,17 @@ jobs:
         run: |
           export ENVIRONMENT_NAME="Linux (x86-64)"
           ABSDIR=$(pwd)
-          [ -n '${{ inputs.tests_directory }}' ] && cd "${{ inputs.tests_directory }}"
+          cd "${{ inputs.tests_directory || '.' }}"
           [ -n '${{ inputs.coverage_config }}' ] && PYCOV_ARGS="--cov-config=${ABSDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
           echo "python -m pytest -rA --cov=${ABSDIR} ${PYCOV_ARGS} ${{ inputs.unittest_directory }} --color=yes"
           python -m pytest -rA --cov=${ABSDIR} $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
 
       - name: Convert to cobertura format
-        run: coverage xml --data-file=${{ inputs.tests_directory }}/.coverage
+        run: coverage xml --data-file=${{ inputs.tests_directory || '.' }}/.coverage
 
       - name: Convert to HTML format
         run: |
-          coverage html --data-file=${{ inputs.tests_directory }}/.coverage -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          coverage html --data-file=${{ inputs.tests_directory || '.' }}/.coverage -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
           rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
 
       - name: 📤 Upload 'Coverage Report' artifact

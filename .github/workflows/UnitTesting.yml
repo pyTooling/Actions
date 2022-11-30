@@ -192,7 +192,7 @@ jobs:
         if: matrix.system == 'windows'
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
-          if ("${{ inputs.tests_directory }}") { cd "${{ inputs.tests_directory }}" }
+          cd "${{ inputs.tests_directory || '.' }}"
           $PYTEST_ARGS = if ("${{ inputs.artifact }}") { "--junitxml=TestReportSummary.xml" } else { "" }
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
 
@@ -201,7 +201,7 @@ jobs:
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
           ABSDIR=$(pwd)
-          [ -n '${{ inputs.tests_directory }}' ] && cd "${{ inputs.tests_directory }}"
+          cd "${{ inputs.tests_directory || '.' }}"
           [ -n '${{ inputs.coverage_config }}' ] && PYCOV_ARGS="--cov-config=${ABSDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
           [ -n '${{ inputs.artifact }}' ] && PYTEST_ARGS='--junitxml=TestReportSummary.xml' || unset PYTEST_ARGS
           python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
@@ -211,6 +211,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.artifact }}-${{ matrix.system }}-${{ matrix.python }}
-          path: ${{ inputs.tests_directory }}/TestReportSummary.xml
+          path: ${{ inputs.tests_directory || '.' }}/TestReportSummary.xml
           if-no-files-found: error
           retention-days: 1
