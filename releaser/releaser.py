@@ -52,7 +52,7 @@ def GetListOfArtifacts(argv, files):
     if len(argv) > 1:
         args += argv[1:]
     if len(args) == 1 and args[0].lower() == "none":
-        print("! Skipping 'files' because it's set to 'none")
+        print("! Skipping 'files' because it's set to 'none'.")
         return []
     elif len(args) == 0:
         stdout.flush()
@@ -63,7 +63,7 @@ def GetListOfArtifacts(argv, files):
             print(f"  glob({item!s}):")
             for fname in [fname for fname in glob(item, recursive=True) if not Path(fname).is_dir()]:
                 if Path(fname).stat().st_size == 0:
-                    print(f"  - ! Skipping empty file {fname!s}")
+                    print(f"  - ! Skipping empty file {fname!s}.")
                     continue
                 print(f"  - {fname!s}")
                 flist.append(fname)
@@ -101,7 +101,7 @@ def CheckRefSemVer(gh_ref, tag, snapshots):
                     return (tag, env_tag, False)
                 elif snapshots:
                     # is semver compilant prerelease tag, thus a snapshot (we skip it)
-                    print("! Skipping snapshot prerelease")
+                    print("! Skipping snapshot prerelease.")
                     sys_exit()
 
     return (tag, env_tag, True)
@@ -179,12 +179,15 @@ if paramRM:
         asset.delete_asset()
 stdout.flush()
 
-print("· Cleanup and/or upload artifacts")
-env = environ.copy()
-env["GITHUB_TOKEN"] = paramToken
-cmd = ["gh", "release", "upload", "--repo", paramRepo, "--clobber", tag] + files
-print(f" > {' '.join(cmd)}")
-check_call(cmd, env=env)
-stdout.flush()
+if len(files) > 0:
+    print("· Upload assets")
+    env = environ.copy()
+    env["GITHUB_TOKEN"] = paramToken
+    cmd = ["gh", "release", "upload", "--repo", paramRepo, "--clobber", tag] + files
+    print(f" > {' '.join(cmd)}")
+    check_call(cmd, env=env)
+    stdout.flush()
+else:
+    print("! Skipping uploading assets because the file list is empty.")
 
 UpdateReference(gh_release, tag, paramSHA if env_tag is None else None, is_prerelease, is_draft)
