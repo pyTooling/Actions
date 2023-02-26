@@ -26,7 +26,8 @@
  * * https://github.com/actions/runner/issues/1478                                                                    *
  * ================================================================================================================== */
 const { spawn } = require("child_process");
-const fs = require('fs');
+const { appendFileSync } = require("fs");
+const { EOL } = require("os");
 
 function run(cmd) {
   const subprocess = spawn(cmd, { stdio: "inherit", shell: true });
@@ -40,6 +41,6 @@ const key = process.env.INPUT_KEY.toUpperCase();
 if ( process.env[`STATE_${key}`] !== undefined ) { // Are we in the 'post' step?
   run(process.env.INPUT_POST);
 } else { // Otherwise, this is the main step
-  fs.appendFileSync(process.env.GITHUB_STATE, `${key}=true`);
+  appendFileSync(process.env.GITHUB_STATE, `${key}=true${EOL}`);
   run(process.env.INPUT_MAIN);
 }
