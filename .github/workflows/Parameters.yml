@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2022 The pyTooling Authors                                                                            #
+# Copyright 2020-2023 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -232,7 +232,10 @@ jobs:
           ]
 
           artifact_names = {
-            "unittesting_xml":    f"{name}-TestReportSummary-XML",
+            "unittesting_xml":    f"{name}-UnitTestReportSummary-XML",
+            "perftesting_xml":    f"{name}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":   f"{name}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":     f"{name}-ApplicationTestReportSummary-XML",
             "codecoverage_xml":   f"{name}-CodeCoverage-XML",
             "codecoverage_html":  f"{name}-CodeCoverage-HTML",
             "statictyping_html":  f"{name}-StaticTyping-HTML",
