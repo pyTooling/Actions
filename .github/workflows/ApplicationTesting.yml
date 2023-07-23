@@ -84,6 +84,15 @@ jobs:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v3
 
+      - name: 📥 Download artifacts '${{ inputs.wheel }}' from 'Package' job
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.wheel }}
+          path: install
+
+      - name: Debug
+        run: ls -lAh install
+
       - name: Compute pacman/pacboy packages
         id: pacboy
         if: matrix.system == 'msys2'
