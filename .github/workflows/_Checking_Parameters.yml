@@ -86,7 +86,10 @@ jobs:
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.10"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
+            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
             "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
             "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
             "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
@@ -135,7 +138,10 @@ jobs:
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.10"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
+            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
             "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
             "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
             "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
@@ -184,7 +190,10 @@ jobs:
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw32:3.10", "mingw64:3.10"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
+            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
             "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
             "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
             "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
@@ -233,7 +242,10 @@ jobs:
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["ubuntu:3.11", "ubuntu:3.12"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
+            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
             "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
             "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
             "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
@@ -282,7 +294,10 @@ jobs:
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
+            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
             "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
             "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
             "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
@@ -331,7 +346,10 @@ jobs:
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
+            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
             "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
             "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
             "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
@@ -380,7 +398,10 @@ jobs:
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["windows:3.8", "windows:3.9", "windows:3.12"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-TestReportSummary-XML",
+            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
+            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
             "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
             "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
             "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
