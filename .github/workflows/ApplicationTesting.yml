@@ -90,9 +90,6 @@ jobs:
           name: ${{ inputs.wheel }}
           path: install
 
-      - name: Debug
-        run: ls -lAh install
-
       - name: Compute pacman/pacboy packages
         id: pacboy
         if: matrix.system == 'msys2'
@@ -201,6 +198,9 @@ jobs:
           else
             python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
           fi
+
+      - name: 🔧 Install wheel from artifact
+        run: python -m pip install --disable-pip-version-check -U install/*.whl
 
       - name: ☑ Run application tests (Windows)
         if: matrix.system == 'windows'
