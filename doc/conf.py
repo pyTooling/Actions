@@ -219,8 +219,8 @@ extlinks = {
 	"gh":      ("https://GitHub.com/%s", "gh:"),
 	"ghissue": ("https://GitHub.com/pyTooling/Actions/issues/%s", "issue #"),
 	"ghpull":  ("https://GitHub.com/pyTooling/Actions/pull/%s", "pull request #"),
-	"ghsrc":   ("https://GitHub.com/pyTooling/Actions/blob/main/%s", ""),
-	"wiki":    ("https://en.wikipedia.org/wiki/%s", ""),
+	"ghsrc":   ("https://GitHub.com/pyTooling/Actions/blob/main/%s", None),
+	"wiki":    ("https://en.wikipedia.org/wiki/%s", None),
 }
 
 
