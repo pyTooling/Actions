@@ -81,7 +81,7 @@ jobs:
           from pyTooling.Common import zipdicts
 
           expectedPythonVersion = "3.11"
-          expectedPythons = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+          expectedPythons = ["3.8", "3.9", "3.10", "3.11"]
           expectedSystems = ["ubuntu", "windows", "macos"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.10"]
           expectedName =    "Example"
@@ -185,7 +185,7 @@ jobs:
           from pyTooling.Common import zipdicts
 
           expectedPythonVersion = "3.11"
-          expectedPythons = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+          expectedPythons = ["3.8", "3.9", "3.10", "3.11"]
           expectedSystems = ["windows"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw32:3.10", "mingw64:3.10"]
           expectedName =    "Example"

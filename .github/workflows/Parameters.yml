@@ -37,7 +37,7 @@ on:
       python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.7 3.8 3.9 3.10 3.11'
+        default: '3.8 3.9 3.10 3.11'
         type: string
       system_list:
         description: 'Space separated list of systems to run tests on.'
@@ -144,10 +144,10 @@ jobs:
             # Python and PyPy versions supported by "setup-python" action
             "python": {
               "3.6":       { "icon": "⚫",  "until": "2021.12.23" },
-              "3.7":       { "icon": "🔴",  "until": "2023.06.27" },
-              "3.8":       { "icon": "🟠",  "until": "2024.10" },
-              "3.9":       { "icon": "🟡",  "until": "2025.10" },
-              "3.10":      { "icon": "🟢",  "until": "2026.10" },
+              "3.7":       { "icon": "⚫",  "until": "2023.06.27" },
+              "3.8":       { "icon": "🔴",  "until": "2024.10" },
+              "3.9":       { "icon": "🟠",  "until": "2025.10" },
+              "3.10":      { "icon": "🟡",  "until": "2026.10" },
               "3.11":      { "icon": "🟢",  "until": "2027.10" },
               "3.12":      { "icon": "🟣",  "until": "2028.10" },
               "pypy-3.7":  { "icon": "⟲🔴", "until": "????.??" },
