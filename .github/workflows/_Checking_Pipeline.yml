@@ -1,4 +1,4 @@
-name: Verification Pipeline
+name: Verification of Complete Pipeline
 
 on:
   push:
@@ -8,8 +8,9 @@ jobs:
   UnitTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@cov
     with:
-      name: pyTooling
-      python_version_list: "3.7 3.8 pypy-3.8 3.9 pypy-3.9 3.10 3.11"
+      name: pyDummy
+      python_version_list: "3.11"
+#      python_version_list: "3.7 3.8 pypy-3.8 3.9 pypy-3.9 3.10 3.11"
       exclude_list: "windows:pypy-3.8 windows:pypy-3.9"
 #      disable_list: "windows:3.11"
 
@@ -18,7 +19,8 @@ jobs:
     with:
       name: Platform
       python_version_list: ""
-      system_list: "ubuntu windows macos mingw32 mingw64 clang64 ucrt64"
+      system_list: "ubuntu"
+#      system_list: "ubuntu windows macos mingw32 mingw64 clang64 ucrt64"
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@cov
@@ -51,11 +53,8 @@ jobs:
   PublishCoverageResults:
     uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@cov
     needs:
+      - UnitTesting
       - Coverage
-      - PlatformTesting2
-    with:
-      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
-      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
@@ -66,8 +65,7 @@ jobs:
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       commands: |
-        touch pyTooling/__init__.py
-        mypy --html-report htmlmypy -p pyTooling
+        mypy --html-report htmlmypy -p pyDummy
       html_report: 'htmlmypy'
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
@@ -75,8 +73,6 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@cov
     needs:
       - UnitTesting
-      - PerformanceTesting
-      - Benchmarking
 
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@cov
@@ -143,13 +139,12 @@ jobs:
     needs:
       - UnitTestingParams
       - UnitTesting
-      - PerformanceTesting
-      - Benchmarking
       - PlatformTesting
       - Coverage
       - StaticTypeCheck
 #      - BuildTheDocs
       - PublishToGitHubPages
+      - PublishCoverageResults
       - PublishTestResults
     with:
       package: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}

@@ -36,7 +36,10 @@ __version__ =       "0.1.0"
 __keywords__ =      ["dummy"]
 __issue_tracker__ = "https://GitHub.com/pyTooling/Actions/issues"
 
+from pyTooling.Decorators import export
 
+
+@export
 class Application:
 	_value: int
 

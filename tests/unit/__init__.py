@@ -1,9 +1,17 @@
 # ==================================================================================================================== #
+#             _____           _ _                  _        _   _                                                      #
+#  _ __  _   |_   _|__   ___ | (_)_ __   __ _     / \   ___| |_(_) ___  _ __  ___                                      #
+# | '_ \| | | || |/ _ \ / _ \| | | '_ \ / _` |   / _ \ / __| __| |/ _ \| '_ \/ __|                                     #
+# | |_) | |_| || | (_) | (_) | | | | | | (_| |_ / ___ \ (__| |_| | (_) | | | \__ \                                     #
+# | .__/ \__, ||_|\___/ \___/|_|_|_| |_|\__, (_)_/   \_\___|\__|_|\___/|_| |_|___/                                     #
+# |_|    |___/                          |___/                                                                          #
+# ==================================================================================================================== #
 # Authors:                                                                                                             #
 #   Patrick Lehmann                                                                                                    #
 #                                                                                                                      #
+# License:                                                                                                             #
 # ==================================================================================================================== #
-# Copyright 2020-2023 The pyTooling Authors                                                                            #
+# Copyright 2017-2023 Patrick Lehmann - Bötzingen, Germany                                                             #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -19,49 +27,5 @@
 #                                                                                                                      #
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
-name: Publish Unit Test Results
-
-on:
-  workflow_call:
-    inputs:
-      report_files:
-        description: 'Pattern of report files to upload. Can be a comma separated list.'
-        required: false
-        default: 'artifacts/**/*.xml'
-        type: string
-    secrets:
-      codacy_token:
-        description: 'Token to push result to codacy.'
-        required: true
-
-jobs:
-  PublishTestResults:
-    name: 📊 Publish Test Results
-    runs-on: ubuntu-latest
-    if: always()
-
-    steps:
-      - name: ⏬ Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          path: artifacts
-
-      - name: 📊 Publish code coverage at CodeCov
-        if: inputs.CodeCov == true
-        continue-on-error: true
-        uses: codecov/codecov-action@v3
-        with:
-          files: ${{ steps.getVariables.outputs.coverage_report_xml }}
-          flags: unittests
-          env_vars: PYTHON
-
-      - name: 📉 Publish code coverage at Codacy
-        if: inputs.Codacy == true
-        continue-on-error: true
-        uses: codacy/codacy-coverage-reporter-action@v1
-        with:
-          project-token: ${{ secrets.codacy_token }}
-          coverage-reports: ${{ steps.getVariables.outputs.coverage_report_xml }}
+#
+"""Test code for pyTooling."""
