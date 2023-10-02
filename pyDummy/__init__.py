@@ -43,7 +43,7 @@ from pyTooling.Decorators import export
 class Application:
 	_value: int
 
-	def __init__(self):
+	def __init__(self) -> None:
 		self._value = 1
 
 	@property
