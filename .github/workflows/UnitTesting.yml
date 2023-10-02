@@ -195,7 +195,8 @@ jobs:
           $env:PYTHONPATH = (Get-Location).ToString()
           cd "${{ inputs.tests_directory || '.' }}"
           $PYTEST_ARGS = if ("${{ inputs.artifact }}") { "--junitxml=TestReportSummary.xml" } else { "" }
-          python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
+          Write-Host "python -m pytest -rA $PYTEST_ARGS --color=yes ${{ inputs.unittest_directory }}"
+          python -m pytest -rA $PYTEST_ARGS --color=yes ${{ inputs.unittest_directory }}
 
       - name: ☑ Run unit tests (Ubuntu/macOS)
         if: matrix.system != 'windows'
@@ -206,7 +207,8 @@ jobs:
           cd "${{ inputs.tests_directory || '.' }}"
           [ -n '${{ inputs.coverage_config }}' ] && PYCOV_ARGS="--cov-config=${ABSDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
           [ -n '${{ inputs.artifact }}' ] && PYTEST_ARGS='--junitxml=TestReportSummary.xml' || unset PYTEST_ARGS
-          python -m pytest -rA ${{ inputs.unittest_directory }} $PYTEST_ARGS --color=yes
+          echo "python -m pytest -rA $PYTEST_ARGS --color=yes ${{ inputs.unittest_directory }}"
+          python -m pytest -rA $PYTEST_ARGS --color=yes ${{ inputs.unittest_directory }}
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.artifact != ''
