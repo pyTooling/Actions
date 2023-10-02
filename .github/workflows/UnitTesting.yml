@@ -200,6 +200,7 @@ jobs:
         if: matrix.system != 'windows'
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
+          export PYTHONPATH=$(pwd)
           ABSDIR=$(pwd)
           cd "${{ inputs.tests_directory || '.' }}"
           [ -n '${{ inputs.coverage_config }}' ] && PYCOV_ARGS="--cov-config=${ABSDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
