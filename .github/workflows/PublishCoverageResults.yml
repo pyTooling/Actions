@@ -1,7 +1,6 @@
 # ==================================================================================================================== #
 # Authors:                                                                                                             #
 #   Patrick Lehmann                                                                                                    #
-#   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
 # Copyright 2020-2023 The pyTooling Authors                                                                            #
@@ -20,83 +19,49 @@
 #                                                                                                                      #
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
-name: Static Type Check
+name: Publish Unit Test Results
 
 on:
   workflow_call:
     inputs:
-      python_version:
-        description: 'Python version.'
+      report_files:
+        description: 'Pattern of report files to upload. Can be a comma separated list.'
         required: false
-        default: '3.11'
+        default: 'artifacts/**/*.xml'
         type: string
-      requirements:
-        description: 'Python dependencies to be installed through pip.'
-        required: false
-        default: '-r tests/requirements.txt'
-        type: string
-      commands:
-        description: 'Commands to run the static type checks.'
+    secrets:
+      codacy_token:
+        description: 'Token to push result to codacy.'
         required: true
-        type: string
-      html_report:
-        description: 'Directory to upload as an artifact.'
-        required: false
-        default: 'htmlmypy'
-        type: string
-      junit_report:
-        description: 'junit file to upload as an artifact.'
-        required: false
-        default: 'StaticTypingSummary.xml'
-        type: string
-      html_artifact:
-        description: 'Name of the typing artifact (HTML report).'
-        required: true
-        type: string
-      junit_artifact:
-        description: 'Name of the typing junit artifact (junit XML).'
-        required: false
-        default: ''
-        type: string
 
 jobs:
-
-  StaticTypeCheck:
-    name: 👀 Check Static Typing using Python ${{ inputs.python_version }}
+  PublishTestResults:
+    name: 📊 Publish Test Results
     runs-on: ubuntu-latest
+    if: always()
 
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v4
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
         with:
-          python-version: ${{ inputs.python_version }}
+          path: artifacts
 
-      - name: 🗂 Install dependencies
-        run: python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
-
-      - name: Check Static Typing
+      - name: 📊 Publish code coverage at CodeCov
+        if: inputs.CodeCov == true
         continue-on-error: true
-        run: ${{ inputs.commands }}
-
-      - name: 📤 Upload 'Static Typing Report' HTML artifact
-        if: ${{ inputs.html_artifact != '' }}
-        continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: codecov/codecov-action@v3
         with:
-          name: ${{ inputs.html_artifact }}
-          path: ${{ inputs.html_report }}
-          if-no-files-found: error
-          retention-days: 1
+          files: ${{ steps.getVariables.outputs.coverage_report_xml }}
+          flags: unittests
+          env_vars: PYTHON
 
-      - name: 📤 Upload 'Static Typing Report' JUnit artifact
-        if: ${{ inputs.junit_artifact != '' }}
+      - name: 📉 Publish code coverage at Codacy
+        if: inputs.Codacy == true
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: codacy/codacy-coverage-reporter-action@v1
         with:
-          name: ${{ inputs.junit_artifact }}
-          path: ${{ inputs.junit_report }}
-          if-no-files-found: error
-          retention-days: 1
+          project-token: ${{ secrets.codacy_token }}
+          coverage-reports: ${{ steps.getVariables.outputs.coverage_report_xml }}

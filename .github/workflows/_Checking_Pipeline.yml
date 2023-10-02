@@ -1,0 +1,155 @@
+name: Verification of Complete Pipeline
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  UnitTestingParams:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@cov
+    with:
+      name: pyDummy
+      python_version_list: "3.11"
+#      python_version_list: "3.7 3.8 pypy-3.8 3.9 pypy-3.9 3.10 3.11"
+      exclude_list: "windows:pypy-3.8 windows:pypy-3.9"
+#      disable_list: "windows:3.11"
+
+  PlatformTestingParams:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@cov
+    with:
+      name: Platform
+      python_version_list: ""
+      system_list: "ubuntu"
+#      system_list: "ubuntu windows macos mingw32 mingw64 clang64 ucrt64"
+
+  UnitTesting:
+    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@cov
+    needs:
+      - UnitTestingParams
+    with:
+      jobs: ${{ needs.UnitTestingParams.outputs.python_jobs }}
+      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+
+  PlatformTesting:
+    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@cov
+    needs:
+      - PlatformTestingParams
+    with:
+      jobs: ${{ needs.PlatformTestingParams.outputs.python_jobs }}
+      tests_directory: ""
+      unittest_directory: tests/unit/Platform
+      artifact: ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_xml }}
+
+  Coverage:
+    uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@cov
+    needs:
+      - UnitTestingParams
+    with:
+      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
+      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+    secrets:
+      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+  PublishCoverageResults:
+    uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@cov
+    needs:
+      - UnitTesting
+      - Coverage
+    secrets:
+      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+  StaticTypeCheck:
+    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@cov
+    needs:
+      - UnitTestingParams
+    with:
+      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
+      commands: |
+        mypy --html-report htmlmypy -p pyDummy
+      html_report: 'htmlmypy'
+      html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
+
+  PublishTestResults:
+    uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@cov
+    needs:
+      - UnitTesting
+
+  Package:
+    uses: pyTooling/Actions/.github/workflows/Package.yml@cov
+    needs:
+      - UnitTestingParams
+      - Coverage
+      - PlatformTesting
+    with:
+      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
+      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+
+  Release:
+    uses: pyTooling/Actions/.github/workflows/Release.yml@cov
+    if: startsWith(github.ref, 'refs/tags')
+    needs:
+      - UnitTesting
+      - Coverage
+      - StaticTypeCheck
+      - Package
+
+  PublishOnPyPI:
+    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@cov
+    if: startsWith(github.ref, 'refs/tags')
+    needs:
+      - UnitTestingParams
+      - Release
+      - Package
+    with:
+      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
+      requirements: -r dist/requirements.txt
+      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+    secrets:
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+#  VerifyDocs:
+#    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@cov
+#    needs:
+#      - UnitTestingParams
+#    with:
+#      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
+
+#  BuildTheDocs:
+#    uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@cov
+#    needs:
+#      - UnitTestingParams
+##      - VerifyDocs
+#    with:
+#      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
+
+  PublishToGitHubPages:
+    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@cov
+    needs:
+      - UnitTestingParams
+#      - BuildTheDocs
+      - Coverage
+      - StaticTypeCheck
+    with:
+      doc: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
+      coverage: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+      typing: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
+
+  ArtifactCleanUp:
+    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@cov
+    needs:
+      - UnitTestingParams
+      - UnitTesting
+      - PlatformTesting
+      - Coverage
+      - StaticTypeCheck
+#      - BuildTheDocs
+      - PublishToGitHubPages
+      - PublishCoverageResults
+      - PublishTestResults
+    with:
+      package: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      remaining: |
+        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-*
+        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
+        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}

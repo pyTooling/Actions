@@ -1,10 +1,17 @@
 # ==================================================================================================================== #
+#             _____           _ _                  _        _   _                                                      #
+#  _ __  _   |_   _|__   ___ | (_)_ __   __ _     / \   ___| |_(_) ___  _ __  ___                                      #
+# | '_ \| | | || |/ _ \ / _ \| | | '_ \ / _` |   / _ \ / __| __| |/ _ \| '_ \/ __|                                     #
+# | |_) | |_| || | (_) | (_) | | | | | | (_| |_ / ___ \ (__| |_| | (_) | | | \__ \                                     #
+# | .__/ \__, ||_|\___/ \___/|_|_|_| |_|\__, (_)_/   \_\___|\__|_|\___/|_| |_|___/                                     #
+# |_|    |___/                          |___/                                                                          #
+# ==================================================================================================================== #
 # Authors:                                                                                                             #
 #   Patrick Lehmann                                                                                                    #
-#   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
+# License:                                                                                                             #
 # ==================================================================================================================== #
-# Copyright 2020-2023 The pyTooling Authors                                                                            #
+# Copyright 2017-2023 Patrick Lehmann - Bötzingen, Germany                                                             #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -20,59 +27,25 @@
 #                                                                                                                      #
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
-name: Verify examples
+#
+__author__ =        "Patrick Lehmann"
+__email__ =         "Paebbels@gmail.com"
+__copyright__ =     "2017-2023, Patrick Lehmann"
+__license__ =       "Apache License, Version 2.0"
+__version__ =       "0.1.0"
+__keywords__ =      ["dummy"]
+__issue_tracker__ = "https://GitHub.com/pyTooling/Actions/issues"
 
-on:
-  workflow_call:
-    inputs:
-      python_version:
-        description: 'Python version.'
-        required: false
-        default: '3.11'
-        type: string
+from pyTooling.Decorators import export
 
-jobs:
 
-  VerifyDocs:
-    name: 👍 Verify example snippets using Python ${{ inputs.python_version }}
-    runs-on: ubuntu-latest
+@export
+class Application:
+	_value: int
 
-    steps:
-      - name: ⏬ Checkout repository
-        uses: actions/checkout@v4
+	def __init__(self) -> None:
+		self._value = 1
 
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ inputs.python_version }}
-
-      - name: 🐍 Install dependencies
-        run: |
-          pip3 install .
-
-      - name: ✂ Extract code snippet from README
-        shell: python
-        run: |
-          from pathlib import Path
-          import re
-
-          ROOT = Path('.')
-
-          with (ROOT / 'README.md').open('r') as rptr:
-              content = rptr.read()
-
-          m = re.search(r"```py(thon)?(?P<code>.*?)```", content, re.MULTILINE|re.DOTALL)
-
-          if m is None:
-              raise Exception("Regular expression did not find the example in the README!")
-
-          with (ROOT / 'tests/docs/example.py').open('w') as wptr:
-              wptr.write(m["code"])
-
-      - name: Print example.py
-        run: cat tests/docs/example.py
-
-      - name: ☑ Run example snippet
-        working-directory: tests/docs
-        run: |
-          python3 example.py
+	@property
+	def Value(self) -> int:
+		return self._value
