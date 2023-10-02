@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 📥 Download artifacts '${{ inputs.doc }}' from 'BuildTheDocs' job
         uses: actions/download-artifact@v3

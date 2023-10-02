@@ -79,7 +79,7 @@ jobs:
     steps:
 
     # Clone repository
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # Build your application, tool, artifacts, etc.
     - name: Build
