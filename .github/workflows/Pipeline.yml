@@ -1,4 +1,5 @@
-name: Pipeline
+#name: Pipeline
+name: Documentation
 
 on:
   push:
