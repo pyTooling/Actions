@@ -28,24 +28,74 @@
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
 #
+"""
+A module for a set of dummy classes.
+"""
+
 __author__ =        "Patrick Lehmann"
 __email__ =         "Paebbels@gmail.com"
 __copyright__ =     "2017-2023, Patrick Lehmann"
 __license__ =       "Apache License, Version 2.0"
-__version__ =       "0.1.0"
-__keywords__ =      ["dummy"]
+__version__ =       "0.4.4"
+__keywords__ =      ["GitHub Actions"]
 __issue_tracker__ = "https://GitHub.com/pyTooling/Actions/issues"
 
 from pyTooling.Decorators import export
+from pyTooling.Platform   import Platform
 
 
 @export
-class Application:
-	_value: int
+class Base:
+	"""
+	A base-class for dummy applications.
+	"""
+
+	_value: int    #: An internal value.
 
 	def __init__(self) -> None:
-		self._value = 1
+		"""
+		Initializes the base-class.
+		"""
+		self._value = 0
 
 	@property
 	def Value(self) -> int:
+		"""
+		Read-only property to return the internal value.
+
+		:return: Internal value.
+		"""
 		return self._value
+
+
+@export
+class Application(Base):
+	"""
+	A dummy application for demonstration purposes.
+	"""
+
+	def __init__(self) -> None:
+		"""
+		Initializes the dummy application.
+		"""
+		super().__init__()
+
+		platform = Platform()
+		if platform.IsNativeLinux:
+			self._value += 1
+		elif platform.IsNativeMacOS:
+			self._value += 2
+		elif platform.IsNativeWindows:
+			self._value += 3
+		elif platform.IsMSYSOnWindows:
+			self._value += 11
+		elif platform.IsMinGW32OnWindows:
+			self._value += 12
+		elif platform.IsMinGW64OnWindows:
+			self._value += 13
+		elif platform.IsUCRT64OnWindows:
+			self._value += 14
+		elif platform.IsClang32OnWindows:
+			self._value += 15
+		elif platform.IsClang64OnWindows:
+			self._value += 16

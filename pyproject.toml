@@ -32,10 +32,14 @@ filterwarnings = [
 
 [tool.coverage.run]
 branch = true
+relative_files = true
 omit = [
 	"*site-packages*",
 	"setup.py",
-	"tests/*"
+	"tests/benchmark/*",
+	"tests/performance/*",
+	"tests/platform/*",
+	"tests/unit/*"
 ]
 
 [tool.coverage.report]

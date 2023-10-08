@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent
 
 sys_path.insert(0, abspath("."))
 sys_path.insert(0, abspath(".."))
-#sys_path.insert(0, abspath("../pyTooling"))
+sys_path.insert(0, abspath("../pyDummy"))
 sys_path.insert(0, abspath("_extensions"))
 
 
@@ -25,7 +25,7 @@ sys_path.insert(0, abspath("_extensions"))
 # built documents.
 project = "Actions"
 
-packageInformationFile = Path(f"../{project}/__init__.py")
+packageInformationFile = Path(f"../pyDummy/__init__.py")
 versionInformation = extractVersionInformation(packageInformationFile)
 
 author =    versionInformation.Author
@@ -173,9 +173,11 @@ latex_documents = [
 # ==============================================================================
 extensions = [
 # Standard Sphinx extensions
+	"sphinx.ext.autodoc",
 	"sphinx.ext.coverage",
 	"sphinx.ext.extlinks",
 	"sphinx.ext.intersphinx",
+	"sphinx.ext.inheritance_diagram",
 	"sphinx.ext.todo",
 	"sphinx.ext.graphviz",
 	"sphinx.ext.mathjax",
@@ -185,6 +187,9 @@ extensions = [
 	"sphinxcontrib.mermaid",
 # Other extensions
 	"sphinx_fontawesome",
+	"sphinx_autodoc_typehints",
+	"sphinx_inline_tabs",
+	"autoapi.sphinx",
 ]
 
 
@@ -216,11 +221,11 @@ autodoc_typehints = "both"
 # Sphinx.Ext.ExtLinks
 # ==============================================================================
 extlinks = {
-	"gh":      ("https://GitHub.com/%s", "gh:"),
-	"ghissue": ("https://GitHub.com/pyTooling/Actions/issues/%s", "issue #"),
-	"ghpull":  ("https://GitHub.com/pyTooling/Actions/pull/%s", "pull request #"),
-	"ghsrc":   ("https://GitHub.com/pyTooling/Actions/blob/main/%s", None),
-	"wiki":    ("https://en.wikipedia.org/wiki/%s", None),
+	"gh":      ("https://GitHub.com/%s", "gh:%s"),
+ 	"ghissue": ("https://GitHub.com/pyTooling/Actions/issues/%s", "issue #%s"),
+ 	"ghpull":  ("https://GitHub.com/pyTooling/Actions/pull/%s", "pull request #%s"),
+ 	"ghsrc":   ("https://GitHub.com/pyTooling/Actions/blob/main/%s", None),
+ 	"wiki":    ("https://en.wikipedia.org/wiki/%s", None),
 }
 
 
@@ -240,6 +245,18 @@ mermaid_verbose = True
 
 
 # ==============================================================================
+# Sphinx.Ext.Inheritance_Diagram
+# ==============================================================================
+inheritance_node_attrs = {
+#	"shape": "ellipse",
+#	"fontsize": 14,
+#	"height": 0.75,
+	"color": "dodgerblue1",
+	"style": "filled"
+}
+
+
+# ==============================================================================
 # Sphinx.Ext.ToDo
 # ==============================================================================
 # If true, `todo` and `todoList` produce output, else they produce nothing.
@@ -251,3 +268,15 @@ todo_link_only = True
 # Sphinx.Ext.Coverage
 # ==============================================================================
 coverage_show_missing_items = True
+
+
+# ==============================================================================
+# AutoAPI.Sphinx
+# ==============================================================================
+autoapi_modules = {
+	"pyDummy":  {
+		"template": "module",
+		"output": "pyDummy",
+		"override": True
+	}
+}

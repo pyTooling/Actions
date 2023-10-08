@@ -173,6 +173,19 @@ License
 
 .. raw:: latex
 
+   \part{pyDummy Example}
+
+.. toctree::
+   :caption: pyDummy Example
+   :hidden:
+
+   pyDummy/pyDummy
+   Unittest Report ➚ <unittests/index>
+   Coverage Report ➚ <coverage/index>
+   Static Type Check Report ➚ <typing/index>
+
+.. raw:: latex
+
    \part{Appendix}
 
 .. toctree::

@@ -24,8 +24,8 @@ coverage.xml
 
 # Sphinx
 doc/_build/
-doc/pyTooling/**/*.*
-!doc/pyTooling/index.rst
+doc/pyDummy/**/*.*
+!doc/pyDummy/index.rst
 
 # BuildTheDocs
 doc/_theme/**/*.*

@@ -37,4 +37,4 @@ class Instantiation(TestCase):
 	def test_Application(self):
 		app = Application()
 
-		self.assertEqual(1, app.Value)
+		self.assertGreater(app.Value, 0)

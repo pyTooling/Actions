@@ -24,12 +24,6 @@ name: Publish Unit Test Results
 
 on:
   workflow_call:
-    inputs:
-      report_files:
-        description: 'Pattern of report files to upload. Can be a comma separated list.'
-        required: false
-        default: 'artifacts/**/*.xml'
-        type: string
 
 jobs:
   PublishTestResults:
@@ -46,9 +40,35 @@ jobs:
         with:
           path: artifacts
 
+      - name: 🔧 Install junitparser
+        run: |
+          python -m pip install --disable-pip-version-check -U junitparser
+
+      - name: Move JUnit files and collect them all to junit/
+        run: |
+          mkdir -p junit
+          find . -type f -path "*artifacts*UnitTestReportSummary*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
+          tree -a junit
+
+      - name: 🔁 Merge JUnit Unit Test Summaries
+        shell: python
+        run: |
+          from pathlib     import Path
+          from junitparser import JUnitXml
+
+          junitDirectory = Path("junit")
+          junitXml = None
+          for file in junitDirectory.iterdir():
+            if junitXml is None:
+              junitXml = JUnitXml.fromfile(file)
+            else:
+              junitXml += JUnitXml.fromfile(file)
+
+          junitXml.write(junitDirectory / "merged.xml")
+
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v1
         with:
           name: Unit Test Results
-          path: ${{ inputs.report_files }}
+          path: junit/merged.xml
           reporter: java-junit
