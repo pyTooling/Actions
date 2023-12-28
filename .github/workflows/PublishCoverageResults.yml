@@ -136,8 +136,7 @@ jobs:
           tree -a coverage
 
       - name: Combine SQLite files (using Coverage.py)
-        if: inputs.coverage_xml_artifact != ''
-        run: coverage combine coverage/
+        run: coverage combine --data-file=.coverage coverage/
 
       - name: Report code coverage
         run: coverage report --rcfile=pyproject.toml --data-file=.coverage
