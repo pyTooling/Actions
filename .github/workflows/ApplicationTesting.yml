@@ -85,7 +85,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 📥 Download artifacts '${{ inputs.wheel }}' from 'Package' job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.wheel }}
           path: install
@@ -180,7 +180,7 @@ jobs:
 
       - name: 🐍 Setup Python ${{ matrix.python }}
         if: matrix.system != 'msys2'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
 
@@ -222,7 +222,7 @@ jobs:
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.artifact != ''
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact }}-${{ matrix.system }}-${{ matrix.python }}
           path: ${{ inputs.tests_directory || '.' }}/TestReportSummary.xml

@@ -208,7 +208,7 @@ jobs:
 
       - name: 🐍 Setup Python ${{ matrix.python }}
         if: matrix.system != 'msys2'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
 
@@ -332,7 +332,7 @@ jobs:
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.unittest_xml_artifact != ''
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.unittest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           path: report/unit/TestReportSummary.xml
@@ -342,7 +342,7 @@ jobs:
 #      - name: 📤 Upload 'Unit Tests HTML Report' artifact
 #        if: inputs.unittest_html_artifact != ''
 #        continue-on-error: true
-#        uses: actions/upload-artifact@v3
+#        uses: actions/upload-artifact@v4
 #        with:
 #          name: ${{ inputs.unittest_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
 #          path: ${{ steps.getVariables.outputs.unittest_report_html_directory }}
@@ -352,7 +352,7 @@ jobs:
       - name: 📤 Upload 'Coverage SQLite Database' artifact
         if: inputs.coverage_sqlite_artifact != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_sqlite_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           path: .coverage
@@ -362,7 +362,7 @@ jobs:
       - name: 📤 Upload 'Coverage XML Report' artifact
         if: inputs.coverage_xml_artifact != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           path: ${{ steps.getVariables.outputs.coverage_report_xml }}
@@ -372,7 +372,7 @@ jobs:
       - name: 📤 Upload 'Coverage JSON Report' artifact
         if: inputs.coverage_json_artifact != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_json_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           path: ${{ steps.getVariables.outputs.coverage_report_json }}
@@ -382,7 +382,7 @@ jobs:
       - name: 📤 Upload 'Coverage HTML Report' artifact
         if: inputs.coverage_html_artifact != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}

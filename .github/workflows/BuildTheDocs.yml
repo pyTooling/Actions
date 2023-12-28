@@ -47,7 +47,7 @@ jobs:
 
       - name: 📤 Upload 'documentation' artifacts
         if: inputs.artifact != ''
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact }}
           path: doc/_build/html
