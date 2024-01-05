@@ -11,7 +11,7 @@
 #                                                                                                                      #
 # License:                                                                                                             #
 # ==================================================================================================================== #
-# Copyright 2017-2023 Patrick Lehmann - Bötzingen, Germany                                                             #
+# Copyright 2017-2024 Patrick Lehmann - Bötzingen, Germany                                                             #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -34,13 +34,13 @@ A module for a set of dummy classes.
 
 __author__ =        "Patrick Lehmann"
 __email__ =         "Paebbels@gmail.com"
-__copyright__ =     "2017-2023, Patrick Lehmann"
+__copyright__ =     "2017-2024, Patrick Lehmann"
 __license__ =       "Apache License, Version 2.0"
 __version__ =       "0.4.4"
 __keywords__ =      ["GitHub Actions"]
 __issue_tracker__ = "https://GitHub.com/pyTooling/Actions/issues"
 
-from pyTooling.Decorators import export
+from pyTooling.Decorators import export, readonly
 from pyTooling.Platform   import Platform
 
 
@@ -58,7 +58,7 @@ class Base:
 		"""
 		self._value = 0
 
-	@property
+	@readonly
 	def Value(self) -> int:
 		"""
 		Read-only property to return the internal value.

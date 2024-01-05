@@ -122,14 +122,6 @@ License
    The accompanying documentation is licensed under **Creative Commons - Attribution 4.0 (CC-BY 4.0)**.
 
 
-------------------------------------
-
-.. |docdate| date:: %b %d, %Y - %H:%M
-
-.. only:: html
-
-   This document was generated on |docdate|.
-
 .. toctree::
    :caption: Introduction
    :hidden:
