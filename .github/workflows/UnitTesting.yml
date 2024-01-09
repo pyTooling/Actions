@@ -151,7 +151,7 @@ jobs:
           packages = {
             "coverage":    "python-coverage:p",
             "igraph":      "igraph:p",
-            "Jinja2":      "python-markupsafe:p",
+            "jinja2":      "python-markupsafe:p",
             "lxml":        "python-lxml:p",
             "numpy":       "python-numpy:p",
             "markupsafe":  "python-markupsafe:p",
@@ -162,19 +162,19 @@ jobs:
             "wheel":       "python-wheel:p",
           }
           subPackages = {
-            "pyTooling": {
+            "pytooling": {
               "yaml":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             }
           }
 
-          regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:,\w+)*)\])?(?:\s*(?P<Comperator>[<>=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
+          regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:\s*,\s*\w+)*)\])?(?:\s*(?P<Comperator>[<>~=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
 
           pacboyPackages = set(("python-pip:p", "python-wheel:p", "python-tomli:p"))
           print(f"Processing dependencies ({len(dependencies)}):")
           for dependency in dependencies:
             print(f"  {dependency}")
 
-            match = regExp.match(dependency)
+            match = regExp.match(dependency.lower())
             if not match:
               print(f"    Wrong format: {dependency}")
               print(f"::error title=Identifying Pacboy Packages::Unrecognized dependency format '{dependency}'")
