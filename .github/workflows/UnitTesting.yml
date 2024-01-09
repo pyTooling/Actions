@@ -151,10 +151,13 @@ jobs:
           packages = {
             "coverage":    "python-coverage:p",
             "igraph":      "igraph:p",
+            "Jinja2":      "python-markupsafe:p",
             "lxml":        "python-lxml:p",
             "numpy":       "python-numpy:p",
+            "markupsafe":  "python-markupsafe:p",
             "pip":         "python-pip:p",
             "ruamel.yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+            "sphinx":      "python-markupsafe:p",
             "tomli":       "python-tomli:p",
             "wheel":       "python-wheel:p",
           }
