@@ -72,11 +72,11 @@ jobs:
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python }}
+          python-version: ${{ inputs.python_version }}
 
       - name: 🔧 Install wheel,tomli and pip dependencies (native)
         run: |
-          # python -m pip install --disable-pip-version-check -U wheel tomli
+          python -m pip install --disable-pip-version-check -U wheel tomli
           python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 🔁 Extract configurations from pyproject.toml
