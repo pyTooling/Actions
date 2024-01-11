@@ -69,6 +69,9 @@ jobs:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
 
+      - name: 🔧 Install graphviz
+        run: sudo apt-get install -y --no-install-recommends graphviz
+
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v5
         with:
@@ -146,11 +149,6 @@ jobs:
         if: inputs.html_artifact != ''
         run: |
           export PYTHONPATH=$(pwd)
-
-          ls -lah .
-          ls -lah report
-          ls -lah report/coverage
-          ls -lah report/coverage/html
 
           cd "${{ inputs.doc_directory || '.' }}"
           sphinx-build -v -n -b html -d _build/doctrees -j $(nproc) -w _build/html.log . _build/html
