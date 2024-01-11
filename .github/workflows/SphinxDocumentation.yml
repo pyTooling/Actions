@@ -34,6 +34,11 @@ on:
         required: false
         default: '-r doc/requirements.txt'
         type: string
+      coverage_config:
+        description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
+        required: false
+        default: 'pyproject.toml'
+        type: string
       doc_directory:
         description: 'Path to the directory containing documentation (Sphinx working directory).'
         required: false
