@@ -1,0 +1,184 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2020-2024 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Documentation
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        description: 'Python version.'
+        required: false
+        default: '3.12'
+        type: string
+      requirements:
+        description: 'Python dependencies to be installed through pip.'
+        required: false
+        default: '-r doc/requirements.txt'
+        type: string
+      coverage_config:
+        description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
+        required: false
+        default: 'pyproject.toml'
+        type: string
+      doc_directory:
+        description: 'Path to the directory containing documentation (Sphinx working directory).'
+        required: false
+        default: 'doc'
+        type: string
+      html_artifact:
+        description: 'Name of the HTML documentation artifact.'
+        required: false
+        default: ''
+        type: string
+      latex_artifact:
+        description: 'Name of the LaTeX documentation artifact.'
+        required: false
+        default: ''
+        type: string
+      coverage_html_artifact:
+        description: 'Name of the HTML coverage artifact.'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  Sphinx:
+    name: 📓 Documentation generation using Sphinx and Python ${{ inputs.python_version }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Install graphviz
+        run: sudo apt-get install -y --no-install-recommends graphviz
+
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: 🔧 Install wheel,tomli and pip dependencies (native)
+        run: |
+          python -m pip install --disable-pip-version-check -U wheel tomli
+          python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
+
+      - name: 🔁 Extract configurations from pyproject.toml
+        id: getVariables
+        shell: python
+        run: |
+          from os       import getenv
+          from pathlib  import Path
+          from sys      import version
+          from textwrap import dedent
+
+          print(f"Python: {version}")
+
+          from tomli import load as tomli_load
+
+          htmlDirectory = Path("htmlcov")
+          xmlFile =  Path("./coverage.xml")
+          jsonFile = Path("./coverage.json")
+          coverageRC = "${{ inputs.coverage_config }}".strip()
+
+          # Read output paths from 'pyproject.toml' file
+          if coverageRC == "pyproject.toml":
+            pyProjectFile =  Path("pyproject.toml")
+            if pyProjectFile.exists():
+              with pyProjectFile.open("rb") as file:
+                pyProjectSettings = tomli_load(file)
+
+              htmlDirectory = Path(pyProjectSettings["tool"]["coverage"]["html"]["directory"])
+              xmlFile       = Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
+              jsonFile      = Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
+            else:
+              print(f"File '{pyProjectFile}' not found and no '.coveragerc' file specified.")
+
+          # Read output paths from '.coveragerc' file
+          elif len(coverageRC) > 0:
+            coverageRCFile = Path(coverageRC)
+            if coverageRCFile.exists():
+              with coverageRCFile.open("rb") as file:
+                coverageRCSettings = tomli_load(file)
+
+              htmlDirectory = Path(coverageRCSettings["html"]["directory"])
+              xmlFile       = Path(coverageRCSettings["xml"]["output"])
+              jsonFile      = Path(coverageRCSettings["json"]["output"])
+            else:
+              print(f"File '{coverageRCFile}' not found.")
+
+          # Write jobs to special file
+          github_output = Path(getenv("GITHUB_OUTPUT"))
+          print(f"GITHUB_OUTPUT: {github_output}")
+          with github_output.open("a+", encoding="utf-8") as f:
+            f.write(dedent(f"""\
+              coverage_report_html_directory={htmlDirectory.as_posix()}
+              coverage_report_xml={xmlFile}
+              coverage_report_json={jsonFile}
+            """))
+
+          print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
+
+      - name: 📥 Download artifacts '${{ inputs.artifact }}' from 'Package' job
+        if: inputs.coverage_html_artifact != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.coverage_html_artifact }}
+          path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+
+      - name: ☑ Generate HTML documentation
+        if: inputs.html_artifact != ''
+        run: |
+          export PYTHONPATH=$(pwd)
+
+          cd "${{ inputs.doc_directory || '.' }}"
+          sphinx-build -v -n -b html -d _build/doctrees -j $(nproc) -w _build/html.log . _build/html
+
+      - name: ☑ Generate LaTeX documentation
+        if: inputs.latex_artifact != ''
+#        continue-on-error: true
+        run: |
+          export PYTHONPATH=$(pwd)
+
+          cd "${{ inputs.doc_directory || '.' }}"
+          sphinx-build -v -n -b latex -d _build/doctrees -j $(nproc) -w _build/latex.log . _build/latex
+#           --builder html --doctree-dir _build/doctrees --verbose --fresh-env --write-all --nitpicky --warning-file _build/html.log . _build/html
+
+      - name: 📤 Upload 'HTML Documentation' artifact
+        if: inputs.html_artifact != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.html_artifact }}
+          path: ${{ inputs.doc_directory }}/_build/html
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: 📤 Upload 'LaTeX Documentation' artifact
+        if: inputs.latex_artifact != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.latex_artifact }}
+          path: ${{ inputs.doc_directory }}/_build/latex
+          if-no-files-found: error
+          retention-days: 1

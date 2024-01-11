@@ -245,8 +245,9 @@ jobs:
             "codecoverage_html":   f"{name}-CodeCoverage-HTML",
             "statictyping_html":   f"{name}-StaticTyping-HTML",
             "package_all":         f"{name}-Packages",
-            "documentation_pdf":   f"{name}-Documentation-PDF",
             "documentation_html":  f"{name}-Documentation-HTML",
+            "documentation_latex": f"{name}-Documentation-LaTeX",
+            "documentation_pdf":   f"{name}-Documentation-PDF",
           }
 
           # Deprecated structure
