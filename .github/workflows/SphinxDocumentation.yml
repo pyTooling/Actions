@@ -64,12 +64,6 @@ jobs:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
 
-      - name: 📥 Download artifacts '${{ inputs.artifact }}' from 'Package' job
-        if: inputs.coverage_html_artifact != ''
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.coverage_html_artifact }}
-
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v5
         with:
@@ -80,6 +74,69 @@ jobs:
           # python -m pip install --disable-pip-version-check -U wheel tomli
           python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
+      - name: 🔁 Extract configurations from pyproject.toml
+        id: getVariables
+        shell: python
+        run: |
+          from os       import getenv
+          from pathlib  import Path
+          from sys      import version
+          from textwrap import dedent
+
+          print(f"Python: {version}")
+
+          from tomli import load as tomli_load
+
+          htmlDirectory = Path("htmlcov")
+          xmlFile =  Path("./coverage.xml")
+          jsonFile = Path("./coverage.json")
+          coverageRC = "${{ inputs.coverage_config }}".strip()
+
+          # Read output paths from 'pyproject.toml' file
+          if coverageRC == "pyproject.toml":
+            pyProjectFile =  Path("pyproject.toml")
+            if pyProjectFile.exists():
+              with pyProjectFile.open("rb") as file:
+                pyProjectSettings = tomli_load(file)
+
+              htmlDirectory = Path(pyProjectSettings["tool"]["coverage"]["html"]["directory"])
+              xmlFile       = Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
+              jsonFile      = Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
+            else:
+              print(f"File '{pyProjectFile}' not found and no '.coveragerc' file specified.")
+
+          # Read output paths from '.coveragerc' file
+          elif len(coverageRC) > 0:
+            coverageRCFile = Path(coverageRC)
+            if coverageRCFile.exists():
+              with coverageRCFile.open("rb") as file:
+                coverageRCSettings = tomli_load(file)
+
+              htmlDirectory = Path(coverageRCSettings["html"]["directory"])
+              xmlFile       = Path(coverageRCSettings["xml"]["output"])
+              jsonFile      = Path(coverageRCSettings["json"]["output"])
+            else:
+              print(f"File '{coverageRCFile}' not found.")
+
+          # Write jobs to special file
+          github_output = Path(getenv("GITHUB_OUTPUT"))
+          print(f"GITHUB_OUTPUT: {github_output}")
+          with github_output.open("a+", encoding="utf-8") as f:
+            f.write(dedent(f"""\
+              coverage_report_html_directory={htmlDirectory.as_posix()}
+              coverage_report_xml={xmlFile}
+              coverage_report_json={jsonFile}
+            """))
+
+          print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
+
+      - name: 📥 Download artifacts '${{ inputs.artifact }}' from 'Package' job
+        if: inputs.coverage_html_artifact != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.coverage_html_artifact }}
+          path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+
       - name: ☑ Generate HTML documentation
         if: inputs.html_artifact != ''
         run: |
@@ -87,6 +144,8 @@ jobs:
 
           ls -lah .
           ls -lah report
+          ls -lah report/coverage
+          ls -lah report/coverage/html
 
           cd "${{ inputs.doc_directory || '.' }}"
           sphinx-build -v -n -b html -d _build/doctrees -j $(nproc) -w _build/html.log . _build/html
