@@ -33,11 +33,11 @@ on:
         description: 'Source code directory to check.'
         required: true
         type: string
-      fail_below:
-        description: 'Minimum required documentation coverage level'
-        required: false
-        default: 75
-        type: string
+#      fail_below:
+#        description: 'Minimum required documentation coverage level'
+#        required: false
+#        default: 75
+#        type: string
 
 jobs:
   DocCoverage:
