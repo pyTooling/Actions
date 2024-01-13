@@ -47,10 +47,10 @@ jobs:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🐍 Setup Python ${{ inputs.python_version }}
+      - name: 🐍 Setup Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ inputs.python_version }}
+          python-version: "3.11"
 
       - name: 🔧 Install wheel,tomli and pip dependencies (native)
         run: |
