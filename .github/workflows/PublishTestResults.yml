@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2023 The pyTooling Authors                                                                            #
+# Copyright 2020-2024 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -25,10 +25,10 @@ name: Publish Unit Test Results
 on:
   workflow_call:
     inputs:
-      report_files:
-        description: 'Pattern of report files to upload. Can be a comma separated list.'
+      merged_junit_artifact:
+        description: 'Name of the merged JUnit Test Summary artifact.'
         required: false
-        default: 'artifacts/**/*.xml'
+        default: ''
         type: string
 
 jobs:
@@ -42,13 +42,48 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: artifacts
+
+      - name: 🔧 Install junitparser
+        run: |
+          python -m pip install --disable-pip-version-check -U junitparser
+
+      - name: Move JUnit files and collect them all to junit/
+        run: |
+          mkdir -p junit
+          find . -type f -path "*artifacts*UnitTestReportSummary*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
+          tree -a junit
+
+      - name: 🔁 Merge JUnit Unit Test Summaries
+        shell: python
+        run: |
+          from pathlib     import Path
+          from junitparser import JUnitXml
+
+          junitDirectory = Path("junit")
+          junitXml = None
+          for file in junitDirectory.iterdir():
+            if junitXml is None:
+              junitXml = JUnitXml.fromfile(file)
+            else:
+              junitXml += JUnitXml.fromfile(file)
+
+          junitXml.write(junitDirectory / "merged.xml")
 
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v1
         with:
           name: Unit Test Results
-          path: ${{ inputs.report_files }}
+          path: junit/merged.xml
           reporter: java-junit
+
+      - name: 📤 Upload merged 'JUnit Test Summary' artifact
+        if: inputs.merged_junit_artifact != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.merged_junit_artifact }}
+          path: junit/merged.xml
+          if-no-files-found: error
+          retention-days: 1

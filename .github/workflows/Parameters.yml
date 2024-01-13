@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2023 The pyTooling Authors                                                                            #
+# Copyright 2020-2024 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -32,17 +32,17 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.11'
+        default: '3.12'
         type: string
       python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.8 3.9 3.10 3.11'
+        default: '3.8 3.9 3.10 3.11 3.12'
         type: string
       system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu windows mingw64 macos'
+        default: 'ubuntu windows macos mingw64 ucrt64'
         type: string
       include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'
@@ -102,9 +102,9 @@ jobs:
           exclude_list =   "${{ inputs.exclude_list }}".strip()
           disable_list =   "${{ inputs.disable_list }}".strip()
 
-          currentMSYS2Version = "3.10"
-          currentAlphaVersion = "3.12"
-          currentAlphaRelease = "3.12.0-alpha.1"
+          currentMSYS2Version = "3.11"
+          currentAlphaVersion = "3.13"
+          currentAlphaRelease = "3.13.0-alpha.1"
 
           if systems == "":
             print("::error title=Parameter::system_list is empty.")
@@ -131,8 +131,8 @@ jobs:
           else:
             disabled = [disable.strip() for disable in disable_list.split(" ")]
 
-          if "3.6" in versions:
-            print("::warning title=Deprecated::Support for Python 3.6 ended in 2021.12.23.")
+          if "3.7" in versions:
+            print("::warning title=Deprecated::Support for Python 3.7 ended in 2023.06.27.")
           if "msys2" in systems:
             print("::warning title=Deprecated::System 'msys2' will be replaced by 'mingw64'.")
           if currentAlphaVersion in versions:
@@ -143,16 +143,17 @@ jobs:
           data = {
             # Python and PyPy versions supported by "setup-python" action
             "python": {
-              "3.6":       { "icon": "⚫",  "until": "2021.12.23" },
               "3.7":       { "icon": "⚫",  "until": "2023.06.27" },
               "3.8":       { "icon": "🔴",  "until": "2024.10" },
               "3.9":       { "icon": "🟠",  "until": "2025.10" },
               "3.10":      { "icon": "🟡",  "until": "2026.10" },
               "3.11":      { "icon": "🟢",  "until": "2027.10" },
-              "3.12":      { "icon": "🟣",  "until": "2028.10" },
-              "pypy-3.7":  { "icon": "⟲🔴", "until": "????.??" },
-              "pypy-3.8":  { "icon": "⟲🟠", "until": "????.??" },
-              "pypy-3.9":  { "icon": "⟲🟡", "until": "????.??" },
+              "3.12":      { "icon": "🟢",  "until": "2028.10" },
+            #  "3.13":      { "icon": "🟣",  "until": "2028.10" },
+              "pypy-3.7":  { "icon": "⟲⚫", "until": "????.??" },
+              "pypy-3.8":  { "icon": "⟲🔴", "until": "????.??" },
+              "pypy-3.9":  { "icon": "⟲🟠", "until": "????.??" },
+              "pypy-3.10": { "icon": "⟲🟡", "until": "????.??" },
             },
             # Runner systems (runner images) supported by GitHub Actions
             "sys": {
@@ -211,6 +212,7 @@ jobs:
               "sysicon": data["sys"][system]["icon"],
               "system":  system,
               "runs-on": data["sys"][system]["runs-on"],
+              "runtime": "native",
               "shell":   data["sys"][system]["shell"],
               "pyicon":  data["python"][version]["icon"],
               "python":  currentAlphaRelease if version == currentAlphaVersion else version,
@@ -232,16 +234,20 @@ jobs:
           ]
 
           artifact_names = {
-            "unittesting_xml":    f"{name}-UnitTestReportSummary-XML",
-            "perftesting_xml":    f"{name}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":   f"{name}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":     f"{name}-ApplicationTestReportSummary-XML",
-            "codecoverage_xml":   f"{name}-CodeCoverage-XML",
-            "codecoverage_html":  f"{name}-CodeCoverage-HTML",
-            "statictyping_html":  f"{name}-StaticTyping-HTML",
-            "package_all":        f"{name}-Packages",
-            "documentation_pdf":  f"{name}-Documentation-PDF",
-            "documentation_html": f"{name}-Documentation-HTML",
+            "unittesting_xml":     f"{name}-UnitTestReportSummary-XML",
+            "unittesting_html":    f"{name}-UnitTestReportSummary-HTML",
+            "perftesting_xml":     f"{name}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":    f"{name}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":      f"{name}-ApplicationTestReportSummary-XML",
+            "codecoverage_sqlite": f"{name}-CodeCoverage-SQLite",
+            "codecoverage_xml":    f"{name}-CodeCoverage-XML",
+            "codecoverage_json":   f"{name}-CodeCoverage-JSON",
+            "codecoverage_html":   f"{name}-CodeCoverage-HTML",
+            "statictyping_html":   f"{name}-StaticTyping-HTML",
+            "package_all":         f"{name}-Packages",
+            "documentation_html":  f"{name}-Documentation-HTML",
+            "documentation_latex": f"{name}-Documentation-LaTeX",
+            "documentation_pdf":   f"{name}-Documentation-PDF",
           }
 
           # Deprecated structure

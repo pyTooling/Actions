@@ -1,17 +1,9 @@
 # ==================================================================================================================== #
-#             _____           _ _                  _        _   _                                                      #
-#  _ __  _   |_   _|__   ___ | (_)_ __   __ _     / \   ___| |_(_) ___  _ __  ___                                      #
-# | '_ \| | | || |/ _ \ / _ \| | | '_ \ / _` |   / _ \ / __| __| |/ _ \| '_ \/ __|                                     #
-# | |_) | |_| || | (_) | (_) | | | | | | (_| |_ / ___ \ (__| |_| | (_) | | | \__ \                                     #
-# | .__/ \__, ||_|\___/ \___/|_|_|_| |_|\__, (_)_/   \_\___|\__|_|\___/|_| |_|___/                                     #
-# |_|    |___/                          |___/                                                                          #
-# ==================================================================================================================== #
 # Authors:                                                                                                             #
 #   Patrick Lehmann                                                                                                    #
 #                                                                                                                      #
-# License:                                                                                                             #
 # ==================================================================================================================== #
-# Copyright 2017-2024 Patrick Lehmann - Bötzingen, Germany                                                             #
+# Copyright 2020-2024 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -27,26 +19,49 @@
 #                                                                                                                      #
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
-#
-from setuptools          import setup
+name: Check Documentation
 
-from pathlib             import Path
-from pyTooling.Packaging import DescribePythonPackageHostedOnGitHub
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        description: 'Python version.'
+        required: false
+        default: '3.12'
+        type: string
+      directory:
+        description: 'Source code directory to check.'
+        required: true
+        type: string
+#      fail_below:
+#        description: 'Minimum required documentation coverage level'
+#        required: false
+#        default: 75
+#        type: string
 
-gitHubNamespace =        "pyTooling"
-packageName =            "pyDummy"
-packageDirectory =       packageName
-packageInformationFile = Path(f"{packageDirectory}/__init__.py")
+jobs:
+  DocCoverage:
+    name: 👀 Check documentation coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v4
 
-# setup(**
-DescribePythonPackageHostedOnGitHub(
-	packageName=packageName,
-	description="pyDummy is a test package to verify GitHub actions for Python projects.",
-	gitHubNamespace=gitHubNamespace,
-	unittestRequirementsFile=Path("tests/requirements.txt"),
-	sourceFileWithVersion=packageInformationFile,
-	dataFiles={
-		packageName: ["py.typed"]
-	}
-)
-# )
+      - name: 🐍 Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 🔧 Install wheel,tomli and pip dependencies (native)
+        run: |
+          python -m pip install --disable-pip-version-check -U docstr_coverage interrogate
+
+      - name: Run 'interrogate' Documentation Coverage Check
+        continue-on-error: true
+        run: |
+          interrogate -c pyproject.toml
+
+      - name: Run 'docstr_coverage' Documentation Coverage Check
+        continue-on-error: true
+        run: |
+          docstr_coverage -v ${{ inputs.directory }}

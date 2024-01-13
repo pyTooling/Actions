@@ -122,14 +122,6 @@ License
    The accompanying documentation is licensed under **Creative Commons - Attribution 4.0 (CC-BY 4.0)**.
 
 
-------------------------------------
-
-.. |docdate| date:: %b %d, %Y - %H:%M
-
-.. only:: html
-
-   This document was generated on |docdate|.
-
 .. toctree::
    :caption: Introduction
    :hidden:
@@ -170,6 +162,19 @@ License
    JobTemplate/PublishToGitHubPages
    JobTemplate/Release
    JobTemplate/ArtifactCleanUp
+
+.. raw:: latex
+
+   \part{pyDummy Example}
+
+.. toctree::
+   :caption: pyDummy Example
+   :hidden:
+
+   pyDummy/pyDummy
+   Unittest Report ➚ <unittests/index>
+   Coverage Report ➚ <coverage/index>
+   Static Type Check Report ➚ <typing/index>
 
 .. raw:: latex
 
