@@ -44,6 +44,21 @@ on:
         required: false
         default: 'doc'
         type: string
+      coverage_json_artifact:
+        description: 'Name of the coverage JSON artifact.'
+        required: false
+        default: ''
+        type: string
+      unittest_xml_artifact:
+        description: 'Name of the unittest XML artifact.'
+        required: false
+        default: ''
+        type: string
+      unittest_xml_directory:
+        description: 'Directory where unittest XML artifact is extracted.'
+        required: false
+        default: 'report/unit'
+        type: string
       html_artifact:
         description: 'Name of the HTML documentation artifact.'
         required: false
@@ -51,11 +66,6 @@ on:
         type: string
       latex_artifact:
         description: 'Name of the LaTeX documentation artifact.'
-        required: false
-        default: ''
-        type: string
-      coverage_json_artifact:
-        description: 'Name of the JSON coverage artifact.'
         required: false
         default: ''
         type: string
@@ -139,6 +149,13 @@ jobs:
             """))
 
           print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
+
+      - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
+        if: inputs.unittest_xml_artifact != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.unittest_xml_artifact }}
+          path: ${{ inputs.unittest_xml_directory }}
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
         if: inputs.coverage_json_artifact != ''

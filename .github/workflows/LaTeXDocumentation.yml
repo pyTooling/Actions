@@ -53,7 +53,8 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@master
         with:
-          root_file: latex/${{ inputs.document }}.tex
+          working_directory: latex
+          root_file: ${{ inputs.document }}.tex
 
       - name: 📤 Upload 'PDF Documentation' artifact
         uses: actions/upload-artifact@v4

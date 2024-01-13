@@ -24,6 +24,12 @@ name: Publish Unit Test Results
 
 on:
   workflow_call:
+    inputs:
+      merged_junit_artifact:
+        description: 'Name of the merged JUnit Test Summary artifact.'
+        required: false
+        default: ''
+        type: string
 
 jobs:
   PublishTestResults:
@@ -72,3 +78,12 @@ jobs:
           name: Unit Test Results
           path: junit/merged.xml
           reporter: java-junit
+
+      - name: 📤 Upload merged 'JUnit Test Summary' artifact
+        if: inputs.merged_junit_artifact != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.merged_junit_artifact }}
+          path: junit/merged.xml
+          if-no-files-found: error
+          retention-days: 1
