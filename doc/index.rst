@@ -172,8 +172,9 @@ License
    :hidden:
 
    pyDummy/pyDummy
-   Unittest Report ➚ <unittests/index>
-   Coverage Report ➚ <coverage/index>
+   unittests/index
+   coverage/index
+   Doc. Coverage Report <DocCoverage>
    Static Type Check Report ➚ <typing/index>
 
 .. raw:: latex
