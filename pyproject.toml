@@ -2,7 +2,7 @@
 requires = [
   "setuptools >= 69.0.0",
   "wheel >= 0.40.0",
-  "pyTooling >= 5.0.0"
+  "pyTooling ~= 6.0"
 ]
 build-backend = "setuptools.build_meta"
 
@@ -29,6 +29,14 @@ filterwarnings = [
 	"error::DeprecationWarning",
 	"error::PendingDeprecationWarning"
 ]
+
+[tool.interrogate]
+color = true
+verbose = 1             # possible values: 0 (minimal output), 1 (-v), 2 (-vv)
+fail-under = 59
+generate-badge = "."
+badge-format = "png"
+ignore-setters = true
 
 [tool.coverage.run]
 branch = true

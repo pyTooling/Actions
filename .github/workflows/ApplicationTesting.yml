@@ -52,14 +52,14 @@ on:
       tests_directory:
         description: 'Path to the directory containing tests (test working directory).'
         required: false
-        default: 'tests'
+        default: ''
         type: string
       apptest_directory:
         description: 'Path to the directory containing application tests (relative to tests_directory).'
         required: false
         default: 'app'
         type: string
-      artifact:
+      apptest_xml_artifact:
         description: "Generate application test report with junitxml and upload results as an artifact."
         required: false
         default: ''
@@ -202,29 +202,41 @@ jobs:
       - name: 🔧 Install wheel from artifact
         run: python -m pip install --disable-pip-version-check -U install/*.whl
 
-      - name: ☑ Run application tests (Windows)
-        if: matrix.system == 'windows'
-        run: |
-          $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
-          cd "${{ inputs.tests_directory || '.' }}"
-          $PYTEST_ARGS = if ("${{ inputs.artifact }}") { "--junitxml=TestReportSummary.xml" } else { "" }
-          python -m pytest -rA ${{ inputs.apptest_directory }} $PYTEST_ARGS --color=yes
-
       - name: ☑ Run application tests (Ubuntu/macOS)
         if: matrix.system != 'windows'
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
-          ABSDIR=$(pwd)
+
           cd "${{ inputs.tests_directory || '.' }}"
-          [ -n '${{ inputs.coverage_config }}' ] && PYCOV_ARGS="--cov-config=${ABSDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
-          [ -n '${{ inputs.artifact }}' ] && PYTEST_ARGS='--junitxml=TestReportSummary.xml' || unset PYTEST_ARGS
-          python -m pytest -rA ${{ inputs.apptest_directory }} $PYTEST_ARGS --color=yes
+          [ -n '${{ inputs.apptest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=report/unit/TestReportSummary.xml' || unset PYTEST_ARGS
+          if [ -n '${{ inputs.coverage_config }}' ]; then
+            echo "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
+            coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
+          else
+            echo "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
+            python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
+          fi
+
+      - name: ☑ Run application tests (Windows)
+        if: matrix.system == 'windows'
+        run: |
+          $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
+
+          cd "${{ inputs.tests_directory || '.' }}"
+          $PYTEST_ARGS = if ("${{ inputs.apptest_xml_artifact }}") { "--junitxml=report/unit/TestReportSummary.xml" } else { "" }
+          if ("${{ inputs.coverage_config }}") {
+            Write-Host "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
+            coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
+          } else {
+            Write-Host "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
+            python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
+          }
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
-        if: inputs.artifact != ''
+        if: inputs.apptest_xml_artifact != ''
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.artifact }}-${{ matrix.system }}-${{ matrix.python }}
+          name: ${{ inputs.apptest_xml_artifact }}-${{ matrix.system }}-${{ matrix.python }}
           path: ${{ inputs.tests_directory || '.' }}/TestReportSummary.xml
           if-no-files-found: error
           retention-days: 1

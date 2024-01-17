@@ -28,6 +28,7 @@
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
 #
+"""Package installer for 'pyDummy'."""
 from setuptools          import setup
 
 from pathlib             import Path
@@ -38,8 +39,7 @@ packageName =            "pyDummy"
 packageDirectory =       packageName
 packageInformationFile = Path(f"{packageDirectory}/__init__.py")
 
-# setup(**
-DescribePythonPackageHostedOnGitHub(
+setup(**DescribePythonPackageHostedOnGitHub(
 	packageName=packageName,
 	description="pyDummy is a test package to verify GitHub actions for Python projects.",
 	gitHubNamespace=gitHubNamespace,
@@ -48,5 +48,4 @@ DescribePythonPackageHostedOnGitHub(
 	dataFiles={
 		packageName: ["py.typed"]
 	}
-)
-# )
+))
