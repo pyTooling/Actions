@@ -49,10 +49,15 @@ on:
         required: false
         default: ''
         type: string
-      tests_directory:
-        description: 'Path to the directory containing tests (test working directory).'
+      root_directory:
+        description: 'Working directory for running tests.'
         required: false
         default: ''
+        type: string
+      tests_directory:
+        description: 'Path to the directory containing tests (relative to root_directory).'
+        required: false
+        default: 'tests'
         type: string
       apptest_directory:
         description: 'Path to the directory containing application tests (relative to tests_directory).'
@@ -66,7 +71,6 @@ on:
         type: string
 
 jobs:
-
   ApplicationTesting:
     name: ${{ matrix.sysicon }} ${{ matrix.pyicon }} Application Tests using Python ${{ matrix.python }}
     runs-on: ${{ matrix.runs-on }}
@@ -207,7 +211,7 @@ jobs:
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
 
-          cd "${{ inputs.tests_directory || '.' }}"
+          cd "${{ inputs.root_directory || '.' }}"
           [ -n '${{ inputs.apptest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=report/unit/TestReportSummary.xml' || unset PYTEST_ARGS
           if [ -n '${{ inputs.coverage_config }}' ]; then
             echo "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
@@ -222,7 +226,7 @@ jobs:
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
 
-          cd "${{ inputs.tests_directory || '.' }}"
+          cd "${{ inputs.root_directory || '.' }}"
           $PYTEST_ARGS = if ("${{ inputs.apptest_xml_artifact }}") { "--junitxml=report/unit/TestReportSummary.xml" } else { "" }
           if ("${{ inputs.coverage_config }}") {
             Write-Host "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
@@ -236,7 +240,7 @@ jobs:
         if: inputs.apptest_xml_artifact != ''
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.apptest_xml_artifact }}-${{ matrix.system }}-${{ matrix.python }}
-          path: ${{ inputs.tests_directory || '.' }}/TestReportSummary.xml
+          name: ${{ inputs.apptest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
+          path: report/unit/TestReportSummary.xml
           if-no-files-found: error
           retention-days: 1
