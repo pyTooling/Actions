@@ -102,6 +102,9 @@ jobs:
           from os      import getenv
           from pathlib import Path
           from re      import compile
+          from sys     import version
+
+          print(f"Python: {version}")
 
           def loadRequirementsFile(requirementsFile: Path):
             requirements = []
@@ -126,28 +129,32 @@ jobs:
             dependencies = [req.strip() for req in requirements.split(" ")]
 
           packages = {
-            "pip":         "python-pip:p",
-            "wheel":       "python-wheel:p",
             "coverage":    "python-coverage:p",
-            "lxml":        "python-lxml:p",
-            "ruamel.yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-            "numpy":       "python-numpy:p",
             "igraph":      "igraph:p",
+            "jinja2":      "python-markupsafe:p",
+            "lxml":        "python-lxml:p",
+            "numpy":       "python-numpy:p",
+            "markupsafe":  "python-markupsafe:p",
+            "pip":         "python-pip:p",
+            "ruamel.yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+            "sphinx":      "python-markupsafe:p",
+            "tomli":       "python-tomli:p",
+            "wheel":       "python-wheel:p",
           }
           subPackages = {
-            "pyTooling": {
+            "pytooling": {
               "yaml":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             }
           }
 
-          regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:,\w+)*)\])?(?:\s*(?P<Comperator>[<>=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
+          regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:\s*,\s*\w+)*)\])?(?:\s*(?P<Comperator>[<>~=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
 
-          pacboyPackages = set(("python-pip:p", "python-wheel:p"))
+          pacboyPackages = set(("python-pip:p", "python-wheel:p", "python-tomli:p"))
           print(f"Processing dependencies ({len(dependencies)}):")
           for dependency in dependencies:
             print(f"  {dependency}")
 
-            match = regExp.match(dependency)
+            match = regExp.match(dependency.lower())
             if not match:
               print(f"    Wrong format: {dependency}")
               print(f"::error title=Identifying Pacboy Packages::Unrecognized dependency format '{dependency}'")
@@ -204,7 +211,9 @@ jobs:
           fi
 
       - name: 🔧 Install wheel from artifact
-        run: python -m pip install --disable-pip-version-check -U install/*.whl
+        run: |
+          ls -l install
+          python -m pip install --disable-pip-version-check -U install/*.whl
 
       - name: ☑ Run application tests (Ubuntu/macOS)
         if: matrix.system != 'windows'
