@@ -44,8 +44,13 @@ on:
         required: false
         default: ''
         type: string
+      root_directory:
+        description: 'Working directory for running tests.'
+        required: false
+        default: ''
+        type: string
       tests_directory:
-        description: 'Path to the directory containing tests (test working directory).'
+        description: 'Path to the directory containing tests (relative to root_directory).'
         required: false
         default: 'tests'
         type: string
@@ -293,7 +298,7 @@ jobs:
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
           export PYTHONPATH=$(pwd)
 
-          # cd "${{ inputs.tests_directory || '.' }}"
+          cd "${{ inputs.root_directory || '.' }}"
           [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=report/unit/TestReportSummary.xml' || unset PYTEST_ARGS
           if [ -n '${{ inputs.coverage_config }}' ]; then
             echo "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
@@ -309,7 +314,7 @@ jobs:
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
           $env:PYTHONPATH = (Get-Location).ToString()
 
-          # cd "${{ inputs.tests_directory || '.' }}"
+          cd "${{ inputs.root_directory || '.' }}"
           $PYTEST_ARGS = if ("${{ inputs.unittest_xml_artifact }}") { "--junitxml=report/unit/TestReportSummary.xml" } else { "" }
           if ("${{ inputs.coverage_config }}") {
             Write-Host "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
@@ -319,15 +324,15 @@ jobs:
             python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           }
 
-      - name: Convert to XML format (Cobertura)
+      - name: Convert coverage to XML format (Cobertura)
         if: inputs.coverage_xml_artifact != ''
         run: coverage xml --data-file=.coverage
 
-      - name: Convert to JSON format
+      - name: Convert coverage to JSON format
         if: inputs.coverage_json_artifact != ''
         run: coverage json --data-file=.coverage
 
-      - name: Convert to HTML format
+      - name: Convert coverage to HTML format
         if: inputs.coverage_html_artifact != ''
         run: |
           coverage html --data-file=.coverage -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
