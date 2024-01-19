@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2022 The pyTooling Authors                                                                            #
+# Copyright 2020-2024 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -39,11 +39,9 @@ jobs:
           RELEASE_VERSION=${GIT_TAG#v}
           RELEASE_DATETIME="$(date --utc '+%d.%m.%Y - %H:%M:%S')"
           # write to step outputs
-          cat >> "$GITHUB_OUTPUT" << EOF
-          gitTag=${GIT_TAG}
-          version=${RELEASE_VERSION}
-          datetime=${RELEASE_DATETIME}
-          EOF
+          echo "gitTag=${GIT_TAG}" >> $GITHUB_OUTPUT
+          echo "version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
+          echo "datetime=${RELEASE_DATETIME}" >> $GITHUB_OUTPUT
 
       - name: 📑 Create Release Page
         id: createReleasePage

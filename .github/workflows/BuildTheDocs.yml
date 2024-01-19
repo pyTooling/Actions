@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2022 The pyTooling Authors                                                                            #
+# Copyright 2020-2024 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -27,18 +27,18 @@ on:
     inputs:
       artifact:
         description: 'Name of the documentation artifact.'
-        required: true
+        required: false
+        default: ''
         type: string
 
 jobs:
-
   BuildTheDocs:
     name: 📓 Run BuildTheDocs
     runs-on: ubuntu-latest
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🛳️ Build documentation
         uses: buildthedocs/btd@v0
@@ -46,8 +46,23 @@ jobs:
           skip-deploy: true
 
       - name: 📤 Upload 'documentation' artifacts
-        uses: actions/upload-artifact@v3
+        if: inputs.artifact != ''
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact }}
           path: doc/_build/html
           retention-days: 1
+
+      - name: '📓 Publish site to GitHub Pages'
+        if: inputs.artifact == '' && github.event_name != 'pull_request'
+        run: |
+          cp --recursive -T doc/_build/html public
+          cd public
+          touch .nojekyll
+          git init
+          cp ../.git/config ./.git/config
+          git add .
+          git config --local user.email "BuildTheDocs@GitHubActions"
+          git config --local user.name "GitHub Actions"
+          git commit -a -m "update ${{ github.sha }}"
+          git push -u origin +HEAD:gh-pages

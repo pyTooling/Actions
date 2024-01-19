@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2022 The pyTooling Authors                                                                            #
+# Copyright 2020-2024 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -25,100 +25,267 @@ name: Parameters
 on:
   workflow_call:
     inputs:
-      python_version:
-        description: 'Python version.'
-        required: false
-        default: '3.10'
-        type: string
-      python_version_list:
-        description: 'Space separated list of Python versions to run tests with.'
-        required: false
-        default: '3.7 3.8 3.9 3.10'
-        type: string
-      system_list:
-        description: 'Space separated list of systems to run tests on.'
-        required: false
-        default: 'ubuntu windows msys2 macos'
-        type: string
       name:
         description: 'Name of the tool.'
         required: true
         type: string
+      python_version:
+        description: 'Python version.'
+        required: false
+        default: '3.12'
+        type: string
+      python_version_list:
+        description: 'Space separated list of Python versions to run tests with.'
+        required: false
+        default: '3.8 3.9 3.10 3.11 3.12'
+        type: string
+      system_list:
+        description: 'Space separated list of systems to run tests on.'
+        required: false
+        default: 'ubuntu windows macos mingw64 ucrt64'
+        type: string
+      include_list:
+        description: 'Space separated list of system:python items to be included into the list of test.'
+        required: false
+        default: ''
+        type: string
+      exclude_list:
+        description: 'Space separated list of system:python items to be excluded from the list of test.'
+        required: false
+        default: ''
+        type: string
+      disable_list:
+        description: 'Space separated list of system:python items to be disabled from the list of test.'
+        required: false
+        default: ''
+        type: string
+
     outputs:
+      python_version:
+        description: "Default Python version for other jobs."
+        value: ${{ jobs.Parameters.outputs.python_version }}
+      python_jobs:
+        description: "List of Python versions (and system combinations) to be used in the matrix of other jobs."
+        value: ${{ jobs.Parameters.outputs.python_jobs }}
+      artifact_names:
+        description: "Pre-defined artifact names for other jobs."
+        value: ${{ jobs.Parameters.outputs.artifact_names }}
       params:
         description: "Parameters to be used in other jobs."
         value: ${{ jobs.Parameters.outputs.params }}
-      python_jobs:
-        description: "List of Python versions to be used in the matrix of other jobs."
-        value: ${{ jobs.Parameters.outputs.python_jobs }}
 
 jobs:
-
   Parameters:
     runs-on: ubuntu-latest
     outputs:
-      params: ${{ steps.params.outputs.params }}
-      python_jobs: ${{ steps.params.outputs.python_jobs }}
-    steps:
+      python_version:   ${{ steps.params.outputs.python_version }}
+      python_jobs:      ${{ steps.params.outputs.python_jobs }}
+      artifact_names:   ${{ steps.params.outputs.artifact_names }}
+      params:           ${{ steps.params.outputs.params }}
 
+    steps:
       - name: Generate 'params' and 'python_jobs'
         id: params
         shell: python
         run: |
-          from os import environ
+          from json import dumps as json_dumps
+          from os import getenv
+          from pathlib import Path
+          from pprint import pprint
+          from textwrap import dedent
 
-          name = '${{ inputs.name }}'
-          params = {
-            'python_version': '${{ inputs.python_version }}',
-            'artifacts': {
-              'unittesting': f'{name}-TestReport',
-              'coverage': f'{name}-coverage',
-              'typing': f'{name}-typing',
-              'package': f'{name}-package',
-              'doc': f'{name}-doc',
+          name =           "${{ inputs.name }}".strip()
+          python_version = "${{ inputs.python_version }}".strip()
+          systems =        "${{ inputs.system_list }}".strip()
+          versions =       "${{ inputs.python_version_list }}".strip()
+          include_list =   "${{ inputs.include_list }}".strip()
+          exclude_list =   "${{ inputs.exclude_list }}".strip()
+          disable_list =   "${{ inputs.disable_list }}".strip()
+
+          currentMSYS2Version = "3.11"
+          currentAlphaVersion = "3.13"
+          currentAlphaRelease = "3.13.0-alpha.1"
+
+          if systems == "":
+            print("::error title=Parameter::system_list is empty.")
+          else:
+            systems = [sys.strip() for sys in systems.split(" ")]
+
+          if versions == "":
+            versions = [ python_version ]
+          else:
+            versions = [ver.strip() for ver in versions.split(" ")]
+
+          if include_list == "":
+            includes = []
+          else:
+            includes = [tuple(include.strip().split(":")) for include in include_list.split(" ")]
+
+          if exclude_list == "":
+            excludes = []
+          else:
+            excludes = [exclude.strip() for exclude in exclude_list.split(" ")]
+
+          if disable_list == "":
+            disabled = []
+          else:
+            disabled = [disable.strip() for disable in disable_list.split(" ")]
+
+          if "3.7" in versions:
+            print("::warning title=Deprecated::Support for Python 3.7 ended in 2023.06.27.")
+          if "msys2" in systems:
+            print("::warning title=Deprecated::System 'msys2' will be replaced by 'mingw64'.")
+          if currentAlphaVersion in versions:
+            print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
+          for disable in disabled:
+            print(f"::warning title=Disabled Python Job::System '{disable}' temporary disabled.")
+
+          data = {
+            # Python and PyPy versions supported by "setup-python" action
+            "python": {
+              "3.7":       { "icon": "⚫",  "until": "2023.06.27" },
+              "3.8":       { "icon": "🔴",  "until": "2024.10" },
+              "3.9":       { "icon": "🟠",  "until": "2025.10" },
+              "3.10":      { "icon": "🟡",  "until": "2026.10" },
+              "3.11":      { "icon": "🟢",  "until": "2027.10" },
+              "3.12":      { "icon": "🟢",  "until": "2028.10" },
+            #  "3.13":      { "icon": "🟣",  "until": "2028.10" },
+              "pypy-3.7":  { "icon": "⟲⚫", "until": "????.??" },
+              "pypy-3.8":  { "icon": "⟲🔴", "until": "????.??" },
+              "pypy-3.9":  { "icon": "⟲🟠", "until": "????.??" },
+              "pypy-3.10": { "icon": "⟲🟡", "until": "????.??" },
+            },
+            # Runner systems (runner images) supported by GitHub Actions
+            "sys": {
+              "ubuntu":  { "icon": "🐧", "runs-on": "ubuntu-latest",  "shell": "bash", "name": "Linux (x86-64)"   },
+              "windows": { "icon": "🪟", "runs-on": "windows-latest", "shell": "pwsh", "name": "Windows (x86-64)" },
+              "macos":   { "icon": "🍎", "runs-on": "macos-latest",   "shell": "bash", "name": "MacOS (x86-64)"   },
+            },
+            # Runtimes provided by MSYS2
+            "runtime": {
+              "msys":    { "icon": "🪟🟪", "name": "Windows+MSYS2 (x86-64) - MSYS"    },
+              "mingw32": { "icon": "🪟⬛", "name": "Windows+MSYS2 (x86-64) - MinGW32" },
+              "mingw64": { "icon": "🪟🟦", "name": "Windows+MSYS2 (x86-64) - MinGW64" },
+              "clang32": { "icon": "🪟🟫", "name": "Windows+MSYS2 (x86-64) - Clang32" },
+              "clang64": { "icon": "🪟🟧", "name": "Windows+MSYS2 (x86-64) - Clang64" },
+              "ucrt64":  { "icon": "🪟🟨", "name": "Windows+MSYS2 (x86-64) - UCRT64"  },
             }
           }
 
-          with open(environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as gho:
-              gho.write(f"params={params!s}\n")
-          print("Parameters:")
-          print(params)
+          print(f"includes ({len(includes)}):")
+          for system,version in includes:
+            print(f"- {system}:{version}")
+          print(f"excludes ({len(excludes)}):")
+          for exclude in excludes:
+            print(f"- {exclude}")
+          print(f"disabled ({len(disabled)}):")
+          for disable in disabled:
+            print(f"- {disable}")
 
-          systems = '${{ inputs.system_list }}'.split(' ')
-          versions = '${{ inputs.python_version_list }}'.split(' ')
-          if '3.6' in versions:
-              print("::warning title=Deprecated::Support for Python 3.6 ended in 2021.12.23.")
-          if '3.11' in versions:
-              print(f"::notice title=Experimental::Python 3.11 (3.11.0-alpha3) is a pre-release.")
-          data = {
-              'python': {
-                  '3.6':  { 'icon': '⚫', 'until': '2021.12.23' },
-                  '3.7':  { 'icon': '🔴', 'until': '2023.06.27' },
-                  '3.8':  { 'icon': '🟠', 'until': '2024.10' },
-                  '3.9':  { 'icon': '🟡', 'until': '2025.10' },
-                  '3.10': { 'icon': '🟢', 'until': '2026.10' },
-                  '3.11': { 'icon': '🟣', 'until': '2027.10' },
-              },
-              'sys': {
-                  'ubuntu':  { 'icon': '🐧', 'runs-on': 'ubuntu-latest',  'shell': 'bash' },
-                  'windows': { 'icon': '🧊', 'runs-on': 'windows-latest', 'shell': 'pwsh' },
-                  'msys2':   { 'icon': '🟦', 'runs-on': 'windows-latest', 'shell': 'msys2 {0}' },
-                  'macos':   { 'icon': '🍎', 'runs-on': 'macos-latest',   'shell': 'bash' }
-              }
-          }
-          jobs = [
-              {
-                  'sysicon': data['sys'][system]['icon'],
-                  'system': system,
-                  'runs-on': data['sys'][system]['runs-on'],
-                  'shell': data['sys'][system]['shell'],
-                  'pyicon': data['python'][version]['icon'],
-                  'python': '3.11.0-alpha.3' if version == '3.11' else version
-              }
-              for system in systems
-              for version in (versions if system != 'msys2' else ['3.10'])
+          combinations = [
+            (system, version)
+            for system in systems
+              if system in data["sys"]
+            for version in versions
+              if version in data["python"]
+              and f"{system}:{version}" not in excludes
+              and f"{system}:{version}" not in disabled
+          ] + [
+            (system, currentMSYS2Version)
+            for system in systems
+              if system in data["runtime"]
+              and f"{system}:{currentMSYS2Version}" not in excludes
+              and f"{system}:{currentMSYS2Version}" not in disabled
+          ] + [
+            (system, version)
+            for system, version in includes
+              if system in data["sys"]
+              and version in data["python"]
+              and f"{system}:{version}" not in disabled
           ]
-          with open(environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as gho:
-              gho.write(f"python_jobs={jobs!s}\n")
-          print("Python jobs:")
-          print(jobs)
+          print(f"Combinations ({len(combinations)}):")
+          for system, version in combinations:
+            print(f"- {system}:{version}")
+
+          jobs = [
+            {
+              "sysicon": data["sys"][system]["icon"],
+              "system":  system,
+              "runs-on": data["sys"][system]["runs-on"],
+              "runtime": "native",
+              "shell":   data["sys"][system]["shell"],
+              "pyicon":  data["python"][version]["icon"],
+              "python":  currentAlphaRelease if version == currentAlphaVersion else version,
+              "envname": data["sys"][system]["name"],
+            }
+            for system, version in combinations if system in data["sys"]
+          ] + [
+            {
+              "sysicon": data["runtime"][runtime]["icon"],
+              "system":  "msys2",
+              "runs-on": "windows-latest",
+              "runtime": runtime.upper(),
+              "shell":   "msys2 {0}",
+              "pyicon":  data["python"][currentMSYS2Version]["icon"],
+              "python":  version,
+              "envname": data["runtime"][runtime]["name"],
+            }
+            for runtime, version in combinations if runtime not in data["sys"]
+          ]
+
+          artifact_names = {
+            "unittesting_xml":     f"{name}-UnitTestReportSummary-XML",
+            "unittesting_html":    f"{name}-UnitTestReportSummary-HTML",
+            "perftesting_xml":     f"{name}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":    f"{name}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":      f"{name}-ApplicationTestReportSummary-XML",
+            "codecoverage_sqlite": f"{name}-CodeCoverage-SQLite",
+            "codecoverage_xml":    f"{name}-CodeCoverage-XML",
+            "codecoverage_json":   f"{name}-CodeCoverage-JSON",
+            "codecoverage_html":   f"{name}-CodeCoverage-HTML",
+            "statictyping_html":   f"{name}-StaticTyping-HTML",
+            "package_all":         f"{name}-Packages",
+            "documentation_html":  f"{name}-Documentation-HTML",
+            "documentation_latex": f"{name}-Documentation-LaTeX",
+            "documentation_pdf":   f"{name}-Documentation-PDF",
+          }
+
+          # Deprecated structure
+          params = {
+            "python_version": python_version,
+            "artifacts": {
+              "unittesting": f"{artifact_names['unittesting_xml']}",
+              "coverage":    f"{artifact_names['codecoverage_html']}",
+              "typing":      f"{artifact_names['statictyping_html']}",
+              "package":     f"{artifact_names['package_all']}",
+              "doc":         f"{artifact_names['documentation_html']}",
+            }
+          }
+
+          print("Parameters:")
+          print(f"  python_version: {python_version}")
+          print(f"  python_jobs ({len(jobs)}):\n" +
+            "".join([f"    {{ " + ", ".join([f"\"{key}\": \"{value}\"" for key, value in job.items()]) + f" }},\n" for job in jobs])
+          )
+          print(f"  artifact_names ({len(artifact_names)}):")
+          for id, name in artifact_names.items():
+            print(f"    {id:>20}: {name}")
+
+          # Write jobs to special file
+          github_output = Path(getenv("GITHUB_OUTPUT"))
+          print(f"GITHUB_OUTPUT: {github_output}")
+          with github_output.open("a+", encoding="utf-8") as f:
+            f.write(dedent(f"""\
+              python_version={python_version}
+              python_jobs={json_dumps(jobs)}
+              artifact_names={json_dumps(artifact_names)}
+              params={json_dumps(params)}
+          """))
+
+      - name: Verify out parameters
+        id: verify
+        run: |
+          echo 'python_version: ${{ steps.params.outputs.python_version }}'
+          echo 'python_jobs: ${{ steps.params.outputs.python_jobs }}'
+          echo 'artifact_names: ${{ steps.params.outputs.artifact_names }}'
+          echo 'params: ${{ steps.params.outputs.params }}'
