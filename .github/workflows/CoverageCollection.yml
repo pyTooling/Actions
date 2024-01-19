@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2022 The pyTooling Authors                                                                            #
+# Copyright 2020-2024 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -28,17 +28,22 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.10'
+        default: '3.11'
         type: string
       requirements:
         description: 'Python dependencies to be installed through pip.'
         required: false
         default: '-r tests/requirements.txt'
         type: string
-      unittest_directory:
-        description: 'Path to the directory containing unit tests.'
+      tests_directory:
+        description: 'Path to the directory containing tests (test working directory).'
         required: false
-        default: 'tests/unit'
+        default: 'tests'
+        type: string
+      unittest_directory:
+        description: 'Path to the directory containing unit tests (relative to tests_directory).'
+        required: false
+        default: 'unit'
         type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
@@ -62,26 +67,26 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python_version }}
 
       - name: 🗂 Install dependencies
         run: |
-          python -m pip install -U pip
-          python -m pip install tomli
-          python -m pip install ${{ inputs.requirements }}
+          python -m pip install --disable-pip-version-check tomli
+          python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 🔁 Extract configurations from pyproject.toml
         id: getVariables
         shell: python
         run: |
-          from os import environ
-          from pathlib import Path
-          from tomli   import load as tomli_load
+          from os       import getenv
+          from pathlib  import Path
+          from tomli    import load as tomli_load
+          from textwrap import dedent
 
           htmlDirectory = 'htmlcov'
           xmlFile = './coverage.xml'
@@ -89,52 +94,61 @@ jobs:
 
           # Read output paths from 'pyproject.toml' file
           if coverageRC == "pyproject.toml":
-              pyProjectFile =  Path("pyproject.toml")
-              if pyProjectFile.exists():
-                  with pyProjectFile.open("rb") as file:
-                      pyProjectSettings = tomli_load(file)
+            pyProjectFile =  Path("pyproject.toml")
+            if pyProjectFile.exists():
+              with pyProjectFile.open("rb") as file:
+                pyProjectSettings = tomli_load(file)
 
-                  htmlDirectory = pyProjectSettings["tool"]["coverage"]["html"]["directory"]
-                  xmlFile       = pyProjectSettings["tool"]["coverage"]["xml"]["output"]
-              else:
-                  print(f"File '{pyProjectFile}' not found and no ' .coveragerc' file specified.")
+              htmlDirectory = pyProjectSettings["tool"]["coverage"]["html"]["directory"]
+              xmlFile       = pyProjectSettings["tool"]["coverage"]["xml"]["output"]
+            else:
+              print(f"File '{pyProjectFile}' not found and no ' .coveragerc' file specified.")
 
           # Read output paths from '.coveragerc' file
           elif len(coverageRC) > 0:
-              coverageRCFile = Path(coverageRC)
-              if coverageRCFile.exists():
-                  with coverageRCFile.open("rb") as file:
-                      coverageRCSettings = tomli_load(file)
+            coverageRCFile = Path(coverageRC)
+            if coverageRCFile.exists():
+              with coverageRCFile.open("rb") as file:
+                coverageRCSettings = tomli_load(file)
 
-                  htmlDirectory = coverageRCSettings["html"]["directory"]
-                  xmlFile       = coverageRCSettings["xml"]["output"]
-              else:
-                  print(f"File '{coverageRCFile}' not found.")
+              htmlDirectory = coverageRCSettings["html"]["directory"]
+              xmlFile       = coverageRCSettings["xml"]["output"]
+            else:
+              print(f"File '{coverageRCFile}' not found.")
 
-          with open(environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as gho:
-              gho.write(f"""\
-          coverage_report_html_directory={htmlDirectory}
-          coverage_report_xml={xmlFile}
-          """)
+          # Write jobs to special file
+          github_output = Path(getenv("GITHUB_OUTPUT"))
+          print(f"GITHUB_OUTPUT: {github_output}")
+          with github_output.open("a+", encoding="utf-8") as f:
+            f.write(dedent(f"""\
+              coverage_report_html_directory={htmlDirectory}
+              coverage_report_xml={xmlFile}
+            """))
+
           print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}")
 
       - name: Collect coverage
         continue-on-error: true
         run: |
-          [ 'x${{ inputs.coverage_config }}' != 'x' ] && PYCOV_ARGS='--cov-config=${{ inputs.coverage_config }}' || unset PYCOV_ARGS
-          python -m pytest -rA --cov=. $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
+          export ENVIRONMENT_NAME="Linux (x86-64)"
+          export PYTHONPATH=$(pwd)
+          ABSDIR=$(pwd)
+          cd "${{ inputs.tests_directory || '.' }}"
+          [ -n '${{ inputs.coverage_config }}' ] && PYCOV_ARGS="--cov-config=${ABSDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
+          echo "python -m pytest -rA --cov=${ABSDIR} ${PYCOV_ARGS} ${{ inputs.unittest_directory }} --color=yes"
+          python -m pytest -rA --cov=${ABSDIR} $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
 
       - name: Convert to cobertura format
-        run: coverage xml
+        run: coverage xml --data-file=${{ inputs.tests_directory || '.' }}/.coverage
 
       - name: Convert to HTML format
         run: |
-          coverage html -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          coverage html --data-file=${{ inputs.tests_directory || '.' }}/.coverage -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
           rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
 
       - name: 📤 Upload 'Coverage Report' artifact
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact }}
           path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
@@ -151,7 +165,7 @@ jobs:
 
       - name: 📉 Publish coverage at Codacy
         continue-on-error: true
-        uses: codacy/codacy-coverage-reporter-action@master
+        uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.codacy_token }}
           coverage-reports: ${{ steps.getVariables.outputs.coverage_report_xml }}

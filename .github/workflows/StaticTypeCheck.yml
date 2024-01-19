@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2022 The pyTooling Authors                                                                            #
+# Copyright 2020-2024 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -28,25 +28,35 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.10'
+        default: '3.12'
         type: string
       requirements:
         description: 'Python dependencies to be installed through pip.'
         required: false
         default: '-r tests/requirements.txt'
         type: string
-      report:
-        description: 'Directory to upload as an artifact.'
-        required: false
-        default: 'htmlmypy'
-        type: string
       commands:
         description: 'Commands to run the static type checks.'
         required: true
         type: string
-      artifact:
-        description: 'Name of the typing artifact.'
+      html_report:
+        description: 'Directory to upload as an artifact.'
+        required: false
+        default: 'htmlmypy'
+        type: string
+      junit_report:
+        description: 'junit file to upload as an artifact.'
+        required: false
+        default: 'StaticTypingSummary.xml'
+        type: string
+      html_artifact:
+        description: 'Name of the typing artifact (HTML report).'
         required: true
+        type: string
+      junit_artifact:
+        description: 'Name of the typing junit artifact (junit XML).'
+        required: false
+        default: ''
         type: string
 
 jobs:
@@ -57,28 +67,36 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python_version }}
 
       - name: 🗂 Install dependencies
-        run: |
-          python -m pip install -U pip
-          python -m pip install ${{ inputs.requirements }}
+        run: python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: Check Static Typing
         continue-on-error: true
         run: ${{ inputs.commands }}
 
-      - name: 📤 Upload 'Static Typing Report' artifact
-        if: ${{ inputs.artifact != '' }}
+      - name: 📤 Upload 'Static Typing Report' HTML artifact
+        if: ${{ inputs.html_artifact != '' }}
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.artifact }}
-          path: ${{ inputs.report }}
+          name: ${{ inputs.html_artifact }}
+          path: ${{ inputs.html_report }}
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: 📤 Upload 'Static Typing Report' JUnit artifact
+        if: ${{ inputs.junit_artifact != '' }}
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.junit_artifact }}
+          path: ${{ inputs.junit_report }}
           if-no-files-found: error
           retention-days: 1

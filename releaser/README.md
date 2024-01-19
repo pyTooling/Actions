@@ -79,7 +79,7 @@ jobs:
     steps:
 
     # Clone repository
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     # Build your application, tool, artifacts, etc.
     - name: Build
@@ -162,7 +162,7 @@ For prototyping purposes, the following job might be useful:
     if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/'))
     steps:
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
 
       - shell: bash
         run: pip install PyGithub --progress-bar off
