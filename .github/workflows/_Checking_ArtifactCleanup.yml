@@ -6,7 +6,7 @@ on:
 
 jobs:
   Params:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
     with:
       name: Example
       python_version_list: "3.10 3.11"
@@ -50,7 +50,7 @@ jobs:
           retention-days: 1
 
   ArtifactCleanUp:
-    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@dev
+    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r1
     needs:
       - Params
       - Testing
