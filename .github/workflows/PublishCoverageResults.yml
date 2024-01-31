@@ -199,7 +199,7 @@ jobs:
       - name: 📊 Publish code coverage at CodeCov
         if: inputs.CodeCov == true
         continue-on-error: true
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ${{ steps.getVariables.outputs.coverage_report_xml }}
           flags: unittests

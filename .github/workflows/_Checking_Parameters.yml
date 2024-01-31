@@ -6,24 +6,24 @@ on:
 
 jobs:
   Params_Default:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
     with:
       name: Example
 
   Params_PythonVersions:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
     with:
       name: Example
       python_version_list: "3.9 3.10 pypy-3.8 pypy-3.9"
 
   Params_Systems:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
     with:
       name: Example
       system_list: "windows mingw32 mingw64"
 
   Params_Include:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
     with:
       name: Example
       python_version_list: "3.10"
@@ -31,7 +31,7 @@ jobs:
       include_list: "ubuntu:3.11 ubuntu:3.12"
 
   Params_Exclude:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
     with:
       name: Example
       python_version_list: "3.10"
@@ -39,7 +39,7 @@ jobs:
       exclude_list: "windows:3.10 windows:3.11"
 
   Params_Disable:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
     with:
       name: Example
       python_version_list: "3.10"
@@ -47,7 +47,7 @@ jobs:
       disable_list: "windows:3.10 windows:3.11"
 
   Params_All:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
     with:
       name: Example
       python_version_list: "3.10 3.11"
@@ -80,22 +80,26 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.11"
-          expectedPythons = ["3.8", "3.9", "3.10", "3.11"]
+          expectedPythonVersion = "3.12"
+          expectedPythons = ["3.8", "3.9", "3.10", "3.11", "3.12"]
           expectedSystems = ["ubuntu", "windows", "macos"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.10"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.11", "ucrt64:3.11"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
-            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
-            "package_all":        f"{expectedName}-Packages",
-            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
-            "documentation_html": f"{expectedName}-Documentation-HTML",
+            "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
+            "unittesting_html":    f"{expectedName}-UnitTestReportSummary-HTML",
+            "perftesting_xml":     f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":    f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":      f"{expectedName}-ApplicationTestReportSummary-XML",
+            "codecoverage_sqlite": f"{expectedName}-CodeCoverage-SQLite",
+            "codecoverage_xml":    f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_json":   f"{expectedName}-CodeCoverage-JSON",
+            "codecoverage_html":   f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":   f"{expectedName}-StaticTyping-HTML",
+            "package_all":         f"{expectedName}-Packages",
+            "documentation_html":  f"{expectedName}-Documentation-HTML",
+            "documentation_latex": f"{expectedName}-Documentation-LaTeX",
+            "documentation_pdf":   f"{expectedName}-Documentation-PDF",
           }
 
           actualPythonVersion =            """${{ needs.Params_Default.outputs.python_version }}"""
@@ -132,22 +136,26 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.11"
+          expectedPythonVersion = "3.12"
           expectedPythons = ["3.9", "3.10", "pypy-3.8", "pypy-3.9"]
           expectedSystems = ["ubuntu", "windows", "macos"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.10"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.11", "ucrt64:3.11"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
-            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
-            "package_all":        f"{expectedName}-Packages",
-            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
-            "documentation_html": f"{expectedName}-Documentation-HTML",
+            "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
+            "unittesting_html":    f"{expectedName}-UnitTestReportSummary-HTML",
+            "perftesting_xml":     f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":    f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":      f"{expectedName}-ApplicationTestReportSummary-XML",
+            "codecoverage_sqlite": f"{expectedName}-CodeCoverage-SQLite",
+            "codecoverage_xml":    f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_json":   f"{expectedName}-CodeCoverage-JSON",
+            "codecoverage_html":   f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":   f"{expectedName}-StaticTyping-HTML",
+            "package_all":         f"{expectedName}-Packages",
+            "documentation_html":  f"{expectedName}-Documentation-HTML",
+            "documentation_latex": f"{expectedName}-Documentation-LaTeX",
+            "documentation_pdf":   f"{expectedName}-Documentation-PDF",
           }
 
           actualPythonVersion =            """${{ needs.Params_PythonVersions.outputs.python_version }}"""
@@ -184,22 +192,26 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.11"
-          expectedPythons = ["3.8", "3.9", "3.10", "3.11"]
+          expectedPythonVersion = "3.12"
+          expectedPythons = ["3.8", "3.9", "3.10", "3.11", "3.12"]
           expectedSystems = ["windows"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw32:3.10", "mingw64:3.10"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw32:3.11", "mingw64:3.11"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
-            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
-            "package_all":        f"{expectedName}-Packages",
-            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
-            "documentation_html": f"{expectedName}-Documentation-HTML",
+            "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
+            "unittesting_html":    f"{expectedName}-UnitTestReportSummary-HTML",
+            "perftesting_xml":     f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":    f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":      f"{expectedName}-ApplicationTestReportSummary-XML",
+            "codecoverage_sqlite": f"{expectedName}-CodeCoverage-SQLite",
+            "codecoverage_xml":    f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_json":   f"{expectedName}-CodeCoverage-JSON",
+            "codecoverage_html":   f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":   f"{expectedName}-StaticTyping-HTML",
+            "package_all":         f"{expectedName}-Packages",
+            "documentation_html":  f"{expectedName}-Documentation-HTML",
+            "documentation_latex": f"{expectedName}-Documentation-LaTeX",
+            "documentation_pdf":   f"{expectedName}-Documentation-PDF",
           }
 
           actualPythonVersion =            """${{ needs.Params_Systems.outputs.python_version }}"""
@@ -236,22 +248,26 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.11"
+          expectedPythonVersion = "3.12"
           expectedPythons = ["3.10"]
           expectedSystems = ["ubuntu", "windows", "macos"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["ubuntu:3.11", "ubuntu:3.12"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
-            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
-            "package_all":        f"{expectedName}-Packages",
-            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
-            "documentation_html": f"{expectedName}-Documentation-HTML",
+            "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
+            "unittesting_html":    f"{expectedName}-UnitTestReportSummary-HTML",
+            "perftesting_xml":     f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":    f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":      f"{expectedName}-ApplicationTestReportSummary-XML",
+            "codecoverage_sqlite": f"{expectedName}-CodeCoverage-SQLite",
+            "codecoverage_xml":    f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_json":   f"{expectedName}-CodeCoverage-JSON",
+            "codecoverage_html":   f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":   f"{expectedName}-StaticTyping-HTML",
+            "package_all":         f"{expectedName}-Packages",
+            "documentation_html":  f"{expectedName}-Documentation-HTML",
+            "documentation_latex": f"{expectedName}-Documentation-LaTeX",
+            "documentation_pdf":   f"{expectedName}-Documentation-PDF",
           }
 
           actualPythonVersion =            """${{ needs.Params_Include.outputs.python_version }}"""
@@ -288,22 +304,26 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.11"
+          expectedPythonVersion = "3.12"
           expectedPythons = ["3.10"]
           expectedSystems = ["ubuntu", "macos"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
-            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
-            "package_all":        f"{expectedName}-Packages",
-            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
-            "documentation_html": f"{expectedName}-Documentation-HTML",
+            "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
+            "unittesting_html":    f"{expectedName}-UnitTestReportSummary-HTML",
+            "perftesting_xml":     f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":    f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":      f"{expectedName}-ApplicationTestReportSummary-XML",
+            "codecoverage_sqlite": f"{expectedName}-CodeCoverage-SQLite",
+            "codecoverage_xml":    f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_json":   f"{expectedName}-CodeCoverage-JSON",
+            "codecoverage_html":   f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":   f"{expectedName}-StaticTyping-HTML",
+            "package_all":         f"{expectedName}-Packages",
+            "documentation_html":  f"{expectedName}-Documentation-HTML",
+            "documentation_latex": f"{expectedName}-Documentation-LaTeX",
+            "documentation_pdf":   f"{expectedName}-Documentation-PDF",
           }
 
           actualPythonVersion =            """${{ needs.Params_Exclude.outputs.python_version }}"""
@@ -340,22 +360,26 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.11"
+          expectedPythonVersion = "3.12"
           expectedPythons = ["3.10"]
           expectedSystems = ["ubuntu", "macos"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
-            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
-            "package_all":        f"{expectedName}-Packages",
-            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
-            "documentation_html": f"{expectedName}-Documentation-HTML",
+            "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
+            "unittesting_html":    f"{expectedName}-UnitTestReportSummary-HTML",
+            "perftesting_xml":     f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":    f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":      f"{expectedName}-ApplicationTestReportSummary-XML",
+            "codecoverage_sqlite": f"{expectedName}-CodeCoverage-SQLite",
+            "codecoverage_xml":    f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_json":   f"{expectedName}-CodeCoverage-JSON",
+            "codecoverage_html":   f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":   f"{expectedName}-StaticTyping-HTML",
+            "package_all":         f"{expectedName}-Packages",
+            "documentation_html":  f"{expectedName}-Documentation-HTML",
+            "documentation_latex": f"{expectedName}-Documentation-LaTeX",
+            "documentation_pdf":   f"{expectedName}-Documentation-PDF",
           }
 
           actualPythonVersion =            """${{ needs.Params_Exclude.outputs.python_version }}"""
@@ -392,22 +416,26 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.11"
+          expectedPythonVersion = "3.12"
           expectedPythons = ["3.10", "3.11"]
           expectedSystems = ["ubuntu", "windows"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["windows:3.8", "windows:3.9", "windows:3.12"]
           expectedName =    "Example"
           expectedArtifacts = {
-            "unittesting_xml":    f"{expectedName}-UnitTestReportSummary-XML",
-            "perftesting_xml":    f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":   f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":     f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_xml":   f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_html":  f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_html":  f"{expectedName}-StaticTyping-HTML",
-            "package_all":        f"{expectedName}-Packages",
-            "documentation_pdf":  f"{expectedName}-Documentation-PDF",
-            "documentation_html": f"{expectedName}-Documentation-HTML",
+            "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
+            "unittesting_html":    f"{expectedName}-UnitTestReportSummary-HTML",
+            "perftesting_xml":     f"{expectedName}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":    f"{expectedName}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":      f"{expectedName}-ApplicationTestReportSummary-XML",
+            "codecoverage_sqlite": f"{expectedName}-CodeCoverage-SQLite",
+            "codecoverage_xml":    f"{expectedName}-CodeCoverage-XML",
+            "codecoverage_json":   f"{expectedName}-CodeCoverage-JSON",
+            "codecoverage_html":   f"{expectedName}-CodeCoverage-HTML",
+            "statictyping_html":   f"{expectedName}-StaticTyping-HTML",
+            "package_all":         f"{expectedName}-Packages",
+            "documentation_html":  f"{expectedName}-Documentation-HTML",
+            "documentation_latex": f"{expectedName}-Documentation-LaTeX",
+            "documentation_pdf":   f"{expectedName}-Documentation-PDF",
           }
 
           actualPythonVersion =            """${{ needs.Params_All.outputs.python_version }}"""
