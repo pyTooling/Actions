@@ -78,6 +78,6 @@ jobs:
         run: twine upload dist/*.whl
 
       - name: 🗑️ Delete packaging Artifacts
-        uses: geekyeggo/delete-artifact@v4
+        uses: geekyeggo/delete-artifact@v5
         with:
           name: ${{ inputs.artifact }}
