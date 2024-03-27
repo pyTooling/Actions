@@ -1,0 +1,29 @@
+<ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" xmlns:ns1="http://www.w3.org/1999/xlink" width="1pt" height="864pt" viewBox="0.00 0.00 0.76 864.00">
+<ns0:g id="graph0" class="graph" transform="scale(0.00385723 0.00385723) rotate(0) translate(4 223991.12)">
+<ns0:title>inheritancef5e767ba7b</ns0:title>
+
+<ns0:g id="node1" class="node">
+<ns0:title>Application</ns0:title>
+<ns0:g id="a_node1"><ns0:a ns1:href="../pyDummy/pyDummy.html#pyDummy.Application" ns1:title="A dummy application for demonstration purposes." target="_top">
+<ns0:polygon fill="white" stroke="#1e90ff" points="188.5,-112002.81 90,-112002.81 90,-111984.31 188.5,-111984.31 188.5,-112002.81" />
+<ns0:text text-anchor="middle" x="139.25" y="-111989.31" font-family="Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans" font-size="10.00">Application</ns0:text>
+</ns0:a>
+</ns0:g>
+</ns0:g>
+
+<ns0:g id="node2" class="node">
+<ns0:title>Base</ns0:title>
+<ns0:g id="a_node2"><ns0:a ns1:href="../pyDummy/pyDummy.html#pyDummy.Base" ns1:title="A base-class for dummy applications." target="_top">
+<ns0:polygon fill="white" stroke="#1e90ff" points="54,-223987.12 0,-223987.12 0,0 54,0 54,-223987.12" />
+<ns0:text text-anchor="middle" x="27" y="-223973.62" font-family="Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans" font-size="10.00">Base</ns0:text>
+</ns0:a>
+</ns0:g>
+</ns0:g>
+
+<ns0:g id="edge1" class="edge">
+<ns0:title>Base-&gt;Application</ns0:title>
+<ns0:path fill="none" stroke="black" stroke-width="0.5" d="M54.41,-111993.56C63.25,-111993.56 73.45,-111993.56 83.64,-111993.56" />
+<ns0:polygon fill="black" stroke="black" stroke-width="0.5" points="84.62,-111995.31 89.62,-111993.56 84.62,-111991.81 84.62,-111995.31" />
+</ns0:g>
+</ns0:g>
+</ns0:svg>
