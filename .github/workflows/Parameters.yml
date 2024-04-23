@@ -140,6 +140,7 @@ jobs:
           for disable in disabled:
             print(f"::warning title=Disabled Python Job::System '{disable}' temporary disabled.")
 
+          # see https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
           data = {
             # Python and PyPy versions supported by "setup-python" action
             "python": {
@@ -157,9 +158,9 @@ jobs:
             },
             # Runner systems (runner images) supported by GitHub Actions
             "sys": {
-              "ubuntu":  { "icon": "🐧", "runs-on": "ubuntu-latest",  "shell": "bash", "name": "Linux (x86-64)"   },
-              "windows": { "icon": "🪟", "runs-on": "windows-latest", "shell": "pwsh", "name": "Windows (x86-64)" },
-              "macos":   { "icon": "🍎", "runs-on": "macos-latest",   "shell": "bash", "name": "MacOS (x86-64)"   },
+              "ubuntu":  { "icon": "🐧", "runs-on": "ubuntu-latest",  "shell": "bash", "name": "Linux (x86-64)",   "minPy": (3,  7)},
+              "windows": { "icon": "🪟", "runs-on": "windows-latest", "shell": "pwsh", "name": "Windows (x86-64)", "minPy": (3,  7)},
+              "macos":   { "icon": "🍎", "runs-on": "macos-latest",   "shell": "bash", "name": "MacOS (x86-64)",   "minPy": (3, 10)},
             },
             # Runtimes provided by MSYS2
             "runtime": {
@@ -182,12 +183,17 @@ jobs:
           for disable in disabled:
             print(f"- {disable}")
 
+          def toVersion(value):
+            major, minor = value.split(".")
+            return tuple(int(major[-1]), int(minor))
+
           combinations = [
             (system, version)
             for system in systems
               if system in data["sys"]
             for version in versions
               if version in data["python"]
+              and toVersion(version) >= data["sys"][system]["minPy"]
               and f"{system}:{version}" not in excludes
               and f"{system}:{version}" not in disabled
           ] + [
@@ -201,6 +207,7 @@ jobs:
             for system, version in includes
               if system in data["sys"]
               and version in data["python"]
+              and toVersion(version) >= data["sys"][system]["minPy"]
               and f"{system}:{version}" not in disabled
           ]
           print(f"Combinations ({len(combinations)}):")

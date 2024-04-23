@@ -80,7 +80,7 @@ Documentation Only (Sphinx)
 
        steps:
          - name: 🗑️ Delete artifacts
-           uses: geekyeggo/delete-artifact@v2
+           uses: geekyeggo/delete-artifact@v5
            with:
              name: Documentation
 

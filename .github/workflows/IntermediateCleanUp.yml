@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 🗑️ Delete SQLite coverage artifacts from matrix jobs
-        uses: geekyeggo/delete-artifact@v4
+        uses: geekyeggo/delete-artifact@v5
         if: inputs.sqlite_coverage_artifacts_prefix != ''
         continue-on-error: true
         with:
@@ -47,7 +47,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🗑️ Delete XML coverage artifacts from matrix jobs
-        uses: geekyeggo/delete-artifact@v4
+        uses: geekyeggo/delete-artifact@v5
         if: inputs.xml_unittest_artifacts_prefix != ''
         continue-on-error: true
         with:
