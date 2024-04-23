@@ -185,7 +185,7 @@ jobs:
 
           def toVersion(value):
             major, minor = value.split(".")
-            return tuple(int(major[-1]), int(minor))
+            return int(major[-1]), int(minor)
 
           combinations = [
             (system, version)
