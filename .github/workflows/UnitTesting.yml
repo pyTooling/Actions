@@ -165,11 +165,13 @@ jobs:
             "sphinx":      "python-markupsafe:p",
             "tomli":       "python-tomli:p",
             "wheel":       "python-wheel:p",
+            "pyEDAA.ProjectModel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
+            "pyEDAA.Reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
           }
           subPackages = {
             "pytooling": {
               "yaml":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-            }
+            },
           }
 
           regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:\s*,\s*\w+)*)\])?(?:\s*(?P<Comperator>[<>~=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
