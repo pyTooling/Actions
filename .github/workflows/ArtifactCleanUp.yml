@@ -46,11 +46,9 @@ jobs:
         uses: geekyeggo/delete-artifact@v5
         with:
           name: ${{ inputs.package }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🗑️ Delete remaining Artifacts
         if: ${{ inputs.remaining != '' }}
         uses: geekyeggo/delete-artifact@v5
         with:
           name: ${{ inputs.remaining }}
-          token: ${{ secrets.GITHUB_TOKEN }}
