@@ -44,7 +44,6 @@ jobs:
         continue-on-error: true
         with:
           name: ${{ inputs.sqlite_coverage_artifacts_prefix }}*
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🗑️ Delete XML coverage artifacts from matrix jobs
         uses: geekyeggo/delete-artifact@v5
@@ -52,4 +51,3 @@ jobs:
         continue-on-error: true
         with:
           name: ${{ inputs.xml_unittest_artifacts_prefix }}*
-          token: ${{ secrets.GITHUB_TOKEN }}
