@@ -138,7 +138,7 @@ jobs:
           if currentAlphaVersion in versions:
             print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
           for disable in disabled:
-            print(f"::warning title=Disabled Python Job::System '{disable}' temporary disabled.")
+            print(f"::warning title=Disabled Python Job::System '{disable}' temporarily disabled.")
 
           # see https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
           data = {

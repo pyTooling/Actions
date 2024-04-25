@@ -48,7 +48,7 @@ jobs:
 
       - name: 🔧 Install junitparser
         run: |
-          python -m pip install --disable-pip-version-check -U junitparser
+          python -m pip install --disable-pip-version-check -U pyEDAA.Reports
 
       - name: Move JUnit files and collect them all to junit/
         run: |
@@ -57,26 +57,16 @@ jobs:
           tree -a junit
 
       - name: 🔁 Merge JUnit Unit Test Summaries
-        shell: python
         run: |
-          from pathlib     import Path
-          from junitparser import JUnitXml
-
-          junitDirectory = Path("junit")
-          junitXml = None
-          for file in junitDirectory.iterdir():
-            if junitXml is None:
-              junitXml = JUnitXml.fromfile(file)
-            else:
-              junitXml += JUnitXml.fromfile(file)
-
-          junitXml.write(junitDirectory / "merged.xml")
+          pyedaa-reports merge-unittest -v --junit "junit/*.xml"
+          echo "cat Unittesting.xml"
+          cat Unittesting.xml
 
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v1
         with:
           name: Unit Test Results
-          path: junit/merged.xml
+          path: Unittesting.xml
           reporter: java-junit
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
@@ -84,6 +74,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.merged_junit_artifact }}
-          path: junit/merged.xml
+          path: Unittesting.xml
           if-no-files-found: error
           retention-days: 1
