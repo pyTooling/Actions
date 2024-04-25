@@ -158,9 +158,9 @@ jobs:
             },
             # Runner systems (runner images) supported by GitHub Actions
             "sys": {
-              "ubuntu":  { "icon": "🐧", "runs-on": "ubuntu-latest",  "shell": "bash", "name": "Linux (x86-64)",   "minPy": [3,  7]},
-              "windows": { "icon": "🪟", "runs-on": "windows-latest", "shell": "pwsh", "name": "Windows (x86-64)", "minPy": [3,  7]},
-              "macos":   { "icon": "🍎", "runs-on": "macos-latest",   "shell": "bash", "name": "MacOS (x86-64)",   "minPy": [3, 10]},
+              "ubuntu":  { "icon": "🐧", "runs-on": "ubuntu-latest",  "shell": "bash", "name": "Linux (x86-64)"   },
+              "windows": { "icon": "🪟", "runs-on": "windows-latest", "shell": "pwsh", "name": "Windows (x86-64)" },
+              "macos":   { "icon": "🍎", "runs-on": "macos-latest",   "shell": "bash", "name": "MacOS (x86-64)"   },
             },
             # Runtimes provided by MSYS2
             "runtime": {
@@ -189,7 +189,6 @@ jobs:
               if system in data["sys"]
             for version in versions
               if version in data["python"]
-              and [int(i) for i in version.split(".")] >= data["sys"][system]["minPy"]
               and f"{system}:{version}" not in excludes
               and f"{system}:{version}" not in disabled
           ] + [
@@ -203,7 +202,6 @@ jobs:
             for system, version in includes
               if system in data["sys"]
               and version in data["python"]
-              and [int(i) for i in version.split(".")] >= data["sys"][system]["minPy"]
               and f"{system}:{version}" not in disabled
           ]
           print(f"Combinations ({len(combinations)}):")
