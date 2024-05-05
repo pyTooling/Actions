@@ -58,7 +58,7 @@ jobs:
 
       - name: 🔁 Merge JUnit Unit Test Summaries
         run: |
-          pyedaa-reports merge-unittest -v --junit "junit/*.xml"
+          pyedaa-reports merge-unittest -d --pytest "pytest.tests.unit;pytest.tests.platform;pytest.tests.benchmark;pytest.tests.performance" --junit "junit/*.xml"
           echo "cat Unittesting.xml"
           cat Unittesting.xml
 
