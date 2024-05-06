@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyTooling Actions Documentation &mdash; Actions 0.4.4 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/documentation_options.js?v=90733dfc"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/tabs.js?v=3ee01567"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Background" href="Background.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> Actions
+          </a>
+              <div class="version">
+                0.4
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/CoverageCollection.html">CoverageCollection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/UnitTesting.html">UnitTesting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/StaticTypeCheck.html">StaticTypeCheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/PublishTestResults.html">PublishTestResults</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Package.html">Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/PublishOnPyPI.html">PublishOnPyPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/VerifyDocs.html">VerifyDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/BuildTheDocs.html">BuildTheDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/PublishToGitHubPages.html">PublishToGitHubPages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Release.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/ArtifactCleanUp.html">ArtifactCleanUp</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pyDummy/pyDummy.html">pyDummy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Actions</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+        
+          
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="line-block">
+<div class="line"><a class="reference external" href="https://GitHub.com/pyTooling/pyTooling"><img alt="Sourcecode on GitHub" src="https://img.shields.io/badge/pyTooling-Actions-63bf7f.svg?longCache=true&amp;style=flat-square&amp;longCache=true&amp;logo=GitHub" style="height: 22px;" /></a> <a class="reference external" href="Code-License.html"><img alt="Code license" src="https://img.shields.io/pypi/l/pyTooling?longCache=true&amp;style=flat-square&amp;logo=Apache&amp;label=code" style="height: 22px;" /></a> <a class="reference external" href="https://pyTooling.github.io/pyTooling/"><img alt="Documentation - Read Now!" src="https://img.shields.io/website?longCache=true&amp;style=flat-square&amp;label=pyTooling.github.io%2FpyTooling&amp;logo=GitHub&amp;logoColor=fff&amp;up_color=blueviolet&amp;up_message=Read%20now%20%E2%9E%9A&amp;url=https%3A%2F%2FpyTooling.github.io%2FpyTooling%2Findex.html" style="height: 22px;" /></a> <a class="reference external" href="License.html"><img alt="Documentation License" src="https://img.shields.io/badge/doc-CC--BY%204.0-green?longCache=true&amp;style=flat-square&amp;logo=CreativeCommons&amp;logoColor=fff" style="height: 22px;" /></a></div>
+<div class="line"><a class="reference external" href="https://GitHub.com/pyTooling/Actions/tags"><img alt="GitHub tag (latest SemVer incl. pre-release" src="https://img.shields.io/github/v/tag/pyTooling/Actions?longCache=true&amp;style=flat-square&amp;logo=GitHub&amp;include_prereleases" style="height: 22px;" /></a> <a class="reference external" href="https://GitHub.com/pyTooling/Actions/releases"><img alt="GitHub release date" src="https://img.shields.io/github/release-date/pyTooling/Actions?longCache=true&amp;style=flat-square&amp;logo=GitHub" style="height: 22px;" /></a></div>
+</div>
+<hr class="docutils" />
+<section id="pytooling-actions-documentation">
+<h1>pyTooling Actions Documentation<a class="headerlink" href="#pytooling-actions-documentation" title="Link to this heading">¶</a></h1>
+<p><strong>pyTooling Actions</strong> are reusable steps and workflows for GitHub Actions easing the creation and maintenance of
+workflows for Python projects on GitHub.</p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>GitHub Actions workflows, actions and documentation are mostly focused on JavaScript/TypeScript as the scripting
+language for writing reusable CI code.
+However, Python being equally popular and capable, usage of JS/TS might be bypassed, with some caveats.
+This repository gathers reusable CI tooling for testing, packaging and distributing Python projects and documentation.</p>
+</section>
+<section id="github-action-job-templates">
+<h2>GitHub Action Job Templates<a class="headerlink" href="#github-action-job-templates" title="Link to this heading">¶</a></h2>
+<p>The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
+Workflow):</p>
+<table class="hlist"><tr><td><ul class="simple">
+<li><p><strong>Global Templates</strong></p>
+<ul>
+<li><p><a class="reference internal" href="JobTemplate/Parameters.html#jobtmpl-parameters"><span class="std std-ref">Parameters</span></a></p></li>
+</ul>
+</li>
+<li><p><strong>Unit Tests, Code Coverage, Code Quality, …</strong></p>
+<ul>
+<li><p><a class="reference internal" href="JobTemplate/UnitTesting.html#jobtmpl-unittesting"><span class="std std-ref">UnitTesting</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/CoverageCollection.html#jobtmpl-codecoverage"><span class="std std-ref">CoverageCollection</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/StaticTypeCheck.html#jobtmpl-statictypechecking"><span class="std std-ref">StaticTypeCheck</span></a></p></li>
+<li><p><em>code formatting (planned)</em></p></li>
+<li><p><em>coding style (planned)</em></p></li>
+<li><p><em>code linting (planned)</em></p></li>
+</ul>
+</li>
+<li><p><strong>Build and Packaging</strong></p>
+<ul>
+<li><p><a class="reference internal" href="JobTemplate/Package.html#jobtmpl-package"><span class="std std-ref">Package</span></a></p></li>
+</ul>
+</li>
+</ul>
+</td><td><ul class="simple">
+<li><p><strong>Documentation</strong></p>
+<ul>
+<li><p><a class="reference internal" href="JobTemplate/VerifyDocs.html#jobtmpl-verifydocumentation"><span class="std std-ref">VerifyDocs</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/BuildTheDocs.html#jobtmpl-buildthedocs"><span class="std std-ref">BuildTheDocs</span></a></p></li>
+</ul>
+</li>
+<li><p><strong>Releasing, Publishing</strong></p>
+<ul>
+<li><p><a class="reference internal" href="JobTemplate/Release.html#jobtmpl-githubreleasepage"><span class="std std-ref">Release</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/PublishOnPyPI.html#jobtmpl-pypi"><span class="std std-ref">PublishOnPyPI</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/PublishTestResults.html#jobtmpl-publishtestresults"><span class="std std-ref">PublishTestResults</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/PublishToGitHubPages.html#jobtmpl-publishtogithubpages"><span class="std std-ref">PublishToGitHubPages</span></a></p></li>
+</ul>
+</li>
+<li><p><strong>Cleanups</strong></p>
+<ul>
+<li><p><a class="reference internal" href="JobTemplate/ArtifactCleanUp.html#jobtmpl-artifactcleanup"><span class="std std-ref">ArtifactCleanUp</span></a></p></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<section id="example-pipelines">
+<h3>Example Pipelines<a class="headerlink" href="#example-pipelines" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">ExamplePipeline.yml</span></code> is an example Workflow which uses all of the Reusable Workflows.
+Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
+Minimal required modifications are the following:</p>
+<ul class="simple">
+<li><p>Set the <code class="docutils literal notranslate"><span class="pre">name</span></code> input of job <code class="docutils literal notranslate"><span class="pre">Parameters</span></code>.</p></li>
+<li><p>Specify the <code class="docutils literal notranslate"><span class="pre">commands</span></code> input of job <code class="docutils literal notranslate"><span class="pre">StaticTypeCheck</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="github-actions">
+<h2>GitHub Actions<a class="headerlink" href="#github-actions" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="Action/Releaser.html#action-releaser"><span class="std std-ref">Releaser</span></a></p></li>
+<li><p><a class="reference internal" href="Action/With-post-step.html#action-withpoststep"><span class="std std-ref">with-post-step</span></a></p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/hdl/containers/issues/48">hdl/containers#48</a></p></li>
+</ul>
+</section>
+<section id="contributors">
+<h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://GitHub.com/Paebbels">Patrick Lehmann</a></p></li>
+<li><p><a class="reference external" href="https://GitHub.com/umarcor">Unai Martinez-Corral</a> (Maintainer)</p></li>
+<li><p><a class="reference external" href="https://GitHub.com/pyTooling/Actions/graphs/contributors">and more…</a></p></li>
+</ul>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h2>
+<p>This Python package (source code) is licensed under <a class="reference external" href="Code-License.html">Apache License 2.0</a>. <a href="#id1"><span class="problematic" id="id2">|br|</span></a>
+The accompanying documentation is licensed under <a class="reference external" href="Doc-License.html">Creative Commons - Attribution 4.0 (CC-BY 4.0)</a>.</p>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Background.html" class="btn btn-neutral float-right" title="Background" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2024, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 06.05.2024.
+      </span></p>
+  </div>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/buildthedocs/sphinx.theme">theme</a>
+    provided by <a href="https://buildthedocs.github.io">Build the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
