@@ -30,6 +30,11 @@ on:
         required: false
         default: ''
         type: string
+      additional_merge_args:
+        description: 'Additional merging arguments.'
+        required: false
+        default: '--pytest "pytest.tests.unit"'
+        type: string
 
 jobs:
   PublishTestResults:
@@ -58,7 +63,7 @@ jobs:
 
       - name: 🔁 Merge JUnit Unit Test Summaries
         run: |
-          pyedaa-reports merge-unittest -d --pytest "pytest.tests.unit;pytest.tests.platform;pytest.tests.benchmark;pytest.tests.performance" --junit "junit/*.xml"
+          pyedaa-reports merge-unittest ${{ inputs.additional_merge_args }} --junit "junit/*.xml"
           echo "cat Unittesting.xml"
           cat Unittesting.xml
 

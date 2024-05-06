@@ -88,6 +88,8 @@ jobs:
     needs:
       - UnitTesting
       - PlatformTesting
+    with:
+      additional_merge_args: '-d --pytest "pytest.tests.unit;pytest.tests.platform;pytest.tests.benchmark;pytest.tests.performance"'
 
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@r1
