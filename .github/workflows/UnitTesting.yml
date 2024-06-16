@@ -294,7 +294,7 @@ jobs:
 
           print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
 
-      - name: ☑ Run unit tests (Ubuntu/macOS)
+      - name: ✅ Run unit tests (Ubuntu/macOS)
         if: matrix.system != 'windows'
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
@@ -310,7 +310,7 @@ jobs:
             python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           fi
 
-      - name: ☑ Run unit tests (Windows)
+      - name: ✅ Run unit tests (Windows)
         if: matrix.system == 'windows'
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
