@@ -328,20 +328,24 @@ jobs:
 
       - name: Convert coverage to XML format (Cobertura)
         if: inputs.coverage_xml_artifact != ''
+        continue-on-error: true
         run: coverage xml --data-file=.coverage
 
       - name: Convert coverage to JSON format
         if: inputs.coverage_json_artifact != ''
+        continue-on-error: true
         run: coverage json --data-file=.coverage
 
       - name: Convert coverage to HTML format
         if: inputs.coverage_html_artifact != ''
+        continue-on-error: true
         run: |
           coverage html --data-file=.coverage -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
           rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.unittest_xml_artifact != ''
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.unittest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
