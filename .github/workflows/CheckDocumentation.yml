@@ -33,11 +33,11 @@ on:
         description: 'Source code directory to check.'
         required: true
         type: string
-#      fail_below:
-#        description: 'Minimum required documentation coverage level'
-#        required: false
-#        default: 75
-#        type: string
+      fail_under:
+        description: 'Minimum required documentation coverage level'
+        required: false
+        default: 80
+        type: string
 
 jobs:
   DocCoverage:
@@ -59,9 +59,9 @@ jobs:
       - name: Run 'interrogate' Documentation Coverage Check
         continue-on-error: true
         run: |
-          interrogate -c pyproject.toml
+          interrogate -c pyproject.toml --fail-under=${{ inputs.fail_under }}
 
       - name: Run 'docstr_coverage' Documentation Coverage Check
         continue-on-error: true
         run: |
-          docstr_coverage -v ${{ inputs.directory }}
+          docstr-coverage -v 2 --fail-under=${{ inputs.fail_under }} ${{ inputs.directory }}
