@@ -1,10 +1,10 @@
 -r ../requirements.txt
 
-pyTooling ~= 6.3
+pyTooling ~= 6.5
 
 # Enforce latest version on ReadTheDocs
-sphinx ~= 7.3
-docutils ~= 0.18.0
+sphinx ~= 7.4
+docutils ~= 0.20
 
 # Sphinx Extenstions
 #sphinx.ext.coverage
