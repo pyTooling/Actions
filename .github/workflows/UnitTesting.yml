@@ -34,6 +34,11 @@ on:
         required: false
         default: ''
         type: string
+      brew:
+        description: 'macOS dependencies to be installed through brew.'
+        required: false
+        default: ''
+        type: string
       pacboy:
         description: 'MSYS2 dependencies to be installed through pacboy (pacman).'
         required: false
@@ -129,6 +134,10 @@ jobs:
         uses: actions/checkout@v4
 
 # Package Manager steps
+      - name: 🔧 Install homebrew dependencies on macOS
+        if: matrix.system == 'macos' && inputs.brew != ''
+        run: brew install ${{ inputs.brew }}
+
       - name: 🔧 Install apt dependencies on Ubuntu
         if: matrix.system == 'ubuntu' && inputs.apt != ''
         run: sudo apt-get install -y --no-install-recommends ${{ inputs.apt }}
