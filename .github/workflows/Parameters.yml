@@ -91,7 +91,6 @@ jobs:
           from json import dumps as json_dumps
           from os import getenv
           from pathlib import Path
-          from pprint import pprint
           from textwrap import dedent
 
           name =           "${{ inputs.name }}".strip()
