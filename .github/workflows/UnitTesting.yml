@@ -29,18 +29,33 @@ on:
         description: 'JSON list with environment fields, telling the system and Python versions to run tests with.'
         required: true
         type: string
+      apt:
+        description: 'Ubuntu dependencies to be installed through apt.'
+        required: false
+        default: ''
+        type: string
+      pacboy:
+        description: 'MSYS2 dependencies to be installed through pacboy (pacman).'
+        required: false
+        default: ''
+        type: string
       requirements:
         description: 'Python dependencies to be installed through pip.'
         required: false
         default: '-r tests/requirements.txt'
         type: string
-      pacboy:
-        description: 'MSYS2 dependencies to be installed through pacboy (pacman).'
-        required: false
-        default: ""
-        type: string
       mingw_requirements:
         description: 'Override Python dependencies to be installed through pip on MSYS2 (MINGW64) only.'
+        required: false
+        default: ''
+        type: string
+      macos_before_script:
+        description: 'Scripts to execute before pytest on macOS.'
+        required: false
+        default: ''
+        type: string
+      ubuntu_before_script:
+        description: 'Scripts to execute before pytest on Ubuntu.'
         required: false
         default: ''
         type: string
@@ -112,6 +127,13 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+
+# Package Manager steps
+      - name: 🔧 Install apt dependencies on Ubuntu
+        if: matrix.system == 'ubuntu' && inputs.apt != ''
+        run: sudo apt-get install -y --no-install-recommends ${{ inputs.apt }}
+
+# Compute Dependencies for MSYS2 steps
 
       - name: 🔧 Install dependencies (system Python for Python shell)
         if: matrix.system == 'msys2'
@@ -206,6 +228,8 @@ jobs:
           with github_output.open("a+") as f:
             f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
 
+# Python setup
+
       - name: '🟦 Setup MSYS2 for ${{ matrix.runtime }}'
         if: matrix.system == 'msys2'
         uses: msys2/setup-msys2@v2
@@ -222,6 +246,8 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+# Python Dependency steps
+
       - name: 🔧 Install wheel,tomli and pip dependencies (native)
         if: matrix.system != 'msys2'
         run: |
@@ -236,6 +262,18 @@ jobs:
           else
             python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
           fi
+
+# Before scripts
+
+      - name: 🍎 macOS before scripts
+        if: matrix.system == 'ubuntu' && inputs.macos_before_script != ''
+        run: ${{ inputs.macos_before_script }}
+
+      - name: 🐧 Ubuntu before scripts
+        if: matrix.system == 'ubuntu' && inputs.ubuntu_before_script != ''
+        run: ${{ inputs.ubuntu_before_script }}
+
+# Read pyproject.toml
 
       - name: 🔁 Extract configurations from pyproject.toml
         id: getVariables
@@ -294,6 +332,8 @@ jobs:
 
           print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
 
+# Run pytests
+
       - name: ✅ Run unit tests (Ubuntu/macOS)
         if: matrix.system != 'windows'
         run: |
@@ -342,6 +382,8 @@ jobs:
         run: |
           coverage html --data-file=.coverage -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
           rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
+
+# Upload artifacts
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.unittest_xml_artifact != ''
