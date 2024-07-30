@@ -64,7 +64,12 @@ on:
         required: false
         default: ''
         type: string
-      ucrt64_before_scripts:
+      mingw64_before_script:
+        description: 'Scripts to execute before pytest on Windows within MSYS2 MinGW64.'
+        required: false
+        default: ''
+        type: string
+      ucrt64_before_script:
         description: 'Scripts to execute before pytest on Windows within MSYS2 UCRT64.'
         required: false
         default: ''
@@ -287,7 +292,13 @@ jobs:
         if: matrix.system == 'ubuntu' && inputs.ubuntu_before_script != ''
         run: ${{ inputs.ubuntu_before_script }}
 
-      - name: 🐧 UCRT64 before scripts
+      # Windows before script
+
+      - name: 🪟🟦 MinGW64 before scripts
+        if: matrix.system == 'msys2' && matrix.runtime == 'MINGW64' && inputs.mingw64_before_script != ''
+        run: ${{ inputs.mingw64_before_script }}
+
+      - name: 🪟🟨 UCRT64 before scripts
         if: matrix.system == 'msys2' && matrix.runtime == 'UCRT64' && inputs.ucrt64_before_script != ''
         run: ${{ inputs.ucrt64_before_script }}
 
