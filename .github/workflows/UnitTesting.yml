@@ -275,7 +275,7 @@ jobs:
 # Before scripts
 
       - name: 🍎 macOS before scripts
-        if: matrix.system == 'ubuntu' && inputs.macos_before_script != ''
+        if: matrix.system == 'macos' && inputs.macos_before_script != ''
         run: ${{ inputs.macos_before_script }}
 
       - name: 🐧 Ubuntu before scripts
