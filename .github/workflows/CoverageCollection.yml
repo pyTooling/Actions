@@ -63,7 +63,7 @@ jobs:
 
   Coverage:
     name: 📈 Collect Coverage Data using Python ${{ inputs.python_version }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: ⏬ Checkout repository

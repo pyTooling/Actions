@@ -39,7 +39,7 @@ on:
 jobs:
   PublishTestResults:
     name: 📊 Publish Test Results
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: always()
 
     steps:

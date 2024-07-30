@@ -34,7 +34,7 @@ on:
 jobs:
   BuildTheDocs:
     name: 📓 Run BuildTheDocs
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: ⏬ Checkout repository
