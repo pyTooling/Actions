@@ -67,9 +67,10 @@ data = {
 	},
 	# Runner systems (runner images) supported by GitHub Actions
 	"sys": {
-		"ubuntu": {"icon": "🐧", "runs-on": "ubuntu-24.04", "shell": "bash", "name": "Linux (x86-64)"},
+		"ubuntu": {"icon": "🐧", "runs-on": "ubuntu-2024.04", "shell": "bash", "name": "Linux (x86-64)"},
 		"windows": {"icon": "🪟", "runs-on": "windows-latest", "shell": "pwsh", "name": "Windows (x86-64)"},
-		"macos": {"icon": "🍎", "runs-on": "macos-latest", "shell": "bash", "name": "MacOS (x86-64)"},
+		"macos": {"icon": "🍎", "runs-on": "macos-latest-large", "shell": "bash", "name": "macOS (x86-64)"},
+		"macos-arm": {"icon": "🍏", "runs-on": "macos-latest", "shell": "bash", "name": "macOS (arm64)"},
 	},
 	# Runtimes provided by MSYS2
 	"runtime": {

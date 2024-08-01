@@ -78,10 +78,10 @@ for dependency in dependencies:
 				pacboyPackages.add(rewrite)
 
 # Write jobs to special file
-# github_output = Path(getenv("GITHUB_OUTPUT"))
-# print(f"GITHUB_OUTPUT: {github_output}")
-# with github_output.open("a+") as f:
-# 	f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
+github_output = Path(getenv("GITHUB_OUTPUT"))
+print(f"GITHUB_OUTPUT: {github_output}")
+with github_output.open("a+") as f:
+	f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
 
 print(f"GITHUB_OUTPUT:")
 print(f"pacboy_packages={' '.join(pacboyPackages)}\n")
