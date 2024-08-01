@@ -53,7 +53,7 @@ jobs:
 
       - name: 🔧 Install junitparser
         run: |
-          python -m pip install --disable-pip-version-check -U pyEDAA.Reports
+          python -m pip install --disable-pip-version-check --break-system-packages -U pyEDAA.Reports
 
       - name: Move JUnit files and collect them all to junit/
         run: |
