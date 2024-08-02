@@ -42,7 +42,7 @@ on:
       system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu windows macos mingw64 ucrt64'
+        default: 'ubuntu windows macos-arm mingw64 ucrt64'
         type: string
       include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'
