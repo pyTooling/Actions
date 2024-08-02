@@ -368,7 +368,6 @@ jobs:
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
           export PYTHONPATH=$(pwd)
-          export DYLD_LIBRARY_PATH=$(brew --prefix llvm@15)/lib
 
           cd "${{ inputs.root_directory || '.' }}"
           [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=report/unit/TestReportSummary.xml' || unset PYTEST_ARGS
