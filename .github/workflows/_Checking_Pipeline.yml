@@ -89,7 +89,7 @@ jobs:
       - UnitTesting
       - PlatformTesting
     with:
-      additional_merge_args: '-d --pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit;;reduce-depth:pytest.tests.platform"'
+      additional_merge_args: '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit;reduce-depth:pytest.tests.platform"'
 
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@r1

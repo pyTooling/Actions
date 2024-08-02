@@ -71,7 +71,7 @@ jobs:
     steps:
       - name: Install dependencies
         shell: bash
-        run: pip install pyTooling
+        run: pip install --disable-pip-version-check --break-system-packages pyTooling
       # Params_Default
       - name: Checking results from 'Params_Default'
         run: |
