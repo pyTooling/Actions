@@ -2,10 +2,11 @@ from json import dumps as json_dumps
 from os import getenv
 from pathlib import Path
 from textwrap import dedent
+from typing import Iterable
 
 name = "example".strip()
 python_version = "3.12".strip()
-systems = "ubuntu windows macos mingw64 ucrt64".strip()
+systems = "ubuntu windows macos-arm mingw64 ucrt64".strip()
 versions = "3.8 3.9 3.10 3.11 3.12".strip()
 include_list = "".strip()
 exclude_list = "".strip()
@@ -93,26 +94,46 @@ print(f"disabled ({len(disabled)}):")
 for disable in disabled:
 	print(f"- {disable}")
 
+
+def match(combination: str, pattern: str) -> bool:
+	system, version = combination.split(":")
+	sys, ver = pattern.split(":")
+
+	if sys == "*":
+		return (ver == "*") or (version == ver)
+	elif system == sys:
+		return (ver == "*") or (version == ver)
+	else:
+		return False
+
+
+def notIn(combination: str, patterns: Iterable[str]) -> bool:
+	for pattern in patterns:
+		if match(combination, pattern):
+			return False
+
+	return True
+
 combinations = [
 								 (system, version)
 								 for system in systems
 								 if system in data["sys"]
 								 for version in versions
 								 if version in data["python"]
-										and f"{system}:{version}" not in excludes
-										and f"{system}:{version}" not in disabled
+										and notIn(f"{system}:{version}", excludes)
+										and notIn(f"{system}:{version}", disabled)
 							 ] + [
 								 (system, currentMSYS2Version)
 								 for system in systems
 								 if system in data["runtime"]
-										and f"{system}:{currentMSYS2Version}" not in excludes
-										and f"{system}:{currentMSYS2Version}" not in disabled
+										and notIn(f"{system}:{currentMSYS2Version}", excludes)
+										and notIn(f"{system}:{currentMSYS2Version}", disabled)
 							 ] + [
 								 (system, version)
 								 for system, version in includes
 								 if system in data["sys"]
 										and version in data["python"]
-										and f"{system}:{version}" not in disabled
+										and notIn(f"{system}:{version}", disabled)
 							 ]
 print(f"Combinations ({len(combinations)}):")
 for system, version in combinations:
