@@ -112,6 +112,7 @@ jobs:
           from os import getenv
           from pathlib import Path
           from textwrap import dedent
+          from typing import Iterable
 
           name =           "${{ inputs.name }}".strip()
           python_version = "${{ inputs.python_version }}".strip()
