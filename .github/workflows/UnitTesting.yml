@@ -55,7 +55,12 @@ on:
         default: ''
         type: string
       macos_before_script:
-        description: 'Scripts to execute before pytest on macOS.'
+        description: 'Scripts to execute before pytest on macOS (Intel).'
+        required: false
+        default: ''
+        type: string
+      macos_arm_before_script:
+        description: 'Scripts to execute before pytest on macOS (ARM).'
         required: false
         default: ''
         type: string
@@ -145,7 +150,7 @@ jobs:
 
 # Package Manager steps
       - name: 🔧 Install homebrew dependencies on macOS
-        if: matrix.system == 'macos' && inputs.brew != ''
+        if: ( matrix.system == 'macos' || matrix.system == 'macos-arm' ) && inputs.brew != ''
         run: brew install ${{ inputs.brew }}
 
       - name: 🔧 Install apt dependencies on Ubuntu
@@ -284,9 +289,13 @@ jobs:
 
 # Before scripts
 
-      - name: 🍎 macOS before scripts
+      - name: 🍎 macOS (Intel) before scripts
         if: matrix.system == 'macos' && inputs.macos_before_script != ''
         run: ${{ inputs.macos_before_script }}
+
+      - name: 🍏 macOS (ARM) before scripts
+        if: matrix.system == 'macos-arm' && inputs.macos_arm_before_script != ''
+        run: ${{ inputs.macos_arm_before_script }}
 
       - name: 🐧 Ubuntu before scripts
         if: matrix.system == 'ubuntu' && inputs.ubuntu_before_script != ''
