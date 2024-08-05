@@ -155,7 +155,9 @@ jobs:
 
       - name: 🔧 Install apt dependencies on Ubuntu
         if: matrix.system == 'ubuntu' && inputs.apt != ''
-        run: sudo apt-get install -y --no-install-recommends ${{ inputs.apt }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ${{ inputs.apt }}
 
 # Compute Dependencies for MSYS2 steps
 
