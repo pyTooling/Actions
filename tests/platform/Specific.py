@@ -28,12 +28,12 @@
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
 #
-from unittest         import TestCase
+from unittest           import TestCase
 
-from pytest           import mark
-from pyTooling.Common import CurrentPlatform
+from pytest             import mark
+from pyTooling.Platform import CurrentPlatform
 
-from pyDummy          import Application
+from pyDummy            import Application
 
 
 if __name__ == "__main__":  # pragma: no cover
