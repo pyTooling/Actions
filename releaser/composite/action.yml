@@ -45,7 +45,9 @@ runs:
   steps:
 
   - shell: bash
-    run: pip install --disable-pip-version-check PyGithub --progress-bar off --break-system-packages
+    run: |
+      [ "$(source /etc/os-release && echo $VERSION_ID)" == "24.04" ] && UBUNTU_2404_ARGS='--break-system-packages' || unset UBUNTU_2404_ARGS
+      pip install --disable-pip-version-check --progress-bar off $UBUNTU_2404_ARGS PyGithub
 
   - shell: bash
     run: '''${{ github.action_path }}/../releaser.py'''
