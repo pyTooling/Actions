@@ -146,6 +146,9 @@ jobs:
           expectedPythons = ["3.9", "3.10", "pypy-3.8", "pypy-3.9"]
           expectedSystems = ["ubuntu", "windows", "macos"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.11", "ucrt64:3.11"]
+          expectedJobs.remove("macos:3.9")
+          expectedJobs.remove("macos:pypy-3.8")
+          expectedJobs.remove("macos:pypy-3.9")
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
