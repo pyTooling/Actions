@@ -84,6 +84,8 @@ jobs:
           expectedPythons = ["3.8", "3.9", "3.10", "3.11", "3.12"]
           expectedSystems = ["ubuntu", "windows", "macos"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.11", "ucrt64:3.11"]
+          expectedJobs.remove("macos:3.8")
+          expectedJobs.remove("macos:3.9")
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -112,8 +114,12 @@ jobs:
             errors += 1
           if len(actualPythonJobs) != len(expectedJobs):
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
+            print("Actual jobs:")
             for job in actualPythonJobs:
               print(f"  {job['system']}:{job['python']}")
+            print("Expected jobs:")
+            for job in expectedJobs:
+              print(f"  {job}")
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
@@ -140,6 +146,9 @@ jobs:
           expectedPythons = ["3.9", "3.10", "pypy-3.8", "pypy-3.9"]
           expectedSystems = ["ubuntu", "windows", "macos"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.11", "ucrt64:3.11"]
+          expectedJobs.remove("macos:3.9")
+          expectedJobs.remove("macos:pypy-3.8")
+          expectedJobs.remove("macos:pypy-3.9")
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -168,8 +177,12 @@ jobs:
             errors += 1
           if len(actualPythonJobs) != len(expectedJobs):
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
+            print("Actual jobs:")
             for job in actualPythonJobs:
               print(f"  {job['system']}:{job['python']}")
+            print("Expected jobs:")
+            for job in expectedJobs:
+              print(f"  {job}")
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
@@ -224,8 +237,12 @@ jobs:
             errors += 1
           if len(actualPythonJobs) != len(expectedJobs):
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
+            print("Actual jobs:")
             for job in actualPythonJobs:
               print(f"  {job['system']}:{job['python']}")
+            print("Expected jobs:")
+            for job in expectedJobs:
+              print(f"  {job}")
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
@@ -280,8 +297,12 @@ jobs:
             errors += 1
           if len(actualPythonJobs) != len(expectedJobs):
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
+            print("Actual jobs:")
             for job in actualPythonJobs:
               print(f"  {job['system']}:{job['python']}")
+            print("Expected jobs:")
+            for job in expectedJobs:
+              print(f"  {job}")
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
@@ -336,8 +357,12 @@ jobs:
             errors += 1
           if len(actualPythonJobs) != len(expectedJobs):
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
+            print("Actual jobs:")
             for job in actualPythonJobs:
               print(f"  {job['system']}:{job['python']}")
+            print("Expected jobs:")
+            for job in expectedJobs:
+              print(f"  {job}")
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
@@ -392,8 +417,12 @@ jobs:
             errors += 1
           if len(actualPythonJobs) != len(expectedJobs):
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
+            print("Actual jobs:")
             for job in actualPythonJobs:
               print(f"  {job['system']}:{job['python']}")
+            print("Expected jobs:")
+            for job in expectedJobs:
+              print(f"  {job}")
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
@@ -448,8 +477,12 @@ jobs:
             errors += 1
           if len(actualPythonJobs) != len(expectedJobs):
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
+            print("Actual jobs:")
             for job in actualPythonJobs:
               print(f"  {job['system']}:{job['python']}")
+            print("Expected jobs:")
+            for job in expectedJobs:
+              print(f"  {job}")
             errors += 1
           if len(actualArtifactNames) != len(expectedArtifacts):
             print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
