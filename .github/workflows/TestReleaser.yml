@@ -41,7 +41,7 @@ jobs:
 
 
   Image:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       DOCKER_BUILDKIT: 1
     steps:
@@ -60,7 +60,7 @@ jobs:
 
 
   Composite:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
 
@@ -120,7 +120,7 @@ jobs:
     needs:
       - Image
       - Composite
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
 

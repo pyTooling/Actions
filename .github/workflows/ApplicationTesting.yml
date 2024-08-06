@@ -215,7 +215,7 @@ jobs:
           ls -l install
           python -m pip install --disable-pip-version-check -U install/*.whl
 
-      - name: ☑ Run application tests (Ubuntu/macOS)
+      - name: ✅ Run application tests (Ubuntu/macOS)
         if: matrix.system != 'windows'
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
@@ -230,7 +230,7 @@ jobs:
             python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
           fi
 
-      - name: ☑ Run application tests (Windows)
+      - name: ✅ Run application tests (Windows)
         if: matrix.system == 'windows'
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"

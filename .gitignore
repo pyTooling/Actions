@@ -13,6 +13,7 @@ coverage.xml
 
 # pytest
 /report/unit
+/tests/*.github
 
 # setuptools
 /build/**/*.*

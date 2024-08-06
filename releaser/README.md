@@ -75,7 +75,7 @@ on:
 
 jobs:
   mwe:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
 
     # Clone repository
@@ -156,7 +156,7 @@ For prototyping purposes, the following job might be useful:
 ```yml
   Release:
     name: '📦 Release'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - ...
     if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || contains(github.ref, 'refs/tags/'))
