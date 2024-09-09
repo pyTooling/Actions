@@ -51,14 +51,15 @@ jobs:
         with:
           path: artifacts
 
-      - name: 🔧 Install junitparser
+      - name: 🔧 Install pyEDAA.Reports (JUunit Parser and Merger)
         run: |
           python -m pip install --disable-pip-version-check --break-system-packages -U pyEDAA.Reports
 
       - name: Move JUnit files and collect them all to junit/
         run: |
           mkdir -p junit
-          find . -type f -path "*artifacts*TestReportSummary-XML*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
+          ls -lAh artifacts/*/*.xml
+          find artifacts/ -type f -path "*TestReportSummary*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
           tree -a junit
 
       - name: 🔁 Merge JUnit Unit Test Summaries
