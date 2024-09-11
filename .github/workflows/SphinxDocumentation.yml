@@ -121,7 +121,9 @@ jobs:
               xmlFile       = Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
               jsonFile      = Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
             else:
-              print(f"File '{pyProjectFile}' not found and no '.coveragerc' file specified.")
+              print(f"File '{pyProjectFile}' not found.")
+              print(f"::error title=FileNotFoundError::File '{pyProjectFile}' not found.")
+              exit(1)
 
           # Read output paths from '.coveragerc' file
           elif len(coverageRC) > 0:
@@ -135,6 +137,8 @@ jobs:
               jsonFile      = Path(coverageRCSettings["json"]["output"])
             else:
               print(f"File '{coverageRCFile}' not found.")
+              print(f"::error title=FileNotFoundError::File '{coverageRCFile}' not found.")
+              exit(1)
 
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))

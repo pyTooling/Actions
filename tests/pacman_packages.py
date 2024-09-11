@@ -25,7 +25,11 @@ def loadRequirementsFile(requirementsFile: Path):
 requirements = "-r ../tests/requirements.txt"
 if requirements.startswith("-r"):
 	requirementsFile = Path(requirements[2:].lstrip())
-	dependencies = loadRequirementsFile(requirementsFile)
+	try:
+		dependencies = loadRequirementsFile(requirementsFile)
+	except FileNotFoundError as ex:
+		print(f"::error title=FileNotFound::{ex}")
+		exit(1)
 else:
 	dependencies = [req.strip() for req in requirements.split(" ")]
 
