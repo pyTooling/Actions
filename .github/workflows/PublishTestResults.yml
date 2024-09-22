@@ -35,6 +35,11 @@ on:
         required: false
         default: '"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'
         type: string
+      report_title:
+        description: 'Title of the summary report in the pipeline''s sidebar'
+        required: false
+        default: 'Unit Test Results'
+        type: string
 
 jobs:
   PublishTestResults:
@@ -71,7 +76,7 @@ jobs:
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v1
         with:
-          name: Unit Test Results
+          name: ${{ inputs.report_title }}
           path: Unittesting.xml
           reporter: java-junit
 
