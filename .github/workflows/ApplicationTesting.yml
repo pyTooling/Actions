@@ -133,21 +133,25 @@ jobs:
             dependencies = [req.strip() for req in requirements.split(" ")]
 
           packages = {
-            "coverage":    "python-coverage:p",
-            "igraph":      "igraph:p",
-            "jinja2":      "python-markupsafe:p",
-            "lxml":        "python-lxml:p",
-            "numpy":       "python-numpy:p",
-            "markupsafe":  "python-markupsafe:p",
-            "pip":         "python-pip:p",
-            "ruamel.yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-            "sphinx":      "python-markupsafe:p",
-            "tomli":       "python-tomli:p",
-            "wheel":       "python-wheel:p",
+            "coverage":            "python-coverage:p",
+            "docstr_coverage":     "python-pyyaml:p",
+            "igraph":              "igraph:p",
+            "jinja2":              "python-markupsafe:p",
+            "lxml":                "python-lxml:p",
+            "numpy":               "python-numpy:p",
+            "markupsafe":          "python-markupsafe:p",
+            "pip":                 "python-pip:p",
+            "pyyaml":              "python-pyyaml:p",
+            "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+            "sphinx":              "python-markupsafe:p",
+            "tomli":               "python-tomli:p",
+            "wheel":               "python-wheel:p",
+            "pyEDAA.ProjectModel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
+            "pyEDAA.Reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
           }
           subPackages = {
             "pytooling": {
-              "yaml":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+              "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             }
           }
 
