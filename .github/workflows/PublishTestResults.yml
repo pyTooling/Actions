@@ -30,11 +30,21 @@ on:
         required: false
         default: ''
         type: string
+      additional_merge_args:
+        description: 'Additional merging arguments.'
+        required: false
+        default: '"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'
+        type: string
+      report_title:
+        description: 'Title of the summary report in the pipeline''s sidebar'
+        required: false
+        default: 'Unit Test Results'
+        type: string
 
 jobs:
   PublishTestResults:
     name: 📊 Publish Test Results
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: always()
 
     steps:
@@ -46,37 +56,28 @@ jobs:
         with:
           path: artifacts
 
-      - name: 🔧 Install junitparser
+      - name: 🔧 Install pyEDAA.Reports (JUunit Parser and Merger)
         run: |
-          python -m pip install --disable-pip-version-check -U junitparser
+          python -m pip install --disable-pip-version-check --break-system-packages -U pyEDAA.Reports
 
       - name: Move JUnit files and collect them all to junit/
         run: |
           mkdir -p junit
-          find . -type f -path "*artifacts*UnitTestReportSummary*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
+          ls -lAh artifacts/*/*.xml
+          find artifacts/ -type f -path "*TestReportSummary*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
           tree -a junit
 
       - name: 🔁 Merge JUnit Unit Test Summaries
-        shell: python
         run: |
-          from pathlib     import Path
-          from junitparser import JUnitXml
-
-          junitDirectory = Path("junit")
-          junitXml = None
-          for file in junitDirectory.iterdir():
-            if junitXml is None:
-              junitXml = JUnitXml.fromfile(file)
-            else:
-              junitXml += JUnitXml.fromfile(file)
-
-          junitXml.write(junitDirectory / "merged.xml")
+          pyedaa-reports -v unittest "--merge=pytest-junit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=ant-junit:Unittesting.xml"
+          echo "cat Unittesting.xml"
+          cat Unittesting.xml
 
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v1
         with:
-          name: Unit Test Results
-          path: junit/merged.xml
+          name: ${{ inputs.report_title }}
+          path: Unittesting.xml
           reporter: java-junit
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
@@ -84,6 +85,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.merged_junit_artifact }}
-          path: junit/merged.xml
+          path: Unittesting.xml
           if-no-files-found: error
           retention-days: 1

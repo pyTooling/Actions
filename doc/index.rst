@@ -100,6 +100,9 @@ References
 
 - `hdl/containers#48 <https://github.com/hdl/containers/issues/48>`__
 
+
+.. _CONTRIBUTORS:
+
 Contributors
 ************
 
@@ -107,6 +110,8 @@ Contributors
 * `Unai Martinez-Corral <https://GitHub.com/umarcor>`__ (Maintainer)
 * `and more... <https://GitHub.com/pyTooling/Actions/graphs/contributors>`__
 
+
+.. _LICENSE:
 
 License
 *******

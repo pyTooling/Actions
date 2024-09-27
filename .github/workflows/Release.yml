@@ -29,7 +29,7 @@ jobs:
 
   Release:
     name: 📝 Create 'Release Page' on GitHub
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: 🔁 Extract Git tag from GITHUB_REF
@@ -55,12 +55,34 @@ jobs:
             **Automated Release created on: ${{ steps.getVariables.outputs.datetime }}**
 
             # New Features
+
+            * tbd
             * tbd
 
             # Changes
+
+            * tbd
             * tbd
 
             # Bug Fixes
+
             * tbd
-          draft: false
+            * tbd
+
+            # Documentation
+
+            * tbd
+            * tbd
+
+            # Unit Tests
+
+            * tbd
+            * tbd
+
+            ----------
+            # Related Issues and Pull-Requests
+
+            * tbd
+            * tbd
+          draft: true
           prerelease: false

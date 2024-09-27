@@ -42,7 +42,7 @@ on:
       system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu windows macos mingw64 ucrt64'
+        default: 'ubuntu windows macos-arm mingw64 ucrt64'
         type: string
       include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'
@@ -58,6 +58,26 @@ on:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
         required: false
         default: ''
+        type: string
+      ubuntu_image:
+        description: 'The used GitHub Action image for Ubuntu based jobs.'
+        required: false
+        default: 'ubuntu-24.04'
+        type: string
+      windows_image:
+        description: 'The used GitHub Action image for Windows based jobs.'
+        required: false
+        default: 'windows-latest'
+        type: string
+      macos_intel_image:
+        description: 'The used GitHub Action image for macOS (Intel x86-64) based jobs.'
+        required: false
+        default: 'macos-latest-large'
+        type: string
+      macos_arm_image:
+        description: 'The used GitHub Action image for macOS (ARM arm64) based jobs.'
+        required: false
+        default: 'macos-latest'
         type: string
 
     outputs:
@@ -76,7 +96,7 @@ on:
 
 jobs:
   Parameters:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       python_version:   ${{ steps.params.outputs.python_version }}
       python_jobs:      ${{ steps.params.outputs.python_jobs }}
@@ -91,8 +111,8 @@ jobs:
           from json import dumps as json_dumps
           from os import getenv
           from pathlib import Path
-          from pprint import pprint
           from textwrap import dedent
+          from typing import Iterable
 
           name =           "${{ inputs.name }}".strip()
           python_version = "${{ inputs.python_version }}".strip()
@@ -138,7 +158,7 @@ jobs:
           if currentAlphaVersion in versions:
             print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
           for disable in disabled:
-            print(f"::warning title=Disabled Python Job::System '{disable}' temporary disabled.")
+            print(f"::warning title=Disabled Python Job::System '{disable}' temporarily disabled.")
 
           # see https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
           data = {
@@ -158,9 +178,10 @@ jobs:
             },
             # Runner systems (runner images) supported by GitHub Actions
             "sys": {
-              "ubuntu":  { "icon": "🐧", "runs-on": "ubuntu-latest",  "shell": "bash", "name": "Linux (x86-64)",   "minPy": (3,  7)},
-              "windows": { "icon": "🪟", "runs-on": "windows-latest", "shell": "pwsh", "name": "Windows (x86-64)", "minPy": (3,  7)},
-              "macos":   { "icon": "🍎", "runs-on": "macos-latest",   "shell": "bash", "name": "MacOS (x86-64)",   "minPy": (3, 10)},
+              "ubuntu":    { "icon": "🐧", "runs-on": "${{ inputs.ubuntu_image }}",      "shell": "bash", "name": "Linux (x86-64)"   },
+              "windows":   { "icon": "🪟", "runs-on": "${{ inputs.windows_image }}",     "shell": "pwsh", "name": "Windows (x86-64)" },
+              "macos":     { "icon": "🍎", "runs-on": "${{ inputs.macos_intel_image }}", "shell": "bash", "name": "macOS (x86-64)"   },
+              "macos-arm": { "icon": "🍏", "runs-on": "${{ inputs.macos_arm_image }}",   "shell": "bash", "name": "macOS (arm64)"    },
             },
             # Runtimes provided by MSYS2
             "runtime": {
@@ -183,9 +204,23 @@ jobs:
           for disable in disabled:
             print(f"- {disable}")
 
-          def toVersion(value):
-            major, minor = value.split(".")
-            return int(major[-1]), int(minor)
+          def match(combination: str, pattern: str) -> bool:
+              system, version = combination.split(":")
+              sys, ver = pattern.split(":")
+
+              if sys == "*":
+                  return (ver == "*") or (version == ver)
+              elif system == sys:
+                  return (ver == "*") or (version == ver)
+              else:
+                  return False
+
+          def notIn(combination: str, patterns: Iterable[str]) -> bool:
+              for pattern in patterns:
+                  if match(combination, pattern):
+                      return False
+
+              return True
 
           combinations = [
             (system, version)
@@ -193,22 +228,20 @@ jobs:
               if system in data["sys"]
             for version in versions
               if version in data["python"]
-              and toVersion(version) >= data["sys"][system]["minPy"]
-              and f"{system}:{version}" not in excludes
-              and f"{system}:{version}" not in disabled
+              and notIn(f"{system}:{version}", excludes)
+              and notIn(f"{system}:{version}", disabled)
           ] + [
             (system, currentMSYS2Version)
             for system in systems
               if system in data["runtime"]
-              and f"{system}:{currentMSYS2Version}" not in excludes
-              and f"{system}:{currentMSYS2Version}" not in disabled
+              and notIn(f"{system}:{currentMSYS2Version}", excludes)
+              and notIn(f"{system}:{currentMSYS2Version}", disabled)
           ] + [
             (system, version)
             for system, version in includes
               if system in data["sys"]
               and version in data["python"]
-              and toVersion(version) >= data["sys"][system]["minPy"]
-              and f"{system}:{version}" not in disabled
+              and notIn(f"{system}:{version}", disabled)
           ]
           print(f"Combinations ({len(combinations)}):")
           for system, version in combinations:
