@@ -29,18 +29,53 @@ on:
         description: 'JSON list with environment fields, telling the system and Python versions to run tests with.'
         required: true
         type: string
+      apt:
+        description: 'Ubuntu dependencies to be installed through apt.'
+        required: false
+        default: ''
+        type: string
+      brew:
+        description: 'macOS dependencies to be installed through brew.'
+        required: false
+        default: ''
+        type: string
+      pacboy:
+        description: 'MSYS2 dependencies to be installed through pacboy (pacman).'
+        required: false
+        default: ''
+        type: string
       requirements:
         description: 'Python dependencies to be installed through pip.'
         required: false
         default: '-r tests/requirements.txt'
         type: string
-      pacboy:
-        description: 'MSYS2 dependencies to be installed through pacboy (pacman).'
-        required: false
-        default: ""
-        type: string
       mingw_requirements:
         description: 'Override Python dependencies to be installed through pip on MSYS2 (MINGW64) only.'
+        required: false
+        default: ''
+        type: string
+      macos_before_script:
+        description: 'Scripts to execute before pytest on macOS (Intel).'
+        required: false
+        default: ''
+        type: string
+      macos_arm_before_script:
+        description: 'Scripts to execute before pytest on macOS (ARM).'
+        required: false
+        default: ''
+        type: string
+      ubuntu_before_script:
+        description: 'Scripts to execute before pytest on Ubuntu.'
+        required: false
+        default: ''
+        type: string
+      mingw64_before_script:
+        description: 'Scripts to execute before pytest on Windows within MSYS2 MinGW64.'
+        required: false
+        default: ''
+        type: string
+      ucrt64_before_script:
+        description: 'Scripts to execute before pytest on Windows within MSYS2 UCRT64.'
         required: false
         default: ''
         type: string
@@ -113,6 +148,19 @@ jobs:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
 
+# Package Manager steps
+      - name: 🔧 Install homebrew dependencies on macOS
+        if: ( matrix.system == 'macos' || matrix.system == 'macos-arm' ) && inputs.brew != ''
+        run: brew install ${{ inputs.brew }}
+
+      - name: 🔧 Install apt dependencies on Ubuntu
+        if: matrix.system == 'ubuntu' && inputs.apt != ''
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ${{ inputs.apt }}
+
+# Compute Dependencies for MSYS2 steps
+
       - name: 🔧 Install dependencies (system Python for Python shell)
         if: matrix.system == 'msys2'
         shell: pwsh
@@ -149,28 +197,34 @@ jobs:
           requirements = "${{ inputs.requirements }}"
           if requirements.startswith("-r"):
             requirementsFile = Path(requirements[2:].lstrip())
-            dependencies = loadRequirementsFile(requirementsFile)
+            try:
+              dependencies = loadRequirementsFile(requirementsFile)
+            except FileNotFoundError as ex:
+              print(f"::error title=FileNotFoundError::{ex}")
+              exit(1)
           else:
             dependencies = [req.strip() for req in requirements.split(" ")]
 
           packages = {
-            "coverage":    "python-coverage:p",
-            "igraph":      "igraph:p",
-            "jinja2":      "python-markupsafe:p",
-            "lxml":        "python-lxml:p",
-            "numpy":       "python-numpy:p",
-            "markupsafe":  "python-markupsafe:p",
-            "pip":         "python-pip:p",
-            "ruamel.yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-            "sphinx":      "python-markupsafe:p",
-            "tomli":       "python-tomli:p",
-            "wheel":       "python-wheel:p",
+            "coverage":            "python-coverage:p",
+            "docstr_coverage":     "python-pyyaml:p",
+            "igraph":              "igraph:p",
+            "jinja2":              "python-markupsafe:p",
+            "lxml":                "python-lxml:p",
+            "numpy":               "python-numpy:p",
+            "markupsafe":          "python-markupsafe:p",
+            "pip":                 "python-pip:p",
+            "pyyaml":              "python-pyyaml:p",
+            "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+            "sphinx":              "python-markupsafe:p",
+            "tomli":               "python-tomli:p",
+            "wheel":               "python-wheel:p",
             "pyEDAA.ProjectModel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
             "pyEDAA.Reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
           }
           subPackages = {
             "pytooling": {
-              "yaml":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+              "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             },
           }
 
@@ -206,6 +260,8 @@ jobs:
           with github_output.open("a+") as f:
             f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
 
+# Python setup
+
       - name: '🟦 Setup MSYS2 for ${{ matrix.runtime }}'
         if: matrix.system == 'msys2'
         uses: msys2/setup-msys2@v2
@@ -222,6 +278,8 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+# Python Dependency steps
+
       - name: 🔧 Install wheel,tomli and pip dependencies (native)
         if: matrix.system != 'msys2'
         run: |
@@ -236,6 +294,32 @@ jobs:
           else
             python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
           fi
+
+# Before scripts
+
+      - name: 🍎 macOS (Intel) before scripts
+        if: matrix.system == 'macos' && inputs.macos_before_script != ''
+        run: ${{ inputs.macos_before_script }}
+
+      - name: 🍏 macOS (ARM) before scripts
+        if: matrix.system == 'macos-arm' && inputs.macos_arm_before_script != ''
+        run: ${{ inputs.macos_arm_before_script }}
+
+      - name: 🐧 Ubuntu before scripts
+        if: matrix.system == 'ubuntu' && inputs.ubuntu_before_script != ''
+        run: ${{ inputs.ubuntu_before_script }}
+
+      # Windows before script
+
+      - name: 🪟🟦 MinGW64 before scripts
+        if: matrix.system == 'msys2' && matrix.runtime == 'MINGW64' && inputs.mingw64_before_script != ''
+        run: ${{ inputs.mingw64_before_script }}
+
+      - name: 🪟🟨 UCRT64 before scripts
+        if: matrix.system == 'msys2' && matrix.runtime == 'UCRT64' && inputs.ucrt64_before_script != ''
+        run: ${{ inputs.ucrt64_before_script }}
+
+# Read pyproject.toml
 
       - name: 🔁 Extract configurations from pyproject.toml
         id: getVariables
@@ -266,7 +350,9 @@ jobs:
               xmlFile       = Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
               jsonFile      = Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
             else:
-              print(f"File '{pyProjectFile}' not found and no '.coveragerc' file specified.")
+              print(f"File '{pyProjectFile}' not found.")
+              print(f"::error title=FileNotFoundError::File '{pyProjectFile}' not found.")
+              exit(1)
 
           # Read output paths from '.coveragerc' file
           elif len(coverageRC) > 0:
@@ -280,6 +366,8 @@ jobs:
               jsonFile      = Path(coverageRCSettings["json"]["output"])
             else:
               print(f"File '{coverageRCFile}' not found.")
+              print(f"::error title=FileNotFoundError::File '{coverageRCFile}' not found.")
+              exit(1)
 
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))
@@ -294,7 +382,9 @@ jobs:
 
           print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
 
-      - name: ☑ Run unit tests (Ubuntu/macOS)
+# Run pytests
+
+      - name: ✅ Run unit tests (Ubuntu/macOS)
         if: matrix.system != 'windows'
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
@@ -310,7 +400,7 @@ jobs:
             python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           fi
 
-      - name: ☑ Run unit tests (Windows)
+      - name: ✅ Run unit tests (Windows)
         if: matrix.system == 'windows'
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
@@ -328,20 +418,26 @@ jobs:
 
       - name: Convert coverage to XML format (Cobertura)
         if: inputs.coverage_xml_artifact != ''
+        continue-on-error: true
         run: coverage xml --data-file=.coverage
 
       - name: Convert coverage to JSON format
         if: inputs.coverage_json_artifact != ''
+        continue-on-error: true
         run: coverage json --data-file=.coverage
 
       - name: Convert coverage to HTML format
         if: inputs.coverage_html_artifact != ''
+        continue-on-error: true
         run: |
           coverage html --data-file=.coverage -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
           rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
 
+# Upload artifacts
+
       - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.unittest_xml_artifact != ''
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.unittest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
@@ -366,6 +462,7 @@ jobs:
         with:
           name: ${{ inputs.coverage_sqlite_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           path: .coverage
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 1
 

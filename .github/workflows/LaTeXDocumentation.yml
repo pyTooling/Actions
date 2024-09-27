@@ -42,7 +42,7 @@ on:
 jobs:
   PDFDocumentation:
     name: 📓 Converting LaTeX Documentation to PDF
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
         uses: actions/download-artifact@v4

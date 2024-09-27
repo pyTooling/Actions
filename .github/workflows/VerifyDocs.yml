@@ -35,7 +35,7 @@ jobs:
 
   VerifyDocs:
     name: 👍 Verify example snippets using Python ${{ inputs.python_version }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: ⏬ Checkout repository
@@ -72,7 +72,7 @@ jobs:
       - name: Print example.py
         run: cat tests/docs/example.py
 
-      - name: ☑ Run example snippet
+      - name: ✅ Run example snippet
         working-directory: tests/docs
         run: |
           python3 example.py

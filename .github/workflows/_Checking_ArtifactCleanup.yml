@@ -36,7 +36,7 @@ jobs:
     name: Package generation
     needs:
       - Params
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Package creation
         run: echo "Package" >> package.txt

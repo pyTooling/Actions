@@ -57,7 +57,7 @@ on:
 jobs:
   PublishCoverageResults:
     name: 📊 Publish Code Coverage Results
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: always()
 
     steps:
@@ -71,7 +71,7 @@ jobs:
 
       - name: 🔧 Install coverage and tomli
         run: |
-          python -m pip install --disable-pip-version-check -U coverage[toml] tomli
+          python -m pip install -U --disable-pip-version-check --break-system-packages coverage[toml] tomli
 
       - name: 🔁 Extract configurations from pyproject.toml
         id: getVariables
@@ -102,7 +102,9 @@ jobs:
               xmlFile       = Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
               jsonFile      = Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
             else:
-              print(f"File '{pyProjectFile}' not found and no '.coveragerc' file specified.")
+              print(f"File '{pyProjectFile}' not found.")
+              print(f"::error title=FileNotFoundError::File '{pyProjectFile}' not found.")
+              exit(1)
 
           # Read output paths from '.coveragerc' file
           elif len(coverageRC) > 0:
@@ -116,6 +118,8 @@ jobs:
               jsonFile      = Path(coverageRCSettings["json"]["output"])
             else:
               print(f"File '{coverageRCFile}' not found.")
+              print(f"::error title=FileNotFoundError::File '{coverageRCFile}' not found.")
+              exit(1)
 
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))
@@ -131,8 +135,10 @@ jobs:
 
       - name: Rename .coverage files and collect them all to coverage/
         run: |
+          ls -lAh artifacts/
+          ls -lAh artifacts/*/.coverage
           mkdir -p coverage
-          find . -type f -path "*artifacts*SQLite*.coverage" -exec sh -c 'cp -v $0 "coverage/$(basename $0).$(basename $(dirname $0))"' {} ';'
+          find artifacts/ -type f -path "*SQLite*.coverage" -exec sh -c 'cp -v $0 "coverage/$(basename $0).$(basename $(dirname $0))"' {} ';'
           tree -a coverage
 
       - name: Combine SQLite files (using Coverage.py)

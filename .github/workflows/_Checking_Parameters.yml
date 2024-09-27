@@ -64,14 +64,14 @@ jobs:
       - Params_Exclude
       - Params_Disable
       - Params_All
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: python
     steps:
       - name: Install dependencies
         shell: bash
-        run: pip install pyTooling
+        run: pip install --disable-pip-version-check --break-system-packages pyTooling
       # Params_Default
       - name: Checking results from 'Params_Default'
         run: |
