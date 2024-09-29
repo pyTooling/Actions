@@ -44,7 +44,7 @@ Complex Example
 
 The following instantiation example creates 3 jobs from the same template, but with differing input parameters. The
 first job `UnitTestingParams` might be used to create a job matrix of unit tests. It creates the cross of default
-systems (Windows, Ubuntu, MacOS, MinGW64, UCRT64) and the given list of Python versions including some mypy versions. In
+systems (Windows, Ubuntu, macOS, MinGW64, UCRT64) and the given list of Python versions including some mypy versions. In
 addition a list of excludes (marked as :deletion:`deletions`) and includes (marked as :addition:`additions`) is handed
 over resulting in the following combinations:
 
@@ -55,7 +55,7 @@ over resulting in the following combinations:
 +------------+-------------+-------------+--------------+--------------+-------------------------+------------+-------------+------------------------------+-------------------------------+
 | Ubuntu 🐧  | ubuntu:3.8  | ubuntu:3.9  | ubuntu:3.10  | ubuntu:3.11  | :addition:`ubuntu:3.12` |            |             | ubuntu:pypy-3.9              | ubuntu:pypy-3.10              |
 +------------+-------------+-------------+--------------+--------------+-------------------------+------------+-------------+------------------------------+-------------------------------+
-| MacOS 🍎   | macos:3.8   | macos:3.9   | macos:3.10   | macos:3.11   | :addition:`macos:3.12`  |            |             | macos:pypy-3.9               | macos:pypy-3.10               |
+| macOS 🍎   | macos:3.8   | macos:3.9   | macos:3.10   | macos:3.11   | :addition:`macos:3.12`  |            |             | macos:pypy-3.9               | macos:pypy-3.10               |
 +------------+-------------+-------------+--------------+--------------+-------------------------+------------+-------------+------------------------------+-------------------------------+
 | MSYS 🟪    |             |             |              |              |                         |            |             |                              |                               |
 +------------+-------------+-------------+--------------+--------------+-------------------------+------------+-------------+------------------------------+-------------------------------+
@@ -197,7 +197,7 @@ Space separated list of systems to run tests on.
 +------+-----------+------------------------------+-----------------------------------------------------------------+
 | 🐧   | Ubuntu    | Ubuntu 22.04 (LTS) (latest)  |                                                                 |
 +------+-----------+------------------------------+-----------------------------------------------------------------+
-| 🍎   | MacOS     | macOS Monterey 12 (latest)   | While this marked latest, macOS Ventura 13 is already provided. |
+| 🍎   | macOS     | macOS Monterey 12 (latest)   | While this marked latest, macOS Ventura 13 is already provided. |
 +------+-----------+------------------------------+-----------------------------------------------------------------+
 | 🟪   | MSYS      |                              |                                                                 |
 +------+-----------+------------------------------+-----------------------------------------------------------------+
