@@ -2,7 +2,7 @@
 requires = [
   "setuptools ~= 75.1",
   "wheel ~= 0.44",
-  "pyTooling ~= 6.6"
+  "pyTooling ~= 6.7"
 ]
 build-backend = "setuptools.build_meta"
 
@@ -21,6 +21,7 @@ namespace_packages = true
 html_report = "report/typing"
 
 [tool.pytest.ini_options]
+addopts = "--tb=native"
 # Don't set 'python_classes = *' otherwise, pytest doesn't search for classes
 # derived from unittest.Testcase
 python_files = "*"
