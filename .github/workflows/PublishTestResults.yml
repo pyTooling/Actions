@@ -69,7 +69,7 @@ jobs:
 
       - name: 🔁 Merge JUnit Unit Test Summaries
         run: |
-          pyedaa-reports -v unittest "--merge=pytest-junit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=ant-junit:Unittesting.xml"
+          pyedaa-reports -v unittest "--merge=pyTest-JUnit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=pyTest-JUnit:Unittesting.xml"
           echo "cat Unittesting.xml"
           cat Unittesting.xml
 
