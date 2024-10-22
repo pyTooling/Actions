@@ -6,54 +6,54 @@ on:
 
 jobs:
   Params_Default:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
     with:
       name: Example
 
   Params_PythonVersions:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
     with:
       name: Example
-      python_version_list: "3.9 3.10 pypy-3.8 pypy-3.9"
+      python_version_list: "3.11 3.12 pypy-3.9 pypy-3.10"
 
   Params_Systems:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
     with:
       name: Example
       system_list: "windows mingw32 mingw64"
 
   Params_Include:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
     with:
       name: Example
-      python_version_list: "3.10"
-      system_list: "ubuntu windows macos"
-      include_list: "ubuntu:3.11 ubuntu:3.12"
+      python_version_list: "3.11"
+      system_list: "ubuntu windows macos macos-arm"
+      include_list: "ubuntu:3.12 ubuntu:3.13"
 
   Params_Exclude:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
     with:
       name: Example
-      python_version_list: "3.10"
-      system_list: "ubuntu windows macos"
-      exclude_list: "windows:3.10 windows:3.11"
+      python_version_list: "3.12"
+      system_list: "ubuntu windows macos macos-arm"
+      exclude_list: "windows:3.12 windows:3.13"
 
   Params_Disable:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
     with:
       name: Example
-      python_version_list: "3.10"
-      system_list: "ubuntu windows macos"
-      disable_list: "windows:3.10 windows:3.11"
+      python_version_list: "3.12"
+      system_list: "ubuntu windows macos macos-arm"
+      disable_list: "windows:3.12 windows:3.13"
 
   Params_All:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r1
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
     with:
       name: Example
-      python_version_list: "3.10 3.11"
-      system_list: "ubuntu windows macos"
-      include_list: "windows:3.8 windows:3.9 windows:3.12"
-      exclude_list: "macos:3.10 macos:3.11"
+      python_version_list: "3.12 3.13"
+      system_list: "ubuntu windows macos macos-arm"
+      include_list: "windows:3.10 windows:3.11 windows:3.13"
+      exclude_list: "macos:3.12 macos:3.13"
 
   Params_Check:
     needs:
@@ -80,12 +80,10 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.12"
-          expectedPythons = ["3.8", "3.9", "3.10", "3.11", "3.12"]
-          expectedSystems = ["ubuntu", "windows", "macos"]
+          expectedPythonVersion = "3.13"
+          expectedPythons = ["3.9", "3.10", "3.11", "3.12", "3.13"]
+          expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.11", "ucrt64:3.11"]
-          expectedJobs.remove("macos:3.8")
-          expectedJobs.remove("macos:3.9")
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -116,7 +114,10 @@ jobs:
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
             print("Actual jobs:")
             for job in actualPythonJobs:
-              print(f"  {job['system']}:{job['python']}")
+              if job['system'] == "msys2":
+                print(f"  {job['runtime'].lower()}:{job['python']}")
+              else:
+                print(f"  {job['system']}:{job['python']}")
             print("Expected jobs:")
             for job in expectedJobs:
               print(f"  {job}")
@@ -142,13 +143,10 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.12"
-          expectedPythons = ["3.9", "3.10", "pypy-3.8", "pypy-3.9"]
-          expectedSystems = ["ubuntu", "windows", "macos"]
+          expectedPythonVersion = "3.13"
+          expectedPythons = ["3.11", "3.12", "pypy-3.9", "pypy-3.10"]
+          expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.11", "ucrt64:3.11"]
-          expectedJobs.remove("macos:3.9")
-          expectedJobs.remove("macos:pypy-3.8")
-          expectedJobs.remove("macos:pypy-3.9")
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -179,7 +177,10 @@ jobs:
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
             print("Actual jobs:")
             for job in actualPythonJobs:
-              print(f"  {job['system']}:{job['python']}")
+              if job['system'] == "msys2":
+                print(f"  {job['runtime'].lower()}:{job['python']}")
+              else:
+                print(f"  {job['system']}:{job['python']}")
             print("Expected jobs:")
             for job in expectedJobs:
               print(f"  {job}")
@@ -205,8 +206,8 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.12"
-          expectedPythons = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+          expectedPythonVersion = "3.13"
+          expectedPythons = ["3.9", "3.10", "3.11", "3.12", "3.13"]
           expectedSystems = ["windows"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw32:3.11", "mingw64:3.11"]
           expectedName =    "Example"
@@ -239,7 +240,10 @@ jobs:
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
             print("Actual jobs:")
             for job in actualPythonJobs:
-              print(f"  {job['system']}:{job['python']}")
+              if job['system'] == "msys2":
+                print(f"  {job['runtime'].lower()}:{job['python']}")
+              else:
+                print(f"  {job['system']}:{job['python']}")
             print("Expected jobs:")
             for job in expectedJobs:
               print(f"  {job}")
@@ -265,9 +269,9 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.12"
-          expectedPythons = ["3.10"]
-          expectedSystems = ["ubuntu", "windows", "macos"]
+          expectedPythonVersion = "3.13"
+          expectedPythons = ["3.12"]
+          expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["ubuntu:3.11", "ubuntu:3.12"]
           expectedName =    "Example"
           expectedArtifacts = {
@@ -299,7 +303,10 @@ jobs:
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
             print("Actual jobs:")
             for job in actualPythonJobs:
-              print(f"  {job['system']}:{job['python']}")
+              if job['system'] == "msys2":
+                print(f"  {job['runtime'].lower()}:{job['python']}")
+              else:
+                print(f"  {job['system']}:{job['python']}")
             print("Expected jobs:")
             for job in expectedJobs:
               print(f"  {job}")
@@ -325,9 +332,9 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.12"
-          expectedPythons = ["3.10"]
-          expectedSystems = ["ubuntu", "macos"]
+          expectedPythonVersion = "3.13"
+          expectedPythons = ["3.12"]
+          expectedSystems = ["ubuntu", "macos", "macos-arm"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons]
           expectedName =    "Example"
           expectedArtifacts = {
@@ -359,7 +366,10 @@ jobs:
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
             print("Actual jobs:")
             for job in actualPythonJobs:
-              print(f"  {job['system']}:{job['python']}")
+              if job['system'] == "msys2":
+                print(f"  {job['runtime'].lower()}:{job['python']}")
+              else:
+                print(f"  {job['system']}:{job['python']}")
             print("Expected jobs:")
             for job in expectedJobs:
               print(f"  {job}")
@@ -385,9 +395,9 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.12"
-          expectedPythons = ["3.10"]
-          expectedSystems = ["ubuntu", "macos"]
+          expectedPythonVersion = "3.13"
+          expectedPythons = ["3.12"]
+          expectedSystems = ["ubuntu", "macos", "macos-arm"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons]
           expectedName =    "Example"
           expectedArtifacts = {
@@ -419,7 +429,10 @@ jobs:
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
             print("Actual jobs:")
             for job in actualPythonJobs:
-              print(f"  {job['system']}:{job['python']}")
+              if job['system'] == "msys2":
+                print(f"  {job['runtime'].lower()}:{job['python']}")
+              else:
+                print(f"  {job['system']}:{job['python']}")
             print("Expected jobs:")
             for job in expectedJobs:
               print(f"  {job}")
@@ -445,10 +458,10 @@ jobs:
 
           from pyTooling.Common import zipdicts
 
-          expectedPythonVersion = "3.12"
-          expectedPythons = ["3.10", "3.11"]
+          expectedPythonVersion = "3.13"
+          expectedPythons = ["3.12", "3.13"]
           expectedSystems = ["ubuntu", "windows"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["windows:3.8", "windows:3.9", "windows:3.12"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["windows:3.10", "windows:3.11", "windows:3.13"]
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -479,7 +492,10 @@ jobs:
             print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
             print("Actual jobs:")
             for job in actualPythonJobs:
-              print(f"  {job['system']}:{job['python']}")
+              if job['system'] == "msys2":
+                print(f"  {job['runtime'].lower()}:{job['python']}")
+              else:
+                print(f"  {job['system']}:{job['python']}")
             print("Expected jobs:")
             for job in expectedJobs:
               print(f"  {job}")
