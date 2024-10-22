@@ -117,11 +117,34 @@ jobs:
     with:
       artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
 
+  HTMLDocumentation:
+    uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@py313
+    needs:
+      - UnitTestingParams
+#      - VerifyDocs
+    with:
+      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
+#      unittest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+#      coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
+      html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
+      latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
+
+  PDFDocumentation:
+    uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@r1
+    needs:
+      - UnitTestingParams
+      - HTMLDocumentation
+    with:
+      document: actions
+      latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
+      pdf_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
+
   PublishToGitHubPages:
     uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@py313
     needs:
       - UnitTestingParams
-      - BuildTheDocs
+      - HTMLDocumentation
+      - PDFDocumentation
 #      - Coverage
       - PublishCoverageResults
       - StaticTypeCheck
