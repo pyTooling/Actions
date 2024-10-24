@@ -109,14 +109,6 @@ jobs:
 #    with:
 #      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
 
-  BuildTheDocs:
-    uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@py313
-    needs:
-      - UnitTestingParams
-#      - VerifyDocs
-    with:
-      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
-
   HTMLDocumentation:
     uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@py313
     needs:
@@ -144,7 +136,7 @@ jobs:
     needs:
       - UnitTestingParams
       - HTMLDocumentation
-      - PDFDocumentation
+#      - PDFDocumentation
 #      - Coverage
       - PublishCoverageResults
       - StaticTypeCheck

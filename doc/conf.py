@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent
 sys_path.insert(0, abspath("."))
 sys_path.insert(0, abspath(".."))
 sys_path.insert(0, abspath("../pyDummy"))
-sys_path.insert(0, abspath("_extensions"))
+# sys_path.insert(0, abspath("_extensions"))
 
 
 # ==============================================================================
@@ -23,9 +23,11 @@ sys_path.insert(0, abspath("_extensions"))
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-project = "Actions"
+githubNamespace = "pyTooling"
+githubProject = "Actions"
+project = "pyDummy"
 
-packageInformationFile = Path(f"../pyDummy/__init__.py")
+packageInformationFile = Path(f"../{project}/__init__.py")
 versionInformation = extractVersionInformation(packageInformationFile)
 
 author =    versionInformation.Author
@@ -73,30 +75,15 @@ except Exception as ex:
 # ==============================================================================
 # Options for HTML output
 # ==============================================================================
-html_context = {}
-ctx = ROOT / "context.json"
-if ctx.is_file():
-	html_context.update(loads(ctx.open('r').read()))
-
-if (ROOT / "_theme").is_dir():
-	html_theme_path = ["."]
-	html_theme = "_theme"
-	html_theme_options = {
-		"logo_only": True,
-		"home_breadcrumbs": False,
-		"vcs_pageview_mode": 'blob',
-#		"body_max_width": None
-#		"navigation_depth": 5,
-	}
-elif find_spec("sphinx_rtd_theme") is not None:
-	html_theme = "sphinx_rtd_theme"
-	html_theme_options = {
-		"logo_only": True,
-		"vcs_pageview_mode": 'blob',
-#		"navigation_depth": 5,
-	}
-else:
-	html_theme = "alabaster"
+html_theme = "sphinx_rtd_theme"
+html_theme_options = {
+	"logo_only": True,
+	"vcs_pageview_mode": 'blob',
+	"navigation_depth": 5,
+}
+html_css_files = [
+	'css/override.css',
+]
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -107,7 +94,7 @@ html_logo = str(Path(html_static_path[0]) / "logo.png")
 html_favicon = str(Path(html_static_path[0]) / "icon.png")
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "ActionsDoc"
+htmlhelp_basename = f"{githubProject}Doc"
 
 # If not None, a 'Last updated on:' timestamp is inserted at every page
 # bottom, using the given strftime format.
@@ -160,10 +147,10 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
 	( master_doc,
-		"Actions.tex",
-		"The pyTooling Actions Documentation",
-		"Patrick Lehmann",
-		"manual"
+		f"{githubProject}.tex",
+		f"The {githubProject} Documentation",
+		f"Patrick Lehmann",
+		f"manual"
 	),
 ]
 
@@ -174,7 +161,6 @@ latex_documents = [
 extensions = [
 # Standard Sphinx extensions
 	"sphinx.ext.autodoc",
-	"sphinx.ext.coverage",
 	"sphinx.ext.extlinks",
 	"sphinx.ext.intersphinx",
 	"sphinx.ext.inheritance_diagram",
@@ -186,9 +172,12 @@ extensions = [
 # SphinxContrib extensions
 	"sphinxcontrib.mermaid",
 # Other extensions
+	"sphinx_design",
+	"sphinx_copybutton",
 	"sphinx_autodoc_typehints",
-	"sphinx_inline_tabs",
 	"autoapi.sphinx",
+	"sphinx_reports",
+# User defined extensions
 ]
 
 
@@ -220,11 +209,11 @@ autodoc_typehints = "both"
 # Sphinx.Ext.ExtLinks
 # ==============================================================================
 extlinks = {
-	"gh":      ("https://GitHub.com/%s", "gh:%s"),
- 	"ghissue": ("https://GitHub.com/pyTooling/Actions/issues/%s", "issue #%s"),
- 	"ghpull":  ("https://GitHub.com/pyTooling/Actions/pull/%s", "pull request #%s"),
- 	"ghsrc":   ("https://GitHub.com/pyTooling/Actions/blob/main/%s", None),
- 	"wiki":    ("https://en.wikipedia.org/wiki/%s", None),
+	"gh":      (f"https://GitHub.com/%s", "gh:%s"),
+	"ghissue": (f"https://GitHub.com/{githubNamespace}/{githubProject}/issues/%s", "issue #%s"),
+	"ghpull":  (f"https://GitHub.com/{githubNamespace}/{githubProject}/pull/%s", "pull request #%s"),
+	"ghsrc":   (f"https://GitHub.com/{githubNamespace}/{githubProject}/blob/main/%s", None),
+	"wiki":    (f"https://en.wikipedia.org/wiki/%s", None),
 }
 
 
@@ -264,18 +253,53 @@ todo_link_only = True
 
 
 # ==============================================================================
-# Sphinx.Ext.Coverage
+# sphinx-reports
 # ==============================================================================
-coverage_show_missing_items = True
+# report_unittest_testsuites = {
+# 	"src": {
+# 		"name":        f"{project}",
+# 		"xml_report":  "../report/unit/unittest.xml",
+# 	}
+# }
+# report_codecov_packages = {
+# 	"src": {
+# 		"name":        f"{project}",
+# 		"json_report": "../report/coverage/coverage.json",
+# 		"fail_below":  80,
+# 		"levels":      "default"
+# 	}
+# }
+# report_doccov_packages = {
+# 	"src": {
+# 		"name":       f"{project}",
+# 		"directory":  f"../{project}",
+# 		"fail_below": 80,
+# 		"levels":     "default"
+# 	}
+# }
+
+
+# ==============================================================================
+# Sphinx_Design
+# ==============================================================================
+# sd_fontawesome_latex = True
 
 
 # ==============================================================================
 # AutoAPI.Sphinx
 # ==============================================================================
 autoapi_modules = {
-	"pyDummy":  {
-		"template": "module",
-		"output": "pyDummy",
+	f"{project}":  {
+		"template": "package",
+		"output":   project,
 		"override": True
 	}
 }
+
+for directory in [mod for mod in Path(f"../{project}").iterdir() if mod.is_dir() and mod.name != "__pycache__"]:
+	print(f"Adding module rule for '{project}.{directory.name}'")
+	autoapi_modules[f"{project}.{directory.name}"] = {
+		"template": "module",
+		"output":   project,
+		"override": True
+	}

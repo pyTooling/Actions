@@ -138,7 +138,7 @@ python_version_list
 | Parameter Name       | Required | Type     | Default                    |
 +======================+==========+==========+============================+
 | python_version_list  | optional | string   | ``3.8 3.9 3.10 3.11 3.12`` |
-+----------------------+----------+----------+-------------------------- -+
++----------------------+----------+----------+----------------------------+
 
 Space separated list of CPython versions and/or mypy version to run tests with.
 
