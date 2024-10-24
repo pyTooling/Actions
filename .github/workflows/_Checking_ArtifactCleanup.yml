@@ -6,7 +6,7 @@ on:
 
 jobs:
   Params:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
       python_version_list: "3.12 3.13"

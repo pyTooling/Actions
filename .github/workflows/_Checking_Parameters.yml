@@ -6,24 +6,24 @@ on:
 
 jobs:
   Params_Default:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
 
   Params_PythonVersions:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
       python_version_list: "3.11 3.12 pypy-3.9 pypy-3.10"
 
   Params_Systems:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
       system_list: "windows mingw32 mingw64"
 
   Params_Include:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
       python_version_list: "3.11"
@@ -31,7 +31,7 @@ jobs:
       include_list: "ubuntu:3.12 ubuntu:3.13"
 
   Params_Exclude:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
       python_version_list: "3.12"
@@ -39,7 +39,7 @@ jobs:
       exclude_list: "windows:3.12 windows:3.13"
 
   Params_Disable:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
       python_version_list: "3.12"
@@ -47,7 +47,7 @@ jobs:
       disable_list: "windows:3.12 windows:3.13"
 
   Params_All:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@py313
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
       python_version_list: "3.12 3.13"
