@@ -24,9 +24,14 @@ name: Release
 
 on:
   workflow_call:
+    inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
 
 jobs:
-
   Release:
     name: 📝 Create 'Release Page' on GitHub
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
