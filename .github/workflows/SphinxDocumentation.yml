@@ -24,6 +24,11 @@ name: Documentation
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       python_version:
         description: 'Python version.'
         required: false
@@ -71,16 +76,19 @@ on:
         type: string
 
 jobs:
-  Sphinx:
-    name: 📓 Documentation generation using Sphinx and Python ${{ inputs.python_version }}
-    runs-on: ubuntu-24.04
+  Prepare:
+    name: 📓 Extract configurations from pyproject.toml
+    runs-on: "ubuntu-${ubuntu_image_version}"
+    outputs:
+      coverage_report_html_directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+      coverage_report_xml_directory:  ${{ steps.getVariables.outputs.coverage_report_xml_directory }}
+      coverage_report_xml:            ${{ steps.getVariables.outputs.coverage_report_xml }}
+      coverage_report_json_directory: ${{ steps.getVariables.outputs.coverage_report_json_directory }}
+      coverage_report_json:           ${{ steps.getVariables.outputs.coverage_report_json }}
 
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
-
-      - name: 🔧 Install graphviz
-        run: sudo apt-get install -y --no-install-recommends graphviz
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v5
@@ -154,6 +162,29 @@ jobs:
 
           print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
 
+  Sphinx-HTML:
+    name: 📓 Documentation generation using Sphinx and Python ${{ inputs.python_version }}
+    runs-on: "ubuntu-${ubuntu_image_version}"
+    needs:
+      - Prepare
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Install graphviz
+        run: sudo apt-get install -y --no-install-recommends graphviz
+
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: 🔧 Install wheel,tomli and pip dependencies (native)
+        run: |
+          python -m pip install --disable-pip-version-check -U wheel
+          python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
+
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
         if: inputs.unittest_xml_artifact != ''
         uses: actions/download-artifact@v4
@@ -166,7 +197,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.coverage_json_artifact }}
-          path: ${{ steps.getVariables.outputs.coverage_report_json_directory }}
+          path: ${{ needs.Prepare.outputs.coverage_report_json_directory }}
 
       - name: ☑ Generate HTML documentation
         if: inputs.html_artifact != ''
@@ -175,16 +206,6 @@ jobs:
 
           cd "${{ inputs.doc_directory || '.' }}"
           sphinx-build -v -n -b html -d _build/doctrees -j $(nproc) -w _build/html.log . _build/html
-
-      - name: ☑ Generate LaTeX documentation
-        if: inputs.latex_artifact != ''
-#        continue-on-error: true
-        run: |
-          export PYTHONPATH=$(pwd)
-
-          cd "${{ inputs.doc_directory || '.' }}"
-          sphinx-build -v -n -b latex -d _build/doctrees -j $(nproc) -w _build/latex.log . _build/latex
-#           --builder html --doctree-dir _build/doctrees --verbose --fresh-env --write-all --nitpicky --warning-file _build/html.log . _build/html
 
       - name: 📤 Upload 'HTML Documentation' artifact
         if: inputs.html_artifact != ''
@@ -195,6 +216,53 @@ jobs:
           path: ${{ inputs.doc_directory }}/_build/html
           if-no-files-found: error
           retention-days: 1
+
+  Sphinx-LaTeX:
+    name: 📓 Documentation generation using Sphinx and Python ${{ inputs.python_version }}
+    runs-on: "ubuntu-${ubuntu_image_version}"
+    needs:
+      - Prepare
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Install graphviz
+        run: sudo apt-get install -y --no-install-recommends graphviz
+
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: 🔧 Install wheel,tomli and pip dependencies (native)
+        run: |
+          python -m pip install --disable-pip-version-check -U wheel
+          python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
+
+      - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
+        if: inputs.unittest_xml_artifact != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.unittest_xml_artifact }}
+          path: ${{ inputs.unittest_xml_directory }}
+
+      - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
+        if: inputs.coverage_json_artifact != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.coverage_json_artifact }}
+          path: ${{ needs.Prepare.outputs.coverage_report_json_directory }}
+
+      - name: ☑ Generate LaTeX documentation
+        if: inputs.latex_artifact != ''
+#        continue-on-error: true
+        run: |
+          export PYTHONPATH=$(pwd)
+
+          cd "${{ inputs.doc_directory || '.' }}"
+          sphinx-build -v -n -b latex -d _build/doctrees -j $(nproc) -w _build/latex.log . _build/latex
+#           --builder html --doctree-dir _build/doctrees --verbose --fresh-env --write-all --nitpicky --warning-file _build/html.log . _build/html
 
       - name: 📤 Upload 'LaTeX Documentation' artifact
         if: inputs.latex_artifact != ''

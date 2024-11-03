@@ -6,21 +6,21 @@ on:
 
 jobs:
   UnitTestingParams:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@sphinx
     with:
       name: pyDummy
       python_version_list: "3.8 3.9 3.10 3.11 3.12 3.13 pypy-3.8 pypy-3.9 pypy-3.10"
 #      disable_list: "windows:pypy-3.10"
 
   PlatformTestingParams:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@sphinx
     with:
       name: Platform
       python_version_list: ""
       system_list: "ubuntu windows macos mingw32 mingw64 clang64 ucrt64"
 
   UnitTesting:
-    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
+    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@sphinx
     needs:
       - UnitTestingParams
     with:
@@ -33,7 +33,7 @@ jobs:
 #      coverage_html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
 
   PlatformTesting:
-    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
+    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@sphinx
     needs:
       - PlatformTestingParams
     with:
@@ -48,7 +48,7 @@ jobs:
       coverage_html_artifact: ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_html }}
 
 #  Coverage:
-#    uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@dev
+#    uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@sphinx
 #    needs:
 #      - UnitTestingParams
 #    with:
@@ -58,7 +58,7 @@ jobs:
 #      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
   StaticTypeCheck:
-    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@dev
+    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@sphinx
     needs:
       - UnitTestingParams
     with:
@@ -69,7 +69,7 @@ jobs:
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   PublishCoverageResults:
-    uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@dev
+    uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@sphinx
     needs:
       - UnitTestingParams
       - UnitTesting
@@ -84,7 +84,7 @@ jobs:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
   PublishTestResults:
-    uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@dev
+    uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@sphinx
     needs:
       - UnitTesting
       - PlatformTesting
@@ -92,7 +92,7 @@ jobs:
       additional_merge_args: '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit;reduce-depth:pytest.tests.platform"'
 
   Package:
-    uses: pyTooling/Actions/.github/workflows/Package.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Package.yml@sphinx
     needs:
       - UnitTestingParams
       - UnitTesting
@@ -103,14 +103,14 @@ jobs:
       artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
 
 #  VerifyDocs:
-#    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@dev
+#    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@sphinx
 #    needs:
 #      - UnitTestingParams
 #    with:
 #      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
 
   HTMLDocumentation:
-    uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@dev
+    uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@sphinx
     needs:
       - UnitTestingParams
 #      - VerifyDocs
@@ -122,7 +122,7 @@ jobs:
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
   PDFDocumentation:
-    uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@r1
+    uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@sphinx
     needs:
       - UnitTestingParams
       - HTMLDocumentation
@@ -132,7 +132,7 @@ jobs:
       pdf_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
 
   PublishToGitHubPages:
-    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@dev
+    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@sphinx
     needs:
       - UnitTestingParams
       - HTMLDocumentation
@@ -146,7 +146,7 @@ jobs:
       typing: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   ReleasePage:
-    uses: pyTooling/Actions/.github/workflows/Release.yml@dev
+    uses: pyTooling/Actions/.github/workflows/Release.yml@sphinx
     if: startsWith(github.ref, 'refs/tags')
     needs:
       - UnitTesting
@@ -157,7 +157,7 @@ jobs:
       - PublishToGitHubPages
 
   PublishOnPyPI:
-    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@dev
+    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@sphinx
     if: startsWith(github.ref, 'refs/tags')
     needs:
       - UnitTestingParams
@@ -171,7 +171,7 @@ jobs:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
   ArtifactCleanUp:
-    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@dev
+    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@sphinx
     needs:
       - UnitTestingParams
       - PlatformTestingParams
