@@ -37,6 +37,9 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
+      - name: '❗ Deprecation message'
+        run: echo "::warning title=Deprecated::'BuildTheDocs.yml' is not maintained anymore. Please switch to 'SphinxDocumentation.yml', 'LaTeXDocumentation.yml' and 'ExtractConfiguration.yml'. "
+
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
 

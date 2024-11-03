@@ -101,6 +101,7 @@ on:
 
 jobs:
   Parameters:
+    name: ✎ Generate pipeline parameters
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     outputs:
       python_version:   ${{ steps.params.outputs.python_version }}

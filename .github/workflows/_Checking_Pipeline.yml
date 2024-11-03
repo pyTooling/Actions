@@ -77,6 +77,11 @@ jobs:
       directory: sphinx_reports
 #      fail_below: 70
 
+  ConfigParams:
+    uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@sphinx
+    needs:
+      - DocCoverage
+
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@sphinx
     needs:
@@ -122,11 +127,13 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@sphinx
     needs:
       - UnitTestingParams
+      - ConfigParams
       - PublishTestResults
       - PublishCoverageResults
 #      - VerifyDocs
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
+      coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
 #      unittest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
 #      coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
