@@ -9,7 +9,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@sphinx
     with:
       name: pyDummy
-      python_version_list: "3.8 3.9 3.10 3.11 3.12 3.13 pypy-3.8 pypy-3.9 pypy-3.10"
+      python_version_list: "3.9 3.10 3.11 3.12 3.13 pypy-3.9 pypy-3.10"
 #      disable_list: "windows:pypy-3.10"
 
   PlatformTestingParams:
@@ -68,6 +68,26 @@ jobs:
       html_report: 'htmlmypy'
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
+  DocCoverage:
+    uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@r1
+    needs:
+      - UnitTestingParams
+    with:
+      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
+      directory: sphinx_reports
+#      fail_below: 70
+
+  Package:
+    uses: pyTooling/Actions/.github/workflows/Package.yml@sphinx
+    needs:
+      - UnitTestingParams
+      - UnitTesting
+#      - Coverage
+      - PlatformTesting
+    with:
+      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
+      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+
   PublishCoverageResults:
     uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@sphinx
     needs:
@@ -91,17 +111,6 @@ jobs:
     with:
       additional_merge_args: '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit;reduce-depth:pytest.tests.platform"'
 
-  Package:
-    uses: pyTooling/Actions/.github/workflows/Package.yml@sphinx
-    needs:
-      - UnitTestingParams
-      - UnitTesting
-#      - Coverage
-      - PlatformTesting
-    with:
-      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
-      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
-
 #  VerifyDocs:
 #    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@sphinx
 #    needs:
@@ -109,10 +118,12 @@ jobs:
 #    with:
 #      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
 
-  HTMLDocumentation:
+  Documentation:
     uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@sphinx
     needs:
       - UnitTestingParams
+      - PublishTestResults
+      - PublishCoverageResults
 #      - VerifyDocs
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
@@ -121,11 +132,22 @@ jobs:
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
+  IntermediateCleanUp:
+    uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@r1
+    needs:
+      - UnitTestingParams
+      - PublishCoverageResults
+      - PublishTestResults
+      - Documentation
+    with:
+      sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-
+      xml_unittest_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
+
   PDFDocumentation:
     uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@sphinx
     needs:
       - UnitTestingParams
-      - HTMLDocumentation
+      - Documentation
     with:
       document: actions
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
@@ -135,7 +157,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@sphinx
     needs:
       - UnitTestingParams
-      - HTMLDocumentation
+      - Documentation
 #      - PDFDocumentation
 #      - Coverage
       - PublishCoverageResults
@@ -176,13 +198,15 @@ jobs:
       - UnitTestingParams
       - PlatformTestingParams
       - UnitTesting
-      - PlatformTesting
 #      - Coverage
       - StaticTypeCheck
-#      - BuildTheDocs
-      - PublishToGitHubPages
-      - PublishCoverageResults
+      - PlatformTesting
+      - Documentation
+#      - PDFDocumentation
       - PublishTestResults
+      - PublishCoverageResults
+      - PublishToGitHubPages
+      - IntermediateCleanUp
     with:
       package: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
       remaining: |
