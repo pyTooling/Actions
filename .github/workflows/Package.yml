@@ -25,6 +25,11 @@ name: Package
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       python_version:
         description: 'Python version.'
         required: false
@@ -44,7 +49,7 @@ jobs:
 
   Package:
     name: 📦 Package in Source and Wheel Format
-    runs-on: ubuntu-24.04
+    runs-on: "ubuntu-${ubuntu_image_version}"
 
     steps:
       - name: ⏬ Checkout repository

@@ -25,6 +25,11 @@ name: Parameters
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       name:
         description: 'Name of the tool.'
         required: true
@@ -96,7 +101,7 @@ on:
 
 jobs:
   Parameters:
-    runs-on: ubuntu-24.04
+    runs-on: "ubuntu-${ubuntu_image_version}"
     outputs:
       python_version:   ${{ steps.params.outputs.python_version }}
       python_jobs:      ${{ steps.params.outputs.python_jobs }}

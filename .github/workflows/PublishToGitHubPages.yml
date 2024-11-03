@@ -25,6 +25,11 @@ name: Publish to GitHub Pages
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       doc:
         description: 'Name of the documentation artifact.'
         required: true
@@ -44,7 +49,7 @@ jobs:
 
   PublishToGitHubPages:
     name: 📚 Publish to GH-Pages
-    runs-on: ubuntu-24.04
+    runs-on: "ubuntu-${ubuntu_image_version}"
 
     steps:
       - name: ⏬ Checkout repository

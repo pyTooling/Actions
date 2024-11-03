@@ -25,6 +25,11 @@ name: Coverage Collection
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       python_version:
         description: 'Python version.'
         required: false
@@ -63,7 +68,7 @@ jobs:
 
   Coverage:
     name: 📈 Collect Coverage Data using Python ${{ inputs.python_version }}
-    runs-on: ubuntu-24.04
+    runs-on: "ubuntu-${ubuntu_image_version}"
 
     steps:
       - name: ⏬ Checkout repository

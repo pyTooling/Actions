@@ -25,6 +25,11 @@ name: Publish Unit Test Results
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       merged_junit_artifact:
         description: 'Name of the merged JUnit Test Summary artifact.'
         required: false
@@ -44,7 +49,7 @@ on:
 jobs:
   PublishTestResults:
     name: 📊 Publish Test Results
-    runs-on: ubuntu-24.04
+    runs-on: "ubuntu-${ubuntu_image_version}"
     if: always()
 
     steps:
