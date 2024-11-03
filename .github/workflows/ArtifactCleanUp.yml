@@ -43,7 +43,7 @@ on:
 jobs:
   ArtifactCleanUp:
     name: 🗑️ Artifact Cleanup
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
 
     steps:
       - name: 🗑️ Delete package Artifacts

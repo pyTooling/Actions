@@ -78,7 +78,7 @@ on:
 jobs:
   Prepare:
     name: 📓 Extract configurations from pyproject.toml
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     outputs:
       coverage_report_html_directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
       coverage_report_xml_directory:  ${{ steps.getVariables.outputs.coverage_report_xml_directory }}
@@ -164,7 +164,7 @@ jobs:
 
   Sphinx-HTML:
     name: 📓 Documentation generation using Sphinx and Python ${{ inputs.python_version }}
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     needs:
       - Prepare
 
@@ -219,7 +219,7 @@ jobs:
 
   Sphinx-LaTeX:
     name: 📓 Documentation generation using Sphinx and Python ${{ inputs.python_version }}
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     needs:
       - Prepare
 

@@ -101,7 +101,7 @@ on:
 
 jobs:
   Parameters:
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     outputs:
       python_version:   ${{ steps.params.outputs.python_version }}
       python_jobs:      ${{ steps.params.outputs.python_jobs }}

@@ -62,7 +62,7 @@ on:
 jobs:
   PublishCoverageResults:
     name: 📊 Publish Code Coverage Results
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     if: always()
 
     steps:

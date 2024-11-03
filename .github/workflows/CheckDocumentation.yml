@@ -47,7 +47,7 @@ on:
 jobs:
   DocCoverage:
     name: 👀 Check documentation coverage
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4

@@ -49,7 +49,7 @@ on:
 jobs:
   PublishTestResults:
     name: 📊 Publish Test Results
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     if: always()
 
     steps:

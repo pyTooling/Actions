@@ -49,7 +49,7 @@ jobs:
 
   PublishToGitHubPages:
     name: 📚 Publish to GH-Pages
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
 
     steps:
       - name: ⏬ Checkout repository

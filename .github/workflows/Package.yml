@@ -49,7 +49,7 @@ jobs:
 
   Package:
     name: 📦 Package in Source and Wheel Format
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
 
     steps:
       - name: ⏬ Checkout repository

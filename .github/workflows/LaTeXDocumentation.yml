@@ -47,7 +47,7 @@ on:
 jobs:
   PDFDocumentation:
     name: 📓 Converting LaTeX Documentation to PDF
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
         uses: actions/download-artifact@v4

@@ -41,7 +41,7 @@ on:
 jobs:
   IntermediateCleanUp:
     name: 🗑️ Intermediate Artifact Cleanup
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     steps:
       - name: 🗑️ Delete SQLite coverage artifacts from matrix jobs
         uses: geekyeggo/delete-artifact@v5

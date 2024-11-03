@@ -53,7 +53,7 @@ jobs:
 
   PublishOnPyPI:
     name: 🚀 Publish to PyPI
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
 
     steps:
       - name: 📥 Download artifacts '${{ inputs.artifact }}' from 'Package' job

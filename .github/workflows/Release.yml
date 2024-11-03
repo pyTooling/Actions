@@ -29,7 +29,7 @@ jobs:
 
   Release:
     name: 📝 Create 'Release Page' on GitHub
-    runs-on: "ubuntu-${ubuntu_image_version}"
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
 
     steps:
       - name: 🔁 Extract Git tag from GITHUB_REF
