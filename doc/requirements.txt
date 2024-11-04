@@ -5,6 +5,7 @@ pyTooling ~= 7.0
 # Enforce latest version on ReadTheDocs
 sphinx ~= 8.1
 docutils ~= 0.21
+docutils_stubs ~= 0.0.22
 
 # ReadTheDocs Theme
 sphinx_rtd_theme ~= 3.0
