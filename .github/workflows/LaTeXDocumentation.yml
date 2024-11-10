@@ -24,6 +24,11 @@ name: LaTeX Documentation
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       document:
         description: 'LaTeX root document without *.tex extension.'
         required: true
@@ -42,7 +47,7 @@ on:
 jobs:
   PDFDocumentation:
     name: 📓 Converting LaTeX Documentation to PDF
-    runs-on: ubuntu-24.04
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
         uses: actions/download-artifact@v4
