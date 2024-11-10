@@ -34,6 +34,15 @@ on:
         required: false
         default: '3.12'
         type: string
+      package_namespace:
+        description: 'Name of the tool''s namespace.'
+        required: false
+        default: ''
+        type: string
+      package_name:
+        description: 'Name of the tool''s package.'
+        required: true
+        type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
         required: false
@@ -41,6 +50,15 @@ on:
         type: string
 
     outputs:
+      package_fullname:
+        description: ""
+        value: ${{ jobs.Extract.outputs.package_fullname }}
+      package_directory:
+        description: ""
+        value: ${{ jobs.Extract.outputs.package_directory }}
+      mypy_prepare_command:
+        description: ""
+        value: ${{ jobs.Extract.outputs.mypy_prepare_command }}
       coverage_report_html_directory:
         description: ""
         value: ${{ jobs.Extract.outputs.coverage_report_html_directory }}
@@ -62,6 +80,9 @@ jobs:
     name: 📓 Extract configurations from pyproject.toml
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     outputs:
+      package_fullname:               ${{ steps.getPackageName.outputs.package_fullname }}
+      package_directory:              ${{ steps.getPackageName.outputs.package_directory }}
+      mypy_prepare_command:           ${{ steps.getPackageName.outputs.mypy_prepare_command }}
       coverage_report_html_directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
       coverage_report_xml_directory:  ${{ steps.getVariables.outputs.coverage_report_xml_directory }}
       coverage_report_xml:            ${{ steps.getVariables.outputs.coverage_report_xml }}
@@ -80,6 +101,35 @@ jobs:
       - name: 🔧 Install wheel,tomli and pip dependencies (native)
         run: |
           python -m pip install --disable-pip-version-check -U wheel tomli
+
+      - name: 🔁 Full package name and directory
+        id: getPackageName
+        shell: python
+        run: |
+          from os       import getenv
+          from pathlib  import Path
+          from textwrap import dedent
+
+          namespace = "${{ inputs.package_namespace }}".strip()
+          name = "${{ inputs.package_name }}".strip()
+
+          if namespace == "" or namespace == ".":
+            fullname = f"{name}"
+            directory = f"{name}"
+            mypy_prepare_command = ""
+          else:
+            fullname = f"{namespace}.{name}"
+            directory = f"{namespace}/{name}"
+            mypy_prepare_command = f"touch {namespace}/__init__.py"
+
+          github_output = Path(getenv("GITHUB_OUTPUT"))
+          print(f"GITHUB_OUTPUT: {github_output}")
+          with github_output.open("a+", encoding="utf-8") as f:
+            f.write(dedent(f"""\
+              package_fullname={fullname}
+              package_directory={directory}
+              mypy_prepare_command={mypy_prepare_command}
+            """))
 
       - name: 🔁 Extract configurations from pyproject.toml
         id: getVariables

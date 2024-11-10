@@ -4,11 +4,12 @@ on:
   workflow_call:
     inputs:
       package_namespace:
-        description: 'Name of the tool.'
-        required: true
+        description: 'Name of the tool''s namespace.'
+        required: false
+        default: ''
         type: string
       package_name:
-        description: 'Name of the tool.'
+        description: 'Name of the tool''s package.'
         required: true
         type: string
       unittest_python_version:
@@ -73,13 +74,20 @@ on:
         type: string
 
 jobs:
+  ConfigParams:
+    uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@main
+    with:
+      package_namespace: ${{ inputs.package_namespace }}
+      package_name:      ${{ inputs.package_name }}
+
   UnitTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
-      name: "${{ inputs.package_namespace }}.${{ inputs.package_name }}"
-      python_version: ${{ inputs.unittest_python_version }}
+      package_namespace: ${{ inputs.package_namespace }}
+      package_name:      ${{ inputs.package_name }}
+      python_version:    ${{ inputs.unittest_python_version }}
       python_version_list: ${{ inputs.unittest_python_version_list }}
-      system_list: ${{ inputs.unittest_system_list }}
+      system_list:  ${{ inputs.unittest_system_list }}
       include_list: ${{ inputs.unittest_include_list }}
       exclude_list: ${{ inputs.unittest_exclude_list }}
       disable_list: ${{ inputs.unittest_disable_list }}
@@ -87,10 +95,11 @@ jobs:
   AppTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
-      name: "${{ inputs.package_namespace }}.${{ inputs.package_name }}"
-      python_version: ${{ inputs.apptest_python_version }}
+      package_namespace: ${{ inputs.package_namespace }}
+      package_name:      ${{ inputs.package_name }}
+      python_version:    ${{ inputs.apptest_python_version }}
       python_version_list: ${{ inputs.apptest_python_version_list }}
-      system_list: ${{ inputs.apptest_system_list }}
+      system_list:  ${{ inputs.apptest_system_list }}
       include_list: ${{ inputs.apptest_include_list }}
       exclude_list: ${{ inputs.apptest_exclude_list }}
       disable_list: ${{ inputs.apptest_disable_list }}
@@ -109,13 +118,14 @@ jobs:
   StaticTypeCheck:
     uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@main
     needs:
+      - ConfigParams
       - UnitTestingParams
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       commands: |
-        touch ${{ inputs.package_namespace }}/__init__.py
-        mypy --html-report htmlmypy -p ${{ inputs.package_namespace }}.${{ inputs.name }}
-      html_report: 'htmlmypy'
+        ${{ needs.ConfigParams.outputs.mypy_prepare_command }}
+        mypy --html-report report/typing -p ${{ needs.ConfigParams.outputs.package_fullname }}
+      html_report: 'report/typing'
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   DocCoverage:
@@ -126,11 +136,6 @@ jobs:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       directory: ${{ inputs.package_namespace }}/${{ inputs.package_name }}
 #      fail_below: 70
-
-  ConfigParams:
-    uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@main
-    needs:
-      - DocCoverage
 
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@main

@@ -1,0 +1,11 @@
+name: Verification of Pipeline Templates
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  SimplePackage:
+    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@main
+    with:
+      package_name: pyDummy

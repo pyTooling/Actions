@@ -1,10 +1,17 @@
-name: Verification of Complete Pipeline
+name: Verification of Job Templates
 
 on:
   push:
   workflow_dispatch:
 
 jobs:
+  ConfigParams:
+    uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@main
+    needs:
+      - DocCoverage
+    with:
+      package_name: pyDummy
+
   UnitTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
@@ -60,11 +67,13 @@ jobs:
   StaticTypeCheck:
     uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@main
     needs:
+      - ConfigParams
       - UnitTestingParams
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       commands: |
-        mypy --html-report htmlmypy -p pyDummy
+        ${{ needs.ConfigParams.outputs.mypy_prepare_command }}
+        mypy --html-report htmlmypy -p ${{ needs.ConfigParams.outputs.package_fullname }}
       html_report: 'htmlmypy'
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
@@ -76,11 +85,6 @@ jobs:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       directory: sphinx_reports
 #      fail_below: 70
-
-  ConfigParams:
-    uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@main
-    needs:
-      - DocCoverage
 
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@main

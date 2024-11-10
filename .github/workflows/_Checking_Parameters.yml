@@ -460,7 +460,7 @@ jobs:
 
           expectedPythonVersion = "3.13"
           expectedPythons = ["3.12", "3.13"]
-          expectedSystems = ["ubuntu", "windows"]
+          expectedSystems = ["ubuntu", "macos-arm", "windows"]
           expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["windows:3.10", "windows:3.11", "windows:3.13"]
           expectedName =    "Example"
           expectedArtifacts = {
