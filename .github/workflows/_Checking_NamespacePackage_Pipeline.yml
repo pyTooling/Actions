@@ -1,0 +1,12 @@
+name: Verification of Pipeline Templates
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  NamespacePackage:
+    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@dev
+    with:
+      package_namespace: pyExamples
+      package_name:      Extensions

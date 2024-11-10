@@ -32,7 +32,18 @@ on:
         type: string
       name:
         description: 'Name of the tool.'
-        required: true
+        required: false
+        default: ''
+        type: string
+      package_namespace:
+        description: 'Name of the tool''s namespace.'
+        required: false
+        default: ''
+        type: string
+      package_name:
+        description: 'Name of the tool''s package.'
+        required: false
+        default: ''
         type: string
       python_version:
         description: 'Python version.'
@@ -120,13 +131,21 @@ jobs:
           from textwrap import dedent
           from typing import Iterable
 
-          name =           "${{ inputs.name }}".strip()
+          package_namespace = "${{ inputs.package_namespace }}".strip()
+          package_name =      "${{ inputs.package_name }}".strip()
+          name =              "${{ inputs.name }}".strip()
           python_version = "${{ inputs.python_version }}".strip()
           systems =        "${{ inputs.system_list }}".strip()
           versions =       "${{ inputs.python_version_list }}".strip()
           include_list =   "${{ inputs.include_list }}".strip()
           exclude_list =   "${{ inputs.exclude_list }}".strip()
           disable_list =   "${{ inputs.disable_list }}".strip()
+
+          if name == "":
+            if package_namespace == "" or package_namespace == ".":
+              name = f"{package_name}"
+            else:
+              name = f"{package_namespace}.{package_name}"
 
           currentMSYS2Version = "3.11"
           currentAlphaVersion = "3.14"
@@ -296,18 +315,6 @@ jobs:
             "documentation_pdf":   f"{name}-Documentation-PDF",
           }
 
-          # Deprecated structure
-          params = {
-            "python_version": python_version,
-            "artifacts": {
-              "unittesting": f"{artifact_names['unittesting_xml']}",
-              "coverage":    f"{artifact_names['codecoverage_html']}",
-              "typing":      f"{artifact_names['statictyping_html']}",
-              "package":     f"{artifact_names['package_all']}",
-              "doc":         f"{artifact_names['documentation_html']}",
-            }
-          }
-
           print("Parameters:")
           print(f"  python_version: {python_version}")
           print(f"  python_jobs ({len(jobs)}):\n" +
@@ -325,7 +332,6 @@ jobs:
               python_version={python_version}
               python_jobs={json_dumps(jobs)}
               artifact_names={json_dumps(artifact_names)}
-              params={json_dumps(params)}
           """))
 
       - name: Verify out parameters
