@@ -9,3 +9,6 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@dev
     with:
       package_name: pyDummy
+    secrets:
+      PYPI_TOKEN:           ${{ secrets.PYPI_TOKEN }}
+      CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}

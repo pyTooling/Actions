@@ -10,3 +10,6 @@ jobs:
     with:
       package_namespace: pyExamples
       package_name:      Extensions
+    secrets:
+      PYPI_TOKEN:           ${{ secrets.PYPI_TOKEN }}
+      CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}

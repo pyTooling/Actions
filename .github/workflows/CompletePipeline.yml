@@ -72,6 +72,13 @@ on:
         required: false
         default: ''
         type: string
+    secrets:
+      PYPI_TOKEN:
+        description: "Token for pushing releases to PyPI."
+        required: false
+      CODACY_PROJECT_TOKEN:
+        description: "Token for pushing coverage results to Codacy."
+        required: false
 
 jobs:
   ConfigParams:
@@ -83,9 +90,9 @@ jobs:
   UnitTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
-      package_namespace: ${{ inputs.package_namespace }}
-      package_name:      ${{ inputs.package_name }}
-      python_version:    ${{ inputs.unittest_python_version }}
+      package_namespace:   ${{ inputs.package_namespace }}
+      package_name:        ${{ inputs.package_name }}
+      python_version:      ${{ inputs.unittest_python_version }}
       python_version_list: ${{ inputs.unittest_python_version_list }}
       system_list:  ${{ inputs.unittest_system_list }}
       include_list: ${{ inputs.unittest_include_list }}
@@ -95,9 +102,9 @@ jobs:
   AppTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
-      package_namespace: ${{ inputs.package_namespace }}
-      package_name:      ${{ inputs.package_name }}
-      python_version:    ${{ inputs.apptest_python_version }}
+      package_namespace:   ${{ inputs.package_namespace }}
+      package_name:        ${{ inputs.package_name }}
+      python_version:      ${{ inputs.apptest_python_version }}
       python_version_list: ${{ inputs.apptest_python_version_list }}
       system_list:  ${{ inputs.apptest_system_list }}
       include_list: ${{ inputs.apptest_include_list }}
