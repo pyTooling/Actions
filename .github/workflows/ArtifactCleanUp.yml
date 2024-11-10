@@ -25,6 +25,11 @@ name: ArtifactCleanUp
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       package:
         description: 'Artifacts to be removed on not tagged runs.'
         required: true
@@ -38,7 +43,7 @@ on:
 jobs:
   ArtifactCleanUp:
     name: 🗑️ Artifact Cleanup
-    runs-on: ubuntu-24.04
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
 
     steps:
       - name: 🗑️ Delete package Artifacts

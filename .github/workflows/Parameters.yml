@@ -25,6 +25,11 @@ name: Parameters
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       name:
         description: 'Name of the tool.'
         required: true
@@ -32,17 +37,17 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.12'
+        default: '3.13'
         type: string
       python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.8 3.9 3.10 3.11 3.12'
+        default: '3.9 3.10 3.11 3.12 3.13'
         type: string
       system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu windows macos-arm mingw64 ucrt64'
+        default: 'ubuntu windows macos macos-arm mingw64 ucrt64'
         type: string
       include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'
@@ -72,10 +77,10 @@ on:
       macos_intel_image:
         description: 'The used GitHub Action image for macOS (Intel x86-64) based jobs.'
         required: false
-        default: 'macos-latest-large'
+        default: 'macos-13'
         type: string
       macos_arm_image:
-        description: 'The used GitHub Action image for macOS (ARM arm64) based jobs.'
+        description: 'The used GitHub Action image for macOS (ARM aarch64) based jobs.'
         required: false
         default: 'macos-latest'
         type: string
@@ -96,7 +101,8 @@ on:
 
 jobs:
   Parameters:
-    runs-on: ubuntu-24.04
+    name: ✎ Generate pipeline parameters
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     outputs:
       python_version:   ${{ steps.params.outputs.python_version }}
       python_jobs:      ${{ steps.params.outputs.python_jobs }}
@@ -123,8 +129,8 @@ jobs:
           disable_list =   "${{ inputs.disable_list }}".strip()
 
           currentMSYS2Version = "3.11"
-          currentAlphaVersion = "3.13"
-          currentAlphaRelease = "3.13.0-alpha.1"
+          currentAlphaVersion = "3.14"
+          currentAlphaRelease = "3.14.0-alpha.1"
 
           if systems == "":
             print("::error title=Parameter::system_list is empty.")
@@ -151,8 +157,8 @@ jobs:
           else:
             disabled = [disable.strip() for disable in disable_list.split(" ")]
 
-          if "3.7" in versions:
-            print("::warning title=Deprecated::Support for Python 3.7 ended in 2023.06.27.")
+          if "3.8" in versions:
+            print("::warning title=Deprecated::Support for Python 3.8 ended in 2024.10.")
           if "msys2" in systems:
             print("::warning title=Deprecated::System 'msys2' will be replaced by 'mingw64'.")
           if currentAlphaVersion in versions:
@@ -164,13 +170,13 @@ jobs:
           data = {
             # Python and PyPy versions supported by "setup-python" action
             "python": {
-              "3.7":       { "icon": "⚫",  "until": "2023.06.27" },
-              "3.8":       { "icon": "🔴",  "until": "2024.10" },
-              "3.9":       { "icon": "🟠",  "until": "2025.10" },
-              "3.10":      { "icon": "🟡",  "until": "2026.10" },
-              "3.11":      { "icon": "🟢",  "until": "2027.10" },
+              "3.8":       { "icon": "⚫",  "until": "2024.10" },
+              "3.9":       { "icon": "🔴",  "until": "2025.10" },
+              "3.10":      { "icon": "🟠",  "until": "2026.10" },
+              "3.11":      { "icon": "🟡",  "until": "2027.10" },
               "3.12":      { "icon": "🟢",  "until": "2028.10" },
-            #  "3.13":      { "icon": "🟣",  "until": "2028.10" },
+              "3.13":      { "icon": "🟢",  "until": "2029.10" },
+              "3.14":      { "icon": "🟣",  "until": "2030.10" },
               "pypy-3.7":  { "icon": "⟲⚫", "until": "????.??" },
               "pypy-3.8":  { "icon": "⟲🔴", "until": "????.??" },
               "pypy-3.9":  { "icon": "⟲🟠", "until": "????.??" },
@@ -181,7 +187,7 @@ jobs:
               "ubuntu":    { "icon": "🐧", "runs-on": "${{ inputs.ubuntu_image }}",      "shell": "bash", "name": "Linux (x86-64)"   },
               "windows":   { "icon": "🪟", "runs-on": "${{ inputs.windows_image }}",     "shell": "pwsh", "name": "Windows (x86-64)" },
               "macos":     { "icon": "🍎", "runs-on": "${{ inputs.macos_intel_image }}", "shell": "bash", "name": "macOS (x86-64)"   },
-              "macos-arm": { "icon": "🍏", "runs-on": "${{ inputs.macos_arm_image }}",   "shell": "bash", "name": "macOS (arm64)"    },
+              "macos-arm": { "icon": "🍏", "runs-on": "${{ inputs.macos_arm_image }}",   "shell": "bash", "name": "macOS (aarch64)"  },
             },
             # Runtimes provided by MSYS2
             "runtime": {

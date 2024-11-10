@@ -24,6 +24,11 @@ name: Intermediate Cleanup
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       sqlite_coverage_artifacts_prefix:
         description: 'Prefix for SQLite coverage artifacts'
         required: false
@@ -36,7 +41,7 @@ on:
 jobs:
   IntermediateCleanUp:
     name: 🗑️ Intermediate Artifact Cleanup
-    runs-on: ubuntu-24.04
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     steps:
       - name: 🗑️ Delete SQLite coverage artifacts from matrix jobs
         uses: geekyeggo/delete-artifact@v5
@@ -45,7 +50,7 @@ jobs:
         with:
           name: ${{ inputs.sqlite_coverage_artifacts_prefix }}*
 
-      - name: 🗑️ Delete XML coverage artifacts from matrix jobs
+      - name: 🗑️ Delete JUnit XML artifacts from matrix jobs
         uses: geekyeggo/delete-artifact@v5
         if: inputs.xml_unittest_artifacts_prefix != ''
         continue-on-error: true

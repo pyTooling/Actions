@@ -25,6 +25,11 @@ name: Publish Unit Test Results
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       merged_junit_artifact:
         description: 'Name of the merged JUnit Test Summary artifact.'
         required: false
@@ -44,7 +49,7 @@ on:
 jobs:
   PublishTestResults:
     name: 📊 Publish Test Results
-    runs-on: ubuntu-24.04
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     if: always()
 
     steps:
@@ -69,7 +74,7 @@ jobs:
 
       - name: 🔁 Merge JUnit Unit Test Summaries
         run: |
-          pyedaa-reports -v unittest "--merge=pytest-junit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=ant-junit:Unittesting.xml"
+          pyedaa-reports -v unittest "--merge=pyTest-JUnit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=pyTest-JUnit:Unittesting.xml"
           echo "cat Unittesting.xml"
           cat Unittesting.xml
 

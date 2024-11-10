@@ -24,6 +24,11 @@ name: Check Documentation
 on:
   workflow_call:
     inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
       python_version:
         description: 'Python version.'
         required: false
@@ -42,7 +47,7 @@ on:
 jobs:
   DocCoverage:
     name: 👀 Check documentation coverage
-    runs-on: ubuntu-24.04
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4

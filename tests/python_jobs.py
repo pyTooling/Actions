@@ -71,7 +71,7 @@ data = {
 		"ubuntu": {"icon": "🐧", "runs-on": "ubuntu-24.04", "shell": "bash", "name": "Linux (x86-64)"},
 		"windows": {"icon": "🪟", "runs-on": "windows-latest", "shell": "pwsh", "name": "Windows (x86-64)"},
 		"macos": {"icon": "🍎", "runs-on": "macos-latest-large", "shell": "bash", "name": "macOS (x86-64)"},
-		"macos-arm": {"icon": "🍏", "runs-on": "macos-latest", "shell": "bash", "name": "macOS (arm64)"},
+		"macos-arm": {"icon": "🍏", "runs-on": "macos-latest", "shell": "bash", "name": "macOS (aarch64)"},
 	},
 	# Runtimes provided by MSYS2
 	"runtime": {

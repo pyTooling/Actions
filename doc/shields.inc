@@ -7,11 +7,11 @@
 .. |SHIELD:svg:pyTooling-github| image:: https://img.shields.io/badge/pyTooling-Actions-63bf7f.svg?longCache=true&style=flat-square&longCache=true&logo=GitHub
    :alt: Sourcecode on GitHub
    :height: 22
-   :target: https://GitHub.com/pyTooling/pyTooling
+   :target: https://GitHub.com/pyTooling/Actions
 .. |SHIELD:png:pyTooling-github| image:: https://raster.shields.io/badge/pyTooling-Actions-63bf7f.svg?longCache=true&style=flat-square&longCache=true&logo=GitHub
    :alt: Sourcecode on GitHub
    :height: 22
-   :target: https://GitHub.com/pyTooling/pyTooling
+   :target: https://GitHub.com/pyTooling/Actions
 
 .. # Sourcecode license
 .. |SHIELD:svg:pyTooling-src-license| image:: https://img.shields.io/pypi/l/pyTooling?longCache=true&style=flat-square&logo=Apache&label=code
