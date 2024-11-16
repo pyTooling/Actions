@@ -82,6 +82,9 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
 
       - name: 🔧 Install graphviz
         run: sudo apt-get install -y --no-install-recommends graphviz
@@ -135,6 +138,9 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
 
       - name: 🔧 Install graphviz
         run: sudo apt-get install -y --no-install-recommends graphviz

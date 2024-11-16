@@ -138,6 +138,7 @@ jobs:
   DocCoverage:
     uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@dev
     needs:
+      - ConfigParams
       - UnitTestingParams
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
@@ -195,8 +196,8 @@ jobs:
   Documentation:
     uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@dev
     needs:
-      - UnitTestingParams
       - ConfigParams
+      - UnitTestingParams
       - PublishTestResults
       - PublishCoverageResults
 #      - VerifyDocs
