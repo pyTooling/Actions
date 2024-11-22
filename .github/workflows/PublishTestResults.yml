@@ -40,6 +40,11 @@ on:
         required: false
         default: '"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'
         type: string
+      publish:
+        description: 'Publish test report summary via Dorny Test-Reporter'
+        required: false
+        default: true
+        type: boolean
       report_title:
         description: 'Title of the summary report in the pipeline''s sidebar'
         required: false
@@ -80,6 +85,7 @@ jobs:
 
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v1
+        if: inputs.publish && inputs.report_title != ''
         with:
           name: ${{ inputs.report_title }}
           path: Unittesting.xml
