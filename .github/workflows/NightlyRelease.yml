@@ -1,0 +1,257 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2020-2024 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Nightly
+
+on:
+  workflow_call:
+    inputs:
+      ubuntu_image:
+        description: 'Name of the Ubuntu image.'
+        required: false
+        default: 'ubuntu-24.04'
+        type: string
+      nightly_name:
+        description: 'Name of the nightly release.'
+        required: false
+        default: 'nightly'
+        type: string
+      nightly_title:
+        description: 'Title of the nightly release.'
+        required: false
+        default: ''
+        type: string
+      nightly_description:
+        description: 'Description of the nightly release.'
+        required: false
+        default: 'Release of artifacts from latest CI pipeline.'
+        type: string
+      draft:
+        description: 'Specify if this is a draft.'
+        required: false
+        default: false
+        type: boolean
+      prerelease:
+        description: 'Specify if this is a pre-release.'
+        required: false
+        default: false
+        type: boolean
+      latest:
+        description: 'Specify if this is the latest release.'
+        required: false
+        default: false
+        type: boolean
+      assets:
+        description: 'Multi-line string containing artifact:file:title asset descriptions.'
+        required: true
+        type: string
+
+jobs:
+  Release:
+    name: 📝 Update 'Nightly Page' on GitHub
+    runs-on: ${{ inputs.ubuntu_image }}
+    permissions:
+      contents: write
+      actions: write
+      attestations: write
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # The command 'git describe' (used for version) needs the history.
+          fetch-depth: 0
+
+      - name: 📑 Delete (old) Release Page
+        id: deleteReleasePage
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED="\e[91m"
+          ANSI_LIGHT_GREEN="\e[92m"
+          ANSI_LIGHT_YELLOW="\e[93m"
+          ANSI_NOCOLOR="\e[0m"
+
+          export GH_TOKEN=${{ github.token }}
+
+          echo -n "Deleting release '${{ inputs.nightly_name }}' ... "
+          message="$(gh release delete ${{ inputs.nightly_name }} --yes 2>&1)"
+          if [[ $? -eq 0 ]]; then
+            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          elif [[ "${message}" == "release not found" ]]; then
+            echo -e "${ANSI_LIGHT_YELLOW}[NOT FOUND]${ANSI_NOCOLOR}"
+          else
+            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            echo "Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'."
+            echo "::error title=InternalError::Couldn't delete release '${{ inputs.nightly_name }}'."
+            exit 1
+          fi
+
+      - name: 📑 (Re)create (new) Release Page
+        id: createReleasePage
+        run: |
+          ANSI_LIGHT_RED="\e[91m"
+          ANSI_LIGHT_GREEN="\e[92m"
+          ANSI_NOCOLOR="\e[0m"
+
+          export GH_TOKEN=${{ github.token }}
+
+          if ${{ inputs.draft }}; then
+            addDraft="--draft"
+          fi
+
+          if ${{ inputs.prerelease }}; then
+            addPreRelease="--prerelease"
+          fi
+
+          if ! ${{ inputs.latest }}; then
+            addLatest="--latest=false"
+          fi
+
+          if [[ "${{ inputs.nightly_title }}" != "" ]]; then
+            addTitle=("--title" "${{ inputs.nightly_title }}")
+          fi
+
+          cat <<'EOF' > __NoTeS__.md
+          ${{ inputs.nightly_description }}
+          EOF
+          if [[ -s __NoTeS__.md ]]; then
+            addNotes=("--notes-file" "__NoTeS__.md")
+          fi
+          cat <<EOF >> __NoTeS__.md
+
+          --------
+          Published from [${{ github.workflow }}](https://github.com/Paebbels/ghdl/actions/runs/${{ github.run_id }}) workflow triggered by @${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S').
+          EOF
+
+          echo "Creating release '${{ inputs.nightly_name }}' ... "
+          gh release create "${{ inputs.nightly_name }}" --verify-tag $addDraft $addPreRelease $addLatest "${addTitle[@]}" "${addNotes[@]}"
+          if [[ $? -eq 0 ]]; then
+            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          else
+            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            echo "Couldn't create release '${{ inputs.nightly_name }}'."
+            echo "::error title=InternalError::Couldn't create release '${{ inputs.nightly_name }}'."
+            exit 1
+          fi
+
+      - name: 📥 Download artifacts and upload as assets
+        id: uploadAssets
+        run: |
+          ANSI_LIGHT_RED="\e[91m"
+          ANSI_LIGHT_GREEN="\e[92m"
+          ANSI_LIGHT_YELLOW="\e[93m"
+          ANSI_NOCOLOR="\e[0m"
+
+          export GH_TOKEN=${{ github.token }}
+
+          ERRORS=0
+          declare -A downloadedArtifacts
+          declare -A assetFilenames
+          while IFS=$'\r\n' read -r AssetLine; do
+            if [[ "${AssetLine}" == "" ]]; then
+              continue
+            fi
+
+            artifact="${AssetLine%%:*}"
+            remaining="${AssetLine#*:}"
+            asset="${remaining%%:*}"
+            title="${remaining##*:}"
+
+            echo "Publish asset '${asset}' from artifact '${artifact}' with title '${title}'"
+            echo -n "  Checked asset for duplicates ... "
+            if [[ -n "${assetFilenames[$asset]}" ]]; then
+              echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+              echo "::error title=DuplicateAsset::Asset '${asset}' from artifact '${artifact}' was already uploaded to release '${{ inputs.nightly_name }}'."
+              ERRORS=1
+              continue
+            else
+              echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+              assetFilenames[$asset]=1
+            fi
+
+            if [[ -n "${downloadedArtifacts[$artifact]}" ]]; then
+              echo -e "  downloading '${artifact}' ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
+            else
+              echo    "  downloading '${artifact}' ... "
+              echo -n "    gh run download $GITHUB_RUN_ID --dir \"${artifact}\" --name \"${artifact}\" "
+              gh run download $GITHUB_RUN_ID --dir "${artifact}" --name "${artifact}"
+              if [[ $? -eq 0 ]]; then
+                echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+              else
+                echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+                echo "Couldn't download artifact '${artifact}'."
+                echo "::error title=ArtifactNotFound::Couldn't download artifact '${artifact}'."
+                ERRORS=1
+                continue
+              fi
+              downloadedArtifacts[$artifact]=1
+            fi
+
+            echo -n "  checking asset '${artifact}/${asset}' ... "
+            if [[ "${asset}" == !*zip ]]; then
+              echo -e "${ANSI_LIGHT_GREEN}[ZIP]${ANSI_NOCOLOR}"
+              asset="${asset##*!}"
+              echo "    Compressing artifact '${artifact}' to '${asset}' ..."
+              cd "${artifact}"
+              zip -v -r "../${asset}" *
+              cd -
+              if [[ $? -eq 0 ]]; then
+                echo -e "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                uploadFile="${asset}"
+              else
+                echo -e "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+                echo "Couldn't compress '${artifact}' to zip file '${asset}'."
+                echo "::error title=ZipError::Couldn't compress '${artifact}' to zip file '${asset}'."
+                ERRORS=1
+                continue
+              fi
+            elif [[ -e "${artifact}/${asset}" ]]; then
+              echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+              uploadFile="${artifact}/${asset}"
+            else
+              echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+              echo "Couldn't find asset '${asset}' in artifact '${artifact}'."
+              echo "::error title=FileNotFound::Couldn't find asset '${asset}' in artifact '${artifact}'."
+              ERRORS=1
+              continue
+            fi
+
+            echo -n "  uploading asset '${asset}' from '${uploadFile}' with title '${title}' ... "
+            gh release upload ${{ inputs.nightly_name }} "${uploadFile}#${title}" --clobber
+            if [[ $? -eq 0 ]]; then
+              echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            else
+              echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+              echo "Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'."
+              echo "::error title=UploadError::Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'."
+              ERRORS=1
+              continue
+            fi
+          done <<<"${{ inputs.assets }}"
+
+          echo "Inspecting downlaoded artifacts ..."
+          tree .
+
+          if [[ $ERROR -ne 0 ]]; then
+            echo -e "${ANSI_LIGHT_RED}Errors detected in previous steps.${ANSI_NOCOLOR}"
+            exit 1
+          fi
