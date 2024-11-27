@@ -168,17 +168,24 @@ jobs:
           export GH_TOKEN=${{ github.token }}
 
           ERRORS=0
+          # A dictionary of 0/1 to avoid duplicate downloads
           declare -A downloadedArtifacts
+          # A dictionary to check for duplicate asset files in release
           declare -A assetFilenames
-          while IFS=$'\r\n' read -r AssetLine; do
-            if [[ "${AssetLine}" == "" ]]; then
+          while IFS=$'\r\n' read -r assetLine; do
+            if [[ "${assetLine}" == "" ]]; then
               continue
             fi
 
-            artifact="${AssetLine%%:*}"
-            remaining="${AssetLine#*:}"
+            # split assetLine colon separated triple: artifact:asset:title
+            artifact="${assetLine%%:*}"
+            remaining="${assetLine#*:}"
             asset="${remaining%%:*}"
             title="${remaining##*:}"
+
+            # remove leading whitespace
+            asset="${asset#"${asset%%[![:space:]]*}"}"
+            title="${title#"${title%%[![:space:]]*}"}"
 
             echo "Publish asset '${asset}' from artifact '${artifact}' with title '${title}'"
             echo -n "  Checked asset for duplicates ... "
@@ -192,6 +199,7 @@ jobs:
               assetFilenames[$asset]=1
             fi
 
+            # Download artifact by artifact name
             if [[ -n "${downloadedArtifacts[$artifact]}" ]]; then
               echo -e "  downloading '${artifact}' ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
             else
@@ -210,6 +218,7 @@ jobs:
               downloadedArtifacts[$artifact]=1
             fi
 
+            # Check if artifact should be compressed (zip, tgz) or if asset was part of the downloaded artifact.
             echo -n "  checking asset '${artifact}/${asset}' ... "
             if [[ "${asset}" == !*zip ]]; then
               echo -e "${ANSI_LIGHT_GREEN}[ZIP]${ANSI_NOCOLOR}"
@@ -256,6 +265,7 @@ jobs:
               continue
             fi
 
+            # Upload asset to existing release page
             echo -n "  uploading asset '${asset}' from '${uploadFile}' with title '${title}' ... "
             gh release upload ${{ inputs.nightly_name }} "${uploadFile}#${title}" --clobber
             if [[ $? -eq 0 ]]; then
@@ -270,7 +280,7 @@ jobs:
           done <<<"${{ inputs.assets }}"
 
           echo "Inspecting downloaded artifacts ..."
-          tree .
+          tree -L 3 .
 
           if [[ $ERROR -ne 0 ]]; then
             echo -e "${ANSI_LIGHT_RED}Errors detected in previous steps.${ANSI_NOCOLOR}"
