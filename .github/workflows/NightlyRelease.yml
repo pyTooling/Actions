@@ -108,6 +108,8 @@ jobs:
       - name: 📑 (Re)create (new) Release Page
         id: createReleasePage
         run: |
+          set +e
+
           ANSI_LIGHT_RED="\e[91m"
           ANSI_LIGHT_GREEN="\e[92m"
           ANSI_NOCOLOR="\e[0m"
@@ -156,6 +158,8 @@ jobs:
       - name: 📥 Download artifacts and upload as assets
         id: uploadAssets
         run: |
+          set +e
+
           ANSI_LIGHT_RED="\e[91m"
           ANSI_LIGHT_GREEN="\e[92m"
           ANSI_LIGHT_YELLOW="\e[93m"
@@ -212,7 +216,7 @@ jobs:
               asset="${asset##*!}"
               echo "    Compressing artifact '${artifact}' to '${asset}' ..."
               cd "${artifact}"
-              zip -v -r "../${asset}" *
+              zip -r "../${asset}" *
               cd -
               if [[ $? -eq 0 ]]; then
                 echo -e "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
@@ -221,6 +225,23 @@ jobs:
                 echo -e "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
                 echo "Couldn't compress '${artifact}' to zip file '${asset}'."
                 echo "::error title=ZipError::Couldn't compress '${artifact}' to zip file '${asset}'."
+                ERRORS=1
+                continue
+              fi
+            elif [[ "${asset}" == !*tgz ]]; then
+              echo -e "${ANSI_LIGHT_GREEN}[TAR/GZ]${ANSI_NOCOLOR}"
+              asset="${asset##*!}"
+              echo "    Compressing artifact '${artifact}' to '${asset}' ..."
+              cd "${artifact}"
+              tar -czf "../${asset}" *
+              cd -
+              if [[ $? -eq 0 ]]; then
+                echo -e "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                uploadFile="${asset}"
+              else
+                echo -e "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+                echo "Couldn't compress '${artifact}' to tgz file '${asset}'."
+                echo "::error title=ZipError::Couldn't compress '${artifact}' to tgz file '${asset}'."
                 ERRORS=1
                 continue
               fi
@@ -248,7 +269,7 @@ jobs:
             fi
           done <<<"${{ inputs.assets }}"
 
-          echo "Inspecting downlaoded artifacts ..."
+          echo "Inspecting downloaded artifacts ..."
           tree .
 
           if [[ $ERROR -ne 0 ]]; then
