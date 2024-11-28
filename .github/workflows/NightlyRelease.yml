@@ -71,7 +71,7 @@ jobs:
     permissions:
       contents: write
       actions: write
-      attestations: write
+#      attestations: write
 
     steps:
       - name: ⏬ Checkout repository
@@ -79,6 +79,9 @@ jobs:
         with:
           # The command 'git describe' (used for version) needs the history.
           fetch-depth: 0
+
+      - name: 🔧 Install zstd
+        run: sudo apt-get install -y --no-install-recommends zstd
 
       - name: 📑 Delete (old) Release Page
         id: deleteReleasePage
@@ -100,8 +103,8 @@ jobs:
             echo -e "${ANSI_LIGHT_YELLOW}[NOT FOUND]${ANSI_NOCOLOR}"
           else
             echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            echo "Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'."
-            echo "::error title=InternalError::Couldn't delete release '${{ inputs.nightly_name }}'."
+            echo -e "${ANSI_LIGHT_RED}Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
+            echo "::error title=InternalError::Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'."
             exit 1
           fi
 
@@ -145,13 +148,13 @@ jobs:
           EOF
 
           echo "Creating release '${{ inputs.nightly_name }}' ... "
-          gh release create "${{ inputs.nightly_name }}" --verify-tag $addDraft $addPreRelease $addLatest "${addTitle[@]}" "${addNotes[@]}"
+          message="$(gh release create "${{ inputs.nightly_name }}" --verify-tag $addDraft $addPreRelease $addLatest "${addTitle[@]}" "${addNotes[@]}" 2>&1)"
           if [[ $? -eq 0 ]]; then
             echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           else
             echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            echo "Couldn't create release '${{ inputs.nightly_name }}'."
-            echo "::error title=InternalError::Couldn't create release '${{ inputs.nightly_name }}'."
+            echo -e "${ANSI_LIGHT_RED}Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
+            echo "::error title=InternalError::Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'."
             exit 1
           fi
 
@@ -210,7 +213,7 @@ jobs:
                 echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
               else
                 echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                echo "Couldn't download artifact '${artifact}'."
+                echo -e "${ANSI_LIGHT_RED}Couldn't download artifact '${artifact}'.${ANSI_NOCOLOR}"
                 echo "::error title=ArtifactNotFound::Couldn't download artifact '${artifact}'."
                 ERRORS=1
                 continue
@@ -220,37 +223,79 @@ jobs:
 
             # Check if artifact should be compressed (zip, tgz) or if asset was part of the downloaded artifact.
             echo -n "  checking asset '${artifact}/${asset}' ... "
-            if [[ "${asset}" == !*zip ]]; then
+            if [[ "${asset}" == !*.zip ]]; then
               echo -e "${ANSI_LIGHT_GREEN}[ZIP]${ANSI_NOCOLOR}"
               asset="${asset##*!}"
               echo "    Compressing artifact '${artifact}' to '${asset}' ..."
-              cd "${artifact}"
-              zip -r "../${asset}" *
-              cd -
+              (
+                cd "${artifact}" && \
+                zip -r "../${asset}" *
+              )
               if [[ $? -eq 0 ]]; then
                 echo -e "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                 uploadFile="${asset}"
               else
                 echo -e "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                echo "Couldn't compress '${artifact}' to zip file '${asset}'."
-                echo "::error title=ZipError::Couldn't compress '${artifact}' to zip file '${asset}'."
+                echo -e "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zip file '${asset}'.${ANSI_NOCOLOR}"
+                echo "::error title=CompressionError::Couldn't compress '${artifact}' to zip file '${asset}'."
                 ERRORS=1
                 continue
               fi
-            elif [[ "${asset}" == !*tgz ]]; then
+            elif [[ "${asset}" == !*.tgz || "${asset}" == !*.tar.gz || "${asset}" == \$*.tgz || "${asset}" == \$*.tar.gz ]]; then
               echo -e "${ANSI_LIGHT_GREEN}[TAR/GZ]${ANSI_NOCOLOR}"
-              asset="${asset##*!}"
-              echo "    Compressing artifact '${artifact}' to '${asset}' ..."
-              cd "${artifact}"
-              tar -czf "../${asset}" *
-              cd -
-              if [[ $? -eq 0 ]]; then
+
+              if [[ "${asset:0:1}" == "\$" ]]; then
+                asset="${asset##*$}"
+                dirName="${asset%.*}"
+                echo "    Compressing artifact '${artifact}' to '${asset}' ..."
+                tar -c --gzip --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
+                retCode=$?
+              else
+                asset="${asset##*!}"
+                echo "    Compressing artifact '${artifact}' to '${asset}' ..."
+                (
+                  cd "${artifact}" && \
+                  tar -c --gzip --file="../${asset}" *
+                )
+                retCode=$?
+              fi
+
+              if [[ $retCode -eq 0 ]]; then
                 echo -e "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                 uploadFile="${asset}"
               else
                 echo -e "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                echo "Couldn't compress '${artifact}' to tgz file '${asset}'."
-                echo "::error title=ZipError::Couldn't compress '${artifact}' to tgz file '${asset}'."
+                echo -e "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to tgz file '${asset}'.${ANSI_NOCOLOR}"
+                echo "::error title=CompressionError::Couldn't compress '${artifact}' to tgz file '${asset}'."
+                ERRORS=1
+                continue
+              fi
+            elif [[ "${asset}" == !*.tzst || "${asset}" == !*.tar.zst || "${asset}" == \$*.tzst || "${asset}" == \$*.tar.zst ]]; then
+              echo -e "${ANSI_LIGHT_GREEN}[ZST]${ANSI_NOCOLOR}"
+
+              if [[ "${asset:0:1}" == "\$" ]]; then
+                asset="${asset##*$}"
+                dirName="${asset%.*}"
+                echo "    Compressing artifact '${artifact}' to '${asset}' ..."
+                tar -c --zstd --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
+                retCode=$?
+              else
+                asset="${asset##*!}"
+                echo "    Compressing artifact '${artifact}' to '${asset}' ..."
+                (
+                  cd "${artifact}" && \
+                  tar -c --zstd --file="../${asset}" *
+                )
+                retCode=$?
+              fi
+
+              if [[ $retCode -eq 0 ]]; then
+                echo -e "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                uploadFile="${asset}"
+              else
+                echo -e "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+                echo -e "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zst file '${asset}'.${ANSI_NOCOLOR}"
+                echo "::error title=CompressionError::Couldn't compress '${artifact}' to zst file '${asset}'."
                 ERRORS=1
                 continue
               fi
@@ -259,7 +304,7 @@ jobs:
               uploadFile="${artifact}/${asset}"
             else
               echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-              echo "Couldn't find asset '${asset}' in artifact '${artifact}'."
+              echo -e "${ANSI_LIGHT_RED}Couldn't find asset '${asset}' in artifact '${artifact}'.${ANSI_NOCOLOR}"
               echo "::error title=FileNotFound::Couldn't find asset '${asset}' in artifact '${artifact}'."
               ERRORS=1
               continue
@@ -272,12 +317,12 @@ jobs:
               echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
             else
               echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-              echo "Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'."
+              echo -e "${ANSI_LIGHT_RED}Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
               echo "::error title=UploadError::Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'."
               ERRORS=1
               continue
             fi
-          done <<<"${{ inputs.assets }}"
+          done <<<'${{ inputs.assets }}'
 
           echo "Inspecting downloaded artifacts ..."
           tree -L 3 .
