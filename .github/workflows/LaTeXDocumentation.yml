@@ -43,11 +43,19 @@ on:
         required: false
         default: ''
         type: string
+      miktex_image:
+        description: 'Name of the MikTeX image.'
+        required: false
+        default: 'pytooling/miktex:latest'
+        type: string
 
 jobs:
   PDFDocumentation:
     name: 📓 Converting LaTeX Documentation to PDF
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
+    container:
+      image: ${{ inputs.miktex_image }}
+
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
         uses: actions/download-artifact@v4
@@ -55,11 +63,17 @@ jobs:
           name: ${{ inputs.latex_artifact }}
           path: latex
 
-      - name: Compile LaTeX document
-        uses: xu-cheng/latex-action@master
-        with:
-          working_directory: latex
-          root_file: ${{ inputs.document }}.tex
+      - name: Version check
+        run: |
+          echo "which pdflatex: $(which pdflatex)"
+          echo ""
+          pdflatex --version
+
+      - name: Version check
+        run: |
+          cd latex
+          ls -lAh *.tex
+          latexmk ${{ inputs.document }}.tex
 
       - name: 📤 Upload 'PDF Documentation' artifact
         uses: actions/upload-artifact@v4
