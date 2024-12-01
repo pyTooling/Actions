@@ -43,11 +43,19 @@ on:
         required: false
         default: ''
         type: string
+      miktex_image:
+        description: 'Name of the MikTeX image.'
+        required: false
+        default: 'pytooling/miktex:latest'
+        type: string
 
 jobs:
   PDFDocumentation:
     name: 📓 Converting LaTeX Documentation to PDF
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
+    container:
+      image: ${{ inputs.miktex_image }}
+
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
         uses: pyTooling/download-artifact@v4
@@ -55,21 +63,17 @@ jobs:
           name: ${{ inputs.latex_artifact }}
           path: latex
 
-      - name: Debug
+      - name: Version check
         run: |
-          tree -pash .
+          echo "which pdflatex: $(which pdflatex)"
+          echo ""
+          pdflatex --version
 
-      - name: Build LaTeX document using 'pytooling/miktex:sphinx'
-        uses: addnab/docker-run-action@v3
-        with:
-          image: pytooling/miktex:sphinx
-          options: -v ${{ github.workspace }}/latex:/latex --workdir /latex
-          run: |
-            which pdflatex
-            pwd
-            ls -lAh
-
-            latexmk -xelatex ${{ inputs.document }}.tex
+      - name: Version check
+        run: |
+          cd latex
+          ls -lAh *.tex
+          latexmk ${{ inputs.document }}.tex
 
       - name: 📤 Upload 'PDF Documentation' artifact
         uses: pyTooling/upload-artifact@v4

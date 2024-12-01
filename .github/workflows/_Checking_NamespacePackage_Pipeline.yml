@@ -6,10 +6,11 @@ on:
 
 jobs:
   NamespacePackage:
-    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@dev
+    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@latex
     with:
       package_namespace: pyExamples
       package_name:      Extensions
+      documentation:     Actions
       codecov:           true
       codacy:            true
       dorny:             true

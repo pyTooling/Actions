@@ -33,6 +33,11 @@ on:
         description: 'Name of the tool''s package.'
         required: true
         type: string
+      documentation:
+        description: 'Name of documentation document.'
+        required: false
+        default: ''
+        type: string
       unittest_python_version:
         description: 'Python version.'
         required: false
@@ -310,15 +315,15 @@ jobs:
       sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-
       xml_unittest_artifacts_prefix:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
 
-#  PDFDocumentation:
-#    uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@dev
-#    needs:
-#      - UnitTestingParams
-#      - Documentation
-#    with:
-#      document: pyEDAA.ProjectModel
-#      latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
-#      pdf_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
+  PDFDocumentation:
+    uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@latex
+    needs:
+      - UnitTestingParams
+      - Documentation
+    with:
+      document: ${{ inputs.documentation }}
+      latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
+      pdf_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
 
   PublishToGitHubPages:
     uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@dev
@@ -392,7 +397,7 @@ jobs:
       - UnitTesting
       - StaticTypeCheck
       - Documentation
-#      - PDFDocumentation
+      - PDFDocumentation
       - PublishTestResults
       - PublishCoverageResults
       - PublishToGitHubPages
