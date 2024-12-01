@@ -7,8 +7,6 @@ on:
 jobs:
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@dev
-    needs:
-      - DocCoverage
     with:
       package_name: pyDummy
 

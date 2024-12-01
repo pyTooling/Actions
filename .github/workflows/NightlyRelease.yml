@@ -59,6 +59,11 @@ on:
         required: false
         default: false
         type: boolean
+      replacements:
+        description: 'Multi-line string containing search=replace patterns.'
+        required: false
+        default: ''
+        type: string
       assets:
         description: 'Multi-line string containing artifact:file:title asset descriptions.'
         required: true
@@ -170,6 +175,19 @@ jobs:
 
           export GH_TOKEN=${{ github.token }}
 
+          Replace() {
+            line="$1"
+            while IFS=$'\r\n' read -r patternLine; do
+              # skipp empty lines
+              [[ "$patternLine" == "" ]] && continue
+
+              pattern="${patternLine%%=*}"
+              replacement="${patternLine#*=}"
+              line="${line//"%$pattern%"/"$replacement"}"
+            done <<<'${{ inputs.replacements }}'
+            echo "$line"
+          }
+
           ERRORS=0
           # A dictionary of 0/1 to avoid duplicate downloads
           declare -A downloadedArtifacts
@@ -189,6 +207,10 @@ jobs:
             # remove leading whitespace
             asset="${asset#"${asset%%[![:space:]]*}"}"
             title="${title#"${title%%[![:space:]]*}"}"
+
+            # apply replacements
+            asset="$(Replace "${asset}")"
+            title="$(Replace "${title}")"
 
             echo "Publish asset '${asset}' from artifact '${artifact}' with title '${title}'"
             echo -n "  Checked asset for duplicates ... "

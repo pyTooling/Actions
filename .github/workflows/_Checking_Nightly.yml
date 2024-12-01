@@ -81,11 +81,15 @@ jobs:
         The following asset categories are provided for pyGHDL:
         * Platform specific Python wheel package for Ubuntu incl. `pyGHDL...so`
         * Platform specific Python wheel package for Windows incl. `pyGHDL...dll`
+      replacements: |
+        version=2.0
+        tool=myTool
+        prog=program
       assets: |
         document: document1.txt:   Documentation
-        document: build.log:       Logfile
-        other:    document1.txt:   SBOM
-        other:    program.py:      Application
+        document: build.log:       Logfile - %tool% - %tool%
+        other:    document1.txt:   SBOM - %version%
+        other:    %prog%.py:       Application - %tool% - %version%
         document:!archive1.zip:    Archive 1 - zip
         document:!archive2.tgz:    Archive 2 - tgz
         document:!archive3.tar.gz: Archive 3 - tar.gz
