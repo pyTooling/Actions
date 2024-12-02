@@ -52,11 +52,15 @@ jobs:
 #      attestations: write
     with:
       prerelease: true
+      replacements: |
+        version=4.2.0
+        tool=myTool
+        prog=program
       nightly_title: "Nightly Release"
       nightly_description: |
         This *nightly* release contains all latest and important artifacts created by GHDL's CI pipeline.
 
-        # GHDL 5.0.0-dev
+        # GHDL %version%
 
         GHDL offers the simulator and synthesis tool for VHDL. GHDL can be build for various backends:
         * `gcc` - using the GCC compiler framework
@@ -71,7 +75,7 @@ jobs:
         * Windows builds for standalone usage (without MSYS2) as ZIP file
         * MSYS2 packages as TAR/ZST file
 
-        # pyGHDL 5.0.0-dev
+        # pyGHDL %version%
 
         The Python package `pyGHDL` offers Python binding (`pyGHDL.libghdl`) to a `libghdl` shared library (`*.so`/`*.dll`).
         In addition to the low-level binding layer, pyGHDL offers:
@@ -81,10 +85,6 @@ jobs:
         The following asset categories are provided for pyGHDL:
         * Platform specific Python wheel package for Ubuntu incl. `pyGHDL...so`
         * Platform specific Python wheel package for Windows incl. `pyGHDL...dll`
-      replacements: |
-        version=2.0
-        tool=myTool
-        prog=program
       assets: |
         document: document1.txt:   Documentation
         document: build.log:       Logfile - %tool% - %tool%

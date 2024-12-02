@@ -124,9 +124,7 @@ jobs:
 
           export GH_TOKEN=${{ github.token }}
 
-          if ${{ inputs.draft }}; then
-            addDraft="--draft"
-          fi
+          addDraft="--draft"
 
           if ${{ inputs.prerelease }}; then
             addPreRelease="--prerelease"
@@ -146,6 +144,18 @@ jobs:
           if [[ -s __NoTeS__.md ]]; then
             addNotes=("--notes-file" "__NoTeS__.md")
           fi
+
+          # Apply replacements
+          while IFS=$'\r\n' read -r patternLine; do
+            # skipp empty lines
+            [[ "$patternLine" == "" ]] && continue
+
+            pattern="${patternLine%%=*}"
+            replacement="${patternLine#*=}"
+            sed -i -e "s/%$pattern%/$replacement/g" "__NoTeS__.md"
+          done <<<'${{ inputs.replacements }}'
+
+          # Add footer line
           cat <<EOF >> __NoTeS__.md
 
           --------
@@ -352,4 +362,26 @@ jobs:
           if [[ $ERROR -ne 0 ]]; then
             echo -e "${ANSI_LIGHT_RED}Errors detected in previous steps.${ANSI_NOCOLOR}"
             exit 1
+          fi
+
+      - name: 📑 Remove draft state from Release Page
+        if: ${{ ! inputs.draft }}
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED="\e[91m"
+          ANSI_LIGHT_GREEN="\e[92m"
+          ANSI_NOCOLOR="\e[0m"
+
+          export GH_TOKEN=${{ github.token }}
+
+          # Remove draft-state from release page
+          echo -n "Remove draft-state from release '${title}' ... "
+          gh release edit --draft=false "${{ inputs.nightly_name }}"
+          if [[ $? -eq 0 ]]; then
+            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          else
+            echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+            echo -e "${ANSI_LIGHT_RED}Couldn't remove draft-state from release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
+            echo "::error title=ReleasePage::Couldn't remove draft-state from release '${{ inputs.nightly_name }}'."
           fi
