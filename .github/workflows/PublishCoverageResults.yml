@@ -29,6 +29,10 @@ on:
         required: false
         default: '24.04'
         type: string
+      coverage_artifacts_pattern:
+        required: false
+        default: '*-CodeCoverage-*'
+        type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
         required: false
@@ -75,7 +79,12 @@ jobs:
       - name: Download Artifacts
         uses: pyTooling/download-artifact@v4
         with:
+          pattern: ${{ inputs.coverage_artifacts_pattern }}
           path: artifacts
+
+      - name: 🔎 Inspect extracted artifact (tarball)
+        run: |
+          tree -psh artifacts
 
       - name: 🔧 Install coverage and tomli
         run: |
@@ -206,7 +215,8 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_html_artifact }}
-          path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          working-directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          path: '*'
           if-no-files-found: error
           retention-days: 1
 

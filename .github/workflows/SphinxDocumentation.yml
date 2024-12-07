@@ -127,7 +127,8 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.html_artifact }}
-          path: ${{ inputs.doc_directory }}/_build/html
+          working-directory: ${{ inputs.doc_directory }}/_build/html
+          path: '*'
           if-no-files-found: error
           retention-days: 1
 
@@ -185,6 +186,7 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.latex_artifact }}
-          path: ${{ inputs.doc_directory }}/_build/latex
+          working-directory: ${{ inputs.doc_directory }}/_build/latex
+          path: '*'
           if-no-files-found: error
           retention-days: 1

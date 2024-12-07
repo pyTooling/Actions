@@ -166,7 +166,8 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.artifact }}
-          path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          working-directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          path: '*'
           if-no-files-found: error
           retention-days: 1
 

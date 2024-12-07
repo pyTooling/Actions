@@ -30,6 +30,10 @@ on:
         required: false
         default: '24.04'
         type: string
+      unittest_artifacts_pattern:
+        required: false
+        default: '*-UnitTestReportSummary-*'
+        type: string
       merged_junit_artifact:
         description: 'Name of the merged JUnit Test Summary artifact.'
         required: false
@@ -64,7 +68,12 @@ jobs:
       - name: Download Artifacts
         uses: pyTooling/download-artifact@v4
         with:
+          pattern: ${{ inputs.unittest_artifacts_pattern }}
           path: artifacts
+
+      - name: 🔎 Inspect extracted artifact (tarball)
+        run: |
+          tree -psh artifacts
 
       - name: 🔧 Install pyEDAA.Reports (JUunit Parser and Merger)
         run: |

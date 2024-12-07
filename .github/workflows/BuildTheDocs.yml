@@ -53,7 +53,8 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.artifact }}
-          path: doc/_build/html
+          working-directory: doc/_build/html
+          path: '*'
           retention-days: 1
 
       - name: '📓 Publish site to GitHub Pages'

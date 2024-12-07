@@ -445,7 +445,8 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.unittest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          path: report/unit/TestReportSummary.xml
+          working-directory: report/unit
+          path: TestReportSummary.xml
           if-no-files-found: error
           retention-days: 1
 
@@ -496,6 +497,7 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          working-directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          path: '*'
           if-no-files-found: error
           retention-days: 1

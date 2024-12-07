@@ -258,6 +258,7 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.apptest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          path: report/unit/TestReportSummary.xml
+          working-directory: report/unit
+          path: TestReportSummary.xml
           if-no-files-found: error
           retention-days: 1

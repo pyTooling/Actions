@@ -60,7 +60,7 @@ jobs:
         uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.artifact }}
-          path: dist/
+          path: dist
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v5

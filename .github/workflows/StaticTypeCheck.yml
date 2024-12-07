@@ -92,7 +92,8 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.html_artifact }}
-          path: ${{ inputs.html_report }}
+          working-directory: ${{ inputs.html_report }}
+          path: '*'
           if-no-files-found: error
           retention-days: 1
 
