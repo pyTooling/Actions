@@ -89,7 +89,7 @@ jobs:
       - name: 📤 Upload 'Static Typing Report' HTML artifact
         if: ${{ inputs.html_artifact != '' }}
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.html_artifact }}
           path: ${{ inputs.html_report }}
@@ -99,7 +99,7 @@ jobs:
       - name: 📤 Upload 'Static Typing Report' JUnit artifact
         if: ${{ inputs.junit_artifact != '' }}
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.junit_artifact }}
           path: ${{ inputs.junit_report }}

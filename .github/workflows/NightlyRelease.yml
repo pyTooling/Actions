@@ -147,7 +147,7 @@ jobs:
 
           # Apply replacements
           while IFS=$'\r\n' read -r patternLine; do
-            # skipp empty lines
+            # skip empty lines
             [[ "$patternLine" == "" ]] && continue
 
             pattern="${patternLine%%=*}"
@@ -188,7 +188,7 @@ jobs:
           Replace() {
             line="$1"
             while IFS=$'\r\n' read -r patternLine; do
-              # skipp empty lines
+              # skip empty lines
               [[ "$patternLine" == "" ]] && continue
 
               pattern="${patternLine%%=*}"
