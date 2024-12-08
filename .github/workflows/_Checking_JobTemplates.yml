@@ -7,8 +7,6 @@ on:
 jobs:
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r2
-    needs:
-      - DocCoverage
     with:
       package_name: pyDummy
 
@@ -80,10 +78,11 @@ jobs:
   DocCoverage:
     uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@r1
     needs:
+      - ConfigParams
       - UnitTestingParams
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
-      directory: sphinx_reports
+      directory: ${{ needs.ConfigParams.outputs.package_directors }}
 #      fail_below: 70
 
   Package:
@@ -130,8 +129,8 @@ jobs:
   Documentation:
     uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r2
     needs:
-      - UnitTestingParams
       - ConfigParams
+      - UnitTestingParams
       - PublishTestResults
       - PublishCoverageResults
 #      - VerifyDocs

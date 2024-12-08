@@ -1,4 +1,4 @@
-name: Verification of Pipeline Templates
+name: Verification of Pipeline Templates (Simple Package)
 
 on:
   push:

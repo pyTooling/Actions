@@ -82,6 +82,9 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
 
       - name: 🔧 Install graphviz
         run: sudo apt-get install -y --no-install-recommends graphviz
@@ -98,14 +101,14 @@ jobs:
 
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
         if: inputs.unittest_xml_artifact != ''
-        uses: actions/download-artifact@v4
+        uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.unittest_xml_artifact }}
           path: ${{ inputs.unittest_xml_directory }}
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
         if: inputs.coverage_json_artifact != ''
-        uses: actions/download-artifact@v4
+        uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.coverage_json_artifact }}
           path: ${{ inputs.coverage_report_json_directory }}
@@ -135,6 +138,9 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
 
       - name: 🔧 Install graphviz
         run: sudo apt-get install -y --no-install-recommends graphviz
@@ -151,14 +157,14 @@ jobs:
 
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
         if: inputs.unittest_xml_artifact != ''
-        uses: actions/download-artifact@v4
+        uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.unittest_xml_artifact }}
           path: ${{ inputs.unittest_xml_directory }}
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
         if: inputs.coverage_json_artifact != ''
-        uses: actions/download-artifact@v4
+        uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.coverage_json_artifact }}
           path: ${{ inputs.coverage_report_json_directory }}

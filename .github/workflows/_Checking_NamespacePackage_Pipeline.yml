@@ -1,4 +1,4 @@
-name: Verification of Pipeline Templates
+name: Verification of Pipeline Templates (Namespace Package)
 
 on:
   push:
