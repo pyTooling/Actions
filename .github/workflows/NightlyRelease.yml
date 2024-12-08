@@ -68,6 +68,10 @@ on:
         description: 'Multi-line string containing artifact:file:title asset descriptions.'
         required: true
         type: string
+      tarball-name:
+        type: string
+        required: false
+        default: '__pyTooling_upload_artifact__.tar'
 
 jobs:
   Release:
@@ -251,6 +255,25 @@ jobs:
                 continue
               fi
               downloadedArtifacts[$artifact]=1
+
+              echo -n "  Checking for embedded tarball ... "
+              if [[ -f "${artifact}/${{ inputs.tarball-name }}" ]]; then
+                echo -e "${ANSI_LIGHT_GREEN}[FOUND]${ANSI_NOCOLOR}"
+
+                pushd "${artifact}" > /dev/null
+
+                echo -n "    Extracting embedded tarball ... "
+                tar -xf "${{ inputs.tarball-name }}"
+                if [[ $? -ne 0 ]]; then
+                  echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+                else
+                  echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                fi
+
+                popd > /dev/null
+              else
+                echo -e "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
+              fi
             fi
 
             # Check if artifact should be compressed (zip, tgz) or if asset was part of the downloaded artifact.
