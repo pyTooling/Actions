@@ -25,7 +25,7 @@ jobs:
         run: echo "${{ matrix.runs-on }}-${{ matrix.python }}" >> artifact.txt
 
       - name: 📤 Upload artifact for ${{ matrix.system }}-${{ matrix.python }}
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}-${{ matrix.system }}-${{ matrix.python }}
           path: artifact.txt
@@ -42,7 +42,7 @@ jobs:
         run: echo "Package" >> package.txt
 
       - name: 📤 Upload artifact for ${{ matrix.system }}-${{ matrix.python }}
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
           path: package.txt

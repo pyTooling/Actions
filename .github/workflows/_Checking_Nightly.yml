@@ -1,0 +1,101 @@
+name: Verification of Nightly Releases
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  Build:
+    name: Build something
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: 🖉 Build 1
+        run: |
+          echo "Document 1 $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > document1.txt
+          echo "Analysis log $(date --utc '+%d.%m.%Y - %H:%M:%S')" > analysis.log
+          echo "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
+
+      - name: 📤 Upload artifact
+        uses: pyTooling/upload-artifact@v4
+        with:
+          name: document
+          path: |
+            document1.txt
+            *.log
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: 🖉 Program
+        run: |
+          echo "Document other $(date --utc '+%d.%m.%Y - %H:%M:%S')" > document1.txt
+          echo "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"        > program.py
+
+      - name: 📤 Upload artifact
+        uses: pyTooling/upload-artifact@v4
+        with:
+          name: other
+          path: |
+            *.txt
+            *.py
+          if-no-files-found: error
+          retention-days: 1
+
+  NightlyPage:
+    uses: pyTooling/Actions/.github/workflows/NightlyRelease.yml@main
+    needs:
+      - Build
+    secrets: inherit
+    permissions:
+      contents: write
+      actions: write
+#      attestations: write
+    with:
+      prerelease: true
+      replacements: |
+        version=4.2.0
+        tool=myTool
+        prog=program
+      nightly_title: "Nightly Release"
+      nightly_description: |
+        This *nightly* release contains all latest and important artifacts created by GHDL's CI pipeline.
+
+        # GHDL %version%
+
+        GHDL offers the simulator and synthesis tool for VHDL. GHDL can be build for various backends:
+        * `gcc` - using the GCC compiler framework
+        * `mcode` - in memory code generation
+        * `llvm` - using the LLVM compiler framework
+        * `llvm-jit` - using the LLVM compiler framework, but in memory
+
+        The following asset categories are provided for GHDL:
+        * macOS x64-64 builds as TAR/GZ file
+        * macOS aarch64 builds as TAR/GZ file
+        * Ubuntu 24.04 LTS builds as TAR/GZ file
+        * Windows builds for standalone usage (without MSYS2) as ZIP file
+        * MSYS2 packages as TAR/ZST file
+
+        # pyGHDL %version%
+
+        The Python package `pyGHDL` offers Python binding (`pyGHDL.libghdl`) to a `libghdl` shared library (`*.so`/`*.dll`).
+        In addition to the low-level binding layer, pyGHDL offers:
+        * a Language Server Protocol (LSP) instance for e.g. live code checking by editors
+        * a Code Document Object Model (CodeDOM) based on [pyVHDLModel](https://github.com/VHDL/pyVHDLModel)
+
+        The following asset categories are provided for pyGHDL:
+        * Platform specific Python wheel package for Ubuntu incl. `pyGHDL...so`
+        * Platform specific Python wheel package for Windows incl. `pyGHDL...dll`
+      assets: |
+        document: document1.txt:   Documentation
+        document: build.log:       Logfile - %tool% - %tool%
+        other:    document1.txt:   SBOM - %version%
+        other:    %prog%.py:       Application - %tool% - %version%
+        document:!archive1.zip:    Archive 1 - zip
+        document:!archive2.tgz:    Archive 2 - tgz
+        document:!archive3.tar.gz: Archive 3 - tar.gz
+        document:!archive4.tzst:   Archive 4 - tzst
+        document:!archive5.tar.zst:Archive 5 - tar.zst
+        document:$archive6.tgz:    Archive 6 - tgz + dir
+        document:$archive7.tar.gz: Archive 7 - tar.gz + dir
+        document:$archive8.tzst:   Archive 8 - tzst + dir
+        document:$archive9.tar.zst:Archive 9 - tar.zst + dir

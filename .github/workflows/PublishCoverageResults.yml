@@ -29,6 +29,10 @@ on:
         required: false
         default: '24.04'
         type: string
+      coverage_artifacts_pattern:
+        required: false
+        default: '*-CodeCoverage-*'
+        type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
         required: false
@@ -68,11 +72,19 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: pyTooling/download-artifact@v4
         with:
+          pattern: ${{ inputs.coverage_artifacts_pattern }}
           path: artifacts
+
+      - name: 🔎 Inspect extracted artifact (tarball)
+        run: |
+          tree -psh artifacts
 
       - name: 🔧 Install coverage and tomli
         run: |
@@ -170,7 +182,7 @@ jobs:
       - name: 📤 Upload 'Coverage SQLite Database' artifact
         if: inputs.coverage_sqlite_artifact != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_sqlite_artifact }}
           path: .coverage
@@ -180,7 +192,7 @@ jobs:
       - name: 📤 Upload 'Coverage XML Report' artifact
         if: inputs.coverage_xml_artifact != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_xml_artifact }}
           path: ${{ steps.getVariables.outputs.coverage_report_xml }}
@@ -190,7 +202,7 @@ jobs:
       - name: 📤 Upload 'Coverage JSON Report' artifact
         if: inputs.coverage_json_artifact != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_json_artifact }}
           path: ${{ steps.getVariables.outputs.coverage_report_json }}
@@ -200,17 +212,18 @@ jobs:
       - name: 📤 Upload 'Coverage HTML Report' artifact
         if: inputs.coverage_html_artifact != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_html_artifact }}
-          path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          working-directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          path: '*'
           if-no-files-found: error
           retention-days: 1
 
       - name: 📊 Publish code coverage at CodeCov
         if: inputs.CodeCov == true
         continue-on-error: true
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: ${{ steps.getVariables.outputs.coverage_report_xml }}
           flags: unittests
