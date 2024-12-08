@@ -270,6 +270,14 @@ jobs:
                   echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                 fi
 
+                echo -n "    Removing temporary tarball ... "
+                rm -f "${{ inputs.tarball-name }}"
+                if [[ $? -ne 0 ]]; then
+                  echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+                else
+                  echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                fi
+
                 popd > /dev/null
               else
                 echo -e "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
