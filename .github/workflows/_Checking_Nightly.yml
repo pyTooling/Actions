@@ -32,7 +32,7 @@ jobs:
           echo "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"        > program.py
 
       - name: 📤 Upload artifact
-        uses: pyTooling/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         with:
           name: other
           path: |
