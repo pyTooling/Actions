@@ -54,6 +54,9 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v5
@@ -103,9 +106,10 @@ jobs:
         run: python setup.py bdist_wheel
 
       - name: 📤 Upload wheel artifact
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.artifact }}
-          path: dist/
+          working-directory: dist
+          path: '*'
           if-no-files-found: error
           retention-days: 1

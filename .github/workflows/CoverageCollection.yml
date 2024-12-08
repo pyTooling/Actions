@@ -76,6 +76,9 @@ jobs:
 
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v5
@@ -160,16 +163,17 @@ jobs:
 
       - name: 📤 Upload 'Coverage Report' artifact
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.artifact }}
-          path: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          working-directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          path: '*'
           if-no-files-found: error
           retention-days: 1
 
       - name: 📊 Publish coverage at CodeCov
         continue-on-error: true
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ${{ steps.getVariables.outputs.coverage_report_xml }}
           flags: unittests

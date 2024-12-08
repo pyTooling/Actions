@@ -8,7 +8,7 @@ print(f"Python: {version}")
 
 def loadRequirementsFile(requirementsFile: Path):
 	requirements = []
-	with requirementsFile.open("r") as file:
+	with requirementsFile.open("r", encoding="utf-8") as file:
 		for line in file.readlines():
 			line = line.strip()
 			if line.startswith("#") or line.startswith("https") or line == "":
@@ -84,7 +84,7 @@ for dependency in dependencies:
 # Write jobs to special file
 github_output = Path(getenv("GITHUB_OUTPUT"))
 print(f"GITHUB_OUTPUT: {github_output}")
-with github_output.open("a+") as f:
+with github_output.open("a+", encoding="utf-8") as f:
 	f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
 
 print(f"GITHUB_OUTPUT:")

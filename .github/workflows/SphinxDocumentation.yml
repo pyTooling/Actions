@@ -82,6 +82,9 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
 
       - name: 🔧 Install graphviz
         run: sudo apt-get install -y --no-install-recommends graphviz
@@ -98,14 +101,14 @@ jobs:
 
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
         if: inputs.unittest_xml_artifact != ''
-        uses: actions/download-artifact@v4
+        uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.unittest_xml_artifact }}
           path: ${{ inputs.unittest_xml_directory }}
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
         if: inputs.coverage_json_artifact != ''
-        uses: actions/download-artifact@v4
+        uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.coverage_json_artifact }}
           path: ${{ inputs.coverage_report_json_directory }}
@@ -121,10 +124,11 @@ jobs:
       - name: 📤 Upload 'HTML Documentation' artifact
         if: inputs.html_artifact != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.html_artifact }}
-          path: ${{ inputs.doc_directory }}/_build/html
+          working-directory: ${{ inputs.doc_directory }}/_build/html
+          path: '*'
           if-no-files-found: error
           retention-days: 1
 
@@ -135,6 +139,9 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
 
       - name: 🔧 Install graphviz
         run: sudo apt-get install -y --no-install-recommends graphviz
@@ -151,14 +158,14 @@ jobs:
 
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
         if: inputs.unittest_xml_artifact != ''
-        uses: actions/download-artifact@v4
+        uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.unittest_xml_artifact }}
           path: ${{ inputs.unittest_xml_directory }}
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
         if: inputs.coverage_json_artifact != ''
-        uses: actions/download-artifact@v4
+        uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.coverage_json_artifact }}
           path: ${{ inputs.coverage_report_json_directory }}
@@ -176,9 +183,10 @@ jobs:
       - name: 📤 Upload 'LaTeX Documentation' artifact
         if: inputs.latex_artifact != ''
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.latex_artifact }}
-          path: ${{ inputs.doc_directory }}/_build/latex
+          working-directory: ${{ inputs.doc_directory }}/_build/latex
+          path: '*'
           if-no-files-found: error
           retention-days: 1
