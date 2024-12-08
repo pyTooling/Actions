@@ -54,6 +54,9 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v5

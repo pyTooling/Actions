@@ -50,7 +50,7 @@ jobs:
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
-        uses: actions/download-artifact@v4
+        uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.latex_artifact }}
           path: latex

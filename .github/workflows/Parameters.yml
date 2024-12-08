@@ -83,7 +83,7 @@ on:
       windows_image:
         description: 'The used GitHub Action image for Windows based jobs.'
         required: false
-        default: 'windows-latest'
+        default: 'windows-2022'
         type: string
       macos_intel_image:
         description: 'The used GitHub Action image for macOS (Intel x86-64) based jobs.'
@@ -93,7 +93,7 @@ on:
       macos_arm_image:
         description: 'The used GitHub Action image for macOS (ARM aarch64) based jobs.'
         required: false
-        default: 'macos-latest'
+        default: 'macos-14'
         type: string
 
     outputs:
