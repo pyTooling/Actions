@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Background &mdash; pyDummy 0.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=77553476" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-reports.e44b1595f1e09d5e109d001839ba3f42.css?v=0b41afa8" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=6fa0b579" />
+
+  
+    <link rel="shortcut icon" href="_static/icon.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=90733dfc"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Repository Structure" href="RepositoryStructure.html" />
+    <link rel="prev" title="pyTooling Actions Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Background</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#callable-vs-dispatchable-workflows">Callable vs dispatchable workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#call-hierarchy">Call hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#script-with-post-step">Script with post step</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/CoverageCollection.html">CoverageCollection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/UnitTesting.html">UnitTesting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/StaticTypeCheck.html">StaticTypeCheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/PublishTestResults.html">PublishTestResults</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Package.html">Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/PublishOnPyPI.html">PublishOnPyPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/VerifyDocs.html">VerifyDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/BuildTheDocs.html">BuildTheDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/PublishToGitHubPages.html">PublishToGitHubPages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Release.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/ArtifactCleanUp.html">ArtifactCleanUp</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pyDummy/pyDummy.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyDummy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Background</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Background.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="background">
+<h1>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h1>
+<p>GitHub Actions supports five procedures to reuse code:</p>
+<ul class="simple">
+<li><p>JavaScript Action:</p>
+<ul>
+<li><p><a class="reference external" href="https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action">docs.github.com: actions/creating-actions/creating-a-javascript-action</a></p></li>
+</ul>
+</li>
+<li><p>Container Action:</p>
+<ul>
+<li><p><a class="reference external" href="https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action">docs.github.com: actions/creating-actions/creating-a-docker-container-action</a></p></li>
+</ul>
+</li>
+<li><p>Container Step:</p>
+<ul>
+<li><p><a class="reference external" href="https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#example-using-a-docker-public-registry-action">docs.github.com: actions/learn-github-actions/workflow-syntax-for-github-actions#example-using-a-docker-public-registry-action</a></p></li>
+<li><p><a class="reference external" href="https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepswithargs">docs.github.com: actions/learn-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepswithargs</a></p></li>
+</ul>
+</li>
+<li><p>Composite Action:</p>
+<ul>
+<li><p><a class="reference external" href="https://docs.github.com/en/actions/creating-actions/creating-a-composite-action">docs.github.com: actions/creating-actions/creating-a-composite-action</a></p></li>
+<li><p><a class="reference external" href="https://github.blog/changelog/2020-08-07-github-actions-composite-run-steps/">github.blog/changelog: 2020-08-07-github-actions-composite-run-steps</a></p></li>
+<li><p><a class="reference external" href="https://github.blog/changelog/2021-08-25-github-actions-reduce-duplication-with-action-composition/">github.blog/changelog: 2021-08-25-github-actions-reduce-duplication-with-action-composition</a></p></li>
+</ul>
+</li>
+<li><p>Reusable Workflow:</p>
+<ul>
+<li><p><a class="reference external" href="https://docs.github.com/en/actions/learn-github-actions/reusing-workflows">docs.github.com: actions/learn-github-actions/reusing-workflows</a></p></li>
+<li><p><a class="reference external" href="https://github.blog/changelog/2021-10-05-github-actions-dry-your-github-actions-configuration-by-reusing-workflows/">github.blog/changelog: 2021-10-05-github-actions-dry-your-github-actions-configuration-by-reusing-workflows</a></p></li>
+</ul>
+</li>
+</ul>
+<p>Container Actions and Container Steps are almost equivalent: Actions use a configuration file (<code class="docutils literal notranslate"><span class="pre">action.yml</span></code>), while
+Steps do not.
+Leaving JavaScript and Container Actions and Steps aside, the main differences between Composite Actions and Reusable
+Workflows are the following:</p>
+<ul class="simple">
+<li><p>Composite Actions can be executed from a remote/external path or from the checked out branch, and from any location.
+However, Reusable Workflows can only be used through a remote/external path (<code class="docutils literal notranslate"><span class="pre">{owner}/{repo}/{path}/{filename}&#64;{ref}</span></code>),
+where <code class="docutils literal notranslate"><span class="pre">{path}</span></code> must be <code class="docutils literal notranslate"><span class="pre">.github/workflows</span></code>, and <code class="docutils literal notranslate"><span class="pre">&#64;{ref}</span></code> is required.
+See <a class="reference external" href="https://github.com/actions/runner/issues/1493">actions/runner#1493</a>.
+As a result:</p>
+<ul>
+<li><p>Local Composite Actions cannot be used without a prior repo checkout, but Reusable Workflows can be used without
+checkout.</p></li>
+<li><p>Testing development versions of local Reusable Workflows is cumbersome, because PRs do not pick the modifications by
+default.</p></li>
+</ul>
+</li>
+<li><p>Composite Actions can include multiple steps, but not multiple jobs.
+Conversely, Reusable Workflows can include multiple jobs, and multiple steps in each job.</p></li>
+<li><p>Composite Actions can include multiple files, so it’s possible to use files from the Action or from the user’s repository.
+Conversely, Reusable Workflows are a single YAML file, with no additional files retrieved by default.</p></li>
+</ul>
+<section id="callable-vs-dispatchable-workflows">
+<h2>Callable vs dispatchable workflows<a class="headerlink" href="#callable-vs-dispatchable-workflows" title="Link to this heading"></a></h2>
+<p>Reusable Workflows are defined through the <code class="docutils literal notranslate"><span class="pre">workflow_call</span></code> event kind.
+Similarly, any “regular” Workflow can be triggered through a <code class="docutils literal notranslate"><span class="pre">workflow_dispatch</span></code> event.
+Both event kinds support <code class="docutils literal notranslate"><span class="pre">input</span></code> options, which are usable within the Workflow.
+Therefore, one might intuitively try to write a workflow which is both callable and dispatchable.
+In other words, which can be either reused from another workflow, or triggered through the API.
+Unfortunately, that is not the case.
+Although <code class="docutils literal notranslate"><span class="pre">input</span></code> options can be duplicated for both events, GitHub’s backend exposes them through different objects.
+In dispatchable Workflows, the object is <code class="docutils literal notranslate"><span class="pre">${{</span> <span class="pre">github.event.inputs</span> <span class="pre">}}</span></code>, while callable workflows receive <code class="docutils literal notranslate"><span class="pre">${{</span> <span class="pre">inputs</span> <span class="pre">}}</span></code>.</p>
+<p>As a result, in order to make a reusable workflow dispatchable, a wrapper workflow is required.
+See, for instance, <a class="reference external" href="https://github.com/hdl/containers/blob/main/.github/workflows/common.yml">hdl/containers: .github/workflows/common.yml</a>
+and <a class="reference external" href="https://github.com/hdl/containers/blob/main/.github/workflows/dispatch.yml">hdl/containers: .github/workflows/dispatch.yml</a>.
+Alternatively, a normalisation job might be used, similar to the <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> in this repo.</p>
+</section>
+<section id="call-hierarchy">
+<h2>Call hierarchy<a class="headerlink" href="#call-hierarchy" title="Link to this heading"></a></h2>
+<p>Reusable Workflows cannot call other Reusable Workflows, however, they can use Composite Actions and Composite Actions
+can call other Actions.
+Therefore, in some use cases it is sensible to combine one layer of reusable workflows for orchestrating the jobs, along
+with multiple layers of composite actions.</p>
+</section>
+<section id="script-with-post-step">
+<h2>Script with post step<a class="headerlink" href="#script-with-post-step" title="Link to this heading"></a></h2>
+<p>JavaScript Actions support defining <code class="docutils literal notranslate"><span class="pre">pre</span></code>, <code class="docutils literal notranslate"><span class="pre">pre-if</span></code>, <code class="docutils literal notranslate"><span class="pre">post</span></code> and <code class="docutils literal notranslate"><span class="pre">post-if</span></code> steps, which allow executing steps at
+the beginning or the end of a job, regardless of intermediate steps failing.
+Unfortunately, those are not available for any other Action type.</p>
+<p>Action [with-post-step](with-post-step) is a generic JS Action to execute a main command and to set a command as a post
+step.
+It allows using the <code class="docutils literal notranslate"><span class="pre">post</span></code> feature with scripts written in bash, python or any other interpreted language available on
+the environment.
+See: <a class="reference external" href="https://github.com/actions/runner/issues/1478">actions/runner#1478</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="pyTooling Actions Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="RepositoryStructure.html" class="btn btn-neutral float-right" title="Repository Structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2024, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 08.12.2024.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

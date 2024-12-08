@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PublishOnPyPI &mdash; pyDummy 0.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=77553476" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-reports.e44b1595f1e09d5e109d001839ba3f42.css?v=0b41afa8" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=6fa0b579" />
+
+  
+    <link rel="shortcut icon" href="../_static/icon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=90733dfc"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="VerifyDocs" href="VerifyDocs.html" />
+    <link rel="prev" title="Package" href="Package.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoverageCollection.html">CoverageCollection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UnitTesting.html">UnitTesting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StaticTypeCheck.html">StaticTypeCheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PublishTestResults.html">PublishTestResults</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Package.html">Package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PublishOnPyPI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#instantiation">Instantiation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-example">Simple Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complex-example">Complex Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#python-version">python_version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#requirements">requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#artifact">artifact</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#secrets">Secrets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pypi-token">PYPI_TOKEN</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#results">Results</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="VerifyDocs.html">VerifyDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BuildTheDocs.html">BuildTheDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PublishToGitHubPages.html">PublishToGitHubPages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Release.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ArtifactCleanUp.html">ArtifactCleanUp</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyDummy/pyDummy.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyDummy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PublishOnPyPI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/JobTemplate/PublishOnPyPI.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="publishonpypi">
+<span id="jobtmpl-pypi"></span><h1>PublishOnPyPI<a class="headerlink" href="#publishonpypi" title="Link to this heading"></a></h1>
+<p>Publish a source (<code class="docutils literal notranslate"><span class="pre">*.tar.gz</span></code>) package and/or wheel (<code class="docutils literal notranslate"><span class="pre">*.whl</span></code>) packages to <a class="reference external" href="https://pypi.org/">PyPI</a>.</p>
+<p><strong>Behavior:</strong></p>
+<ol class="arabic simple">
+<li><p>Download package artifact</p></li>
+<li><p>Publish source package(s) (<code class="docutils literal notranslate"><span class="pre">*.tar.gz</span></code>)</p></li>
+<li><p>Publish wheel package(s) (<code class="docutils literal notranslate"><span class="pre">*.whl</span></code>)</p></li>
+<li><p>Delete the artifact</p></li>
+</ol>
+<p><strong>Preconditions:</strong></p>
+<p>A PyPI account was created and the package name is either not occupied or the user has access rights for that package.</p>
+<p><strong>Requirements:</strong></p>
+<p>Setup a secret (e.g. <code class="docutils literal notranslate"><span class="pre">PYPI_TOKEN</span></code>) in GitHub to handover the PyPI token to the job.</p>
+<p><strong>Dependencies:</strong></p>
+<ul class="simple">
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/download-artifact">gh:actions/download-artifact</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/setup-python">gh:actions/setup-python</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/geekyeggo/delete-artifact">gh:geekyeggo/delete-artifact</a></p></li>
+</ul>
+<section id="instantiation">
+<h2>Instantiation<a class="headerlink" href="#instantiation" title="Link to this heading"></a></h2>
+<section id="simple-example">
+<h3>Simple Example<a class="headerlink" href="#simple-example" title="Link to this heading"></a></h3>
+<p>The following example demonstrates how to publish the artifact named <code class="docutils literal notranslate"><span class="pre">Package</span></code> to PyPI on every pipeline run triggered
+by a Git tag. A secret is forwarded from GitHub secrets to a job secret.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ...</span>
+
+<span class="w">  </span><span class="nt">PublishOnPyPI</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r0</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">startsWith(github.ref, &#39;refs/tags&#39;)</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">artifact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Package</span>
+<span class="w">    </span><span class="nt">secrets</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">PYPI_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_TOKEN }}</span>
+</pre></div>
+</div>
+</section>
+<section id="complex-example">
+<h3>Complex Example<a class="headerlink" href="#complex-example" title="Link to this heading"></a></h3>
+<p>In this more complex example, the job depends on a parameter creation (<code class="docutils literal notranslate"><span class="pre">Params</span></code>) and packaging job (<code class="docutils literal notranslate"><span class="pre">Package</span></code>). The
+used Python version is overwritten by a parameter calculated in the <code class="docutils literal notranslate"><span class="pre">Params</span></code> jobs. Also the artifact name is managed
+by that job. Finally, the list of requirements is overwritten to load a list of requirements from <code class="docutils literal notranslate"><span class="pre">dist/requirements.txt</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">Params</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># ...</span>
+
+<span class="w">  </span><span class="nt">Package</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># ...</span>
+
+<span class="w">  </span><span class="nt">PublishOnPyPI</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r0</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">startsWith(github.ref, &#39;refs/tags&#39;)</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Params</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Package</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">python_version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.Params.outputs.python_version }}</span>
+<span class="w">      </span><span class="nt">requirements</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-r dist/requirements.txt</span>
+<span class="w">      </span><span class="nt">artifact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ fromJson(needs.Params.outputs.artifact_names).package_all }}</span>
+<span class="w">    </span><span class="nt">secrets</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">PYPI_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_TOKEN }}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<section id="python-version">
+<h3>python_version<a class="headerlink" href="#python-version" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>python_version</p></td>
+<td><p>optional</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3.11</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Python version used for uploading the package contents via <cite>twine</cite> to PyPI.</p>
+</section>
+<section id="requirements">
+<h3>requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>requirements</p></td>
+<td><p>optional</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">wheel</span> <span class="pre">twine</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>List of requirements to be installed for uploading the package contents to PyPI.</p>
+</section>
+<section id="artifact">
+<h3>artifact<a class="headerlink" href="#artifact" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>artifact</p></td>
+<td><p>yes</p></td>
+<td><p>string</p></td>
+<td><p>— — — —</p></td>
+</tr>
+</tbody>
+</table>
+<p>Name of the artifact containing the package(s).</p>
+</section>
+</section>
+<section id="secrets">
+<h2>Secrets<a class="headerlink" href="#secrets" title="Link to this heading"></a></h2>
+<section id="pypi-token">
+<h3>PYPI_TOKEN<a class="headerlink" href="#pypi-token" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Secret Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PYPI_TOKEN</p></td>
+<td><p>yes</p></td>
+<td><p>string</p></td>
+<td><p>— — — —</p></td>
+</tr>
+</tbody>
+</table>
+<p>The token to access the package at PyPI for uploading new data.</p>
+</section>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<p>This job template has no output parameters.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Package.html" class="btn btn-neutral float-left" title="Package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="VerifyDocs.html" class="btn btn-neutral float-right" title="VerifyDocs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2024, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 08.12.2024.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
