@@ -31,7 +31,7 @@ on:
         type: string
       coverage_artifacts_pattern:
         required: false
-        default: '*-CodeCoverage-*'
+        default: '*-CodeCoverage-SQLite-*'
         type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'

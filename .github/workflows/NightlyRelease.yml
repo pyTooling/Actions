@@ -311,14 +311,14 @@ jobs:
                 asset="${asset##*$}"
                 dirName="${asset%.*}"
                 echo "    Compressing artifact '${artifact}' to '${asset}' ..."
-                tar -c --gzip --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
+                tar -c --gzip --owner=0 --group=0 --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
                 retCode=$?
               else
                 asset="${asset##*!}"
                 echo "    Compressing artifact '${artifact}' to '${asset}' ..."
                 (
                   cd "${artifact}" && \
-                  tar -c --gzip --file="../${asset}" *
+                  tar -c --gzip --owner=0 --group=0 --file="../${asset}" *
                 )
                 retCode=$?
               fi
@@ -340,14 +340,14 @@ jobs:
                 asset="${asset##*$}"
                 dirName="${asset%.*}"
                 echo "    Compressing artifact '${artifact}' to '${asset}' ..."
-                tar -c --zstd --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
+                tar -c --zstd --owner=0 --group=0 --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
                 retCode=$?
               else
                 asset="${asset##*!}"
                 echo "    Compressing artifact '${artifact}' to '${asset}' ..."
                 (
                   cd "${artifact}" && \
-                  tar -c --zstd --file="../${asset}" *
+                  tar -c --zstd --owner=0 --group=0 --file="../${asset}" *
                 )
                 retCode=$?
               fi
