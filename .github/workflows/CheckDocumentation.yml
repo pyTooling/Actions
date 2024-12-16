@@ -64,9 +64,9 @@ jobs:
       - name: Run 'interrogate' Documentation Coverage Check
         continue-on-error: true
         run: |
-          interrogate -c pyproject.toml --fail-under=${{ inputs.fail_under }} && echo "::error title=interrogate::Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
+          interrogate -c pyproject.toml --fail-under=${{ inputs.fail_under }} && printf "%s\n" "::error title=interrogate::Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
 
       - name: Run 'docstr_coverage' Documentation Coverage Check
         continue-on-error: true
         run: |
-          docstr-coverage -v 2 --fail-under=${{ inputs.fail_under }} ${{ inputs.directory }} && echo "::error title=docstr-coverage::Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
+          docstr-coverage -v 2 --fail-under=${{ inputs.fail_under }} ${{ inputs.directory }} && printf "%s\n" "::error title=docstr-coverage::Insufficient documentation quality (goal: ${{ inputs.fail_under }})"

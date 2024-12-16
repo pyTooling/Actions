@@ -64,7 +64,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
+    - run: printf "%s\n" "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
 
     - name: Single
       uses: ./releaser/composite
@@ -84,7 +84,7 @@ jobs:
     - name: Add artifacts/*.txt
       run: |
         mkdir artifacts
-        echo "Build some tool and generate some artifacts" > artifacts/artifact.txt
+        printf "%s\n" "Build some tool and generate some artifacts" > artifacts/artifact.txt
         touch artifacts/empty_file.txt
 
     - name: Single in subdir
@@ -95,8 +95,8 @@ jobs:
 
     - name: Add artifacts/*.md
       run: |
-        echo "releaser hello" > artifacts/hello.md
-        echo "releaser world" > artifacts/world.md
+        printf "%s\n" "releaser hello" > artifacts/hello.md
+        printf "%s\n" "releaser world" > artifacts/world.md
 
     - name: Directory wildcard
       uses: ./releaser/composite
@@ -107,7 +107,7 @@ jobs:
     - name: Add artifacts/subdir
       run: |
         mkdir artifacts/subdir
-        echo "Test recursive glob" > artifacts/subdir/deep_file.txt
+        printf "%s\n" "Test recursive glob" > artifacts/subdir/deep_file.txt
 
     - name: Directory wildcard (recursive)
       uses: ./releaser/composite
@@ -124,7 +124,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - run: echo "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
+    - run: printf "%s\n" "Build some tool and generate some (versioned) artifacts" > artifact-$(date -u +"%Y-%m-%dT%H-%M-%SZ").txt
 
     - name: Single
       uses: ./releaser
@@ -144,7 +144,7 @@ jobs:
     - name: Add artifacts/*.txt
       run: |
         mkdir artifacts
-        echo "Build some tool and generate some artifacts" > artifacts/artifact.txt
+        printf "%s\n" "Build some tool and generate some artifacts" > artifacts/artifact.txt
         touch artifacts/empty_file.txt
 
     - name: Single in subdir
@@ -155,8 +155,8 @@ jobs:
 
     - name: Add artifacts/*.md
       run: |
-        echo "releaser hello" > artifacts/hello.md
-        echo "releaser world" > artifacts/world.md
+        printf "%s\n" "releaser hello" > artifacts/hello.md
+        printf "%s\n" "releaser world" > artifacts/world.md
 
     - name: Directory wildcard
       uses: ./releaser
@@ -167,7 +167,7 @@ jobs:
     - name: Add artifacts/subdir
       run: |
         mkdir artifacts/subdir
-        echo "Test recursive glob" > artifacts/subdir/deep_file.txt
+        printf "%s\n" "Test recursive glob" > artifacts/subdir/deep_file.txt
 
     - name: Directory wildcard (recursive)
       uses: ./releaser

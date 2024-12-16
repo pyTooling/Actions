@@ -72,7 +72,7 @@ jobs:
 
     steps:
       - name: '❗ Deprecation message'
-        run: echo "::warning title=Deprecated::'CoverageCollection.yml' is not maintained anymore. Please switch to 'UnitTesting.yml', 'PublishCoverageResults.yml' and 'PublishTestResults.yml'."
+        run: printf "%s\n" "::warning title=Deprecated::'CoverageCollection.yml' is not maintained anymore. Please switch to 'UnitTesting.yml', 'PublishCoverageResults.yml' and 'PublishTestResults.yml'."
 
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
@@ -150,7 +150,7 @@ jobs:
           ABSDIR=$(pwd)
           cd "${{ inputs.tests_directory || '.' }}"
           [ -n '${{ inputs.coverage_config }}' ] && PYCOV_ARGS="--cov-config=${ABSDIR}/${{ inputs.coverage_config }}" || unset PYCOV_ARGS
-          echo "python -m pytest -rA --cov=${ABSDIR} ${PYCOV_ARGS} ${{ inputs.unittest_directory }} --color=yes"
+          printf "%s\n" "python -m pytest -rA --cov=${ABSDIR} ${PYCOV_ARGS} ${{ inputs.unittest_directory }} --color=yes"
           python -m pytest -rA --cov=${ABSDIR} $PYCOV_ARGS ${{ inputs.unittest_directory }} --color=yes
 
       - name: Convert to cobertura format
