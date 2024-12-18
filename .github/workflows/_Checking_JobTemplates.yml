@@ -101,15 +101,16 @@ jobs:
       - PlatformTesting
     with:
       coverage_sqlite_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
-      coverage_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
-      coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
-      coverage_html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+      coverage_xml_artifact:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
+      coverage_json_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
+      coverage_html_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
     secrets:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
   PublishTestResults:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@dev
     needs:
+      - UnitTestingParams
       - UnitTesting
       - PlatformTesting
     with:
