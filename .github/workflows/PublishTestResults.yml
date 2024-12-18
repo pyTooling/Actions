@@ -73,7 +73,7 @@ jobs:
 
       - name: 🔎 Inspect extracted artifact (tarball)
         run: |
-          tree -psh artifacts
+          tree -pash artifacts
 
       - name: 🔧 Install pyEDAA.Reports (JUunit Parser and Merger)
         run: |
@@ -82,9 +82,8 @@ jobs:
       - name: Move JUnit files and collect them all to junit/
         run: |
           mkdir -p junit
-          ls -lAh artifacts/*/*.xml
           find artifacts/ -type f -path "*TestReportSummary*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
-          tree -a junit
+          tree -pash junit
 
       - name: 🔁 Merge JUnit Unit Test Summaries
         run: |

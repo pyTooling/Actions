@@ -388,7 +388,7 @@ jobs:
           done <<<'${{ inputs.assets }}'
 
           printf "%s\n" "Inspecting downloaded artifacts ..."
-          tree -L 3 .
+          tree -pash -L 3 .
 
           if [[ $ERROR -ne 0 ]]; then
             printf "%s\n" "${ANSI_LIGHT_RED}Errors detected in previous steps.${ANSI_NOCOLOR}"
