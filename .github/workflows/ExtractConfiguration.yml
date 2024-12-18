@@ -59,18 +59,33 @@ on:
       mypy_prepare_command:
         description: ""
         value: ${{ jobs.Extract.outputs.mypy_prepare_command }}
+      unittest_report_xml_directory:
+        description: ""
+        value: ${{ jobs.Extract.outputs.unittest_report_xml_directory }}
+      unittest_report_xml_filename:
+        description: ""
+        value: ${{ jobs.Extract.outputs.unittest_report_xml_filename }}
+      unittest_report_xml:
+        description: ""
+        value: ${{ jobs.Extract.outputs.unittest_report_xml }}
       coverage_report_html_directory:
         description: ""
         value: ${{ jobs.Extract.outputs.coverage_report_html_directory }}
       coverage_report_xml_directory:
         description: ""
         value: ${{ jobs.Extract.outputs.coverage_report_xml_directory }}
+      coverage_report_xml_filename:
+        description: ""
+        value: ${{ jobs.Extract.outputs.coverage_report_xml_filename }}
       coverage_report_xml:
         description: ""
         value: ${{ jobs.Extract.outputs.coverage_report_xml }}
       coverage_report_json_directory:
         description: ""
         value: ${{ jobs.Extract.outputs.coverage_report_json_directory }}
+      coverage_report_json_filename:
+        description: ""
+        value: ${{ jobs.Extract.outputs.coverage_report_json_filename }}
       coverage_report_json:
         description: ""
         value: ${{ jobs.Extract.outputs.coverage_report_json }}
@@ -83,10 +98,15 @@ jobs:
       package_fullname:               ${{ steps.getPackageName.outputs.package_fullname }}
       package_directory:              ${{ steps.getPackageName.outputs.package_directory }}
       mypy_prepare_command:           ${{ steps.getPackageName.outputs.mypy_prepare_command }}
+      unittest_report_xml_directory:  ${{ steps.getVariables.outputs.unittest_report_xml_directory }}
+      unittest_report_xml_filename:   ${{ steps.getVariables.outputs.unittest_report_xml_filename }}
+      unittest_report_xml:            ${{ steps.getVariables.outputs.unittest_report_xml }}
       coverage_report_html_directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
       coverage_report_xml_directory:  ${{ steps.getVariables.outputs.coverage_report_xml_directory }}
+      coverage_report_xml_filename:   ${{ steps.getVariables.outputs.coverage_report_xml_filename }}
       coverage_report_xml:            ${{ steps.getVariables.outputs.coverage_report_xml }}
       coverage_report_json_directory: ${{ steps.getVariables.outputs.coverage_report_json_directory }}
+      coverage_report_json_filename:  ${{ steps.getVariables.outputs.coverage_report_json_filename }}
       coverage_report_json:           ${{ steps.getVariables.outputs.coverage_report_json }}
 
     steps:
@@ -144,10 +164,11 @@ jobs:
 
           from tomli import load as tomli_load
 
-          htmlDirectory = Path("htmlcov")
-          xmlFile =  Path("./coverage.xml")
-          jsonFile = Path("./coverage.json")
-          coverageRC = "${{ inputs.coverage_config }}".strip()
+          coverageHTMLDirectory = Path("htmlcov")
+          unittestXMLFile =  Path("./unittest.xml")
+          coverageXMLFile =  Path("./coverage.xml")
+          coverageJSONFile = Path("./coverage.json")
+          coverageRC =       "${{ inputs.coverage_config }}".strip()
 
           # Read output paths from 'pyproject.toml' file
           if coverageRC == "pyproject.toml":
@@ -156,9 +177,10 @@ jobs:
               with pyProjectFile.open("rb") as file:
                 pyProjectSettings = tomli_load(file)
 
-              htmlDirectory = Path(pyProjectSettings["tool"]["coverage"]["html"]["directory"])
-              xmlFile       = Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
-              jsonFile      = Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
+              unittestXMLFile =       Path(pyProjectSettings["tool"]["pytest"]["xml_path"])
+              coverageHTMLDirectory = Path(pyProjectSettings["tool"]["coverage"]["html"]["directory"])
+              coverageXMLFile =       Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
+              coverageJSONFile=       Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
             else:
               print(f"File '{pyProjectFile}' not found.")
               print(f"::error title=FileNotFoundError::File '{pyProjectFile}' not found.")
@@ -171,9 +193,9 @@ jobs:
               with coverageRCFile.open("rb") as file:
                 coverageRCSettings = tomli_load(file)
 
-              htmlDirectory = Path(coverageRCSettings["html"]["directory"])
-              xmlFile       = Path(coverageRCSettings["xml"]["output"])
-              jsonFile      = Path(coverageRCSettings["json"]["output"])
+              coverageHTMLDirectory = Path(coverageRCSettings["html"]["directory"])
+              coverageXMLFile =       Path(coverageRCSettings["xml"]["output"])
+              coverageJSONFile =      Path(coverageRCSettings["json"]["output"])
             else:
               print(f"File '{coverageRCFile}' not found.")
               print(f"::error title=FileNotFoundError::File '{coverageRCFile}' not found.")
@@ -184,11 +206,16 @@ jobs:
           print(f"GITHUB_OUTPUT: {github_output}")
           with github_output.open("a+", encoding="utf-8") as f:
             f.write(dedent(f"""\
-              coverage_report_html_directory={htmlDirectory.as_posix()}
-              coverage_report_xml_directory={xmlFile.parent.as_posix()}
-              coverage_report_xml={xmlFile.as_posix()}
-              coverage_report_json_directory={jsonFile.parent.as_posix()}
-              coverage_report_json={jsonFile.as_posix()}
+              coverage_report_html_directory={coverageHTMLDirectory.as_posix()}
+              unittest_report_xml_directory={unittestXMLFile.parent.as_posix()}
+              unittest_report_xml_filename={unittestXMLFile.name}
+              unittest_report_xml={unittestXMLFile.as_posix()}
+              coverage_report_xml_directory={coverageXMLFile.parent.as_posix()}
+              coverage_report_xml_filename={coverageXMLFile.name}
+              coverage_report_xml={coverageXMLFile.as_posix()}
+              coverage_report_json_directory={coverageJSONFile.parent.as_posix()}
+              coverage_report_json_filename={coverageJSONFile.name}
+              coverage_report_json={coverageJSONFile.as_posix()}
             """))
 
-          print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
+          print(f"DEBUG:\n  unittest xml={unittestXMLFile}\n  coverage html={coverageHTMLDirectory}\n  coverage xml={coverageXMLFile}\n  coverage json={coverageJSONFile}")
