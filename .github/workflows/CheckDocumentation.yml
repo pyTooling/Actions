@@ -59,7 +59,7 @@ jobs:
 
       - name: 🔧 Install wheel,tomli and pip dependencies (native)
         run: |
-          python -m pip install --disable-pip-version-check -U docstr_coverage interrogate
+          python -m pip install --disable-pip-version-check -U docstr_coverage interrogate[png]
 
       - name: Run 'interrogate' Documentation Coverage Check
         continue-on-error: true
