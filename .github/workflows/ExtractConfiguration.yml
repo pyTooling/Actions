@@ -177,7 +177,7 @@ jobs:
               with pyProjectFile.open("rb") as file:
                 pyProjectSettings = tomli_load(file)
 
-              unittestXMLFile =       Path(pyProjectSettings["tool"]["pytest"]["xml_path"])
+              unittestXMLFile =       Path(pyProjectSettings["tool"]["pytest"]["junit_xml"])
               coverageHTMLDirectory = Path(pyProjectSettings["tool"]["coverage"]["html"]["directory"])
               coverageXMLFile =       Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
               coverageJSONFile=       Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
