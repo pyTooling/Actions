@@ -150,7 +150,7 @@ jobs:
 
           print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
 
-      - name: Rename .coverage files and collect them all to coverage/
+      - name: Rename .coverage files and move them all into 'coverage/'
         run: |
           mkdir -p coverage
           find artifacts/ -type f -path "*SQLite*.coverage" -exec sh -c 'cp -v $0 "coverage/$(basename $0).$(basename $(dirname $0))"' {} ';'

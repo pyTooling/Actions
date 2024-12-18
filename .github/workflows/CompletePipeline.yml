@@ -208,6 +208,7 @@ jobs:
       - UnitTestingParams
       - UnitTesting
     with:
+      additional_merge_args: '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'
       merged_junit_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
 
 #  VerifyDocs:

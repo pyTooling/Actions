@@ -79,7 +79,7 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check --break-system-packages -U pyEDAA.Reports
 
-      - name: Move JUnit files and collect them all to junit/
+      - name: Rename JUnit files and move them all into 'junit/'
         run: |
           mkdir -p junit
           find artifacts/ -type f -path "*TestReportSummary*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
