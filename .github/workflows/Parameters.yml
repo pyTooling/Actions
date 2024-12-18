@@ -147,7 +147,7 @@ jobs:
             else:
               name = f"{package_namespace}.{package_name}"
 
-          currentMSYS2Version = "3.11"
+          currentMSYS2Version = "3.12"
           currentAlphaVersion = "3.14"
           currentAlphaRelease = "3.14.0-alpha.1"
 

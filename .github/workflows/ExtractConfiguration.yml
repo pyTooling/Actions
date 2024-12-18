@@ -218,4 +218,4 @@ jobs:
               coverage_report_json={coverageJSONFile.as_posix()}
             """))
 
-          print(f"DEBUG:\n  unittest xml={unittestXMLFile}\n  coverage html={coverageHTMLDirectory}\n  coverage xml={coverageXMLFile}\n  coverage json={coverageJSONFile}")
+          print(f"DEBUG:\n  unittest xml:  {unittestXMLFile}\n  coverage html: {coverageHTMLDirectory}\n  coverage xml:  {coverageXMLFile}\n  coverage json: {coverageJSONFile}")

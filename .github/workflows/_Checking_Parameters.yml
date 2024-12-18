@@ -83,7 +83,7 @@ jobs:
           expectedPythonVersion = "3.13"
           expectedPythons = ["3.9", "3.10", "3.11", "3.12", "3.13"]
           expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.11", "ucrt64:3.11"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.12", "ucrt64:3.11"]
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -146,7 +146,7 @@ jobs:
           expectedPythonVersion = "3.13"
           expectedPythons = ["3.11", "3.12", "pypy-3.9", "pypy-3.10"]
           expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.11", "ucrt64:3.11"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.12", "ucrt64:3.11"]
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -209,7 +209,7 @@ jobs:
           expectedPythonVersion = "3.13"
           expectedPythons = ["3.9", "3.10", "3.11", "3.12", "3.13"]
           expectedSystems = ["windows"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw32:3.11", "mingw64:3.11"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw32:3.12", "mingw64:3.11"]
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
