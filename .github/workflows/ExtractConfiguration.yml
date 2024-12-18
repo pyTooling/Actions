@@ -164,11 +164,11 @@ jobs:
 
           from tomli import load as tomli_load
 
+          unittestXMLFile =       Path("./unittest.xml")
           coverageHTMLDirectory = Path("htmlcov")
-          unittestXMLFile =  Path("./unittest.xml")
-          coverageXMLFile =  Path("./coverage.xml")
-          coverageJSONFile = Path("./coverage.json")
-          coverageRC =       "${{ inputs.coverage_config }}".strip()
+          coverageXMLFile =       Path("./coverage.xml")
+          coverageJSONFile =      Path("./coverage.json")
+          coverageRC =            "${{ inputs.coverage_config }}".strip()
 
           # Read output paths from 'pyproject.toml' file
           if coverageRC == "pyproject.toml":
@@ -206,10 +206,10 @@ jobs:
           print(f"GITHUB_OUTPUT: {github_output}")
           with github_output.open("a+", encoding="utf-8") as f:
             f.write(dedent(f"""\
-              coverage_report_html_directory={coverageHTMLDirectory.as_posix()}
               unittest_report_xml_directory={unittestXMLFile.parent.as_posix()}
               unittest_report_xml_filename={unittestXMLFile.name}
               unittest_report_xml={unittestXMLFile.as_posix()}
+              coverage_report_html_directory={coverageHTMLDirectory.as_posix()}
               coverage_report_xml_directory={coverageXMLFile.parent.as_posix()}
               coverage_report_xml_filename={coverageXMLFile.name}
               coverage_report_xml={coverageXMLFile.as_posix()}

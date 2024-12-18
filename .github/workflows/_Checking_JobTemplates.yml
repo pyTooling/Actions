@@ -31,11 +31,12 @@ jobs:
       - UnitTestingParams
     with:
       jobs: ${{ needs.UnitTestingParams.outputs.python_jobs }}
-      unittest_report_xml_directory: ${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}
-      unittest_report_xml_filename:  ${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}
-      unittest_xml_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
-      unittest_html_artifact:        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_html }}
-      coverage_sqlite_artifact:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
+      unittest_report_xml_directory:  ${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}
+      unittest_report_xml_filename:   ${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}
+      coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
+      unittest_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+      unittest_html_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_html }}
+      coverage_sqlite_artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
 #      coverage_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
 #      coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
 #      coverage_html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
@@ -49,14 +50,15 @@ jobs:
       jobs: ${{ needs.PlatformTestingParams.outputs.python_jobs }}
 #      tests_directory: ""
       unittest_directory: platform
-      unittest_report_xml_directory: ${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}
-      unittest_report_xml_filename:  ${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}
-      unittest_xml_artifact:         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_xml }}
-      unittest_html_artifact:        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_html }}
-      coverage_sqlite_artifact:      ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_sqlite }}
-      coverage_xml_artifact:         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_xml }}
-      coverage_json_artifact:        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_json }}
-      coverage_html_artifact:        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_html }}
+      unittest_report_xml_directory:  ${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}
+      unittest_report_xml_filename:   ${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}
+      coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
+      unittest_xml_artifact:          ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_xml }}
+      unittest_html_artifact:         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_html }}
+      coverage_sqlite_artifact:       ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_sqlite }}
+      coverage_xml_artifact:          ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_xml }}
+      coverage_json_artifact:         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_json }}
+      coverage_html_artifact:         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_html }}
 
   StaticTypeCheck:
     uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@dev

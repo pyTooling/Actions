@@ -109,6 +109,11 @@ on:
         required: false
         default: 'pyproject.toml'
         type: string
+      coverage_report_html_directory:
+        description: ''
+        required: false
+        default: 'report/coverage/html'
+        type: string
       unittest_xml_artifact:
         description: "Generate unit test report with junitxml and upload results as an artifact."
         required: false
@@ -381,8 +386,8 @@ jobs:
         if: inputs.coverage_html_artifact != ''
         continue-on-error: true
         run: |
-          coverage html --data-file=.coverage -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
-          rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
+          coverage html --data-file=.coverage -d ${{ inputs.coverage_report_html_directory }}
+          rm ${{ inputs.coverage_report_html_directory }}/.gitignore
 
 # Upload artifacts
 
