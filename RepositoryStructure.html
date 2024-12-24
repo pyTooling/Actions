@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Repository Structure &mdash; pyDummy 0.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=77553476" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-reports.e44b1595f1e09d5e109d001839ba3f42.css?v=0b41afa8" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=6fa0b579" />
+
+  
+    <link rel="shortcut icon" href="_static/icon.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=90733dfc"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Instantiantion" href="Instantiation.html" />
+    <link rel="prev" title="Background" href="Background.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Background.html">Background</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/CoverageCollection.html">CoverageCollection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/UnitTesting.html">UnitTesting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/StaticTypeCheck.html">StaticTypeCheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/PublishTestResults.html">PublishTestResults</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Package.html">Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/PublishOnPyPI.html">PublishOnPyPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/VerifyDocs.html">VerifyDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/BuildTheDocs.html">BuildTheDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/PublishToGitHubPages.html">PublishToGitHubPages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Release.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/ArtifactCleanUp.html">ArtifactCleanUp</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pyDummy/pyDummy.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyDummy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Repository Structure</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/RepositoryStructure.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="repository-structure">
+<h1>Repository Structure<a class="headerlink" href="#repository-structure" title="Link to this heading"></a></h1>
+<p>pyTooling Actions assumes a certain repository structure and usage of technologies. Besides assumed directory or file
+names in default parameters to job templates, almost all can be overwritten if the target repository has a differing
+structure.</p>
+<ul class="simple">
+<li><p>Python source code is located in a directory named after the Python package name.</p>
+<ul>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">&lt;package&gt;/__init__.py</span></code> should be provided with global package information like: version number, author,
+copyrights, license, maintainer, …</p></li>
+</ul>
+</li>
+<li><p>All tests are located in a <code class="docutils literal notranslate"><span class="pre">/tests</span></code> directory and further divided into subdirectories by testing approach.</p>
+<ul>
+<li><p>E.g. unit tests are located in a <code class="docutils literal notranslate"><span class="pre">/tests/unit</span></code> directory.</p></li>
+</ul>
+</li>
+<li><p>The package documentation is located in a <code class="docutils literal notranslate"><span class="pre">/doc</span></code> directory.</p>
+<ul>
+<li><p>Documentation is written with ReStructured Text (ReST) and translated using Sphinx.</p></li>
+<li><p>Documentation requirements are listed in a <code class="docutils literal notranslate"><span class="pre">/doc/requirements.txt</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Dependencies are listed in a <code class="docutils literal notranslate"><span class="pre">/requirements.txt</span></code>.</p>
+<ul>
+<li><p>If the build process requires separate dependencies, a <code class="docutils literal notranslate"><span class="pre">/build/requirements.txt</span></code> is used.</p></li>
+<li><p>If the publishing/distribution process requires separate dependencies, a <code class="docutils literal notranslate"><span class="pre">/dist/requirements.txt</span></code> is used.</p></li>
+<li><p>To reduce duplication of dependencies, dependency files should recursively call each other with <code class="docutils literal notranslate"><span class="pre">-r</span> <span class="pre">&lt;path&gt;</span></code>.</p></li>
+</ul>
+</li>
+<li><p>All Python project settings are stored in a <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
+<li><p>The Python package is described in a <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>.</p></li>
+<li><p>Packages are build with <code class="docutils literal notranslate"><span class="pre">build</span></code> instead of <code class="docutils literal notranslate"><span class="pre">setuptools</span></code>.</p></li>
+<li><p>A repository overview is given in a <code class="docutils literal notranslate"><span class="pre">README.md</span></code>.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Repository</span><span class="o">&gt;/</span>
+  <span class="o">.</span><span class="n">github</span><span class="o">/</span>
+    <span class="n">workflows</span><span class="o">/</span>
+      <span class="n">Pipeline</span><span class="o">.</span><span class="n">yml</span>
+    <span class="n">dependabot</span><span class="o">.</span><span class="n">yml</span>
+  <span class="o">.</span><span class="n">vscode</span><span class="o">/</span>
+    <span class="n">settings</span><span class="o">.</span><span class="n">json</span>
+  <span class="n">build</span><span class="o">/</span>
+    <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="n">dist</span><span class="o">/</span>
+    <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="n">doc</span><span class="o">/</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">index</span><span class="o">.</span><span class="n">rst</span>
+    <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="o">&lt;</span><span class="n">package</span><span class="o">&gt;</span>
+    <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+  <span class="n">tests</span><span class="o">/</span>
+    <span class="n">unit</span><span class="o">/</span>
+    <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="o">.</span><span class="n">editorconfig</span>
+  <span class="o">.</span><span class="n">gitignore</span>
+  <span class="n">LICENSE</span><span class="o">.</span><span class="n">md</span>
+  <span class="n">pyproject</span><span class="o">.</span><span class="n">toml</span>
+  <span class="n">README</span><span class="o">.</span><span class="n">md</span>
+  <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="n">setup</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Background.html" class="btn btn-neutral float-left" title="Background" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Instantiation.html" class="btn btn-neutral float-right" title="Instantiantion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2024, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 24.12.2024.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

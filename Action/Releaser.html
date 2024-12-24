@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Releaser &mdash; pyDummy 0.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=77553476" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-reports.e44b1595f1e09d5e109d001839ba3f42.css?v=0b41afa8" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=6fa0b579" />
+
+  
+    <link rel="shortcut icon" href="../_static/icon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=90733dfc"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="with-post-step" href="With-post-step.html" />
+    <link rel="prev" title="Overview" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Releaser</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#context">Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#composite-action">Composite Action</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#token-required">token (required)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#files-required">files (required)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tag">tag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rm">rm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#snapshots">snapshots</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-complex-use-cases">Advanced/complex use cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/CoverageCollection.html">CoverageCollection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/UnitTesting.html">UnitTesting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/StaticTypeCheck.html">StaticTypeCheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/PublishTestResults.html">PublishTestResults</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/Package.html">Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/PublishOnPyPI.html">PublishOnPyPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/VerifyDocs.html">VerifyDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/BuildTheDocs.html">BuildTheDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/PublishToGitHubPages.html">PublishToGitHubPages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/Release.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../JobTemplate/ArtifactCleanUp.html">ArtifactCleanUp</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyDummy/pyDummy.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyDummy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Releaser</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/Action/Releaser.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="releaser">
+<span id="action-releaser"></span><h1>Releaser<a class="headerlink" href="#releaser" title="Link to this heading"></a></h1>
+<p><strong>Releaser</strong> is a Docker GitHub Action written in Python.</p>
+<p><strong>Releaser</strong> allows to keep a GitHub Release of type pre-release and its artifacts up to date with latest builds.
+Combined with a workflow that is executed periodically, <strong>Releaser</strong> allows to provide a fixed release name for users
+willing to use daily/nightly artifacts of a project.</p>
+<p>Furthermore, when any <a class="reference external" href="https://semver.org">semver</a> compliant tagged commit is pushed, <strong>Releaser</strong> can create a
+release and upload assets.</p>
+<section id="context">
+<h2>Context<a class="headerlink" href="#context" title="Link to this heading"></a></h2>
+<p>GitHub provides official clients for the GitHub API through <a class="reference external" href="https://github.com/octokit">github.com/octokit</a>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/octokit/octokit.js">octokit.js</a> (<a class="reference external" href="https://octokit.github.io/rest.js">octokit.github.io/rest.js</a>)</p></li>
+<li><p><a class="reference external" href="https://github.com/octokit/octokit.rb">octokit.rb</a> (<a class="reference external" href="http://octokit.github.io/octokit.rb">octokit.github.io/octokit.rb</a>)</p></li>
+<li><p><a class="reference external" href="https://github.com/octokit/octokit.net">octokit.net</a> (<a class="reference external" href="https://octokitnet.rtfd.io">octokitnet.rtfd.io</a>)</p></li>
+</ul>
+<p>When GitHub Actions was released in 2019, two Actions were made available through
+<a class="reference external" href="https://github.com/actions">github.com/actions</a> for dealing with GitHub Releases:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/actions/create-release">actions/create-release</a></p></li>
+<li><p><a class="reference external" href="https://github.com/actions/upload-release-asset">actions/upload-release-asset</a></p></li>
+</ul>
+<p>However, those Actions were contributed by an employee in spare time, not officially supported by GitHub.
+Therefore, they were unmaintained before GitHub Actions was out of the private beta
+(see <a class="reference external" href="https://github.com/actions/upload-release-asset/issues/58">actions/upload-release-asset#58</a>)
+and, a year later, archived.
+Those Actions are based on <a class="reference external" href="https://github.com/actions/toolkit">actions/toolkit</a>’s hydrated version of octokit.js.</p>
+<p>From a practical point of view, <a class="reference external" href="https://github.com/actions/github-script">actions/github-script</a> is the natural replacement to those Actions, since it allows to use a pre-authenticated <em>octokit.js</em> client along with the workflow run context.
+Still, it requires writing plain JavaScript.</p>
+<p>Alternatively, there are non-official GitHub API libraries available in other languages (see <a class="reference external" href="https://docs.github.com/en/rest/overview/libraries">docs.github.com: rest/overview/libraries</a>).
+<strong>Releaser</strong> is based on <a class="reference external" href="https://github.com/PyGithub/PyGithub">PyGithub/PyGithub</a>, a Python client for the GitHub API.</p>
+<p><strong>Releaser</strong> was originally created in <a class="reference external" href="https://github.com/eine/tip">eine/tip</a>, as an enhanced alternative to using
+<code class="docutils literal notranslate"><span class="pre">actions/create-release</span></code> and <code class="docutils literal notranslate"><span class="pre">actions/upload-release-asset</span></code>, in order to cover certain use cases that were being
+migrated from Travis CI to GitHub Actions.
+The main limitation of GitHub’s Actions was/is verbosity and not being possible to dynamically define the list of assets
+to be uploaded.</p>
+<p>On the other hand, GitHub Actions artifacts do require login in order to download them.
+Conversely, assets of GitHub Releases can be downloaded without login.
+Therefore, in order to make CI results available to the widest audience, some projects prefer having tarballs available
+as assets.
+In this context, one of the main use cases of <strong>Releaser</strong> is pushing artifacts as release assets.
+Thus, the name of the Action.</p>
+<p>GitHub provides an official CLI tool, written in golang: <a class="reference external" href="https://github.com/cli/cli">cli/cli</a>.
+When the Python version of <strong>Releaser</strong> was written, <code class="docutils literal notranslate"><span class="pre">cli</span></code> was evaluated as an alternative to <em>PyGitHub</em>.
+<code class="docutils literal notranslate"><span class="pre">gh</span> <span class="pre">release</span></code> was (and still is) not flexible enough to update the reference of a release, without deleting and
+recreating it (see <a class="reference external" href="https://cli.github.com/manual/gh_release_create">cli.github.com: manual/gh_release_create</a>).
+Deletion and recreation is unfortunate, because it notifies all the watchers of a repository
+(see <a class="reference external" href="https://github.com/eine/tip/issues/111">eine/tip#111</a>).
+However, <a class="reference external" href="https://cli.github.com/manual/gh_release_upload">cli.github.com: manual/gh_release_upload</a> handles uploading
+artifacts as assets faster and with better stability for larger files than <em>PyGitHub</em>
+(see <a class="reference external" href="https://github.com/msys2/msys2-installer/pull/36">msys2/msys2-installer#36</a>).
+Furthermore, the GitHub CLI is installed on GitHub Actions’ default virtual environments.
+Although <code class="docutils literal notranslate"><span class="pre">gh</span></code> does not support login through SSH (see <a class="reference external" href="https://github.com/cli/cli/issues/3715">cli/cli#3715</a>), on GitHub
+Actions a token is available <code class="docutils literal notranslate"><span class="pre">${{</span> <span class="pre">github.token</span> <span class="pre">}}</span></code>.
+Therefore, <strong>Releaser</strong> uses <code class="docutils literal notranslate"><span class="pre">gh</span> <span class="pre">release</span> <span class="pre">upload</span></code> internally.</p>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<p>The following block shows a minimal YAML workflow file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;workflow&#39;</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0</span><span class="nv"> </span><span class="s">0</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">5&#39;</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">mwe</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-24.04</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+
+<span class="w">    </span><span class="c1"># Clone repository</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+
+<span class="w">    </span><span class="c1"># Build your application, tool, artifacts, etc.</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build</span>
+<span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">echo &quot;Build some tool and generate some artifacts&quot; &gt; artifact.txt</span>
+
+<span class="w">    </span><span class="c1"># Update tag and pre-release</span>
+<span class="w">    </span><span class="c1"># - Update (force-push) tag to the commit that is used in the workflow.</span>
+<span class="w">    </span><span class="c1"># - Upload artifacts defined by the user.</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/releaser@r0</span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span>
+<span class="w">        </span><span class="nt">files</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">artifact.txt</span>
+<span class="w">          </span><span class="no">README.md</span>
+</pre></div>
+</div>
+<section id="composite-action">
+<h3>Composite Action<a class="headerlink" href="#composite-action" title="Link to this heading"></a></h3>
+<p>The default implementation of <strong>Releaser</strong> is a Container Action.
+Therefore, a pre-built container image is pulled before starting the job.
+Alternatively, a Composite Action version is available: <code class="docutils literal notranslate"><span class="pre">uses:</span> <span class="pre">pyTooling/Actions/releaser/composite&#64;main</span></code>.
+The Composite version installs the dependencies on the host (the runner environment), instead of using a container.
+Both implementations are functionally equivalent from <strong>Releaser</strong>’s point of view; however, the Composite Action allows
+users to tweak the version of Python by using <a class="reference external" href="https://github.com/actions/setup-python">actions/setup-python</a> before.</p>
+</section>
+</section>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Link to this heading"></a></h2>
+<p>All options can be optionally provided as environment variables: <code class="docutils literal notranslate"><span class="pre">INPUT_TOKEN</span></code>, <code class="docutils literal notranslate"><span class="pre">INPUT_FILES</span></code>, <code class="docutils literal notranslate"><span class="pre">INPUT_TAG</span></code>, <code class="docutils literal notranslate"><span class="pre">INPUT_RM</span></code>
+and/or <code class="docutils literal notranslate"><span class="pre">INPUT_SNAPSHOTS</span></code>.</p>
+<section id="token-required">
+<h3>token (required)<a class="headerlink" href="#token-required" title="Link to this heading"></a></h3>
+<p>Token to make authenticated API calls; can be passed in using <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">secrets.GITHUB_TOKEN</span> <span class="pre">}}</span></code>.</p>
+</section>
+<section id="files-required">
+<h3>files (required)<a class="headerlink" href="#files-required" title="Link to this heading"></a></h3>
+<p>Either a single filename/pattern or a multi-line list can be provided. All the artifacts are uploaded regardless of the
+hierarchy.</p>
+<p>For creating/updating a release without uploading assets, set <code class="docutils literal notranslate"><span class="pre">files:</span> <span class="pre">none</span></code>.</p>
+</section>
+<section id="tag">
+<h3>tag<a class="headerlink" href="#tag" title="Link to this heading"></a></h3>
+<p>The default tag name for the tip/nightly pre-release is <code class="docutils literal notranslate"><span class="pre">tip</span></code>, but it can be optionally overriden through option <code class="docutils literal notranslate"><span class="pre">tag</span></code>.</p>
+</section>
+<section id="rm">
+<h3>rm<a class="headerlink" href="#rm" title="Link to this heading"></a></h3>
+<p>Set option <code class="docutils literal notranslate"><span class="pre">rm</span></code> to <code class="docutils literal notranslate"><span class="pre">true</span></code> for systematically removing previous artifacts (e.g. old versions).
+Otherwise (by default), all previours artifacts are preserved or overwritten.</p>
+<dl class="simple">
+<dt>Note:</dt><dd><p>If all the assets are removed, or if the release itself is removed, tip/nightly assets won’t be available for
+users until the workflow is successfully run.
+For instance, Action <a class="reference external" href="https://github.com/ghdl/setup-ghdl-ci">setup-ghdl-ci</a> uses assets from <a class="reference external" href="https://github.com/ghdl/ghdl/releases/tag/nightly">ghdl/ghdl: releases/tag/nightly</a>.
+Hence, it is recommended to try removing the conflictive assets only, in order to maximise the availability.</p>
+</dd>
+</dl>
+</section>
+<section id="snapshots">
+<h3>snapshots<a class="headerlink" href="#snapshots" title="Link to this heading"></a></h3>
+<p>Whether to create releases from any tag or to treat some as snapshots.
+By default, all the tags with non-empty <code class="docutils literal notranslate"><span class="pre">prerelease</span></code> field (see <a class="reference external" href="https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string">semver.org: Is there a suggested regular expression (RegEx) to check a SemVer string?</a>)
+are considered snapshots; neither a release is created nor assets are uploaded.</p>
+</section>
+</section>
+<section id="advanced-complex-use-cases">
+<h2>Advanced/complex use cases<a class="headerlink" href="#advanced-complex-use-cases" title="Link to this heading"></a></h2>
+<p><strong>Releaser</strong> is essentially a very thin wrapper to use the GitHub Actions context data along with the classes
+and methods of PyGithub.</p>
+<p>Similarly to <a class="reference external" href="https://github.com/actions/github-script">actions/github-script</a>, users with advanced/complex requirements
+might find it desirable to write their own Python script, instead of using <strong>Releaser</strong>.
+In fact, since <code class="docutils literal notranslate"><span class="pre">shell:</span> <span class="pre">python</span></code> is supported in GitHub Actions, using Python does <em>not</em> require any Action.
+For prototyping purposes, the following job might be useful:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Release</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;📦</span><span class="nv"> </span><span class="s">Release&#39;</span>
+<span class="w">  </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-24.04</span>
+<span class="w">  </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">  </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">github.event_name != &#39;pull_request&#39; &amp;&amp; (github.ref == &#39;refs/heads/master&#39; || contains(github.ref, &#39;refs/tags/&#39;&gt;`__)</span>
+<span class="w">  </span><span class="nt">steps</span><span class="p">:</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/download-artifact@v3</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash</span>
+<span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install PyGithub --progress-bar off</span>
+
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Set list of files for uploading</span>
+<span class="w">      </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">files</span>
+<span class="w">      </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python</span>
+<span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">        </span><span class="no">from github import Github</span>
+<span class="w">        </span><span class="no">print(&quot;· Get GitHub API handler (authenticate)&quot;)</span>
+<span class="w">        </span><span class="no">gh = Github(&#39;${{ github.token }}&#39;)</span>
+<span class="w">        </span><span class="no">print(&quot;· Get Repository handler&quot;)</span>
+<span class="w">        </span><span class="no">gh_repo = gh.get_repo(&#39;${{ github.repository }}&#39;)</span>
+</pre></div>
+</div>
+<p>Find a non-trivial use case at <a class="reference external" href="https://github.com/msys2/msys2-autobuild">msys2/msys2-autobuild</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="With-post-step.html" class="btn btn-neutral float-right" title="with-post-step" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2024, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 24.12.2024.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
