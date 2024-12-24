@@ -180,6 +180,55 @@ jobs:
           sphinx-build -v -n -b latex -d _build/doctrees -j $(nproc) -w _build/latex.log . _build/latex
 #           --builder html --doctree-dir _build/doctrees --verbose --fresh-env --write-all --nitpicky --warning-file _build/html.log . _build/html
 
+      - name: Workaround I - https://github.com/sphinx-doc/sphinx/issues/13190
+        if: inputs.latex_artifact != ''
+        run: |
+          printf "Changing directory to 'doc/_build/latex' ...\n"
+          cd doc/_build/latex
+
+          MIMETYPE_EXTENSIONS=(
+            "image/png:png"
+            "image/jpeg:jpg"
+            "image/svg+xml:svg"
+          )
+
+          printf "Changing file extension according to MIME type ...\n"
+          while IFS=$'\n' read -r file; do
+            printf "  Checking '%s' ... " "${file}"
+            mime="$(file --mime-type -b "${file}")"
+            printf "[%s]\n" "${mime}"
+
+            found=0
+            for MIME in "${MIMETYPE_EXTENSIONS[@]}"; do
+              mimetype="${MIME%%:*}"
+              extension="${MIME#*:}"
+
+              if [[ "${mime}" == "${mimetype}" && "${file##*.}" != "${extension}" ]]; then
+                printf "    Rename file to '%s' " "${file}.${extension}"
+                mv "${file}" "${file}.${extension}"
+                if [[ $? -eq 0 ]]; then
+                  printf "[OK]\n"
+                else
+                  printf "[FAILED]\n"
+                fi
+
+                printf "    Patching LaTeX file for '%s' " "${file}"
+                sed -i "s:{{${file%.*}}\.${file##*.}}:{{${file}}.${extension}}:g" *.tex
+                if [[ $? -eq 0 ]]; then
+                  printf "[OK]\n"
+                else
+                  printf "[FAILED]\n"
+                fi
+
+                found=1
+                break
+              fi
+            done
+            if [[ $found -eq 0 ]]; then
+              printf "[SKIPPED]\n"
+            fi
+          done <<<$(find . -type f -not -iname "*.cls" -not -iname "*.sty" -not -iname "*.xdy" -not -iname "*.svg" -not -iname "*.png" -not -iname "*.jpg" | sed 's:./::')
+
       - name: Workaround II - https://github.com/sphinx-doc/sphinx/issues/13189
         if: inputs.latex_artifact != ''
         run: |
@@ -203,7 +252,7 @@ jobs:
                 fi
 
                 printf "      Patching LaTeX file for '%s' " "${newFile}"
-                sed -i "s:\{\{${imageFile%.*}\}\.${imageFile##*.}\}:{{${newFile%.*}}.${newFile##*.}}:g" *.tex
+                sed -i "s:{{${imageFile%.*}}\.${imageFile##*.}}:{{${newFile%.*}}.${newFile##*.}}:g" *.tex
                 if [[ $? -eq 0 ]]; then
                   printf "[OK]\n"
                 else
