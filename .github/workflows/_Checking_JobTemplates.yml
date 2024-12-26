@@ -166,7 +166,7 @@ jobs:
     needs:
       - UnitTestingParams
       - Documentation
-#      - PDFDocumentation
+      - PDFDocumentation
       - PublishCoverageResults
       - StaticTypeCheck
     with:
@@ -207,7 +207,7 @@ jobs:
       - StaticTypeCheck
       - PlatformTesting
       - Documentation
-#      - PDFDocumentation
+      - PDFDocumentation
       - PublishTestResults
       - PublishCoverageResults
       - PublishToGitHubPages
@@ -228,6 +228,7 @@ jobs:
         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
+        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_xml }}-*
         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_html }}-*
         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_xml }}-*

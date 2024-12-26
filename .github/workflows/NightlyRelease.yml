@@ -130,11 +130,11 @@ jobs:
 
           addDraft="--draft"
 
-          if [[ ${{ inputs.prerelease }} == true ]]; then
+          if [[ "${{ inputs.prerelease }}" == "true" ]]; then
             addPreRelease="--prerelease"
           fi
 
-          if [[ ${{ inputs.latest }} == false ]]; then
+          if [[ "${{ inputs.latest }}" == "false" ]]; then
             addLatest="--latest=false"
           fi
 

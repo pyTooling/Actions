@@ -337,7 +337,7 @@ jobs:
       - name: Verify out parameters
         id: verify
         run: |
-          echo 'python_version: ${{ steps.params.outputs.python_version }}'
-          echo 'python_jobs: ${{ steps.params.outputs.python_jobs }}'
-          echo 'artifact_names: ${{ steps.params.outputs.artifact_names }}'
-          echo 'params: ${{ steps.params.outputs.params }}'
+          printf "%s\n" "python_version: ${{ steps.params.outputs.python_version }}"
+          printf "%s\n" "python_jobs: ${{ steps.params.outputs.python_jobs }}"
+          printf "%s\n" "artifact_names: ${{ steps.params.outputs.artifact_names }}"
+          printf "%s\n" "params: ${{ steps.params.outputs.params }}"
