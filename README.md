@@ -32,9 +32,7 @@ This repository provides 10+ *Reusable Workflows* based on the CI pipelines of t
 be continuously tested and released along with Sphinx documentation sites, to GitHub Releases, GitHub Pages and PyPI.
 Optionally, coverage and static type check reports can be gathered and integrated into the online documentation.
 
-[![](ExamplePipeline_dark.png)](ExamplePipeline_dark.png)
-
-[![](ExamplePipeline_light.png)](ExamplePipeline_light.png)
+[![](doc/_static/pyTooling-Actions-SimplePackage.png)](doc/_static/pyTooling-Actions-SimplePackage.png)
 
 As shown in the screenshots above, the expected order is:
 
