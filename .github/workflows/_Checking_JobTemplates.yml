@@ -22,7 +22,7 @@ jobs:
     with:
       name: Platform
       python_version_list: ""
-      system_list: "ubuntu windows macos mingw32 mingw64 clang64 ucrt64"
+      system_list: "ubuntu windows macos mingw64 clang64 ucrt64"
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
