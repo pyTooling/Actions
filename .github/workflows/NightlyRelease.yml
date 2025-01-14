@@ -439,8 +439,8 @@ jobs:
                 )
 
                 while [[ "${categories}" != "${category}" ]]; do
-                  category="${categories##*;}"
-                  categories="${categories%;*}"
+                  category="${categories##*,}"
+                  categories="${categories%,*}"
                   jsonEntry=$(jq -c -n --arg cat "${category}" --argjson value "${jsonEntry}" '{$cat: $value}')
                 done
 

@@ -74,7 +74,7 @@ jobs:
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   DocCoverage:
-    uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@dev
+    uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@main
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -141,7 +141,7 @@ jobs:
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
   IntermediateCleanUp:
-    uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@dev
+    uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@main
     needs:
       - UnitTestingParams
       - PublishCoverageResults
