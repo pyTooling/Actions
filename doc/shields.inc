@@ -4,11 +4,11 @@
    # percent encoding so that the URL is properly parsed.
 
 .. # Sourcecode link to GitHub
-.. |SHIELD:svg:pyTooling-github| image:: https://img.shields.io/badge/pyTooling-Actions-63bf7f.svg?longCache=true&style=flat-square&longCache=true&logo=GitHub
+.. |SHIELD:svg:pyTooling-github| image:: https://img.shields.io/badge/pyTooling-Actions-63bf7f?longCache=true&style=flat-square&longCache=true&logo=GitHub
    :alt: Sourcecode on GitHub
    :height: 22
    :target: https://GitHub.com/pyTooling/Actions
-.. |SHIELD:png:pyTooling-github| image:: https://raster.shields.io/badge/pyTooling-Actions-63bf7f.svg?longCache=true&style=flat-square&longCache=true&logo=GitHub
+.. |SHIELD:png:pyTooling-github| image:: https://raster.shields.io/badge/pyTooling-Actions-63bf7f?longCache=true&style=flat-square&longCache=true&logo=GitHub
    :alt: Sourcecode on GitHub
    :height: 22
    :target: https://GitHub.com/pyTooling/Actions
@@ -18,7 +18,7 @@
    :alt: Code license
    :height: 22
    :target: Code-License.html
-.. |SHIELD:png:pyTooling-src-license| image:: https://img.shields.io/pypi/l/pyTooling?longCache=true&style=flat-square&logo=Apache&label=code
+.. |SHIELD:png:pyTooling-src-license| image:: https://raster.shields.io/pypi/l/pyTooling?longCache=true&style=flat-square&logo=Apache&label=code
    :alt: Code license
    :height: 22
    :target: https://GitHub.com/pyTooling/Actions/blob/main/LICENSE.md
@@ -64,11 +64,11 @@
    :target: https://pyTooling.github.io/pyTooling/
 
 .. # Gitter
-.. |SHIELD:svg:pyTooling-gitter| image:: https://img.shields.io/badge/chat-on%20gitter-4db797.svg?longCache=true&style=flat-square&logo=gitter&logoColor=e8ecef
+.. |SHIELD:svg:pyTooling-gitter| image:: https://img.shields.io/badge/chat-on%20gitter-4db797.?longCache=true&style=flat-square&logo=gitter&logoColor=e8ecef
    :alt: Documentation License
    :height: 22
    :target: https://gitter.im/hdl/community
-.. |SHIELD:png:pyTooling-gitter| image:: https://raster.shields.io/badge/chat-on%20gitter-4db797.svg?longCache=true&style=flat-square&logo=gitter&logoColor=e8ecef
+.. |SHIELD:png:pyTooling-gitter| image:: https://raster.shields.io/badge/chat-on%20gitter-4db797.?longCache=true&style=flat-square&logo=gitter&logoColor=e8ecef
    :alt: Documentation License
    :height: 22
    :target: https://gitter.im/hdl/community

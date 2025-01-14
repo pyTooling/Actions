@@ -29,7 +29,7 @@ Simple Example
 
    jobs:
      StaticTypeCheck:
-       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r0
+       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r4
        with:
          commands: |
            touch pyTooling/__init__.py
@@ -44,7 +44,7 @@ Complex Example
 
    jobs:
      StaticTypeCheck:
-       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r0
+       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r4
        needs:
          - Params
        with:

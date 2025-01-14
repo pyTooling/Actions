@@ -10,9 +10,7 @@ updates:
       - Dependencies
     assignees:
       - Paebbels
-      - umarcor
     reviewers:
       - Paebbels
-      - umarcor
     schedule:
       interval: "daily"    # Checks on Monday trough Friday.

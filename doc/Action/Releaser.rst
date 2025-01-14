@@ -95,7 +95,7 @@ The following block shows a minimal YAML workflow file:
        # Update tag and pre-release
        # - Update (force-push) tag to the commit that is used in the workflow.
        # - Upload artifacts defined by the user.
-       - uses: pyTooling/Actions/releaser@r0
+       - uses: pyTooling/Actions/releaser@r4
          with:
            token: ${{ secrets.GITHUB_TOKEN }}
            files: |

@@ -30,7 +30,7 @@ jobs:
   # This job is a workaround for global variables
   # See https://github.com/actions/runner/issues/480
   Params:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r4
     with:
       name: ToolName
       # Optional
@@ -39,7 +39,7 @@ jobs:
       python_version_list: '3.8 3.9 3.10'
 
   UnitTesting:
-    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@main
+    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r4
     needs:
       - Params
     with:
@@ -57,7 +57,7 @@ jobs:
       artifact: ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}
 
   Coverage:
-    uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@main
+    uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r4
     needs:
       - Params
     with:
@@ -71,7 +71,7 @@ jobs:
       codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
   StaticTypeCheck:
-    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@main
+    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r4
     needs:
       - Params
     with:
@@ -87,7 +87,7 @@ jobs:
       allow_failure: true
 
   PublishTestResults:
-    uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@main
+    uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r4
     needs:
       - UnitTesting
       - StaticTypeCheck
@@ -96,7 +96,7 @@ jobs:
       report_files: artifacts/**/*.xml
 
   Package:
-    uses: pyTooling/Actions/.github/workflows/Package.yml@main
+    uses: pyTooling/Actions/.github/workflows/Package.yml@r4
     needs:
       - Params
       - Coverage
@@ -107,7 +107,7 @@ jobs:
       requirements: 'wheel'
 
   Release:
-    uses: pyTooling/Actions/.github/workflows/Release.yml@main
+    uses: pyTooling/Actions/.github/workflows/Release.yml@r4
     if: startsWith(github.ref, 'refs/tags')
     needs:
       - UnitTesting
@@ -116,7 +116,7 @@ jobs:
       - Package
 
   PublishOnPyPI:
-    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@main
+    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r4
     if: startsWith(github.ref, 'refs/tags')
     needs:
       - Params
@@ -131,7 +131,7 @@ jobs:
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
   VerifyDocs:
-    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@main
+    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@r4
     needs:
       - Params
     with:
@@ -139,7 +139,7 @@ jobs:
       python_version: ${{ needs..Params.outputs.python_version }}
 
   BuildTheDocs:
-    uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@main
+    uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@r4
     needs:
       - Params
       - VerifyDocs
@@ -147,7 +147,7 @@ jobs:
       artifact: ${{ fromJson(needs.Params.outputs.artifact_names).documentation_html }}
 
   PublishToGitHubPages:
-    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@main
+    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r4
     needs:
       - Params
       - BuildTheDocs
@@ -160,7 +160,7 @@ jobs:
       typing: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
 
   ArtifactCleanUp:
-    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@main
+    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r4
     needs:
       - Params
       - PublishTestResults

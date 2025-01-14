@@ -6,7 +6,7 @@ on:
 
 jobs:
   Params:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r2
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r4
     with:
       name: Example
       python_version_list: "3.12 3.13"
@@ -22,7 +22,7 @@ jobs:
         include: ${{ fromJson(needs.Params.outputs.python_jobs) }}
     steps:
       - name: Content creation for ${{ matrix.system }}-${{ matrix.python }}
-        run: echo "${{ matrix.runs-on }}-${{ matrix.python }}" >> artifact.txt
+        run: printf "%s\n" "${{ matrix.runs-on }}-${{ matrix.python }}" >> artifact.txt
 
       - name: 📤 Upload artifact for ${{ matrix.system }}-${{ matrix.python }}
         uses: pyTooling/upload-artifact@v4
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Package creation
-        run: echo "Package" >> package.txt
+        run: printf "%s\n" "Package" >> package.txt
 
       - name: 📤 Upload artifact for ${{ matrix.system }}-${{ matrix.python }}
         uses: pyTooling/upload-artifact@v4
@@ -50,7 +50,7 @@ jobs:
           retention-days: 1
 
   ArtifactCleanUp:
-    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r2
+    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r4
     needs:
       - Params
       - Testing

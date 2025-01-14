@@ -31,7 +31,7 @@ on:
         type: string
       coverage_artifacts_pattern:
         required: false
-        default: '*-CodeCoverage-*'
+        default: '*-CodeCoverage-SQLite-*'
         type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
@@ -84,7 +84,7 @@ jobs:
 
       - name: 🔎 Inspect extracted artifact (tarball)
         run: |
-          tree -psh artifacts
+          tree -pash artifacts
 
       - name: 🔧 Install coverage and tomli
         run: |
@@ -150,13 +150,11 @@ jobs:
 
           print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
 
-      - name: Rename .coverage files and collect them all to coverage/
+      - name: Rename .coverage files and move them all into 'coverage/'
         run: |
-          ls -lAh artifacts/
-          ls -lAh artifacts/*/.coverage
           mkdir -p coverage
           find artifacts/ -type f -path "*SQLite*.coverage" -exec sh -c 'cp -v $0 "coverage/$(basename $0).$(basename $(dirname $0))"' {} ';'
-          tree -a coverage
+          tree -pash coverage
 
       - name: Combine SQLite files (using Coverage.py)
         run: coverage combine --data-file=.coverage coverage/
@@ -177,7 +175,7 @@ jobs:
         run: |
           coverage html --data-file=.coverage -d report/coverage/html
           rm report/coverage/html/.gitignore
-          tree -a report/coverage/html
+          tree -pash report/coverage/html
 
       - name: 📤 Upload 'Coverage SQLite Database' artifact
         if: inputs.coverage_sqlite_artifact != ''

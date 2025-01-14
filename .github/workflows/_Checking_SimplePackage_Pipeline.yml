@@ -6,7 +6,7 @@ on:
 
 jobs:
   SimplePackage:
-    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r2
+    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r4
     with:
       package_name: pyDummy
     secrets:

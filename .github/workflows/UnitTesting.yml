@@ -94,10 +94,25 @@ on:
         required: false
         default: 'unit'
         type: string
+      unittest_report_xml_directory:
+        description: 'Path where to save the unittest summary report XML.'
+        required: false
+        default: 'report/unit'
+        type: string
+      unittest_report_xml_filename:
+        description: 'Filename of the unittest summary report XML.'
+        required: false
+        default: 'TestReportSummary.xml'
+        type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
         required: false
         default: 'pyproject.toml'
+        type: string
+      coverage_report_html_directory:
+        description: ''
+        required: false
+        default: 'report/coverage/html'
         type: string
       unittest_xml_artifact:
         description: "Generate unit test report with junitxml and upload results as an artifact."
@@ -323,69 +338,6 @@ jobs:
         if: matrix.system == 'msys2' && matrix.runtime == 'UCRT64' && inputs.ucrt64_before_script != ''
         run: ${{ inputs.ucrt64_before_script }}
 
-# Read pyproject.toml
-
-      - name: 🔁 Extract configurations from pyproject.toml
-        id: getVariables
-        shell: python
-        run: |
-          from os       import getenv
-          from pathlib  import Path
-          from sys      import version
-          from textwrap import dedent
-
-          print(f"Python: {version}")
-
-          from tomli import load as tomli_load
-
-          htmlDirectory = Path("htmlcov")
-          xmlFile =  Path("./coverage.xml")
-          jsonFile = Path("./coverage.json")
-          coverageRC = "${{ inputs.coverage_config }}".strip()
-
-          # Read output paths from 'pyproject.toml' file
-          if coverageRC == "pyproject.toml":
-            pyProjectFile =  Path("pyproject.toml")
-            if pyProjectFile.exists():
-              with pyProjectFile.open("rb") as file:
-                pyProjectSettings = tomli_load(file)
-
-              htmlDirectory = Path(pyProjectSettings["tool"]["coverage"]["html"]["directory"])
-              xmlFile       = Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
-              jsonFile      = Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
-            else:
-              print(f"File '{pyProjectFile}' not found.")
-              print(f"::error title=FileNotFoundError::File '{pyProjectFile}' not found.")
-              exit(1)
-
-          # Read output paths from '.coveragerc' file
-          elif len(coverageRC) > 0:
-            coverageRCFile = Path(coverageRC)
-            if coverageRCFile.exists():
-              with coverageRCFile.open("rb") as file:
-                coverageRCSettings = tomli_load(file)
-
-              htmlDirectory = Path(coverageRCSettings["html"]["directory"])
-              xmlFile       = Path(coverageRCSettings["xml"]["output"])
-              jsonFile      = Path(coverageRCSettings["json"]["output"])
-            else:
-              print(f"File '{coverageRCFile}' not found.")
-              print(f"::error title=FileNotFoundError::File '{coverageRCFile}' not found.")
-              exit(1)
-
-          # Write jobs to special file
-          github_output = Path(getenv("GITHUB_OUTPUT"))
-          print(f"GITHUB_OUTPUT: {github_output}")
-          with github_output.open("a+", encoding="utf-8") as f:
-            f.write(dedent(f"""\
-              unittest_report_html_directory={htmlDirectory}
-              coverage_report_html_directory={htmlDirectory.as_posix()}
-              coverage_report_xml={xmlFile}
-              coverage_report_json={jsonFile}
-            """))
-
-          print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
-
 # Run pytests
 
       - name: ✅ Run unit tests (Ubuntu/macOS)
@@ -395,12 +347,12 @@ jobs:
           export PYTHONPATH=$(pwd)
 
           cd "${{ inputs.root_directory || '.' }}"
-          [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=report/unit/TestReportSummary.xml' || unset PYTEST_ARGS
+          [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ inputs.unittest_report_xml_directory }}/${{ inputs.unittest_report_xml_filename }}' || unset PYTEST_ARGS
           if [ -n '${{ inputs.coverage_config }}' ]; then
-            echo "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
+            printf "%s\n" "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           else
-            echo "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
+            printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           fi
 
@@ -411,7 +363,7 @@ jobs:
           $env:PYTHONPATH = (Get-Location).ToString()
 
           cd "${{ inputs.root_directory || '.' }}"
-          $PYTEST_ARGS = if ("${{ inputs.unittest_xml_artifact }}") { "--junitxml=report/unit/TestReportSummary.xml" } else { "" }
+          $PYTEST_ARGS = if ("${{ inputs.unittest_xml_artifact }}") { "--junitxml=${{ inputs.unittest_report_xml_directory }}/${{ inputs.unittest_report_xml_filename }}" } else { "" }
           if ("${{ inputs.coverage_config }}") {
             Write-Host "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
@@ -434,19 +386,19 @@ jobs:
         if: inputs.coverage_html_artifact != ''
         continue-on-error: true
         run: |
-          coverage html --data-file=.coverage -d ${{ steps.getVariables.outputs.coverage_report_html_directory }}
-          rm ${{ steps.getVariables.outputs.coverage_report_html_directory }}/.gitignore
+          coverage html --data-file=.coverage -d ${{ inputs.coverage_report_html_directory }}
+          rm ${{ inputs.coverage_report_html_directory }}/.gitignore
 
 # Upload artifacts
 
-      - name: 📤 Upload 'TestReportSummary.xml' artifact
+      - name: 📤 Upload '${{ inputs.unittest_report_xml_filename }}' artifact
         if: inputs.unittest_xml_artifact != ''
         continue-on-error: true
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.unittest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          working-directory: report/unit
-          path: TestReportSummary.xml
+          working-directory: ${{ inputs.unittest_report_xml_directory }}
+          path: ${{ inputs.unittest_report_xml_filename }}
           if-no-files-found: error
           retention-days: 1
 
