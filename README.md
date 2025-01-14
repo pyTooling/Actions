@@ -100,7 +100,7 @@ As shown in the screenshots above, the expected order is:
 
 ### Example pipeline
 
-[ExamplePipeline.yml](ExamplePipeline.yml) is an example Workflow which uses all of the Reusable Workflows.
+ExamplePipeline.yml is an example Workflow which uses all of the Reusable Workflows.
 Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
 Minimal required modifications are the following:
 
