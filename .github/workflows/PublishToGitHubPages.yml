@@ -55,7 +55,7 @@ jobs:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
 
-      - name: 📥 Download artifacts '${{ inputs.doc }}' from 'BuildTheDocs' job
+      - name: 📥 Download artifacts '${{ inputs.doc }}' from 'SphinxDocumentation' job
         uses: pyTooling/download-artifact@v4
         with:
           name: ${{ inputs.doc }}

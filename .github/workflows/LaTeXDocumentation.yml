@@ -55,17 +55,28 @@ jobs:
           name: ${{ inputs.latex_artifact }}
           path: latex
 
-      - name: Compile LaTeX document
-        uses: xu-cheng/latex-action@master
+      - name: Debug
+        run: |
+          tree -pash .
+
+      - name: Build LaTeX document using 'pytooling/miktex:sphinx'
+        uses: addnab/docker-run-action@v3
         with:
-          working_directory: latex
-          root_file: ${{ inputs.document }}.tex
+          image: pytooling/miktex:sphinx
+          options: -v ${{ github.workspace }}/latex:/latex --workdir /latex
+          run: |
+            which pdflatex
+            pwd
+            ls -lAh
+
+            latexmk -xelatex ${{ inputs.document }}.tex
 
       - name: 📤 Upload 'PDF Documentation' artifact
         uses: pyTooling/upload-artifact@v4
         if: inputs.pdf_artifact != ''
         with:
           name: ${{ inputs.pdf_artifact }}
+          working-directory: latex
           path: ${{ inputs.document }}.pdf
           if-no-files-found: error
           retention-days: 1

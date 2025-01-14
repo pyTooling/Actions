@@ -68,6 +68,18 @@ on:
         description: 'Multi-line string containing artifact:file:title asset descriptions.'
         required: true
         type: string
+      inventory-json:
+        type: string
+        required: false
+        default: ''
+      inventory-version:
+        type: string
+        required: false
+        default: ''
+      inventory-categories:
+        type: string
+        required: false
+        default: ''
       tarball-name:
         type: string
         required: false
@@ -97,23 +109,23 @@ jobs:
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_LIGHT_YELLOW="\e[93m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
           export GH_TOKEN=${{ github.token }}
 
-          echo -n "Deleting release '${{ inputs.nightly_name }}' ... "
+          printf "%s" "Deleting release '${{ inputs.nightly_name }}' ... "
           message="$(gh release delete ${{ inputs.nightly_name }} --yes 2>&1)"
           if [[ $? -eq 0 ]]; then
-            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           elif [[ "${message}" == "release not found" ]]; then
-            echo -e "${ANSI_LIGHT_YELLOW}[NOT FOUND]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_YELLOW}[NOT FOUND]${ANSI_NOCOLOR}"
           else
-            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            echo -e "${ANSI_LIGHT_RED}Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
-            echo "::error title=InternalError::Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'."
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
+            printf "%s\n" "::error title=InternalError::Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'."
             exit 1
           fi
 
@@ -122,19 +134,19 @@ jobs:
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
           export GH_TOKEN=${{ github.token }}
 
           addDraft="--draft"
 
-          if ${{ inputs.prerelease }}; then
+          if [[ "${{ inputs.prerelease }}" == "true" ]]; then
             addPreRelease="--prerelease"
           fi
 
-          if ! ${{ inputs.latest }}; then
+          if [[ "${{ inputs.latest }}" == "false" ]]; then
             addLatest="--latest=false"
           fi
 
@@ -166,14 +178,14 @@ jobs:
           Published from [${{ github.workflow }}](https://github.com/Paebbels/ghdl/actions/runs/${{ github.run_id }}) workflow triggered by @${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S').
           EOF
 
-          echo "Creating release '${{ inputs.nightly_name }}' ... "
+          printf "%s\n" "Creating release '${{ inputs.nightly_name }}' ... "
           message="$(gh release create "${{ inputs.nightly_name }}" --verify-tag $addDraft $addPreRelease $addLatest "${addTitle[@]}" "${addNotes[@]}" 2>&1)"
           if [[ $? -eq 0 ]]; then
-            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           else
-            echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            echo -e "${ANSI_LIGHT_RED}Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
-            echo "::error title=InternalError::Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'."
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
+            printf "%s\n" "::error title=InternalError::Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'."
             exit 1
           fi
 
@@ -182,10 +194,11 @@ jobs:
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_LIGHT_YELLOW="\e[93m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_LIGHT_BLUE="\e[94m"
+          ANSI_NOCOLOR=$'\x1b[0m'
 
           export GH_TOKEN=${{ github.token }}
 
@@ -199,8 +212,41 @@ jobs:
               replacement="${patternLine#*=}"
               line="${line//"%$pattern%"/"$replacement"}"
             done <<<'${{ inputs.replacements }}'
-            echo "$line"
+            printf "%s\n" "$line"
           }
+
+          # Create JSON inventory
+          if [[ "${{ inputs.inventory-json }}" != "" ]]; then
+            VERSION="1.0"
+
+            # Split categories by ',' into a Bash array.
+            # See https://stackoverflow.com/a/45201229/3719459
+            if [[ "${{ inputs.inventory-categories }}" != "" ]]; then
+              readarray -td, inventoryCategories <<<"${{ inputs.inventory-categories }},"
+              unset 'inventoryCategories[-1]'
+              declare -p inventoryCategories
+            else
+              inventoryCategories=""
+            fi
+
+            jsonInventory=$(jq -c -n \
+              --arg version "${VERSION}" \
+              --arg date "$(date +"%Y-%m-%dT%H-%M-%S%:z")" \
+              --argjson jsonMeta "$(jq -c -n \
+                --arg tag "${{ inputs.nightly_name }}" \
+                --arg version "${{ inputs.inventory-version }}" \
+                --arg hash "${{ github.sha }}" \
+                --arg repo "${{ github.server_url }}/${{ github.repository }}" \
+                --arg release "${{ github.server_url }}/${{ github.repository }}/releases/download/${{ inputs.nightly_name }}" \
+                --argjson categories "$(jq -c -n \
+                  '$ARGS.positional' \
+                  --args "${inventoryCategories[@]}" \
+                )" \
+                '{"tag": $tag, "version": $version, "git-hash": $hash, "repository-url": $repo, "release-url": $release, "categories": $categories}' \
+              )" \
+              '{"version": 1.0, "timestamp": $date, "meta": $jsonMeta, "files": {}}'
+            )
+          fi
 
           ERRORS=0
           # A dictionary of 0/1 to avoid duplicate downloads
@@ -214,184 +260,243 @@ jobs:
 
             # split assetLine colon separated triple: artifact:asset:title
             artifact="${assetLine%%:*}"
-            remaining="${assetLine#*:}"
-            asset="${remaining%%:*}"
-            title="${remaining##*:}"
+            assetLine="${assetLine#*:}"
+            asset="${assetLine%%:*}"
+            assetLine="${assetLine#*:}"
+            if [[ "${{ inputs.inventory-json }}" == "" ]]; then
+              categories=""
+              title="${assetLine##*:}"
+            else
+              categories="${assetLine%%:*}"
+              title="${assetLine##*:}"
+            fi
 
             # remove leading whitespace
             asset="${asset#"${asset%%[![:space:]]*}"}"
+            categories="${categories#"${categories%%[![:space:]]*}"}"
             title="${title#"${title%%[![:space:]]*}"}"
 
             # apply replacements
             asset="$(Replace "${asset}")"
             title="$(Replace "${title}")"
 
-            echo "Publish asset '${asset}' from artifact '${artifact}' with title '${title}'"
-            echo -n "  Checked asset for duplicates ... "
+            printf "%s\n" "Publish asset '${asset}' from artifact '${artifact}' with title '${title}'"
+            printf "  %s" "Checked asset for duplicates ... "
             if [[ -n "${assetFilenames[$asset]}" ]]; then
-              echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-              echo "::error title=DuplicateAsset::Asset '${asset}' from artifact '${artifact}' was already uploaded to release '${{ inputs.nightly_name }}'."
+              printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+              printf "%s\n" "::error title=DuplicateAsset::Asset '${asset}' from artifact '${artifact}' was already uploaded to release '${{ inputs.nightly_name }}'."
               ERRORS=1
               continue
             else
-              echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
               assetFilenames[$asset]=1
             fi
 
             # Download artifact by artifact name
             if [[ -n "${downloadedArtifacts[$artifact]}" ]]; then
-              echo -e "  downloading '${artifact}' ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
+              printf "  %s\n" "downloading '${artifact}' ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
             else
               echo    "  downloading '${artifact}' ... "
-              echo -n "    gh run download $GITHUB_RUN_ID --dir \"${artifact}\" --name \"${artifact}\" "
+              printf "    %s" "gh run download $GITHUB_RUN_ID --dir \"${artifact}\" --name \"${artifact}\" "
               gh run download $GITHUB_RUN_ID --dir "${artifact}" --name "${artifact}"
               if [[ $? -eq 0 ]]; then
-                echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
               else
-                echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                echo -e "${ANSI_LIGHT_RED}Couldn't download artifact '${artifact}'.${ANSI_NOCOLOR}"
-                echo "::error title=ArtifactNotFound::Couldn't download artifact '${artifact}'."
+                printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+                printf "%s\n" "${ANSI_LIGHT_RED}Couldn't download artifact '${artifact}'.${ANSI_NOCOLOR}"
+                printf "%s\n" "::error title=ArtifactNotFound::Couldn't download artifact '${artifact}'."
                 ERRORS=1
                 continue
               fi
               downloadedArtifacts[$artifact]=1
 
-              echo -n "  Checking for embedded tarball ... "
+              printf "  %s" "Checking for embedded tarball ... "
               if [[ -f "${artifact}/${{ inputs.tarball-name }}" ]]; then
-                echo -e "${ANSI_LIGHT_GREEN}[FOUND]${ANSI_NOCOLOR}"
+                printf "%s\n" "${ANSI_LIGHT_GREEN}[FOUND]${ANSI_NOCOLOR}"
 
                 pushd "${artifact}" > /dev/null
 
-                echo -n "    Extracting embedded tarball ... "
+                printf "    %s" "Extracting embedded tarball ... "
                 tar -xf "${{ inputs.tarball-name }}"
                 if [[ $? -ne 0 ]]; then
-                  echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+                  printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
                 else
-                  echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                  printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                 fi
 
-                echo -n "    Removing temporary tarball ... "
+                printf "    %s" "Removing temporary tarball ... "
                 rm -f "${{ inputs.tarball-name }}"
                 if [[ $? -ne 0 ]]; then
-                  echo -e "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+                  printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
                 else
-                  echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                  printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                 fi
 
                 popd > /dev/null
               else
-                echo -e "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
+                printf "%s\n" "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
               fi
             fi
 
             # Check if artifact should be compressed (zip, tgz) or if asset was part of the downloaded artifact.
-            echo -n "  checking asset '${artifact}/${asset}' ... "
+            printf "  %s" "checking asset '${artifact}/${asset}' ... "
             if [[ "${asset}" == !*.zip ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[ZIP]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[ZIP]${ANSI_NOCOLOR}"
               asset="${asset##*!}"
-              echo "    Compressing artifact '${artifact}' to '${asset}' ..."
+              printf "    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
               (
                 cd "${artifact}" && \
                 zip -r "../${asset}" *
               )
               if [[ $? -eq 0 ]]; then
-                echo -e "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                printf "    %s\n" "Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                 uploadFile="${asset}"
               else
-                echo -e "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                echo -e "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zip file '${asset}'.${ANSI_NOCOLOR}"
-                echo "::error title=CompressionError::Couldn't compress '${artifact}' to zip file '${asset}'."
+                printf "    %s\n" "Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+                printf "%s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zip file '${asset}'.${ANSI_NOCOLOR}"
+                printf "%s\n" "::error title=CompressionError::Couldn't compress '${artifact}' to zip file '${asset}'."
                 ERRORS=1
                 continue
               fi
             elif [[ "${asset}" == !*.tgz || "${asset}" == !*.tar.gz || "${asset}" == \$*.tgz || "${asset}" == \$*.tar.gz ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[TAR/GZ]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[TAR/GZ]${ANSI_NOCOLOR}"
 
               if [[ "${asset:0:1}" == "\$" ]]; then
                 asset="${asset##*$}"
                 dirName="${asset%.*}"
-                echo "    Compressing artifact '${artifact}' to '${asset}' ..."
-                tar -c --gzip --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
+                printf "    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
+                tar -c --gzip --owner=0 --group=0 --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
                 retCode=$?
               else
                 asset="${asset##*!}"
-                echo "    Compressing artifact '${artifact}' to '${asset}' ..."
+                printf "    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
                 (
                   cd "${artifact}" && \
-                  tar -c --gzip --file="../${asset}" *
+                  tar -c --gzip --owner=0 --group=0 --file="../${asset}" *
                 )
                 retCode=$?
               fi
 
               if [[ $retCode -eq 0 ]]; then
-                echo -e "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                printf "    %s\n" "Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                 uploadFile="${asset}"
               else
-                echo -e "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                echo -e "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to tgz file '${asset}'.${ANSI_NOCOLOR}"
-                echo "::error title=CompressionError::Couldn't compress '${artifact}' to tgz file '${asset}'."
+                printf "    %s\n" "Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+                printf "%s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to tgz file '${asset}'.${ANSI_NOCOLOR}"
+                printf "%s\n" "::error title=CompressionError::Couldn't compress '${artifact}' to tgz file '${asset}'."
                 ERRORS=1
                 continue
               fi
             elif [[ "${asset}" == !*.tzst || "${asset}" == !*.tar.zst || "${asset}" == \$*.tzst || "${asset}" == \$*.tar.zst ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[ZST]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[ZST]${ANSI_NOCOLOR}"
 
               if [[ "${asset:0:1}" == "\$" ]]; then
                 asset="${asset##*$}"
                 dirName="${asset%.*}"
-                echo "    Compressing artifact '${artifact}' to '${asset}' ..."
-                tar -c --zstd --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
+                printf "    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
+                tar -c --zstd --owner=0 --group=0 --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
                 retCode=$?
               else
                 asset="${asset##*!}"
-                echo "    Compressing artifact '${artifact}' to '${asset}' ..."
+                printf "    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
                 (
                   cd "${artifact}" && \
-                  tar -c --zstd --file="../${asset}" *
+                  tar -c --zstd --owner=0 --group=0 --file="../${asset}" *
                 )
                 retCode=$?
               fi
 
               if [[ $retCode -eq 0 ]]; then
-                echo -e "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+                printf "    %s\n" "Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                 uploadFile="${asset}"
               else
-                echo -e "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                echo -e "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zst file '${asset}'.${ANSI_NOCOLOR}"
-                echo "::error title=CompressionError::Couldn't compress '${artifact}' to zst file '${asset}'."
+                printf "    %s\n" "Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+                printf "%s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zst file '${asset}'.${ANSI_NOCOLOR}"
+                printf "%s\n" "::error title=CompressionError::Couldn't compress '${artifact}' to zst file '${asset}'."
                 ERRORS=1
                 continue
               fi
             elif [[ -e "${artifact}/${asset}" ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
               uploadFile="${artifact}/${asset}"
             else
-              echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-              echo -e "${ANSI_LIGHT_RED}Couldn't find asset '${asset}' in artifact '${artifact}'.${ANSI_NOCOLOR}"
-              echo "::error title=FileNotFound::Couldn't find asset '${asset}' in artifact '${artifact}'."
+              printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}Couldn't find asset '${asset}' in artifact '${artifact}'.${ANSI_NOCOLOR}"
+              printf "%s\n" "::error title=FileNotFound::Couldn't find asset '${asset}' in artifact '${artifact}'."
               ERRORS=1
               continue
             fi
 
+            # Add asset to JSON inventory
+            if [[ "${{ inputs.inventory-json }}" != "" ]]; then
+              if [[ "${categories}" != "${title}" ]]; then
+                printf "  %s\n" "adding file '${uploadFile}' with '${categories//;/ → }' to JSON inventory ..."
+                category=""
+                jsonEntry=$(jq -c -n \
+                  --arg title "${title}" \
+                  --arg file "${uploadFile}" \
+                  '{"file": $file, "title": $title}' \
+                )
+
+                while [[ "${categories}" != "${category}" ]]; do
+                  category="${categories##*;}"
+                  categories="${categories%;*}"
+                  jsonEntry=$(jq -c -n --arg cat "${category}" --argjson value "${jsonEntry}" '{$cat: $value}')
+                done
+
+                jsonInventory=$(jq -c -n \
+                  --argjson inventory "${jsonInventory}" \
+                  --argjson file "${jsonEntry}" \
+                  '$inventory * {"files": $file}' \
+                )
+              else
+                printf "  %s\n" "adding file '${uploadFile}' to JSON inventory ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
+              fi
+            fi
+
             # Upload asset to existing release page
-            echo -n "  uploading asset '${asset}' from '${uploadFile}' with title '${title}' ... "
+            printf "  %s" "uploading asset '${asset}' from '${uploadFile}' with title '${title}' ... "
             gh release upload ${{ inputs.nightly_name }} "${uploadFile}#${title}" --clobber
             if [[ $? -eq 0 ]]; then
-              echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
             else
-              echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-              echo -e "${ANSI_LIGHT_RED}Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
-              echo "::error title=UploadError::Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'."
+              printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
+              printf "%s\n" "::error title=UploadError::Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'."
               ERRORS=1
               continue
             fi
           done <<<'${{ inputs.assets }}'
 
-          echo "Inspecting downloaded artifacts ..."
-          tree -L 3 .
+          if [[ "${{ inputs.inventory-json }}" != "" ]]; then
+            inventoryTitle="Release Inventory (JSON)"
+
+            printf "%s\n" "Publish asset '${{ inputs.inventory-json }}' with title '${inventoryTitle}'"
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Writing JSON inventory to '${{ inputs.inventory-json }}' ...."
+            printf "%s\n" "$(jq -n --argjson inventory "${jsonInventory}" '$inventory')" > "${{ inputs.inventory-json }}"
+            cat "${{ inputs.inventory-json }}"
+            printf "::endgroup::\n"
+
+            # Upload inventory asset to existing release page
+            printf "  %s" "uploading asset '${{ inputs.inventory-json }}' title '${inventoryTitle}' ... "
+            gh release upload ${{ inputs.nightly_name }} "${{ inputs.inventory-json }}#${inventoryTitle}" --clobber
+            if [[ $? -eq 0 ]]; then
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            else
+              printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+              printf "%s\n" "${ANSI_LIGHT_RED}Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
+              printf "%s\n" "::error title=UploadError::Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.nightly_name }}'."
+              ERRORS=1
+              continue
+            fi
+          fi
+
+          printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Inspecting downloaded artifacts ..."
+          tree -pash -L 3 .
+          printf "::endgroup::\n"
 
           if [[ $ERROR -ne 0 ]]; then
-            echo -e "${ANSI_LIGHT_RED}Errors detected in previous steps.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Errors detected in previous steps.${ANSI_NOCOLOR}"
             exit 1
           fi
 
@@ -400,19 +505,19 @@ jobs:
         run: |
           set +e
 
-          ANSI_LIGHT_RED="\e[91m"
-          ANSI_LIGHT_GREEN="\e[92m"
-          ANSI_NOCOLOR="\e[0m"
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
 
           export GH_TOKEN=${{ github.token }}
 
           # Remove draft-state from release page
-          echo -n "Remove draft-state from release '${title}' ... "
+          printf "%s" "Remove draft-state from release '${title}' ... "
           gh release edit --draft=false "${{ inputs.nightly_name }}"
           if [[ $? -eq 0 ]]; then
-            echo -e "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           else
-            echo -e "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-            echo -e "${ANSI_LIGHT_RED}Couldn't remove draft-state from release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
-            echo "::error title=ReleasePage::Couldn't remove draft-state from release '${{ inputs.nightly_name }}'."
+            printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_RED}Couldn't remove draft-state from release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
+            printf "%s\n" "::error title=ReleasePage::Couldn't remove draft-state from release '${{ inputs.nightly_name }}'."
           fi

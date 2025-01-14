@@ -147,7 +147,7 @@ jobs:
             else:
               name = f"{package_namespace}.{package_name}"
 
-          currentMSYS2Version = "3.11"
+          currentMSYS2Version = "3.12"
           currentAlphaVersion = "3.14"
           currentAlphaRelease = "3.14.0-alpha.1"
 
@@ -337,7 +337,7 @@ jobs:
       - name: Verify out parameters
         id: verify
         run: |
-          echo 'python_version: ${{ steps.params.outputs.python_version }}'
-          echo 'python_jobs: ${{ steps.params.outputs.python_jobs }}'
-          echo 'artifact_names: ${{ steps.params.outputs.artifact_names }}'
-          echo 'params: ${{ steps.params.outputs.params }}'
+          printf "python_version: %s\n" '${{ steps.params.outputs.python_version }}'
+          printf "python_jobs:    %s\n" '${{ steps.params.outputs.python_jobs }}'
+          printf "artifact_names: %s\n" '${{ steps.params.outputs.artifact_names }}'
+          printf "params:         %s\n" '${{ steps.params.outputs.params }}'

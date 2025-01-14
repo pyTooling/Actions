@@ -231,10 +231,10 @@ jobs:
           cd "${{ inputs.root_directory || '.' }}"
           [ -n '${{ inputs.apptest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=report/unit/TestReportSummary.xml' || unset PYTEST_ARGS
           if [ -n '${{ inputs.coverage_config }}' ]; then
-            echo "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
+            printf "%s\n" "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
           else
-            echo "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
+            printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
             python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
           fi
 

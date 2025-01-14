@@ -32,7 +32,7 @@ on:
         type: string
       unittest_artifacts_pattern:
         required: false
-        default: '*-UnitTestReportSummary-*'
+        default: '*-UnitTestReportSummary-XML-*'
         type: string
       merged_junit_artifact:
         description: 'Name of the merged JUnit Test Summary artifact.'
@@ -73,23 +73,22 @@ jobs:
 
       - name: 🔎 Inspect extracted artifact (tarball)
         run: |
-          tree -psh artifacts
+          tree -pash artifacts
 
       - name: 🔧 Install pyEDAA.Reports (JUunit Parser and Merger)
         run: |
           python -m pip install --disable-pip-version-check --break-system-packages -U pyEDAA.Reports
 
-      - name: Move JUnit files and collect them all to junit/
+      - name: Rename JUnit files and move them all into 'junit/'
         run: |
           mkdir -p junit
-          ls -lAh artifacts/*/*.xml
           find artifacts/ -type f -path "*TestReportSummary*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
-          tree -a junit
+          tree -pash junit
 
       - name: 🔁 Merge JUnit Unit Test Summaries
         run: |
           pyedaa-reports -v unittest "--merge=pyTest-JUnit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=pyTest-JUnit:Unittesting.xml"
-          echo "cat Unittesting.xml"
+          printf "%s\n" "cat Unittesting.xml"
           cat Unittesting.xml
 
       - name: 📊 Publish Unit Test Results
