@@ -103,12 +103,12 @@ jobs:
         * iventory.json
       inventory-json: "inventory.json"
       inventory-version: 4.2.5
-#      inventory-categories:
+      inventory-categories: "kind1,kind2"
       assets: |
-        document: document1.txt:   doc;html:  Documentation
-        document: build.log:       build;log: Logfile - %tool% - %tool%
-        other:    document1.txt:   build;SBOM:SBOM - %version%
-        other:    %prog%.py:       app;binary:Application - %tool% - %version%
+        document: document1.txt:   doc,html:  Documentation
+        document: build.log:       build,log: Logfile - %tool% - %tool%
+        other:    document1.txt:   build,SBOM:SBOM - %version%
+        other:    %prog%.py:       app,binary:Application - %tool% - %version%
         document:!archive1.zip:               Archive 1 - zip
         document:!archive2.tgz:               Archive 2 - tgz
         document:!archive3.tar.gz:            Archive 3 - tar.gz

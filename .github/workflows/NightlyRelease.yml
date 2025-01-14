@@ -76,6 +76,10 @@ on:
         type: string
         required: false
         default: ''
+      inventory-categories:
+        type: string
+        required: false
+        default: ''
       tarball-name:
         type: string
         required: false
@@ -214,7 +218,16 @@ jobs:
           # Create JSON inventory
           if [[ "${{ inputs.inventory-json }}" != "" ]]; then
             VERSION="1.0"
-            ORDER=("os-name" "os-version" "os-arch" "runtime" "ghdl-backend")
+
+            # Split categories by ',' into a Bash array.
+            # See https://stackoverflow.com/a/45201229/3719459
+            if [[ "${{ inputs.inventory-categories }}" != "" ]]; then
+              readarray -td, inventoryCategories <<<"${{ inputs.inventory-categories }},"
+              unset 'inventoryCategories[-1]'
+              declare -p inventoryCategories
+            else
+              inventoryCategories=""
+            fi
 
             jsonInventory=$(jq -c -n \
               --arg version "${VERSION}" \
@@ -224,14 +237,14 @@ jobs:
                 --arg version "${{ inputs.inventory-version }}" \
                 --arg hash "${{ github.sha }}" \
                 --arg repo "${{ github.server_url }}/${{ github.repository }}" \
-                '{"tag": $tag, "version": $version, "git-hash": $hash, "repository-url": $repo}' \
+                --arg release "${{ github.server_url }}/${{ github.repository }}/releases/download/${{ inputs.nightly_name }}" \
+                --argjson categories "$(jq -c -n \
+                  '$ARGS.positional' \
+                  --args "${inventoryCategories[@]}" \
+                )" \
+                '{"tag": $tag, "version": $version, "git-hash": $hash, "repository-url": $repo, "release-url": $release, "categories": $categories}' \
               )" \
-              --argjson jsonInfo "$(jq -c -n \
-                --arg url "${{ github.server_url }}/${{ github.repository }}/releases/download/${{ inputs.nightly_name }}" \
-                --argjson order "$(jq -c -n '$ARGS.positional' --args "${ORDER[@]}")" \
-                '{"release-url": $url, "categories": $order}'
-              )" \
-              '{"version": 1.0, "timestamp": $date, "meta": $jsonMeta, "info": $jsonInfo, "files": {}}'
+              '{"version": 1.0, "timestamp": $date, "meta": $jsonMeta, "files": {}}'
             )
           fi
 
