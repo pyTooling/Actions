@@ -175,7 +175,7 @@ jobs:
           cat <<EOF >> __NoTeS__.md
 
           --------
-          Published from [${{ github.workflow }}](https://github.com/Paebbels/ghdl/actions/runs/${{ github.run_id }}) workflow triggered by @${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S').
+          Published from [${{ github.workflow }}](https://github.com/Paebbels/ghdl/actions/runs/${{ github.run_id }}) workflow triggered by @${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S %Z').
           EOF
 
           printf "%s\n" "Creating release '${{ inputs.nightly_name }}' ... "
