@@ -282,8 +282,8 @@ jobs:
 # Python setup
 
       - name: '🟦 Setup MSYS2 for ${{ matrix.runtime }}'
-        if: matrix.system == 'msys2'
         uses: msys2/setup-msys2@v2
+        if: matrix.system == 'msys2'
         with:
           msystem: ${{ matrix.runtime }}
           update: true
@@ -292,8 +292,8 @@ jobs:
             ${{ inputs.pacboy }}
 
       - name: 🐍 Setup Python ${{ matrix.python }}
-        if: matrix.system != 'msys2'
         uses: actions/setup-python@v5
+        if: matrix.system != 'msys2'
         with:
           python-version: ${{ matrix.python }}
 
@@ -392,9 +392,9 @@ jobs:
 # Upload artifacts
 
       - name: 📤 Upload '${{ inputs.unittest_report_xml_filename }}' artifact
+        uses: pyTooling/upload-artifact@v4
         if: inputs.unittest_xml_artifact != ''
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.unittest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           working-directory: ${{ inputs.unittest_report_xml_directory }}

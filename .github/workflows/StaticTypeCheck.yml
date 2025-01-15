@@ -87,9 +87,9 @@ jobs:
         run: ${{ inputs.commands }}
 
       - name: 📤 Upload 'Static Typing Report' HTML artifact
+        uses: pyTooling/upload-artifact@v4
         if: ${{ inputs.html_artifact != '' }}
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.html_artifact }}
           working-directory: ${{ inputs.html_report }}
@@ -98,9 +98,9 @@ jobs:
           retention-days: 1
 
       - name: 📤 Upload 'Static Typing Report' JUnit artifact
+        uses: pyTooling/upload-artifact@v4
         if: ${{ inputs.junit_artifact != '' }}
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.junit_artifact }}
           path: ${{ inputs.junit_report }}
