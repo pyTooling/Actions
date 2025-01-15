@@ -343,12 +343,14 @@ jobs:
             if [[ "${asset}" == !*.zip ]]; then
               printf "%s\n" "${ANSI_LIGHT_GREEN}[ZIP]${ANSI_NOCOLOR}"
               asset="${asset##*!}"
-              printf "    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
+              printf "::group::    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
               (
                 cd "${artifact}" && \
                 zip -r "../${asset}" *
               )
-              if [[ $? -eq 0 ]]; then
+              retCode=$?
+              printf "::endgroup::\n"
+              if [[ $retCode -eq 0 ]]; then
                 printf "    %s\n" "Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                 uploadFile="${asset}"
               else
