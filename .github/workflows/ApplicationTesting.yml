@@ -188,8 +188,8 @@ jobs:
             f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
 
       - name: '🟦 Setup MSYS2 for ${{ matrix.runtime }}'
-        if: matrix.system == 'msys2'
         uses: msys2/setup-msys2@v2
+        if: matrix.system == 'msys2'
         with:
           msystem: ${{ matrix.runtime }}
           update: true
@@ -198,8 +198,8 @@ jobs:
             ${{ inputs.pacboy }}
 
       - name: 🐍 Setup Python ${{ matrix.python }}
-        if: matrix.system != 'msys2'
         uses: actions/setup-python@v5
+        if: matrix.system != 'msys2'
         with:
           python-version: ${{ matrix.python }}
 

@@ -175,7 +175,7 @@ jobs:
           cat <<EOF >> __NoTeS__.md
 
           --------
-          Published from [${{ github.workflow }}](https://github.com/Paebbels/ghdl/actions/runs/${{ github.run_id }}) workflow triggered by @${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S').
+          Published from [${{ github.workflow }}](https://github.com/Paebbels/ghdl/actions/runs/${{ github.run_id }}) workflow triggered by @${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S %Z').
           EOF
 
           printf "%s\n" "Creating release '${{ inputs.nightly_name }}' ... "
@@ -343,12 +343,14 @@ jobs:
             if [[ "${asset}" == !*.zip ]]; then
               printf "%s\n" "${ANSI_LIGHT_GREEN}[ZIP]${ANSI_NOCOLOR}"
               asset="${asset##*!}"
-              printf "    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
+              printf "::group::    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
               (
                 cd "${artifact}" && \
                 zip -r "../${asset}" *
               )
-              if [[ $? -eq 0 ]]; then
+              retCode=$?
+              printf "::endgroup::\n"
+              if [[ $retCode -eq 0 ]]; then
                 printf "    %s\n" "Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
                 uploadFile="${asset}"
               else
@@ -430,11 +432,11 @@ jobs:
             # Add asset to JSON inventory
             if [[ "${{ inputs.inventory-json }}" != "" ]]; then
               if [[ "${categories}" != "${title}" ]]; then
-                printf "  %s\n" "adding file '${uploadFile}' with '${categories//;/ → }' to JSON inventory ..."
+                printf "  %s\n" "adding file '${uploadFile#*/}' with '${categories//;/ → }' to JSON inventory ..."
                 category=""
                 jsonEntry=$(jq -c -n \
                   --arg title "${title}" \
-                  --arg file "${uploadFile}" \
+                  --arg file "${uploadFile#*/}" \
                   '{"file": $file, "title": $title}' \
                 )
 
@@ -450,7 +452,7 @@ jobs:
                   '$inventory * {"files": $file}' \
                 )
               else
-                printf "  %s\n" "adding file '${uploadFile}' to JSON inventory ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
+                printf "  %s\n" "adding file '${uploadFile#*/}' to JSON inventory ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
               fi
             fi
 

@@ -100,15 +100,15 @@ jobs:
           python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
-        if: inputs.unittest_xml_artifact != ''
         uses: pyTooling/download-artifact@v4
+        if: inputs.unittest_xml_artifact != ''
         with:
           name: ${{ inputs.unittest_xml_artifact }}
           path: ${{ inputs.unittest_xml_directory }}
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
-        if: inputs.coverage_json_artifact != ''
         uses: pyTooling/download-artifact@v4
+        if: inputs.coverage_json_artifact != ''
         with:
           name: ${{ inputs.coverage_json_artifact }}
           path: ${{ inputs.coverage_report_json_directory }}
@@ -122,9 +122,9 @@ jobs:
           sphinx-build -v -n -b html -d _build/doctrees -j $(nproc) -w _build/html.log . _build/html
 
       - name: 📤 Upload 'HTML Documentation' artifact
+        uses: pyTooling/upload-artifact@v4
         if: inputs.html_artifact != ''
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.html_artifact }}
           working-directory: ${{ inputs.doc_directory }}/_build/html
@@ -157,15 +157,15 @@ jobs:
           python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
-        if: inputs.unittest_xml_artifact != ''
         uses: pyTooling/download-artifact@v4
+        if: inputs.unittest_xml_artifact != ''
         with:
           name: ${{ inputs.unittest_xml_artifact }}
           path: ${{ inputs.unittest_xml_directory }}
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
-        if: inputs.coverage_json_artifact != ''
         uses: pyTooling/download-artifact@v4
+        if: inputs.coverage_json_artifact != ''
         with:
           name: ${{ inputs.coverage_json_artifact }}
           path: ${{ inputs.coverage_report_json_directory }}
@@ -263,9 +263,9 @@ jobs:
           done
 
       - name: 📤 Upload 'LaTeX Documentation' artifact
+        uses: pyTooling/upload-artifact@v4
         if: inputs.latex_artifact != ''
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.latex_artifact }}
           working-directory: ${{ inputs.doc_directory }}/_build/latex
