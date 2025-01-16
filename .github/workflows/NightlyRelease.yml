@@ -432,11 +432,11 @@ jobs:
             # Add asset to JSON inventory
             if [[ "${{ inputs.inventory-json }}" != "" ]]; then
               if [[ "${categories}" != "${title}" ]]; then
-                printf "  %s\n" "adding file '${uploadFile}' with '${categories//;/ → }' to JSON inventory ..."
+                printf "  %s\n" "adding file '${uploadFile#*/}' with '${categories//;/ → }' to JSON inventory ..."
                 category=""
                 jsonEntry=$(jq -c -n \
                   --arg title "${title}" \
-                  --arg file "${uploadFile}" \
+                  --arg file "${uploadFile#*/}" \
                   '{"file": $file, "title": $title}' \
                 )
 
@@ -452,7 +452,7 @@ jobs:
                   '$inventory * {"files": $file}' \
                 )
               else
-                printf "  %s\n" "adding file '${uploadFile}' to JSON inventory ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
+                printf "  %s\n" "adding file '${uploadFile#*/}' to JSON inventory ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}"
               fi
             fi
 
