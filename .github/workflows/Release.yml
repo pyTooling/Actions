@@ -49,8 +49,8 @@ jobs:
           echo "datetime=${RELEASE_DATETIME}" >> $GITHUB_OUTPUT
 
       - name: 📑 Create Release Page
-        id: createReleasePage
         uses: actions/create-release@v1
+        id: createReleasePage
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

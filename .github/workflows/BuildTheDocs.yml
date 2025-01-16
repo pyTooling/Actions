@@ -49,8 +49,8 @@ jobs:
           skip-deploy: true
 
       - name: 📤 Upload 'documentation' artifacts
-        if: inputs.artifact != ''
         uses: pyTooling/upload-artifact@v4
+        if: inputs.artifact != ''
         with:
           name: ${{ inputs.artifact }}
           working-directory: doc/_build/html

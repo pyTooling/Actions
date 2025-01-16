@@ -65,7 +65,7 @@ jobs:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download Artifacts
+      - name: 📥 Download Artifacts
         uses: pyTooling/download-artifact@v4
         with:
           pattern: ${{ inputs.unittest_artifacts_pattern }}
@@ -82,7 +82,7 @@ jobs:
       - name: Rename JUnit files and move them all into 'junit/'
         run: |
           mkdir -p junit
-          find artifacts/ -type f -path "*TestReportSummary*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
+          find artifacts/ -type f -path "*.xml" -exec sh -c 'cp -v $0 "junit/$(basename $(dirname $0)).$(basename $0)"' {} ';'
           tree -pash junit
 
       - name: 🔁 Merge JUnit Unit Test Summaries
@@ -100,8 +100,8 @@ jobs:
           reporter: java-junit
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
-        if: inputs.merged_junit_artifact != ''
         uses: pyTooling/upload-artifact@v4
+        if: inputs.merged_junit_artifact != ''
         with:
           name: ${{ inputs.merged_junit_artifact }}
           path: Unittesting.xml
