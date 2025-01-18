@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.14.0a3-slim-bookworm
 COPY releaser.py /releaser.py
 RUN pip install PyGithub --progress-bar off \
   && apt update -qq \
