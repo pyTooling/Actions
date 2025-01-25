@@ -64,11 +64,11 @@
    :target: https://pyTooling.github.io/pyTooling/
 
 .. # Gitter
-.. |SHIELD:svg:pyTooling-gitter| image:: https://img.shields.io/badge/chat-on%20gitter-4db797.?longCache=true&style=flat-square&logo=gitter&logoColor=e8ecef
+.. |SHIELD:svg:pyTooling-gitter| image:: https://img.shields.io/badge/chat-on%20gitter-4db797?longCache=true&style=flat-square&logo=gitter&logoColor=e8ecef
    :alt: Documentation License
    :height: 22
    :target: https://gitter.im/hdl/community
-.. |SHIELD:png:pyTooling-gitter| image:: https://raster.shields.io/badge/chat-on%20gitter-4db797.?longCache=true&style=flat-square&logo=gitter&logoColor=e8ecef
+.. |SHIELD:png:pyTooling-gitter| image:: https://raster.shields.io/badge/chat-on%20gitter-4db797?longCache=true&style=flat-square&logo=gitter&logoColor=e8ecef
    :alt: Documentation License
    :height: 22
    :target: https://gitter.im/hdl/community
