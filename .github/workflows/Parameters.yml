@@ -197,9 +197,10 @@ jobs:
               "3.13":      { "icon": "🟢",  "until": "2029.10" },
               "3.14":      { "icon": "🟣",  "until": "2030.10" },
               "pypy-3.7":  { "icon": "⟲⚫", "until": "????.??" },
-              "pypy-3.8":  { "icon": "⟲🔴", "until": "????.??" },
-              "pypy-3.9":  { "icon": "⟲🟠", "until": "????.??" },
-              "pypy-3.10": { "icon": "⟲🟡", "until": "????.??" },
+              "pypy-3.8":  { "icon": "⟲⚫", "until": "????.??" },
+              "pypy-3.9":  { "icon": "⟲🔴", "until": "????.??" },
+              "pypy-3.10": { "icon": "⟲🟠", "until": "????.??" },
+              "pypy-3.11": { "icon": "⟲🟡", "until": "????.??" },
             },
             # Runner systems (runner images) supported by GitHub Actions
             "sys": {
