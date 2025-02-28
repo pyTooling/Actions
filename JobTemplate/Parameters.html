@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parameters &mdash; pyDummy 0.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-reports.e44b1595f1e09d5e109d001839ba3f42.css?v=0b41afa8" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=6fa0b579" />
+
+  
+    <link rel="shortcut icon" href="../_static/icon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=90733dfc"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CoverageCollection" href="CoverageCollection.html" />
+    <link rel="prev" title="Overview" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#instantiation">Instantiation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-example">Simple Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complex-example">Complex Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#name">name</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-version">python_version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-version-list">python_version_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#system-list">system_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#include-list">include_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exclude-list">exclude_list</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disable-list">disable_list</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#secrets">Secrets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#results">Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">python_version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-jobs">python_jobs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#artifact-names">artifact_names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#params">Params</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CoverageCollection.html">CoverageCollection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UnitTesting.html">UnitTesting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StaticTypeCheck.html">StaticTypeCheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PublishTestResults.html">PublishTestResults</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Package.html">Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PublishOnPyPI.html">PublishOnPyPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VerifyDocs.html">VerifyDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BuildTheDocs.html">BuildTheDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PublishToGitHubPages.html">PublishToGitHubPages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Release.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ArtifactCleanUp.html">ArtifactCleanUp</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyDummy/pyDummy.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyDummy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Parameters</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/JobTemplate/Parameters.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="parameters">
+<span id="jobtmpl-parameters"></span><h1>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> job template is a workaround for the limitations of GitHub Actions to handle global variables in
+GitHub Actions workflows (see <a class="reference external" href="https://github.com/actions/runner/issues/480">actions/runner#480</a>.</p>
+<p>It generates output parameters with artifact names and a job matrix to be used in later running jobs.</p>
+<p><strong>Behavior:</strong></p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Parameters:Behavior Needs documentation.</p>
+</div>
+<p><strong>Dependencies:</strong></p>
+<p><em>None</em></p>
+<section id="instantiation">
+<h2>Instantiation<a class="headerlink" href="#instantiation" title="Link to this heading"></a></h2>
+<section id="simple-example">
+<h3>Simple Example<a class="headerlink" href="#simple-example" title="Link to this heading"></a></h3>
+<p>The following instantiation example creates a job <cite>Params</cite> derived from job template <cite>Parameters</cite> version <cite>r0</cite>. It only
+requires a <cite>name</cite> parameter to create the artifact names.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">Params</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/Parameters.yml@r0</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling</span>
+</pre></div>
+</div>
+</section>
+<section id="complex-example">
+<h3>Complex Example<a class="headerlink" href="#complex-example" title="Link to this heading"></a></h3>
+<p>The following instantiation example creates 3 jobs from the same template, but with differing input parameters. The
+first job <cite>UnitTestingParams</cite> might be used to create a job matrix of unit tests. It creates the cross of default
+systems (Windows, Ubuntu, macOS, MinGW64, UCRT64) and the given list of Python versions including some mypy versions. In
+addition a list of excludes (marked as <span class="colorred strike">deletions</span>) and includes (marked as <span class="colorgreen">additions</span>) is handed
+over resulting in the following combinations:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Version</p></th>
+<th class="head"><p>3.8 🔴</p></th>
+<th class="head"><p>3.9 🟠</p></th>
+<th class="head"><p>3.10 🟡</p></th>
+<th class="head"><p>3.11 🟢</p></th>
+<th class="head"><p>3.12 🟢</p></th>
+<th class="head"><p>3.13.a1 🟣</p></th>
+<th class="head"><p>pypy-3.8 🔴</p></th>
+<th class="head"><p>pypy-3.9 🟠</p></th>
+<th class="head"><p>pypy-3.10 🟡</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Windows 🧊</p></td>
+<td><p>windows:3.8</p></td>
+<td><p>windows:3.9</p></td>
+<td><p>windows:3.10</p></td>
+<td><p>windows:3.11</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p><span class="colorred strike">windows:pypy-3.9</span></p></td>
+<td><p><span class="colorred strike">windows:pypy-3.10</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Ubuntu 🐧</p></td>
+<td><p>ubuntu:3.8</p></td>
+<td><p>ubuntu:3.9</p></td>
+<td><p>ubuntu:3.10</p></td>
+<td><p>ubuntu:3.11</p></td>
+<td><p><span class="colorgreen">ubuntu:3.12</span></p></td>
+<td></td>
+<td></td>
+<td><p>ubuntu:pypy-3.9</p></td>
+<td><p>ubuntu:pypy-3.10</p></td>
+</tr>
+<tr class="row-even"><td><p>macOS 🍎</p></td>
+<td><p>macos:3.8</p></td>
+<td><p>macos:3.9</p></td>
+<td><p>macos:3.10</p></td>
+<td><p>macos:3.11</p></td>
+<td><p><span class="colorgreen">macos:3.12</span></p></td>
+<td></td>
+<td></td>
+<td><p>macos:pypy-3.9</p></td>
+<td><p>macos:pypy-3.10</p></td>
+</tr>
+<tr class="row-odd"><td><p>MSYS 🟪</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>MinGW32 ⬛</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>MinGW64 🟦</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td><p>mingw64:3.11</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Clang32 🟫</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Clang64 🟧</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>UCRT64 🟨</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">UnitTestingParams</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/Parameters.yml@r0</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling</span>
+<span class="w">      </span><span class="nt">python_version_list</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.8</span><span class="nv"> </span><span class="s">3.9</span><span class="nv"> </span><span class="s">3.10</span><span class="nv"> </span><span class="s">3.11</span><span class="nv"> </span><span class="s">pypy-3.9</span><span class="nv"> </span><span class="s">pypy-3.10&quot;</span>
+<span class="w">      </span><span class="nt">include_list</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ubuntu:3.12</span><span class="nv"> </span><span class="s">macos:3.12&quot;</span>
+<span class="w">      </span><span class="nt">exclude_list</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;windows:pypy-3.9</span><span class="nv"> </span><span class="s">windows:pypy-3.10&quot;</span>
+
+<span class="w">  </span><span class="nt">PerformanceTestingParams</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/Parameters.yml@r0</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling</span>
+<span class="w">      </span><span class="nt">python_version_list</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.11</span><span class="nv"> </span><span class="s">3.12&quot;</span>
+<span class="w">      </span><span class="nt">system_list</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ubuntu</span><span class="nv"> </span><span class="s">windows</span><span class="nv"> </span><span class="s">macos&quot;</span>
+
+<span class="w">  </span><span class="nt">PlatformTestingParams</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/Parameters.yml@dev</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling</span>
+<span class="w">      </span><span class="nt">python_version_list</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;3.12&quot;</span>
+<span class="w">      </span><span class="nt">system_list</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ubuntu</span><span class="nv"> </span><span class="s">windows</span><span class="nv"> </span><span class="s">macos</span><span class="nv"> </span><span class="s">mingw32</span><span class="nv"> </span><span class="s">mingw64</span><span class="nv"> </span><span class="s">clang64</span><span class="nv"> </span><span class="s">ucrt64&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id2">
+<h2>Parameters<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<section id="name">
+<h3>name<a class="headerlink" href="#name" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>yes</p></td>
+<td><p>string</p></td>
+<td><p>— — — —</p></td>
+</tr>
+</tbody>
+</table>
+<p>The name of the library or package.</p>
+<p>It’s used to create artifact names.</p>
+</section>
+<section id="python-version">
+<h3>python_version<a class="headerlink" href="#python-version" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>python_version</p></td>
+<td><p>optional</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3.12</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Python version to be used for all jobs requiring a single Python version.</p>
+</section>
+<section id="python-version-list">
+<h3>python_version_list<a class="headerlink" href="#python-version-list" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>python_version_list</p></td>
+<td><p>optional</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3.8</span> <span class="pre">3.9</span> <span class="pre">3.10</span> <span class="pre">3.11</span> <span class="pre">3.12</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Space separated list of CPython versions and/or mypy version to run tests with.</p>
+<p><strong>Possible values:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">3.7</span></code>, <code class="docutils literal notranslate"><span class="pre">3.8</span></code>, <code class="docutils literal notranslate"><span class="pre">3.9</span></code>, <code class="docutils literal notranslate"><span class="pre">3.10</span></code> , <code class="docutils literal notranslate"><span class="pre">3.11</span></code>, <code class="docutils literal notranslate"><span class="pre">3.12</span></code>, <code class="docutils literal notranslate"><span class="pre">3.13</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypy-3.7</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.8</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.9</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.10</span></code></p></li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Icon</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Maintained until</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>⚫</p></td>
+<td><p>3.7</p></td>
+<td><p>2023.06.27</p></td>
+<td><p><span class="colorred">outdated</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>🔴</p></td>
+<td><p>3.8</p></td>
+<td><p>2024.10</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟠</p></td>
+<td><p>3.9</p></td>
+<td><p>2025.10</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟡</p></td>
+<td><p>3.10</p></td>
+<td><p>2026.10</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟢</p></td>
+<td><p>3.11</p></td>
+<td><p>2027.10</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟢</p></td>
+<td><p>3.12</p></td>
+<td><p>2028.10</p></td>
+<td><p><span class="colorgreen">latest</span></p></td>
+</tr>
+<tr class="row-even"><td><p>🟣</p></td>
+<td><p>3.13</p></td>
+<td><p>2029.10</p></td>
+<td><p>Python 3.13 alpha (or RC) will be used.</p></td>
+</tr>
+<tr class="row-odd"><td><p>⟲⚫</p></td>
+<td><p>pypy-3.7</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>⟲🔴</p></td>
+<td><p>pypy-3.8</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>⟲🟠</p></td>
+<td><p>pypy-3.9</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>⟲🟡</p></td>
+<td><p>pypy-3.10</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="system-list">
+<h3>system_list<a class="headerlink" href="#system-list" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>system_list</p></td>
+<td><p>optional</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ubuntu</span> <span class="pre">windows</span> <span class="pre">macos</span> <span class="pre">mingw64</span> <span class="pre">ucrt64</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Space separated list of systems to run tests on.</p>
+<p><strong>Possible values:</strong></p>
+<ul class="simple">
+<li><p>Native systems: <code class="docutils literal notranslate"><span class="pre">ubuntu</span></code>, <code class="docutils literal notranslate"><span class="pre">windows</span></code>, <code class="docutils literal notranslate"><span class="pre">macos</span></code></p></li>
+<li><p>MSYS2: <code class="docutils literal notranslate"><span class="pre">msys</span></code>, <code class="docutils literal notranslate"><span class="pre">mingw32</span></code>, <code class="docutils literal notranslate"><span class="pre">mingw64</span></code>, <code class="docutils literal notranslate"><span class="pre">clang32</span></code>, <code class="docutils literal notranslate"><span class="pre">clang64</span></code>, <code class="docutils literal notranslate"><span class="pre">ucrt64</span></code></p></li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Icon</p></th>
+<th class="head"><p>System</p></th>
+<th class="head"><p>Used version</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>🧊</p></td>
+<td><p>Windows</p></td>
+<td><p>Windows Server 2022 (latest)</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🐧</p></td>
+<td><p>Ubuntu</p></td>
+<td><p>Ubuntu 22.04 (LTS) (latest)</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🍎</p></td>
+<td><p>macOS</p></td>
+<td><p>macOS Monterey 12 (latest)</p></td>
+<td><p>While this marked latest, macOS Ventura 13 is already provided.</p></td>
+</tr>
+<tr class="row-odd"><td><p>🟪</p></td>
+<td><p>MSYS</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>⬛</p></td>
+<td><p>MinGW32</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟦</p></td>
+<td><p>MinGW64</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟫</p></td>
+<td><p>Clang32</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟧</p></td>
+<td><p>Clang64</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟨</p></td>
+<td><p>UCRT64</p></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Source: <a class="reference external" href="https://github.com/actions/runner-images">Images provided by GitHub</a></p>
+</section>
+<section id="include-list">
+<h3>include_list<a class="headerlink" href="#include-list" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>include_list</p></td>
+<td><p>optional</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Space separated list of <code class="docutils literal notranslate"><span class="pre">system:python</span></code> items to be included into the list of test.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">include_list</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ubuntu:3.11</span><span class="nv"> </span><span class="s">macos:3.11&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="exclude-list">
+<h3>exclude_list<a class="headerlink" href="#exclude-list" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>exclude_list</p></td>
+<td><p>optional</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Space separated list of <code class="docutils literal notranslate"><span class="pre">system:python</span></code> items to be excluded from the list of test.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">exclude_list</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;windows:pypy-3.8</span><span class="nv"> </span><span class="s">windows:pypy-3.9&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="disable-list">
+<h3>disable_list<a class="headerlink" href="#disable-list" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>disable_list</p></td>
+<td><p>optional</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Space separated list of <code class="docutils literal notranslate"><span class="pre">system:python</span></code> items to be temporarily disabled from the list of test.</p>
+<p>Each disabled item creates a warning in the workflow log:</p>
+<a class="reference internal image-reference" href="../_images/GH_Workflow_DisabledJobsWarnings.png"><img alt="../_images/GH_Workflow_DisabledJobsWarnings.png" src="../_images/GH_Workflow_DisabledJobsWarnings.png" style="width: 462.40000000000003px; height: 228.0px;" />
+</a>
+<p><strong>Example:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">disable_list</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;windows:3.10</span><span class="nv"> </span><span class="s">windows:3.11&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="secrets">
+<h2>Secrets<a class="headerlink" href="#secrets" title="Link to this heading"></a></h2>
+<p>This job template needs no secrets.</p>
+</section>
+<section id="results">
+<h2>Results<a class="headerlink" href="#results" title="Link to this heading"></a></h2>
+<section id="id3">
+<h3>python_version<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>A single string parameter representing the default Python version that should be used across multiple jobs in the same
+pipeline.</p>
+<p>Such a parameter is needed as a workaround, because GitHub Actions doesn’t support proper handling of global pipeline
+variables. Thus, this job is used to compute an output parameter that can be reused in other jobs.</p>
+<p><strong>Usage Example:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">Params</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/Parameters.yml@r0</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling</span>
+
+<span class="w">  </span><span class="nt">CodeCoverage</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/CoverageCollection.yml@r0</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Params</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">python_version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.Params.outputs.python_version }}</span>
+</pre></div>
+</div>
+</section>
+<section id="python-jobs">
+<h3>python_jobs<a class="headerlink" href="#python-jobs" title="Link to this heading"></a></h3>
+<p>A list of dictionaries containing a job description.</p>
+<p>A job description contains the following key-value pairs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sysicon</span></code> - icon to display</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">system</span></code> -  name of the system</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">runs-on</span></code> - virtual machine image and base operating system</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">runtime</span></code> - name of the runtime environment if not running natively on the VM image</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shell</span></code> -   name of the shell</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyicon</span></code> -  icon for CPython or pypy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">python</span></code> -  Python version</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">envname</span></code> - full name of the selected environment</p></li>
+</ul>
+<p><strong>Usage Example:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">Params</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/Parameters.yml@r0</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling</span>
+
+<span class="w">  </span><span class="nt">UnitTesting</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/UnitTesting.yml@dev</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Params</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">jobs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.Params.outputs.python_jobs }}</span>
+</pre></div>
+</div>
+<p>This list can be unpacked with <code class="docutils literal notranslate"><span class="pre">fromJson(...)</span></code> in a job <code class="docutils literal notranslate"><span class="pre">strategy:matrix:include</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">UnitTesting</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.sysicon }} ${{ matrix.pyicon }} Unit Tests using Python ${{ matrix.python }}</span>
+<span class="w">  </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.runs-on }}</span>
+
+<span class="w">  </span><span class="nt">strategy</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">matrix</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">include</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ fromJson(inputs.jobs) }}</span>
+
+<span class="w">  </span><span class="nt">defaults</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">run</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.shell }}</span>
+
+<span class="w">  </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">🐍 Setup Python ${{ matrix.python }}</span>
+<span class="w">      </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">matrix.system != &#39;msys2&#39;</span>
+<span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v4</span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.python }}</span>
+</pre></div>
+</div>
+</section>
+<section id="artifact-names">
+<h3>artifact_names<a class="headerlink" href="#artifact-names" title="Link to this heading"></a></h3>
+<p>A dictionary of artifact names sharing a common prefix.</p>
+<p>The supported artifacts are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unittesting_xml</span></code> - UnitTesting XML summary report</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unittesting_html</span></code> - UnitTesting HTML summary report</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">codecoverage_sqlite</span></code> - Code Coverage internal database (SQLite)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">codecoverage_json</span></code> - Code Coverage JSON report</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">codecoverage_xml</span></code> - Code Coverage XML report</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">codecoverage_html</span></code> - Code Coverage HTML report</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">statictyping_html</span></code> - Static Type Checking HTML report</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">package_all</span></code> - Packaged Python project (multiple formats)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">documentation_pdf</span></code> - Documentation in PDF format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">documentation_html</span></code> - Documentation in HTML format</p></li>
+</ul>
+<p><strong>Usage Example:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">Params</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/Parameters.yml@r0</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling</span>
+
+<span class="w">  </span><span class="nt">Coverage</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/CoverageCollection.yml@dev</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Params</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">artifact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_html }}</span>
+</pre></div>
+</div>
+</section>
+<section id="params">
+<h3>Params<a class="headerlink" href="#params" title="Link to this heading"></a></h3>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p><code class="docutils literal notranslate"><span class="pre">Params</span></code> is deprecated.</p>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">params['unittesting']</span></code> → <code class="docutils literal notranslate"><span class="pre">artifact_names['unittesting_xml']</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params['coverage']</span></code> → <code class="docutils literal notranslate"><span class="pre">artifact_names['codecoverage_xml']</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params['typing']</span></code> → <code class="docutils literal notranslate"><span class="pre">artifact_names['statictyping_html']</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params['package']</span></code> → <code class="docutils literal notranslate"><span class="pre">artifact_names['package_all']</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params['doc']</span></code> → <code class="docutils literal notranslate"><span class="pre">artifact_names['documentation_html']</span></code></p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="CoverageCollection.html" class="btn btn-neutral float-right" title="CoverageCollection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2025, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 28.02.2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
