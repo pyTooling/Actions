@@ -124,7 +124,7 @@ jobs:
             printf "%s\n" "${ANSI_LIGHT_YELLOW}[NOT FOUND]${ANSI_NOCOLOR}"
           else
             printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            printf "%s\n" "${ANSI_LIGHT_RED}Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
+            printf "  %s\n" "${ANSI_LIGHT_RED}Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
             printf "%s\n" "::error title=InternalError::Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'."
             exit 1
           fi
@@ -184,7 +184,7 @@ jobs:
             printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           else
             printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
-            printf "%s\n" "${ANSI_LIGHT_RED}Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
+            printf "  %s\n" "${ANSI_LIGHT_RED}Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
             printf "%s\n" "::error title=InternalError::Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'."
             exit 1
           fi
@@ -197,7 +197,7 @@ jobs:
           ANSI_LIGHT_RED=$'\x1b[91m'
           ANSI_LIGHT_GREEN=$'\x1b[92m'
           ANSI_LIGHT_YELLOW=$'\x1b[93m'
-          ANSI_LIGHT_BLUE="\e[94m"
+          ANSI_LIGHT_BLUE=$'\x1b[94m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
           export GH_TOKEN=${{ github.token }}
@@ -285,7 +285,7 @@ jobs:
             if [[ -n "${assetFilenames[$asset]}" ]]; then
               printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
               printf "%s\n" "::error title=DuplicateAsset::Asset '${asset}' from artifact '${artifact}' was already uploaded to release '${{ inputs.nightly_name }}'."
-              ERRORS=1
+              ERRORS=$((ERRORS + 1))
               continue
             else
               printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
@@ -303,9 +303,9 @@ jobs:
                 printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
               else
                 printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                printf "%s\n" "${ANSI_LIGHT_RED}Couldn't download artifact '${artifact}'.${ANSI_NOCOLOR}"
+                printf "      %s\n" "${ANSI_LIGHT_RED}Couldn't download artifact '${artifact}'.${ANSI_NOCOLOR}"
                 printf "%s\n" "::error title=ArtifactNotFound::Couldn't download artifact '${artifact}'."
-                ERRORS=1
+                ERRORS=$((ERRORS + 1))
                 continue
               fi
               downloadedArtifacts[$artifact]=1
@@ -355,9 +355,9 @@ jobs:
                 uploadFile="${asset}"
               else
                 printf "    %s\n" "Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                printf "%s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zip file '${asset}'.${ANSI_NOCOLOR}"
+                printf "      %s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zip file '${asset}'.${ANSI_NOCOLOR}"
                 printf "%s\n" "::error title=CompressionError::Couldn't compress '${artifact}' to zip file '${asset}'."
-                ERRORS=1
+                ERRORS=$((ERRORS + 1))
                 continue
               fi
             elif [[ "${asset}" == !*.tgz || "${asset}" == !*.tar.gz || "${asset}" == \$*.tgz || "${asset}" == \$*.tar.gz ]]; then
@@ -384,9 +384,9 @@ jobs:
                 uploadFile="${asset}"
               else
                 printf "    %s\n" "Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                printf "%s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to tgz file '${asset}'.${ANSI_NOCOLOR}"
+                printf "      %s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to tgz file '${asset}'.${ANSI_NOCOLOR}"
                 printf "%s\n" "::error title=CompressionError::Couldn't compress '${artifact}' to tgz file '${asset}'."
-                ERRORS=1
+                ERRORS=$((ERRORS + 1))
                 continue
               fi
             elif [[ "${asset}" == !*.tzst || "${asset}" == !*.tar.zst || "${asset}" == \$*.tzst || "${asset}" == \$*.tar.zst ]]; then
@@ -413,9 +413,9 @@ jobs:
                 uploadFile="${asset}"
               else
                 printf "    %s\n" "Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-                printf "%s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zst file '${asset}'.${ANSI_NOCOLOR}"
+                printf "      %s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zst file '${asset}'.${ANSI_NOCOLOR}"
                 printf "%s\n" "::error title=CompressionError::Couldn't compress '${artifact}' to zst file '${asset}'."
-                ERRORS=1
+                ERRORS=$((ERRORS + 1))
                 continue
               fi
             elif [[ -e "${artifact}/${asset}" ]]; then
@@ -423,9 +423,9 @@ jobs:
               uploadFile="${artifact}/${asset}"
             else
               printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-              printf "%s\n" "${ANSI_LIGHT_RED}Couldn't find asset '${asset}' in artifact '${artifact}'.${ANSI_NOCOLOR}"
+              printf "    %s\n" "${ANSI_LIGHT_RED}Couldn't find asset '${asset}' in artifact '${artifact}'.${ANSI_NOCOLOR}"
               printf "%s\n" "::error title=FileNotFound::Couldn't find asset '${asset}' in artifact '${artifact}'."
-              ERRORS=1
+              ERRORS=$((ERRORS + 1))
               continue
             fi
 
@@ -463,9 +463,9 @@ jobs:
               printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
             else
               printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-              printf "%s\n" "${ANSI_LIGHT_RED}Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
+              printf "    %s\n" "${ANSI_LIGHT_RED}Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
               printf "%s\n" "::error title=UploadError::Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'."
-              ERRORS=1
+              ERRORS=$((ERRORS + 1))
               continue
             fi
           done <<<'${{ inputs.assets }}'
@@ -486,9 +486,9 @@ jobs:
               printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
             else
               printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-              printf "%s\n" "${ANSI_LIGHT_RED}Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
+              printf "    %s\n" "${ANSI_LIGHT_RED}Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
               printf "%s\n" "::error title=UploadError::Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.nightly_name }}'."
-              ERRORS=1
+              ERRORS=$((ERRORS + 1))
               continue
             fi
           fi
@@ -497,8 +497,8 @@ jobs:
           tree -pash -L 3 .
           printf "::endgroup::\n"
 
-          if [[ $ERROR -ne 0 ]]; then
-            printf "%s\n" "${ANSI_LIGHT_RED}Errors detected in previous steps.${ANSI_NOCOLOR}"
+          if [[ $ERRORS -ne 0 ]]; then
+            printf "%s\n" "${ANSI_LIGHT_RED}${ERRORS} errors detected in previous steps.${ANSI_NOCOLOR}"
             exit 1
           fi
 
@@ -520,6 +520,6 @@ jobs:
             printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
           else
             printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-            printf "%s\n" "${ANSI_LIGHT_RED}Couldn't remove draft-state from release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
+            printf "  %s\n" "${ANSI_LIGHT_RED}Couldn't remove draft-state from release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
             printf "%s\n" "::error title=ReleasePage::Couldn't remove draft-state from release '${{ inputs.nightly_name }}'."
           fi

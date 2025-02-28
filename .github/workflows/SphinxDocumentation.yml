@@ -227,7 +227,7 @@ jobs:
             if [[ $found -eq 0 ]]; then
               printf "[SKIPPED]\n"
             fi
-          done <<<$(find . -type f -not -iname "*.cls" -not -iname "*.sty" -not -iname "*.xdy" -not -iname "*.svg" -not -iname "*.png" -not -iname "*.jpg" | sed 's:./::')
+          done < <(find . -type f -not -iname "*.cls" -not -iname "*.sty" -not -iname "*.xdy" -not -iname "*.svg" -not -iname "*.png" -not -iname "*.jpg" | sed 's:./::')
 
       - name: Workaround II - https://github.com/sphinx-doc/sphinx/issues/13189
         if: inputs.latex_artifact != ''
@@ -259,7 +259,7 @@ jobs:
                   printf "[FAILED]\n"
                 fi
               fi
-            done <<<$(find . -type f -iname "*.$imageExt" | sed 's:./::')
+            done < <(find . -type f -iname "*.$imageExt" | sed 's:./::')
           done
 
       - name: 📤 Upload 'LaTeX Documentation' artifact
