@@ -497,8 +497,8 @@ jobs:
           tree -pash -L 3 .
           printf "::endgroup::\n"
 
-          if [[ $ERROR -ne 0 ]]; then
-            printf "%s\n" "${ANSI_LIGHT_RED}Errors detected in previous steps.${ANSI_NOCOLOR}"
+          if [[ $ERRORS -ne 0 ]]; then
+            printf "%s\n" "${ANSI_LIGHT_RED}${ERRORS} errors detected in previous steps.${ANSI_NOCOLOR}"
             exit 1
           fi
 
