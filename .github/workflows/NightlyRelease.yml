@@ -84,11 +84,16 @@ on:
         type: string
         required: false
         default: '__pyTooling_upload_artifact__.tar'
+      can-fail:
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   Release:
     name: 📝 Update 'Nightly Page' on GitHub
     runs-on: ${{ inputs.ubuntu_image }}
+    continue-on-error: ${{ inputs.can-fail }}
     permissions:
       contents: write
       actions: write
@@ -254,7 +259,7 @@ jobs:
           # A dictionary to check for duplicate asset files in release
           declare -A assetFilenames
           while IFS=$'\r\n' read -r assetLine; do
-            if [[ "${assetLine}" == "" ]]; then
+            if [[ "${assetLine}" == "" || "${assetLine:0:1}" == "#" ]]; then
               continue
             fi
 
