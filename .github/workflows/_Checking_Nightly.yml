@@ -51,6 +51,7 @@ jobs:
       actions: write
 #      attestations: write
     with:
+      can-fail: true
       prerelease: true
       replacements: |
         version=4.2.0
@@ -88,6 +89,7 @@ jobs:
       actions: write
 #      attestations: write
     with:
+      can-fail: true
       replacements: |
         version=4.2.0
         tool=myTool
@@ -105,6 +107,7 @@ jobs:
       inventory-version: 4.2.5
       inventory-categories: "kind1,kind2"
       assets: |
+        # artifact: file:          labels:    asset title
         document: document1.txt:   doc,html:  Documentation
         document: build.log:       build,log: Logfile - %tool% - %tool%
         other:    document1.txt:   build,SBOM:SBOM - %version%
