@@ -183,8 +183,8 @@ jobs:
       - name: Workaround I - https://github.com/sphinx-doc/sphinx/issues/13190
         if: inputs.latex_artifact != ''
         run: |
-          printf "Changing directory to 'doc/_build/latex' ...\n"
-          cd doc/_build/latex
+          printf "Changing directory to '${{ inputs.doc_directory || '.' }}/_build/latex' ...\n"
+          cd ${{ inputs.doc_directory || '.' }}/_build/latex
 
           MIMETYPE_EXTENSIONS=(
             "image/png:png"
@@ -232,8 +232,8 @@ jobs:
       - name: Workaround II - https://github.com/sphinx-doc/sphinx/issues/13189
         if: inputs.latex_artifact != ''
         run: |
-          printf "Changing directory to 'doc/_build/latex' ...\n"
-          cd doc/_build/latex
+          printf "Changing directory to '${{ inputs.doc_directory || '.' }}/_build/latex' ...\n"
+          cd ${{ inputs.doc_directory || '.' }}/_build/latex
 
           printf "Searching for downloaded images, that need normalization ...\n"
           for imageExt in png svg jpg jpeg; do
