@@ -46,7 +46,7 @@ on:
         type: string
       coverage_report_json_directory:
         description: ''
-        required: true
+        required: false
         type: string
       coverage_json_artifact:
         description: 'Name of the coverage JSON artifact.'
