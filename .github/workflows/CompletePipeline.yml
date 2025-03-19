@@ -230,7 +230,7 @@ jobs:
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
-      unittest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-ubuntu-native-3.12
+      unittest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
