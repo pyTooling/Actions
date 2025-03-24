@@ -34,6 +34,11 @@ on:
         required: false
         default: '*-UnitTestReportSummary-XML-*'
         type: string
+      merged_junit_filename:
+        description: 'Filename of the merged JUnit Test Summary.'
+        required: false
+        default: 'Unittesting.xml'
+        type: string
       merged_junit_artifact:
         description: 'Name of the merged JUnit Test Summary artifact.'
         required: false
@@ -87,16 +92,16 @@ jobs:
 
       - name: 🔁 Merge JUnit Unit Test Summaries
         run: |
-          pyedaa-reports -v unittest "--merge=pyTest-JUnit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=pyTest-JUnit:Unittesting.xml"
-          printf "%s\n" "cat Unittesting.xml"
-          cat Unittesting.xml
+          pyedaa-reports -v unittest "--merge=pyTest-JUnit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=pyTest-JUnit:${{ inputs.merged_junit_filename }}"
+          printf "%s\n" "cat ${{ inputs.merged_junit_filename }}"
+          cat ${{ inputs.merged_junit_filename }}
 
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v1
         if: inputs.publish && inputs.report_title != ''
         with:
           name: ${{ inputs.report_title }}
-          path: Unittesting.xml
+          path: ${{ inputs.merged_junit_filename }}
           reporter: java-junit
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
@@ -104,6 +109,7 @@ jobs:
         if: inputs.merged_junit_artifact != ''
         with:
           name: ${{ inputs.merged_junit_artifact }}
-          path: Unittesting.xml
+          path: ${{ inputs.merged_junit_filename }}
           if-no-files-found: error
           retention-days: 1
+          investigate: true

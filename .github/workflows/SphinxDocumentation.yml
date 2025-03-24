@@ -105,6 +105,7 @@ jobs:
         with:
           name: ${{ inputs.unittest_xml_artifact }}
           path: ${{ inputs.unittest_xml_directory }}
+          investigate: true
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
         uses: pyTooling/download-artifact@v4

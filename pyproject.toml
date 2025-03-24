@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-  "setuptools ~= 76.0",
+  "setuptools ~= 77.0",
   "wheel ~= 0.45",
   "pyTooling ~= 8.3"
 ]
@@ -21,7 +21,10 @@ namespace_packages = true
 html_report = "report/typing"
 
 [tool.pytest]
-junit_xml = "report/unit/TestReportSummary.xml"
+junit_xml = "report/unit/UnittestReportSummary.xml"
+
+[tool.pyedaa-reports]
+junit_xml = "report/unit/unittest.xml"
 
 [tool.pytest.ini_options]
 addopts = "--tb=native"
