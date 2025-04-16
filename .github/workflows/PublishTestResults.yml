@@ -97,7 +97,7 @@ jobs:
           cat ${{ inputs.merged_junit_filename }}
 
       - name: 📊 Publish Unit Test Results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: inputs.publish && inputs.report_title != ''
         with:
           name: ${{ inputs.report_title }}
