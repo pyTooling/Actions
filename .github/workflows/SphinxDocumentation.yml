@@ -113,6 +113,7 @@ jobs:
         with:
           name: ${{ inputs.coverage_json_artifact }}
           path: ${{ inputs.coverage_report_json_directory }}
+          investigate: true
 
       - name: ☑ Generate HTML documentation
         if: inputs.html_artifact != ''
@@ -163,6 +164,7 @@ jobs:
         with:
           name: ${{ inputs.unittest_xml_artifact }}
           path: ${{ inputs.unittest_xml_directory }}
+          investigate: true
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
         uses: pyTooling/download-artifact@v4
@@ -170,6 +172,7 @@ jobs:
         with:
           name: ${{ inputs.coverage_json_artifact }}
           path: ${{ inputs.coverage_report_json_directory }}
+          investigate: true
 
       - name: ☑ Generate LaTeX documentation
         if: inputs.latex_artifact != ''
