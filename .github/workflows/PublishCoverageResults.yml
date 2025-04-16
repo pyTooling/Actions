@@ -48,15 +48,40 @@ on:
         required: false
         default: ''
         type: string
+      coverage_report_xml_directory:
+        description: 'Directory containing the XML coverage report file.'
+        required: false
+        default: 'report/coverage'
+        type: string
+      coverage_report_xml_filename:
+        description: 'Filename of the XML coverage report file.'
+        required: false
+        default: 'coverage.xml'
+        type: string
       coverage_json_artifact:
         description: 'Name of the JSON coverage artifact.'
         required: false
         default: ''
         type: string
+      coverage_report_json_directory:
+        description: 'Directory containing the JSON coverage report file.'
+        required: false
+        default: 'report/coverage'
+        type: string
+      coverage_report_json_filename:
+        description: 'Filename of the JSON coverage report file.'
+        required: false
+        default: 'coverage.json'
+        type: string
       coverage_html_artifact:
         description: 'Name of the HTML coverage artifact.'
         required: false
         default: ''
+        type: string
+      coverage_report_html_directory:
+        description: 'HTML root directory of the generated coverage report.'
+        required: false
+        default: 'report/coverage/html'
         type: string
     secrets:
       codacy_token:
@@ -89,66 +114,6 @@ jobs:
       - name: 🔧 Install coverage and tomli
         run: |
           python -m pip install -U --disable-pip-version-check --break-system-packages coverage[toml] tomli
-
-      - name: 🔁 Extract configurations from pyproject.toml
-        id: getVariables
-        shell: python
-        run: |
-          from os       import getenv
-          from pathlib  import Path
-          from sys      import version
-          from textwrap import dedent
-
-          print(f"Python: {version}")
-
-          from tomli import load as tomli_load
-
-          htmlDirectory = Path("htmlcov")
-          xmlFile =  Path("./coverage.xml")
-          jsonFile = Path("./coverage.json")
-          coverageRC = "${{ inputs.coverage_config }}".strip()
-
-          # Read output paths from 'pyproject.toml' file
-          if coverageRC == "pyproject.toml":
-            pyProjectFile =  Path("pyproject.toml")
-            if pyProjectFile.exists():
-              with pyProjectFile.open("rb") as file:
-                pyProjectSettings = tomli_load(file)
-
-              htmlDirectory = Path(pyProjectSettings["tool"]["coverage"]["html"]["directory"])
-              xmlFile       = Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
-              jsonFile      = Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
-            else:
-              print(f"File '{pyProjectFile}' not found.")
-              print(f"::error title=FileNotFoundError::File '{pyProjectFile}' not found.")
-              exit(1)
-
-          # Read output paths from '.coveragerc' file
-          elif len(coverageRC) > 0:
-            coverageRCFile = Path(coverageRC)
-            if coverageRCFile.exists():
-              with coverageRCFile.open("rb") as file:
-                coverageRCSettings = tomli_load(file)
-
-              htmlDirectory = Path(coverageRCSettings["html"]["directory"])
-              xmlFile       = Path(coverageRCSettings["xml"]["output"])
-              jsonFile      = Path(coverageRCSettings["json"]["output"])
-            else:
-              print(f"File '{coverageRCFile}' not found.")
-              print(f"::error title=FileNotFoundError::File '{coverageRCFile}' not found.")
-              exit(1)
-
-          # Write jobs to special file
-          github_output = Path(getenv("GITHUB_OUTPUT"))
-          print(f"GITHUB_OUTPUT: {github_output}")
-          with github_output.open("a+", encoding="utf-8") as f:
-            f.write(dedent(f"""\
-              coverage_report_html_directory={htmlDirectory.as_posix()}
-              coverage_report_xml={xmlFile}
-              coverage_report_json={jsonFile}
-            """))
-
-          print(f"DEBUG:\n  html={htmlDirectory}\n  xml={xmlFile}\n  json={jsonFile}")
 
       - name: Rename .coverage files and move them all into 'coverage/'
         run: |
@@ -193,7 +158,8 @@ jobs:
         continue-on-error: true
         with:
           name: ${{ inputs.coverage_xml_artifact }}
-          path: ${{ steps.getVariables.outputs.coverage_report_xml }}
+          working-directory: ${{ inputs.coverage_report_xml_directory }}
+          path: ${{ inputs.coverage_report_xml_filename }}
           if-no-files-found: error
           retention-days: 1
 
@@ -203,7 +169,8 @@ jobs:
         continue-on-error: true
         with:
           name: ${{ inputs.coverage_json_artifact }}
-          path: ${{ steps.getVariables.outputs.coverage_report_json }}
+          working-directory: ${{ inputs.coverage_report_json_directory }}
+          path: ${{ inputs.coverage_report_json_filename }}
           if-no-files-found: error
           retention-days: 1
 
@@ -213,7 +180,7 @@ jobs:
         continue-on-error: true
         with:
           name: ${{ inputs.coverage_html_artifact }}
-          working-directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          working-directory: ${{ inputs.coverage_report_html_directory }}
           path: '*'
           if-no-files-found: error
           retention-days: 1
@@ -223,7 +190,7 @@ jobs:
         if: inputs.CodeCov == true
         continue-on-error: true
         with:
-          files: ${{ steps.getVariables.outputs.coverage_report_xml }}
+          files: ${{ inputs.coverage_report_xml_directory }}/${{ inputs.coverage_report_xml_filename }}
           flags: unittests
           env_vars: PYTHON
 
@@ -233,4 +200,4 @@ jobs:
         continue-on-error: true
         with:
           project-token: ${{ secrets.codacy_token }}
-          coverage-reports: ${{ steps.getVariables.outputs.coverage_report_xml }}
+          coverage-reports: ${{ inputs.coverage_report_xml_directory }}/${{ inputs.coverage_report_xml_filename }}
