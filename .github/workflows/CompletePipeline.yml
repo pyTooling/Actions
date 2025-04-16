@@ -93,6 +93,11 @@ on:
         required: false
         default: ''
         type: string
+      cleanup:
+        description: 'Cleanup artifacts afterwards.'
+        required: false
+        default: true
+        type: boolean
     secrets:
       PYPI_TOKEN:
         description: "Token for pushing releases to PyPI."
@@ -244,6 +249,7 @@ jobs:
       - PublishCoverageResults
       - PublishTestResults
       - Documentation
+    if: ${{ inputs.cleanup }}
     with:
       sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-
       xml_unittest_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
@@ -305,6 +311,7 @@ jobs:
       - PublishToGitHubPages
 #      - PublishOnPyPI
       - IntermediateCleanUp
+    if: ${{ inputs.cleanup }}
     with:
       package: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
       remaining: |
