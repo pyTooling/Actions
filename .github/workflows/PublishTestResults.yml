@@ -121,7 +121,6 @@ jobs:
           disable_search: true
           files: ${{ inputs.merged_junit_filename }}
           fail_ci_if_error: true
-          verbose: true
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
         uses: pyTooling/upload-artifact@v4

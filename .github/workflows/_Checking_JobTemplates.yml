@@ -111,7 +111,8 @@ jobs:
       coverage_html_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
     secrets:
-      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      CODACY_TOKEN:  ${{ secrets.CODACY_PROJECT_TOKEN }}
 
   PublishTestResults:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@dev
@@ -122,6 +123,8 @@ jobs:
     with:
       additional_merge_args: '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit;reduce-depth:pytest.tests.platform"'
       merged_junit_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 #  VerifyDocs:
 #    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@dev
