@@ -59,6 +59,15 @@ on:
         required: false
         default: 'Unit Test Results'
         type: string
+      codecov:
+        description: 'Publish merged unittest results to Codecov.'
+        required: false
+        default: true
+        type: boolean
+    secrets:
+      CODECOV_TOKEN:
+        description: 'Token to push result to Codecov.'
+        required: true
 
 jobs:
   PublishTestResults:
@@ -103,6 +112,16 @@ jobs:
           name: ${{ inputs.report_title }}
           path: ${{ inputs.merged_junit_filename }}
           reporter: java-junit
+
+      - name: 📊 Publish unittest results at CodeCov
+        uses: codecov/test-results-action@v1
+        if: inputs.codecov
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          disable_search: true
+          files: ${{ inputs.merged_junit_filename }}
+          fail_ci_if_error: true
+          verbose: true
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
         uses: pyTooling/upload-artifact@v4

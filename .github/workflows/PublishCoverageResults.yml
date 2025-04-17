@@ -83,9 +83,22 @@ on:
         required: false
         default: 'report/coverage/html'
         type: string
+      codecov:
+        description: 'Publish merged coverage report to Codecov.'
+        required: false
+        default: true
+        type: boolean
+      codacy:
+        description: 'Publish merged coverage report to Codacy.'
+        required: false
+        default: true
+        type: boolean
     secrets:
-      codacy_token:
-        description: 'Token to push result to codacy.'
+      CODECOV_TOKEN:
+        description: 'Token to push result to Codecov.'
+        required: true
+      CODACY_TOKEN:
+        description: 'Token to push result to Codacy.'
         required: true
 
 jobs:
@@ -128,7 +141,7 @@ jobs:
         run: coverage report --rcfile=pyproject.toml --data-file=.coverage
 
       - name: Convert to XML format (Cobertura)
-        if: inputs.coverage_xml_artifact != ''
+        if: inputs.coverage_xml_artifact != '' || inputs.codecov || inputs.codacy
         run: coverage xml --data-file=.coverage
 
       - name: Convert to JSON format
@@ -187,17 +200,20 @@ jobs:
 
       - name: 📊 Publish code coverage at CodeCov
         uses: codecov/codecov-action@v5
-        if: inputs.CodeCov == true
+        if: inputs.codecov
         continue-on-error: true
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          disable_search: true
           files: ${{ inputs.coverage_report_xml_directory }}/${{ inputs.coverage_report_xml_filename }}
           flags: unittests
           env_vars: PYTHON
+          fail_ci_if_error: true
 
       - name: 📉 Publish code coverage at Codacy
         uses: codacy/codacy-coverage-reporter-action@v1
-        if: inputs.Codacy == true
+        if: inputs.codacy
         continue-on-error: true
         with:
-          project-token: ${{ secrets.codacy_token }}
+          project-token: ${{ secrets.CODACY_TOKEN }}
           coverage-reports: ${{ inputs.coverage_report_xml_directory }}/${{ inputs.coverage_report_xml_filename }}

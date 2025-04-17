@@ -102,6 +102,9 @@ on:
       PYPI_TOKEN:
         description: "Token for pushing releases to PyPI."
         required: false
+      CODECOV_TOKEN:
+        description: "Token for pushing coverage and unittest results to Codecov."
+        required: false
       CODACY_PROJECT_TOKEN:
         description: "Token for pushing coverage results to Codacy."
         required: false
@@ -132,10 +135,10 @@ jobs:
       package_name:        ${{ inputs.package_name }}
       python_version:      ${{ inputs.apptest_python_version }}
       python_version_list: ${{ inputs.apptest_python_version_list }}
-      system_list:  ${{ inputs.apptest_system_list }}
-      include_list: ${{ inputs.apptest_include_list }}
-      exclude_list: ${{ inputs.apptest_exclude_list }}
-      disable_list: ${{ inputs.apptest_disable_list }}
+      system_list:         ${{ inputs.apptest_system_list }}
+      include_list:        ${{ inputs.apptest_include_list }}
+      exclude_list:        ${{ inputs.apptest_exclude_list }}
+      disable_list:        ${{ inputs.apptest_disable_list }}
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
@@ -211,9 +214,9 @@ jobs:
       coverage_report_json_filename:  ${{ needs.ConfigParams.outputs.coverage_report_json_filename }}
       coverage_html_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
-
     secrets:
-      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      CODACY_TOKEN:  ${{ secrets.CODACY_PROJECT_TOKEN }}
 
   PublishTestResults:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@dev
@@ -225,6 +228,8 @@ jobs:
       additional_merge_args: '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'
       merged_junit_filename: ${{ needs.ConfigParams.outputs.unittest_merged_report_xml_filename }}
       merged_junit_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 #  VerifyDocs:
 #    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@dev
