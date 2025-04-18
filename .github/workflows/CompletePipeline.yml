@@ -93,6 +93,21 @@ on:
         required: false
         default: ''
         type: string
+      codecov:
+        description: 'Publish merged coverage and unittest reports to Codecov.'
+        required: false
+        default: false
+        type: boolean
+      codacy:
+        description: 'Publish merged coverage report to Codacy.'
+        required: false
+        default: false
+        type: boolean
+      dorny:
+        description: 'Publish merged unittest report via Dorny Test-Reporter.'
+        required: false
+        default: false
+        type: boolean
       cleanup:
         description: 'Cleanup artifacts afterwards.'
         required: false
@@ -214,6 +229,8 @@ jobs:
       coverage_report_json_filename:  ${{ needs.ConfigParams.outputs.coverage_report_json_filename }}
       coverage_html_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
+      codecov:                        ${{ inputs.codecov }}
+      codacy:                         ${{ inputs.codacy }}
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       CODACY_TOKEN:  ${{ secrets.CODACY_PROJECT_TOKEN }}
@@ -225,11 +242,15 @@ jobs:
       - UnitTestingParams
       - UnitTesting
     with:
-      additional_merge_args: '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'
-      merged_junit_filename: ${{ needs.ConfigParams.outputs.unittest_merged_report_xml_filename }}
-      merged_junit_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+      additional_merge_args:  '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'
+      testsuite-summary-name: ${{ inputs.package_name }}
+      merged_junit_filename:  ${{ needs.ConfigParams.outputs.unittest_merged_report_xml_filename }}
+      merged_junit_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+      dorny:                  ${{ inputs.dorny }}
+      codecov:                ${{ inputs.codecov }}
+
     secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      CODECOV_TOKEN:          ${{ secrets.CODECOV_TOKEN }}
 
 #  VerifyDocs:
 #    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@dev

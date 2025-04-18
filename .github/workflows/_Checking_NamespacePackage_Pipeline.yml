@@ -10,6 +10,9 @@ jobs:
     with:
       package_namespace: pyExamples
       package_name:      Extensions
+      codecov:           true
+      codacy:            true
+      dorny:             true
     secrets:
       PYPI_TOKEN:           ${{ secrets.PYPI_TOKEN }}
       CODECOV_TOKEN:        ${{ secrets.CODECOV_TOKEN }}

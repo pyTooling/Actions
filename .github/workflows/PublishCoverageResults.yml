@@ -86,12 +86,12 @@ on:
       codecov:
         description: 'Publish merged coverage report to Codecov.'
         required: false
-        default: true
+        default: false
         type: boolean
       codacy:
         description: 'Publish merged coverage report to Codacy.'
         required: false
-        default: true
+        default: false
         type: boolean
     secrets:
       CODECOV_TOKEN:

@@ -49,6 +49,11 @@ on:
         required: false
         default: '"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'
         type: string
+      testsuite-summary-name:
+        description: 'Set TestsuiteSummary name.'
+        required: false
+        default: ''
+        type: string
       publish:
         description: 'Publish test report summary via Dorny Test-Reporter'
         required: false
@@ -59,6 +64,11 @@ on:
         required: false
         default: 'Unit Test Results'
         type: string
+      dorny:
+        description: 'Publish merged unittest results via Dorny Test-Reporter.'
+        required: false
+        default: true
+        type: boolean
       codecov:
         description: 'Publish merged unittest results to Codecov.'
         required: false
@@ -83,7 +93,7 @@ jobs:
         uses: pyTooling/download-artifact@v4
         with:
           pattern: ${{ inputs.unittest_artifacts_pattern }}
-          path: artifacts
+          path:    artifacts
 
       - name: 🔎 Inspect extracted artifact (tarball)
         run: |
@@ -101,13 +111,13 @@ jobs:
 
       - name: 🔁 Merge JUnit Unit Test Summaries
         run: |
-          pyedaa-reports -v unittest "--merge=pyTest-JUnit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=pyTest-JUnit:${{ inputs.merged_junit_filename }}"
+          pyedaa-reports -v unittest "--name=${{ inputs.testsuite-summary-name }}" "--merge=pyTest-JUnit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=pyTest-JUnit:${{ inputs.merged_junit_filename }}"
           printf "%s\n" "cat ${{ inputs.merged_junit_filename }}"
           cat ${{ inputs.merged_junit_filename }}
 
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v2
-        if: inputs.publish && inputs.report_title != ''
+        if: (inputs.dorny || inputs.publish) && inputs.report_title != ''
         with:
           name: ${{ inputs.report_title }}
           path: ${{ inputs.merged_junit_filename }}
