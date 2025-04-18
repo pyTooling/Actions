@@ -32,7 +32,7 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.12'
+        default: '3.13'
         type: string
       package_namespace:
         description: 'Name of the tool''s namespace.'
@@ -68,6 +68,15 @@ on:
       unittest_report_xml:
         description: ""
         value: ${{ jobs.Extract.outputs.unittest_report_xml }}
+      unittest_merged_report_xml_directory:
+        description: ""
+        value: ${{ jobs.Extract.outputs.unittest_merged_report_xml_directory }}
+      unittest_merged_report_xml_filename:
+        description: ""
+        value: ${{ jobs.Extract.outputs.unittest_merged_report_xml_filename }}
+      unittest_merged_report_xml:
+        description: ""
+        value: ${{ jobs.Extract.outputs.unittest_merged_report_xml }}
       coverage_report_html_directory:
         description: ""
         value: ${{ jobs.Extract.outputs.coverage_report_html_directory }}
@@ -95,19 +104,22 @@ jobs:
     name: 📓 Extract configurations from pyproject.toml
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     outputs:
-      package_fullname:               ${{ steps.getPackageName.outputs.package_fullname }}
-      package_directory:              ${{ steps.getPackageName.outputs.package_directory }}
-      mypy_prepare_command:           ${{ steps.getPackageName.outputs.mypy_prepare_command }}
-      unittest_report_xml_directory:  ${{ steps.getVariables.outputs.unittest_report_xml_directory }}
-      unittest_report_xml_filename:   ${{ steps.getVariables.outputs.unittest_report_xml_filename }}
-      unittest_report_xml:            ${{ steps.getVariables.outputs.unittest_report_xml }}
-      coverage_report_html_directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
-      coverage_report_xml_directory:  ${{ steps.getVariables.outputs.coverage_report_xml_directory }}
-      coverage_report_xml_filename:   ${{ steps.getVariables.outputs.coverage_report_xml_filename }}
-      coverage_report_xml:            ${{ steps.getVariables.outputs.coverage_report_xml }}
-      coverage_report_json_directory: ${{ steps.getVariables.outputs.coverage_report_json_directory }}
-      coverage_report_json_filename:  ${{ steps.getVariables.outputs.coverage_report_json_filename }}
-      coverage_report_json:           ${{ steps.getVariables.outputs.coverage_report_json }}
+      package_fullname:                     ${{ steps.getPackageName.outputs.package_fullname }}
+      package_directory:                    ${{ steps.getPackageName.outputs.package_directory }}
+      mypy_prepare_command:                 ${{ steps.getPackageName.outputs.mypy_prepare_command }}
+      unittest_report_xml_directory:        ${{ steps.getVariables.outputs.unittest_report_xml_directory }}
+      unittest_report_xml_filename:         ${{ steps.getVariables.outputs.unittest_report_xml_filename }}
+      unittest_report_xml:                  ${{ steps.getVariables.outputs.unittest_report_xml }}
+      unittest_merged_report_xml_directory: ${{ steps.getVariables.outputs.unittest_merged_report_xml_directory }}
+      unittest_merged_report_xml_filename:  ${{ steps.getVariables.outputs.unittest_merged_report_xml_filename }}
+      unittest_merged_report_xml:           ${{ steps.getVariables.outputs.unittest_merged_report_xml }}
+      coverage_report_html_directory:       ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+      coverage_report_xml_directory:        ${{ steps.getVariables.outputs.coverage_report_xml_directory }}
+      coverage_report_xml_filename:         ${{ steps.getVariables.outputs.coverage_report_xml_filename }}
+      coverage_report_xml:                  ${{ steps.getVariables.outputs.coverage_report_xml }}
+      coverage_report_json_directory:       ${{ steps.getVariables.outputs.coverage_report_json_directory }}
+      coverage_report_json_filename:        ${{ steps.getVariables.outputs.coverage_report_json_filename }}
+      coverage_report_json:                 ${{ steps.getVariables.outputs.coverage_report_json }}
 
     steps:
       - name: ⏬ Checkout repository
@@ -178,6 +190,7 @@ jobs:
                 pyProjectSettings = tomli_load(file)
 
               unittestXMLFile =       Path(pyProjectSettings["tool"]["pytest"]["junit_xml"])
+              mergedUnittestXMLFile = Path(pyProjectSettings["tool"]["pyedaa-reports"]["junit_xml"])
               coverageHTMLDirectory = Path(pyProjectSettings["tool"]["coverage"]["html"]["directory"])
               coverageXMLFile =       Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
               coverageJSONFile=       Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
@@ -209,6 +222,9 @@ jobs:
               unittest_report_xml_directory={unittestXMLFile.parent.as_posix()}
               unittest_report_xml_filename={unittestXMLFile.name}
               unittest_report_xml={unittestXMLFile.as_posix()}
+              unittest_merged_report_xml_directory={mergedUnittestXMLFile.parent.as_posix()}
+              unittest_merged_report_xml_filename={mergedUnittestXMLFile.name}
+              unittest_merged_report_xml={mergedUnittestXMLFile.as_posix()}
               coverage_report_html_directory={coverageHTMLDirectory.as_posix()}
               coverage_report_xml_directory={coverageXMLFile.parent.as_posix()}
               coverage_report_xml_filename={coverageXMLFile.name}
@@ -218,4 +234,4 @@ jobs:
               coverage_report_json={coverageJSONFile.as_posix()}
             """))
 
-          print(f"DEBUG:\n  unittest xml:  {unittestXMLFile}\n  coverage html: {coverageHTMLDirectory}\n  coverage xml:  {coverageXMLFile}\n  coverage json: {coverageJSONFile}")
+          print(f"DEBUG:\n  unittest xml:        {unittestXMLFile}\n  merged unittest xml: {mergedUnittestXMLFile}\n  coverage html:       {coverageHTMLDirectory}\n  coverage xml:        {coverageXMLFile}\n  coverage json:       {coverageJSONFile}")
