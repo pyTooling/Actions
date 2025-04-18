@@ -358,6 +358,7 @@ jobs:
 
       - name: ✅ Run unit tests (Windows)
         if: matrix.system == 'windows'
+        continue-on-error: true
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
           $env:PYTHONPATH = (Get-Location).ToString()

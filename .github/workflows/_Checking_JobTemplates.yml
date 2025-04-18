@@ -30,7 +30,7 @@ jobs:
       - ConfigParams
       - UnitTestingParams
     with:
-      jobs: ${{ needs.UnitTestingParams.outputs.python_jobs }}
+      jobs:                           ${{ needs.UnitTestingParams.outputs.python_jobs }}
       unittest_report_xml_directory:  ${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}
       unittest_report_xml_filename:   ${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
@@ -47,9 +47,9 @@ jobs:
       - ConfigParams
       - PlatformTestingParams
     with:
-      jobs: ${{ needs.PlatformTestingParams.outputs.python_jobs }}
+      jobs:                           ${{ needs.PlatformTestingParams.outputs.python_jobs }}
 #      tests_directory: ""
-      unittest_directory: platform
+      unittest_directory:             platform
       unittest_report_xml_directory:  ${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}
       unittest_report_xml_filename:   ${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
@@ -70,7 +70,7 @@ jobs:
       commands: |
         ${{ needs.ConfigParams.outputs.mypy_prepare_command }}
         mypy --html-report htmlmypy -p ${{ needs.ConfigParams.outputs.package_fullname }}
-      html_report: 'htmlmypy'
+      html_report:   'htmlmypy'
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   DocCoverage:
@@ -80,7 +80,7 @@ jobs:
       - UnitTestingParams
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
-      directory: ${{ needs.ConfigParams.outputs.package_directors }}
+      directory     : ${{ needs.ConfigParams.outputs.package_directors }}
 #      fail_below: 70
 
   Package:
@@ -91,31 +91,46 @@ jobs:
       - PlatformTesting
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
-      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
 
   PublishCoverageResults:
     uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r4
     needs:
+      - ConfigParams
       - UnitTestingParams
       - UnitTesting
       - PlatformTesting
     with:
-      coverage_sqlite_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
-      coverage_xml_artifact:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
-      coverage_json_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
-      coverage_html_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+      coverage_sqlite_artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
+      coverage_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
+      coverage_report_xml_directory:  ${{ needs.ConfigParams.outputs.coverage_report_xml_directory }}
+      coverage_report_xml_filename:   ${{ needs.ConfigParams.outputs.coverage_report_xml_filename }}
+      coverage_json_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
+      coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
+      coverage_report_json_filename:  ${{ needs.ConfigParams.outputs.coverage_report_json_filename }}
+      coverage_html_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+      coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
+      codecov:                        true
+      codacy:                         true
     secrets:
-      codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      CODACY_TOKEN:  ${{ secrets.CODACY_PROJECT_TOKEN }}
 
   PublishTestResults:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r4
     needs:
+      - ConfigParams
       - UnitTestingParams
       - UnitTesting
       - PlatformTesting
     with:
-      additional_merge_args: '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit;reduce-depth:pytest.tests.platform"'
-      merged_junit_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+      additional_merge_args:  '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit;reduce-depth:pytest.tests.platform"'
+      testsuite-summary-name: ${{ needs.ConfigParams.outputs.package_fullname }}
+      merged_junit_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+      codecov:                true
+      dorny:                  true
+    secrets:
+      CODECOV_TOKEN:          ${{ secrets.CODECOV_TOKEN }}
 
 #  VerifyDocs:
 #    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@r4
