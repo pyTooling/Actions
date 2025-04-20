@@ -95,6 +95,11 @@ on:
         required: false
         default: 'macos-14'
         type: string
+      pipeline-delay:
+        description: 'Slow down this job, to delay the startup of the GitHub Action pipline.'
+        required: false
+        default: 0
+        type: number
 
     outputs:
       python_version:
@@ -121,6 +126,12 @@ jobs:
       params:           ${{ steps.params.outputs.params }}
 
     steps:
+      - name: Generate a startup delay of ${{ inputs.pipeline-delay }} seconds
+        id: delay
+        if: inputs.pipeline-delay >= 0
+        run: |
+          sleep ${{ inputs.pipeline-delay }}
+        
       - name: Generate 'params' and 'python_jobs'
         id: params
         shell: python
