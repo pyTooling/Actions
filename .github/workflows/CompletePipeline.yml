@@ -180,7 +180,7 @@ jobs:
       commands: |
         ${{ needs.ConfigParams.outputs.mypy_prepare_command }}
         mypy --html-report report/typing -p ${{ needs.ConfigParams.outputs.package_fullname }}
-      html_report: 'report/typing'
+      html_report:   'report/typing'
       html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   DocCoverage:

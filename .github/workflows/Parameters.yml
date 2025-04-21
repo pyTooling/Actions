@@ -131,7 +131,7 @@ jobs:
         if: inputs.pipeline-delay >= 0
         run: |
           sleep ${{ inputs.pipeline-delay }}
-        
+
       - name: Generate 'params' and 'python_jobs'
         id: params
         shell: python
