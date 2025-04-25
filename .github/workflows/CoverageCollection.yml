@@ -72,7 +72,7 @@ jobs:
 
     steps:
       - name: '❗ Deprecation message'
-        run: printf "%s\n" "::warning title=Deprecated::'CoverageCollection.yml' is not maintained anymore. Please switch to 'UnitTesting.yml', 'PublishCoverageResults.yml' and 'PublishTestResults.yml'."
+        run: printf "::warning title=%s::%s\n" "Deprecated" "'CoverageCollection.yml' is not maintained anymore. Please switch to 'UnitTesting.yml', 'PublishCoverageResults.yml' and 'PublishTestResults.yml'."
 
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4

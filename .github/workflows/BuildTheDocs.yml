@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: '❗ Deprecation message'
-        run: printf "%s\n" "::warning title=Deprecated::'BuildTheDocs.yml' is not maintained anymore. Please switch to 'SphinxDocumentation.yml', 'LaTeXDocumentation.yml' and 'ExtractConfiguration.yml'."
+        run: printf "::warning title=%s::%s\n" "Deprecated" "'BuildTheDocs.yml' is not maintained anymore. Please switch to 'SphinxDocumentation.yml', 'LaTeXDocumentation.yml' and 'ExtractConfiguration.yml'."
 
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4
