@@ -48,7 +48,6 @@ on:
       PYPI_TOKEN:
         description: "Token for pushing releases to PyPI"
         required: false
-        default: unset
 
 jobs:
 

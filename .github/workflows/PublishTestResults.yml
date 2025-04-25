@@ -78,7 +78,6 @@ on:
       CODECOV_TOKEN:
         description: 'Token to push result to Codecov.'
         required: true
-        default: unset
 
 jobs:
   PublishTestResults:

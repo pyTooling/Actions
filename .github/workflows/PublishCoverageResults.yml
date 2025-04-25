@@ -97,11 +97,9 @@ on:
       CODECOV_TOKEN:
         description: 'Token to push result to Codecov.'
         required: true
-        default: unset
       CODACY_TOKEN:
         description: 'Token to push result to Codacy.'
         required: true
-        default: unset
 
 jobs:
   PublishCoverageResults:

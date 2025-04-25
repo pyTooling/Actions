@@ -63,7 +63,6 @@ on:
       codacy_token:
         description: 'Token to push result to codacy.'
         required: true
-        default: unset
 
 jobs:
 
