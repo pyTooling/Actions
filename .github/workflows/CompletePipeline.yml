@@ -311,9 +311,8 @@ jobs:
       coverage: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
       typing:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
-  ReleasePage:
-    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@dev
-    if: startsWith(github.ref, 'refs/tags')
+  TriggerTaggedRelease:
+    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@dev
     needs:
       - Prepare
       - UnitTesting
@@ -321,7 +320,25 @@ jobs:
 #      - StaticTypeCheck
       - Package
       - PublishToGitHubPages
+    if: needs.Prepare.outputs.is_release_commit
+    permissions:
+      contents: write  # required for create tag
+      actions:  write  # required for trigger workflow
+    with:
+      version:  ${{ needs.Prepare.outputs.version }}
+      auto_tag: ${{ needs.Prepare.outputs.is_release_commit }}
     secrets: inherit
+
+  ReleasePage:
+    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@dev
+    needs:
+      - Prepare
+      - UnitTesting
+#      - AppTesting
+#      - StaticTypeCheck
+      - Package
+      - PublishToGitHubPages
+    if: needs.Prepare.outputs.is_release_tag
     permissions:
       contents: write
       actions: write
@@ -331,10 +348,11 @@ jobs:
 
   PublishOnPyPI:
     uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@dev
-    if: startsWith(github.ref, 'refs/tags')
     needs:
+      - Prepare
       - UnitTestingParams
       - ReleasePage
+    if: needs.Prepare.outputs.is_release_tag
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       requirements: -r dist/requirements.txt
