@@ -146,17 +146,17 @@ jobs:
       exclude_list:        ${{ inputs.unittest_exclude_list }}
       disable_list:        ${{ inputs.unittest_disable_list }}
 
-  AppTestingParams:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
-    with:
-      package_namespace:   ${{ inputs.package_namespace }}
-      package_name:        ${{ inputs.package_name }}
-      python_version:      ${{ inputs.apptest_python_version }}
-      python_version_list: ${{ inputs.apptest_python_version_list }}
-      system_list:         ${{ inputs.apptest_system_list }}
-      include_list:        ${{ inputs.apptest_include_list }}
-      exclude_list:        ${{ inputs.apptest_exclude_list }}
-      disable_list:        ${{ inputs.apptest_disable_list }}
+#  AppTestingParams:
+#    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+#    with:
+#      package_namespace:   ${{ inputs.package_namespace }}
+#      package_name:        ${{ inputs.package_name }}
+#      python_version:      ${{ inputs.apptest_python_version }}
+#      python_version_list: ${{ inputs.apptest_python_version_list }}
+#      system_list:         ${{ inputs.apptest_system_list }}
+#      include_list:        ${{ inputs.apptest_include_list }}
+#      exclude_list:        ${{ inputs.apptest_exclude_list }}
+#      disable_list:        ${{ inputs.apptest_disable_list }}
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
