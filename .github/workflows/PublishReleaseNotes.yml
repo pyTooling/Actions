@@ -91,8 +91,9 @@ on:
         type: string
       assets:
         description: 'Multi-line string containing artifact:file:title asset descriptions.'
-        required: true
+        required: false
         type: string
+        default: ''
       inventory-json:
         type: string
         required: false
