@@ -53,9 +53,9 @@ class Base:
 	_value: int    #: An internal value.
 
 	def __init__(self) -> None:
-		"""
-		Initializes the base-class.
-		"""
+		# """
+		# Initializes the base-class.
+		# """
 		self._value = 0
 
 	@readonly
@@ -75,9 +75,9 @@ class Application(Base):
 	"""
 
 	def __init__(self) -> None:
-		"""
-		Initializes the dummy application.
-		"""
+		# """
+		# Initializes the dummy application.
+		# """
 		super().__init__()
 
 		platform = Platform()
