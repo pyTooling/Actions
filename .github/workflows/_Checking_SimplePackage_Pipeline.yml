@@ -13,7 +13,4 @@ jobs:
       codacy:  true
       dorny:   true
       cleanup: false
-    secrets:
-      PYPI_TOKEN:           ${{ secrets.PYPI_TOKEN }}
-      CODECOV_TOKEN:        ${{ secrets.CODECOV_TOKEN }}
-      CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+    secrets: inherit

@@ -327,6 +327,7 @@ jobs:
       actions: write
     with:
       tag: ${{ needs.Prepare.outputs.version }}
+    secrets: inherit
 
   PublishOnPyPI:
     uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@dev

@@ -115,9 +115,7 @@ jobs:
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
       codecov:                        true
       codacy:                         true
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      CODACY_TOKEN:  ${{ secrets.CODACY_PROJECT_TOKEN }}
+    secrets: inherit
 
   PublishTestResults:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@dev
@@ -132,8 +130,7 @@ jobs:
       merged_junit_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       codecov:                true
       dorny:                  true
-    secrets:
-      CODECOV_TOKEN:          ${{ secrets.CODECOV_TOKEN }}
+    secrets: inherit
 
 #  VerifyDocs:
 #    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@dev
@@ -225,6 +222,7 @@ jobs:
       actions: write
     with:
       tag: ${{ needs.Prepare.outputs.version }}
+    secrets: inherit
 
   PublishOnPyPI:
     uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@dev
@@ -237,8 +235,7 @@ jobs:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       requirements: -r dist/requirements.txt
       artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
-    secrets:
-      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+    secrets: inherit
 
   ArtifactCleanUp:
     uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@dev
