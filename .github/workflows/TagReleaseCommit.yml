@@ -1,0 +1,84 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#   Unai Martinez-Corral                                                                                               #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2020-2025 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Auto Tag
+
+on:
+  workflow_call:
+    inputs:
+      ubuntu_image:
+        description: 'Name of the Ubuntu image.'
+        required: false
+        default: 'ubuntu-24.04'
+        type: string
+      version:
+        description: 'Version used as tag name.'
+        required: true
+        type: string
+      auto_tag:
+        description: 'Automatically add and push a tag.'
+        required: true
+        type: string
+      workflow:
+        description: 'Workflow to start after adding a tag.'
+        required: false
+        default: 'Pipeline.yml'
+        type: string
+
+jobs:
+  AutoTag:
+    name: "🏷 Create tag '${{ inputs.version}}' on GitHub"
+    runs-on: ${{ inputs.ubuntu_image }}
+    if: inputs.auto_tag == 'true'
+
+#    if: github.ref == 'refs/heads/${{ inputs.release_branch }}'
+
+    permissions:
+      contents: write   # required for tag creation
+      actions: write    # required to start a new pipeline
+
+    steps:
+      - name: 🏷 Create release tag '${{ steps.FindPullRequest.outputs.version }}'
+        uses: actions/github-script@v7
+        id: createReleaseTag
+#        if: inputs.auto_tag == 'true'
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              ref:   'refs/tags/${{ inputs.version }}',
+              sha:   context.sha
+            })
+
+      - name: Trigger Workflow
+        uses: actions/github-script@v7
+        id: runReleaseTag
+#        if: inputs.auto_tag == 'true'
+        with:
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner:       context.repo.owner,
+              repo:        context.repo.repo,
+              workflow_id: '${{ inputs.workflow }}',
+              ref:         '${{ inputs.version }}'
+            })

@@ -125,6 +125,9 @@ on:
         required: false
 
 jobs:
+  Prepare:
+    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@dev
+
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@dev
     with:
@@ -309,12 +312,21 @@ jobs:
       typing:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   ReleasePage:
-    uses: pyTooling/Actions/.github/workflows/Release.yml@dev
+    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@dev
     if: startsWith(github.ref, 'refs/tags')
     needs:
-      - Package
+      - Prepare
+      - UnitTesting
 #      - AppTesting
+#      - StaticTypeCheck
+      - Package
       - PublishToGitHubPages
+    secrets: inherit
+    permissions:
+      contents: write
+      actions: write
+    with:
+      tag: ${{ needs.Prepare.outputs.version }}
 
   PublishOnPyPI:
     uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@dev
