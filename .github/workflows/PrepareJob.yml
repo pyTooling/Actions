@@ -212,11 +212,11 @@ jobs:
             printf "  Check tag name against regexp '%s' ... " "${RELEASE_TAG_PATTERN}"
             if [[ "${tag}" =~ NIGHTLY_TAG_PATTERN ]]; then
               printf "${ANSI_LIGHT_GREEN}[NIGHTLY]${ANSI_NOCOLOR}\n"
-              is_nightly_tag=true
+              is_nightly_tag="true"
             elif [[ "${tag}" =~ $RELEASE_TAG_PATTERN ]]; then
               printf "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
               version="${tag}"
-              is_release_tag=true
+              is_release_tag="true"
             else
               printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
               printf "${ANSI_LIGHT_RED}Tag name '%s' doesn't conform to regexp${ANSI_NOCOLOR}\n" "${tag}"

@@ -215,7 +215,7 @@ jobs:
 #      - StaticTypeCheck
       - Package
       - PublishToGitHubPages
-    if: needs.Prepare.outputs.is_release_tag
+    if: needs.Prepare.outputs.is_release_tag == 'true'
     permissions:
       contents: write
       actions: write
@@ -229,7 +229,7 @@ jobs:
       - UnitTestingParams
       - ReleasePage
 #      - Package
-    if: needs.Prepare.outputs.is_release_tag
+    if: needs.Prepare.outputs.is_release_tag == 'true'
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       requirements: -r dist/requirements.txt

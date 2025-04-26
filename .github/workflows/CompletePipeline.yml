@@ -234,9 +234,7 @@ jobs:
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
       codecov:                        ${{ inputs.codecov }}
       codacy:                         ${{ inputs.codacy }}
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      CODACY_TOKEN:  ${{ secrets.CODACY_PROJECT_TOKEN }}
+    secrets: inherit
 
   PublishTestResults:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@dev
@@ -250,8 +248,7 @@ jobs:
       merged_junit_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       dorny:                  ${{ inputs.dorny }}
       codecov:                ${{ inputs.codecov }}
-    secrets:
-      CODECOV_TOKEN:          ${{ secrets.CODECOV_TOKEN }}
+    secrets: inherit
 
 #  VerifyDocs:
 #    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@dev
@@ -338,7 +335,7 @@ jobs:
 #      - StaticTypeCheck
       - Package
       - PublishToGitHubPages
-    if: needs.Prepare.outputs.is_release_tag
+    if: needs.Prepare.outputs.is_release_tag == 'true'
     permissions:
       contents: write
       actions: write
@@ -352,13 +349,12 @@ jobs:
       - Prepare
       - UnitTestingParams
       - ReleasePage
-    if: needs.Prepare.outputs.is_release_tag
+    if: needs.Prepare.outputs.is_release_tag == 'true'
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       requirements: -r dist/requirements.txt
       artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
-    secrets:
-      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+    secrets: inherit
 
   ArtifactCleanUp:
     uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@dev
