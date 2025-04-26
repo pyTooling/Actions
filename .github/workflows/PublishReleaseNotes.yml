@@ -52,7 +52,7 @@ on:
       description:
         description: 'Multi-line description of the release.'
         required: false
-        default: 'Release of artifacts from latest CI pipeline.'
+        default: ''
         type: string
       description_file:
         description: 'Description of the release from a Markdown file.'
@@ -126,7 +126,7 @@ jobs:
     continue-on-error: ${{ inputs.can-fail }}
     permissions:
       contents: write
-      actions: write
+      actions:  write
 #      attestations: write
     outputs:
       release-page: ${{ steps.removeDraft.outputs.release_page }}
@@ -275,6 +275,9 @@ jobs:
           elif [[ -s __PULLREQUEST__.md ]]; then
             printf "Use '__PULLREQUEST__.md' as main release description.\n"
             mv -v __PULLREQUEST__.md __NOTES__.md
+
+            printf "Append '%%FOOTER%%' to '__NOTES__.md'.\n"
+            printf "\n%%FOOTER%%\n" >> __NOTES__.md
           else
             printf "${ANSI_LIGHT_RED}No release description specified (file, parameter, PR text).${ANSI_NOCOLOR}\n"
             printf "::error title=%s::%s\n" "MissingDescription" "No release description specified (file, parameter, PR text)."

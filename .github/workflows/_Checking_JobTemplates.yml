@@ -218,7 +218,7 @@ jobs:
     if: needs.Prepare.outputs.is_release_tag == 'true'
     permissions:
       contents: write
-      actions: write
+      actions:  write
     with:
       tag: ${{ needs.Prepare.outputs.version }}
     secrets: inherit

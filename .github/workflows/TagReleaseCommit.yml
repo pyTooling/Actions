@@ -54,7 +54,7 @@ jobs:
 
     permissions:
       contents: write   # required for tag creation
-      actions: write    # required to start a new pipeline
+      actions:  write    # required to start a new pipeline
 
     steps:
       - name: 🏷 Create release tag '${{ steps.FindPullRequest.outputs.version }}'
