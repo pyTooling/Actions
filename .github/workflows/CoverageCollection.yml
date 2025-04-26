@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2024 The pyTooling Authors                                                                            #
+# Copyright 2020-2025 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -72,7 +72,7 @@ jobs:
 
     steps:
       - name: '❗ Deprecation message'
-        run: printf "%s\n" "::warning title=Deprecated::'CoverageCollection.yml' is not maintained anymore. Please switch to 'UnitTesting.yml', 'PublishCoverageResults.yml' and 'PublishTestResults.yml'."
+        run: printf "::warning title=%s::%s\n" "Deprecated" "'CoverageCollection.yml' is not maintained anymore. Please switch to 'UnitTesting.yml', 'PublishCoverageResults.yml' and 'PublishTestResults.yml'."
 
       - name: ⏬ Checkout repository
         uses: actions/checkout@v4

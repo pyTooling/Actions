@@ -36,7 +36,7 @@ __author__ =        "Patrick Lehmann"
 __email__ =         "Paebbels@gmail.com"
 __copyright__ =     "2017-2025, Patrick Lehmann"
 __license__ =       "Apache License, Version 2.0"
-__version__ =       "0.4.4"
+__version__ =       "0.4.5"
 __keywords__ =      ["GitHub Actions"]
 __issue_tracker__ = "https://GitHub.com/pyTooling/Actions/issues"
 
