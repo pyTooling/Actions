@@ -279,7 +279,6 @@ jobs:
       - UnitTestingParams
       - PublishCoverageResults
       - PublishTestResults
-      - Documentation
     if: ${{ inputs.cleanup }}
     with:
       sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-

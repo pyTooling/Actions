@@ -161,7 +161,6 @@ jobs:
       - UnitTestingParams
       - PublishCoverageResults
       - PublishTestResults
-      - Documentation
     with:
       sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-
       xml_unittest_artifacts_prefix:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
