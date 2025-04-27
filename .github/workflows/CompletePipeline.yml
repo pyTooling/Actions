@@ -120,7 +120,7 @@ on:
       CODECOV_TOKEN:
         description: "Token for pushing coverage and unittest results to Codecov."
         required: false
-      CODACY_PROJECT_TOKEN:
+      CODACY_TOKEN:
         description: "Token for pushing coverage results to Codacy."
         required: false
 
