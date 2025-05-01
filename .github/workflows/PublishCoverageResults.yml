@@ -200,6 +200,7 @@ jobs:
 
       - name: 📊 Publish code coverage at CodeCov
         uses: codecov/codecov-action@v5
+        id: codecov
         if: inputs.codecov
         continue-on-error: true
         with:
@@ -212,8 +213,18 @@ jobs:
 
       - name: 📉 Publish code coverage at Codacy
         uses: codacy/codacy-coverage-reporter-action@v1
+        id: codacy
         if: inputs.codacy
         continue-on-error: true
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
           coverage-reports: ${{ inputs.coverage_report_xml_directory }}/${{ inputs.coverage_report_xml_filename }}
+
+      - name: Generate error messages
+        run: |
+          if [[ "${{ steps.codecov.outcome }}" == "failure" ]]; then
+            printf "::error title=%s::%s\n" "Codecov" "Failed to publish code coverage results."
+          fi
+          if [[ "${{ steps.codacy.outcome }}" == "failure" ]]; then
+            printf "::error title=%s::%s\n" "Codacy" "Failed to publish code coverage results."
+          fi

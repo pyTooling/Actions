@@ -74,6 +74,11 @@ on:
         required: false
         default: true
         type: boolean
+      codecov_flags:
+        description: 'Flags applied to the upload to Codecov'
+        required: false
+        default: 'unittest'
+        type: string
     secrets:
       CODECOV_TOKEN:
         description: 'Token to push result to Codecov.'
@@ -125,12 +130,20 @@ jobs:
 
       - name: 📊 Publish unittest results at CodeCov
         uses: codecov/test-results-action@v1
+        id: codecov
         if: inputs.codecov
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           disable_search: true
           files: ${{ inputs.merged_junit_filename }}
+          flags: ${{ inputs.codecov_flags }}
           fail_ci_if_error: true
+
+      - name: Generate error messages
+        run: |
+          if [[ "${{ steps.codecov.outcome }}" == "failure" ]]; then
+            printf "::error title=%s::%s\n" "Codecov" "Failed to publish unittest results."
+          fi
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
         uses: pyTooling/upload-artifact@v4

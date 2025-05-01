@@ -50,7 +50,6 @@ on:
         required: false
 
 jobs:
-
   PublishOnPyPI:
     name: 🚀 Publish to PyPI
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
