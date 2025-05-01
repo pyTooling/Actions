@@ -82,7 +82,7 @@ on:
     secrets:
       CODECOV_TOKEN:
         description: 'Token to push result to Codecov.'
-        required: true
+        required: false
 
 jobs:
   PublishTestResults:

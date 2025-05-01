@@ -65,7 +65,7 @@ on:
         default: |
 
           --------
-          Published from [%%gh_workflow%%](%%gh_server%%/%%gh_owner_repo%%/actions/runs/%%gh_runid%%) workflow triggered by %%gh_actor%% on %%datetime%%.
+          Published from [%%gh_workflow_name%%](%%gh_server%%/%%gh_owner_repo%%/actions/runs/%%gh_runid%%) workflow triggered by %%gh_actor%% on %%datetime%%.
 
           This automatic release was created by [pyTooling/Actions](http://github.com/pyTooling/Actions)::Release.yml
         type: string
@@ -206,12 +206,12 @@ jobs:
           export GH_TOKEN=${{ github.token }}
 
           # Save release description (from parameter in a file)
-          cat <<'EOF' > __DESCRIPTION__.md
+          head -c -1 <<'EOF' > __DESCRIPTION__.md
           ${{ inputs.description }}
           EOF
 
           # Save release footer (from parameter in a file)
-          cat <<'EOF' > __FOOTER__.md
+          head -c -1 <<'EOF' > __FOOTER__.md
           ${{ inputs.description_footer }}
           EOF
 
@@ -276,8 +276,8 @@ jobs:
             printf "Use '__PULLREQUEST__.md' as main release description.\n"
             mv -v __PULLREQUEST__.md __NOTES__.md
 
-            printf "Append '%%FOOTER%%' to '__NOTES__.md'.\n"
-            printf "\n%%FOOTER%%\n" >> __NOTES__.md
+            printf "Append '%%%%FOOTER%%%%' to '__NOTES__.md'.\n"
+            printf "\n%%%%FOOTER%%%%\n" >> __NOTES__.md
           else
             printf "${ANSI_LIGHT_RED}No release description specified (file, parameter, PR text).${ANSI_NOCOLOR}\n"
             printf "::error title=%s::%s\n" "MissingDescription" "No release description specified (file, parameter, PR text)."
@@ -350,21 +350,21 @@ jobs:
 
           # Display partial contents for debugging
           if [[ -s __DESCRIPTION__.md ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__DESCRIPTION__.md' ...."
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__DESCRIPTION__.md' ($(stat --printf="%s" "__DESCRIPTION__.md") B) ...."
             cat __DESCRIPTION__.md
             printf "::endgroup::\n"
           else
             printf "${ANSI_LIGHT_YELLOW}No '__DESCRIPTION__.md' found.${ANSI_NOCOLOR}\n"
           fi
           if [[ -s __PULLREQUEST__.md ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__PULLREQUEST__.md' ...."
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__PULLREQUEST__.md' ($(stat --printf="%s" "__PULLREQUEST__.md") B) ...."
             cat __PULLREQUEST__.md
             printf "::endgroup::\n"
           else
             printf "${ANSI_LIGHT_YELLOW}No '__PULLREQUEST__.md' found.${ANSI_NOCOLOR}\n"
           fi
           if [[ -s __FOOTER__.md ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__FOOTER__.md' ...."
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__FOOTER__.md' ($(stat --printf="%s" "__FOOTER__.md") B) ...."
             cat __FOOTER__.md
             printf "::endgroup::\n"
           else
@@ -372,7 +372,7 @@ jobs:
           fi
 
           # Print final release notes
-          printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__NOTES__.md' ...."
+          printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__NOTES__.md' ($(stat --printf="%s" "__NOTES__.md") B) ...."
           cat __NOTES__.md
           printf "::endgroup::\n"
 
