@@ -86,13 +86,13 @@ on:
       codecov:
         description: 'Publish merged coverage report to Codecov.'
         required: false
-        default: false
-        type: boolean
+        default: 'false'
+        type: string
       codacy:
         description: 'Publish merged coverage report to Codacy.'
         required: false
-        default: false
-        type: boolean
+        default: 'false'
+        type: string
     secrets:
       CODECOV_TOKEN:
         description: 'Token to push result to Codecov.'
@@ -201,7 +201,7 @@ jobs:
       - name: 📊 Publish code coverage at CodeCov
         uses: codecov/codecov-action@v5
         id: codecov
-        if: inputs.codecov
+        if: inputs.codecov == 'true'
         continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -214,7 +214,7 @@ jobs:
       - name: 📉 Publish code coverage at Codacy
         uses: codacy/codacy-coverage-reporter-action@v1
         id: codacy
-        if: inputs.codacy
+        if: inputs.codacy == 'true'
         continue-on-error: true
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
@@ -223,8 +223,12 @@ jobs:
       - name: Generate error messages
         run: |
           if [[ "${{ steps.codecov.outcome }}" == "failure" ]]; then
-            printf "::error title=%s::%s\n" "Codecov" "Failed to publish code coverage results."
+            printf "::error title=%s::%s\n" "Publish Code Coverage Results / Codecov" "Failed to publish code coverage results."
+          else
+            printf "Codecov: No errors to report."
           fi
           if [[ "${{ steps.codacy.outcome }}" == "failure" ]]; then
-            printf "::error title=%s::%s\n" "Codacy" "Failed to publish code coverage results."
+            printf "::error title=%s::%s\n" "Publish Code Coverage Results / Codacy" "Failed to publish code coverage results."
+          else
+            printf "Codacy:  No errors to report."
           fi

@@ -347,6 +347,7 @@ jobs:
     needs:
       - Prepare
       - UnitTestingParams
+      - Package
       - ReleasePage
     if: needs.Prepare.outputs.is_release_tag == 'true'
     with:

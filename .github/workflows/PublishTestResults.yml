@@ -57,8 +57,8 @@ on:
       publish:
         description: 'Publish test report summary via Dorny Test-Reporter'
         required: false
-        default: true
-        type: boolean
+        default: 'true'
+        type: string
       report_title:
         description: 'Title of the summary report in the pipeline''s sidebar'
         required: false
@@ -67,13 +67,13 @@ on:
       dorny:
         description: 'Publish merged unittest results via Dorny Test-Reporter.'
         required: false
-        default: true
-        type: boolean
+        default: 'true'
+        type: string
       codecov:
         description: 'Publish merged unittest results to Codecov.'
         required: false
-        default: true
-        type: boolean
+        default: 'false'
+        type: string
       codecov_flags:
         description: 'Flags applied to the upload to Codecov'
         required: false
@@ -122,7 +122,7 @@ jobs:
 
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v2
-        if: (inputs.dorny || inputs.publish) && inputs.report_title != ''
+        if: ( inputs.dorny  == 'true' || inputs.publish  == 'true' ) && inputs.report_title != ''
         with:
           name: ${{ inputs.report_title }}
           path: ${{ inputs.merged_junit_filename }}
@@ -131,7 +131,8 @@ jobs:
       - name: 📊 Publish unittest results at CodeCov
         uses: codecov/test-results-action@v1
         id: codecov
-        if: inputs.codecov
+        if: inputs.codecov == 'true'
+        continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           disable_search: true
@@ -142,7 +143,9 @@ jobs:
       - name: Generate error messages
         run: |
           if [[ "${{ steps.codecov.outcome }}" == "failure" ]]; then
-            printf "::error title=%s::%s\n" "Codecov" "Failed to publish unittest results."
+            printf "::error title=%s::%s\n" "Publish Unit Test Results / Codecov" "Failed to publish unittest results."
+          else
+            printf "Codecov: No errors to report."
           fi
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
