@@ -225,10 +225,10 @@ jobs:
           if [[ "${{ steps.codecov.outcome }}" == "failure" ]]; then
             printf "::error title=%s::%s\n" "Publish Code Coverage Results / Codecov" "Failed to publish code coverage results."
           else
-            printf "Codecov: No errors to report."
+            printf "Codecov: No errors to report.\n"
           fi
           if [[ "${{ steps.codacy.outcome }}" == "failure" ]]; then
             printf "::error title=%s::%s\n" "Publish Code Coverage Results / Codacy" "Failed to publish code coverage results."
           else
-            printf "Codacy:  No errors to report."
+            printf "Codacy:  No errors to report.\n"
           fi

@@ -96,23 +96,23 @@ on:
       codecov:
         description: 'Publish merged coverage and unittest reports to Codecov.'
         required: false
-        default: false
-        type: boolean
+        default: 'false'
+        type:    string
       codacy:
         description: 'Publish merged coverage report to Codacy.'
         required: false
-        default: false
-        type: boolean
+        default: 'false'
+        type: string
       dorny:
         description: 'Publish merged unittest report via Dorny Test-Reporter.'
         required: false
-        default: false
-        type: boolean
+        default: 'false'
+        type: string
       cleanup:
         description: 'Cleanup artifacts afterwards.'
         required: false
-        default: true
-        type: boolean
+        default: 'true'
+        type: string
     secrets:
       PYPI_TOKEN:
         description: "Token for pushing releases to PyPI."
@@ -194,7 +194,6 @@ jobs:
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       directory:      ${{ needs.ConfigParams.outputs.package_directory }}
-#      fail_below: 70
 
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@dev
@@ -234,7 +233,9 @@ jobs:
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
       codecov:                        ${{ inputs.codecov }}
       codacy:                         ${{ inputs.codacy }}
-    secrets: inherit
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
 
   PublishTestResults:
     uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@dev
@@ -248,7 +249,8 @@ jobs:
       merged_junit_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       dorny:                  ${{ inputs.dorny }}
       codecov:                ${{ inputs.codecov }}
-    secrets: inherit
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 #  VerifyDocs:
 #    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@dev
@@ -279,7 +281,7 @@ jobs:
       - UnitTestingParams
       - PublishCoverageResults
       - PublishTestResults
-    if: ${{ inputs.cleanup }}
+    if: inputs.cleanup  == 'true'
     with:
       sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-
       xml_unittest_artifacts_prefix:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
@@ -354,7 +356,8 @@ jobs:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       requirements: -r dist/requirements.txt
       artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
-    secrets: inherit
+    secrets:
+      PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
 
   ArtifactCleanUp:
     uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@dev
@@ -369,7 +372,7 @@ jobs:
       - PublishToGitHubPages
 #      - PublishOnPyPI
       - IntermediateCleanUp
-    if: ${{ inputs.cleanup }}
+    if: inputs.cleanup  == 'true'
     with:
       package: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
       remaining: |

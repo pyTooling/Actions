@@ -145,7 +145,7 @@ jobs:
           if [[ "${{ steps.codecov.outcome }}" == "failure" ]]; then
             printf "::error title=%s::%s\n" "Publish Unit Test Results / Codecov" "Failed to publish unittest results."
           else
-            printf "Codecov: No errors to report."
+            printf "Codecov: No errors to report.\n"
           fi
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
