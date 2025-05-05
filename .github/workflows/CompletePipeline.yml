@@ -158,6 +158,18 @@ jobs:
 #      exclude_list:        ${{ inputs.apptest_exclude_list }}
 #      disable_list:        ${{ inputs.apptest_disable_list }}
 
+  InstallParams:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      package_namespace:   ${{ inputs.package_namespace }}
+      package_name:        ${{ inputs.package_name }}
+      python_version:      ${{ inputs.unittest_python_version }}
+      python_version_list: ''
+      system_list:         ${{ inputs.unittest_system_list }}
+      include_list:        ${{ inputs.unittest_include_list }}
+      exclude_list:        ${{ inputs.unittest_exclude_list }}
+      disable_list:        ${{ inputs.unittest_disable_list }}
+
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
     needs:
@@ -199,10 +211,22 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Package.yml@dev
     needs:
       - UnitTestingParams
-      - UnitTesting
+#      - UnitTesting
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+
+  Install:
+    uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@dev
+    needs:
+      - ConfigParams
+      - UnitTestingParams
+      - InstallParams
+      - Package
+    with:
+      jobs:         ${{ needs.InstallParams.outputs.python_jobs }}
+      wheel:        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      package_name: ${{ needs.ConfigParams.outputs.package_fullname }}
 
 #  AppTesting:
 #    uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@dev
@@ -244,7 +268,7 @@ jobs:
       - UnitTestingParams
       - UnitTesting
     with:
-      testsuite-summary-name: ${{ inputs.package_name }}
+      testsuite-summary-name: ${{ needs.ConfigParams.outputs.package_fullname }}
       merged_junit_filename:  ${{ needs.ConfigParams.outputs.unittest_merged_report_xml_filename }}
       merged_junit_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       dorny:                  ${{ inputs.dorny }}
@@ -314,6 +338,7 @@ jobs:
     needs:
       - Prepare
       - UnitTesting
+      - Install
 #      - AppTesting
 #      - StaticTypeCheck
       - Package
@@ -332,6 +357,7 @@ jobs:
     needs:
       - Prepare
       - UnitTesting
+      - Install
 #      - AppTesting
 #      - StaticTypeCheck
       - Package

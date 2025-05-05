@@ -13,6 +13,12 @@ jobs:
     with:
       package_name: pyDummy
 
+  InstallParams:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      package_name:        pyDummy
+      python_version_list: ''
+
   UnitTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
@@ -90,11 +96,23 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Package.yml@dev
     needs:
       - UnitTestingParams
-      - UnitTesting
-      - PlatformTesting
+#      - UnitTesting
+#      - PlatformTesting
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+
+  Install:
+    uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@dev
+    needs:
+      - ConfigParams
+      - UnitTestingParams
+      - InstallParams
+      - Package
+    with:
+      jobs:         ${{ needs.InstallParams.outputs.python_jobs }}
+      wheel:        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      package_name: ${{ needs.ConfigParams.outputs.package_fullname }}
 
   PublishCoverageResults:
     uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@dev
@@ -194,6 +212,7 @@ jobs:
       - Prepare
       - UnitTesting
       - PlatformTesting
+      - Install
 #      - StaticTypeCheck
       - Package
       - PublishToGitHubPages
@@ -211,6 +230,7 @@ jobs:
       - Prepare
       - UnitTesting
       - PlatformTesting
+      - Install
 #      - StaticTypeCheck
       - Package
       - PublishToGitHubPages
