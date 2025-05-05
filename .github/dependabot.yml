@@ -10,7 +10,5 @@ updates:
       - Dependencies
     assignees:
       - Paebbels
-    reviewers:
-      - Paebbels
     schedule:
       interval: "daily"    # Checks on Monday trough Friday.
