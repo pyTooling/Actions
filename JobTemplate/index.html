@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview &mdash; pyDummy 0.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-reports.469918902edf87f5154c9531e0f2362c.css?v=6ad14cd5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=6fa0b579" />
+
+  
+    <link rel="shortcut icon" href="../_static/icon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=90733dfc"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Parameters" href="Parameters.html" />
+    <link rel="prev" title="with-post-step" href="../Action/With-post-step.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#instantiation">Instantiation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoverageCollection.html">CoverageCollection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="UnitTesting.html">UnitTesting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StaticTypeCheck.html">StaticTypeCheck</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PublishTestResults.html">PublishTestResults</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Package.html">Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PublishOnPyPI.html">PublishOnPyPI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VerifyDocs.html">VerifyDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="BuildTheDocs.html">BuildTheDocs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PublishToGitHubPages.html">PublishToGitHubPages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Release.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ArtifactCleanUp.html">ArtifactCleanUp</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pyDummy/pyDummy.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyDummy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/JobTemplate/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="overview">
+<span id="jobtmpl"></span><h1>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h1>
+<p>The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
+Workflow). They can also serve as an example for creating or driving own job templates.</p>
+<p><strong>Table of Contents:</strong></p>
+<table class="hlist"><tr><td><ul class="simple">
+<li><p><strong>Global Templates</strong></p>
+<ul>
+<li><p><a class="reference internal" href="Parameters.html#jobtmpl-parameters"><span class="std std-ref">Parameters</span></a></p></li>
+</ul>
+</li>
+<li><p><strong>Unit Tests, Code Coverage, Code Quality, …</strong></p>
+<ul>
+<li><p><a class="reference internal" href="UnitTesting.html#jobtmpl-unittesting"><span class="std std-ref">UnitTesting</span></a></p></li>
+<li><p><a class="reference internal" href="CoverageCollection.html#jobtmpl-codecoverage"><span class="std std-ref">CoverageCollection</span></a></p></li>
+<li><p><a class="reference internal" href="StaticTypeCheck.html#jobtmpl-statictypechecking"><span class="std std-ref">StaticTypeCheck</span></a></p></li>
+<li><p><em>code formatting (planned)</em></p></li>
+<li><p><em>coding style (planned)</em></p></li>
+<li><p><em>code linting (planned)</em></p></li>
+</ul>
+</li>
+<li><p><strong>Build and Packaging</strong></p>
+<ul>
+<li><p><a class="reference internal" href="Package.html#jobtmpl-package"><span class="std std-ref">Package</span></a></p></li>
+</ul>
+</li>
+</ul>
+</td><td><ul class="simple">
+<li><p><strong>Documentation</strong></p>
+<ul>
+<li><p><a class="reference internal" href="VerifyDocs.html#jobtmpl-verifydocumentation"><span class="std std-ref">VerifyDocs</span></a></p></li>
+<li><p><a class="reference internal" href="BuildTheDocs.html#jobtmpl-buildthedocs"><span class="std std-ref">BuildTheDocs</span></a></p></li>
+</ul>
+</li>
+<li><p><strong>Releasing, Publishing</strong></p>
+<ul>
+<li><p><a class="reference internal" href="Release.html#jobtmpl-githubreleasepage"><span class="std std-ref">Release</span></a></p></li>
+<li><p><a class="reference internal" href="PublishOnPyPI.html#jobtmpl-pypi"><span class="std std-ref">PublishOnPyPI</span></a></p></li>
+<li><p><a class="reference internal" href="PublishTestResults.html#jobtmpl-publishtestresults"><span class="std std-ref">PublishTestResults</span></a></p></li>
+<li><p><a class="reference internal" href="PublishToGitHubPages.html#jobtmpl-publishtogithubpages"><span class="std std-ref">PublishToGitHubPages</span></a></p></li>
+</ul>
+</li>
+<li><p><strong>Cleanups</strong></p>
+<ul>
+<li><p><a class="reference internal" href="ArtifactCleanUp.html#jobtmpl-artifactcleanup"><span class="std std-ref">ArtifactCleanUp</span></a></p></li>
+</ul>
+</li>
+</ul>
+</td></tr></table>
+<section id="instantiation">
+<h2>Instantiation<a class="headerlink" href="#instantiation" title="Link to this heading"></a></h2>
+<p>When instantiating a template, a <code class="docutils literal notranslate"><span class="pre">jobs:&lt;Name&gt;:uses</span></code> is used to refer to a template file. Unfortunately, besides the
+GitHub SLUG (<em>&lt;Organization&gt;/&lt;Repository&gt;</em>), also the full path to the template needs to be gives, but still it can’t be
+outside of <code class="docutils literal notranslate"><span class="pre">.github/workflows</span></code> to create a cleaner repository structure. Finally, the path contains a branch name
+postfixed by <code class="docutils literal notranslate"><span class="pre">&#64;&lt;branch&gt;</span></code> (tags are still not supported by GitHub Actions). A <code class="docutils literal notranslate"><span class="pre">jobs:&lt;Name&gt;:with:</span></code> section can be used
+to handover input parameters to the template.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">&lt;InstanceName&gt;</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;GitHubOrganization&gt;/&lt;Repository&gt;/.github/workflows/&lt;Template&gt;.yml@v0</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">&lt;Param1&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;Value&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../Action/With-post-step.html" class="btn btn-neutral float-left" title="with-post-step" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Parameters.html" class="btn btn-neutral float-right" title="Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2025, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 24.05.2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
