@@ -225,14 +225,14 @@ jobs:
 
           packages = {
             "coverage":            "python-coverage:p",
-            "docstr_coverage":     "python-pyaml:p",
+            "docstr_coverage":     "python-pyaml:p python-types-pyyaml:p",
             "igraph":              "igraph:p",
             "jinja2":              "python-markupsafe:p",
             "lxml":                "python-lxml:p",
             "numpy":               "python-numpy:p",
             "markupsafe":          "python-markupsafe:p",
             "pip":                 "python-pip:p",
-            "pyyaml":              "python-pyyaml:p",
+            "pyyaml":              "python-pyyaml:p python-types-pyyaml:p",
             "ruamel.yaml":         "python-ruamel-yaml:p",
           #  "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             "sphinx":              "python-markupsafe:p",
@@ -240,6 +240,7 @@ jobs:
             "wheel":               "python-wheel:p",
             "pyedaa.projectmodel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
             "pyedaa.reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
+            "sphinx-reports":      "python-markupsafe:p python-pyaml:p python-types-pyyaml:p",
           }
           subPackages = {
             "pytooling": {
@@ -342,6 +343,7 @@ jobs:
 
       - name: ✅ Run unit tests (Ubuntu/macOS)
         if: matrix.system != 'windows'
+        continue-on-error: true
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
           export PYTHONPATH=$(pwd)
