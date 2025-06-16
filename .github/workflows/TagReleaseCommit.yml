@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2024 The pyTooling Authors                                                                            #
+# Copyright 2020-2025 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -20,74 +20,65 @@
 #                                                                                                                      #
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
-name: Release
+name: Auto Tag
 
 on:
   workflow_call:
     inputs:
-      ubuntu_image_version:
-        description: 'Ubuntu image version.'
+      ubuntu_image:
+        description: 'Name of the Ubuntu image.'
         required: false
-        default: '24.04'
+        default: 'ubuntu-24.04'
+        type: string
+      version:
+        description: 'Version used as tag name.'
+        required: true
+        type: string
+      auto_tag:
+        description: 'Automatically add and push a tag.'
+        required: true
+        type: string
+      workflow:
+        description: 'Workflow to start after adding a tag.'
+        required: false
+        default: 'Pipeline.yml'
         type: string
 
 jobs:
-  Release:
-    name: 📝 Create 'Release Page' on GitHub
-    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
+  AutoTag:
+    name: "🏷 Create tag '${{ inputs.version}}' on GitHub"
+    runs-on: ${{ inputs.ubuntu_image }}
+    if: inputs.auto_tag == 'true'
+
+#    if: github.ref == 'refs/heads/${{ inputs.release_branch }}'
+
+    permissions:
+      contents: write   # required for tag creation
+      actions:  write    # required to start a new pipeline
 
     steps:
-      - name: 🔁 Extract Git tag from GITHUB_REF
-        id: getVariables
-        run: |
-          GIT_TAG=${GITHUB_REF#refs/*/}
-          RELEASE_VERSION=${GIT_TAG#v}
-          RELEASE_DATETIME="$(date --utc '+%d.%m.%Y - %H:%M:%S')"
-          # write to step outputs
-          printf "%s\n" "gitTag=${GIT_TAG}" >> $GITHUB_OUTPUT
-          printf "%s\n" "version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
-          printf "%s\n" "datetime=${RELEASE_DATETIME}" >> $GITHUB_OUTPUT
-
-      - name: 📑 Create Release Page
-        uses: actions/create-release@v1
-        id: createReleasePage
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: 🏷 Create release tag '${{ steps.FindPullRequest.outputs.version }}'
+        uses: actions/github-script@v7
+        id: createReleaseTag
+#        if: inputs.auto_tag == 'true'
         with:
-          tag_name: ${{ steps.getVariables.outputs.gitTag }}
-#          release_name: ${{ steps.getVariables.outputs.gitTag }}
-          body: |
-            **Automated Release created on: ${{ steps.getVariables.outputs.datetime }}**
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              ref:   'refs/tags/${{ inputs.version }}',
+              sha:   context.sha
+            })
 
-            # New Features
-
-            * tbd
-            * tbd
-
-            # Changes
-
-            * tbd
-            * tbd
-
-            # Bug Fixes
-
-            * tbd
-            * tbd
-
-            # Documentation
-
-            * tbd
-            * tbd
-
-            # Unit Tests
-
-            * tbd
-            * tbd
-
-            ----------
-            # Related Issues and Pull-Requests
-
-            * tbd
-            * tbd
-          draft: true
-          prerelease: false
+      - name: Trigger Workflow
+        uses: actions/github-script@v7
+        id: runReleaseTag
+#        if: inputs.auto_tag == 'true'
+        with:
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner:       context.repo.owner,
+              repo:        context.repo.repo,
+              workflow_id: '${{ inputs.workflow }}',
+              ref:         '${{ inputs.version }}'
+            })

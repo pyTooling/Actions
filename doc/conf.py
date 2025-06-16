@@ -1,20 +1,29 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-from importlib.util import find_spec
 from sys import path as sys_path
 from os.path import abspath
 from pathlib import Path
-from json import loads
 
 from pyTooling.Packaging import extractVersionInformation
 
+# ==============================================================================
+# Project configuration
+# ==============================================================================
+githubNamespace = "pyTooling"
+githubProject = "Actions"
+pythonProject = "pyDummy"
+directoryName = pythonProject.replace('.', '/')
+
+
+# ==============================================================================
+# Project paths
+# ==============================================================================
 ROOT = Path(__file__).resolve().parent
 
 sys_path.insert(0, abspath("."))
 sys_path.insert(0, abspath(".."))
-sys_path.insert(0, abspath("../pyDummy"))
-# sys_path.insert(0, abspath("_extensions"))
+sys_path.insert(0, abspath(f"../{directoryName}"))
 
 
 # ==============================================================================
@@ -23,11 +32,7 @@ sys_path.insert(0, abspath("../pyDummy"))
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-githubNamespace = "pyTooling"
-githubProject = "Actions"
-project = "pyDummy"
-
-packageInformationFile = Path(f"../{project}/__init__.py")
+packageInformationFile = Path(f"../{directoryName}/__init__.py")
 versionInformation = extractVersionInformation(packageInformationFile)
 
 author =    versionInformation.Author
@@ -105,7 +110,7 @@ html_last_updated_fmt = "%d.%m.%Y"
 # Python settings
 # ==============================================================================
 modindex_common_prefix = [
-	f"{project}."
+	f"{pythonProject}."
 ]
 
 # ==============================================================================
@@ -257,13 +262,13 @@ todo_link_only = True
 # ==============================================================================
 # report_unittest_testsuites = {
 # 	"src": {
-# 		"name":        f"{project}",
+# 		"name":        f"{pythonProject}",
 # 		"xml_report":  "../report/unit/unittest.xml",
 # 	}
 # }
 # report_codecov_packages = {
 # 	"src": {
-# 		"name":        f"{project}",
+# 		"name":        f"{pythonProject}",
 # 		"json_report": "../report/coverage/coverage.json",
 # 		"fail_below":  80,
 # 		"levels":      "default"
@@ -271,8 +276,8 @@ todo_link_only = True
 # }
 # report_doccov_packages = {
 # 	"src": {
-# 		"name":       f"{project}",
-# 		"directory":  f"../{project}",
+# 		"name":       f"{pythonProject}",
+# 		"directory":  f"../{directoryName}",
 # 		"fail_below": 80,
 # 		"levels":     "default"
 # 	}
@@ -289,17 +294,17 @@ todo_link_only = True
 # AutoAPI.Sphinx
 # ==============================================================================
 autoapi_modules = {
-	f"{project}":  {
+	f"{pythonProject}":  {
 		"template": "package",
-		"output":   project,
+		"output":   pythonProject,
 		"override": True
 	}
 }
 
-for directory in [mod for mod in Path(f"../{project}").iterdir() if mod.is_dir() and mod.name != "__pycache__"]:
-	print(f"Adding module rule for '{project}.{directory.name}'")
-	autoapi_modules[f"{project}.{directory.name}"] = {
+for directory in [mod for mod in Path(f"../{directoryName}").iterdir() if mod.is_dir() and mod.name != "__pycache__"]:
+	print(f"Adding module rule for '{pythonProject}.{directory.name}'")
+	autoapi_modules[f"{pythonProject}.{directory.name}"] = {
 		"template": "module",
-		"output":   project,
+		"output":   pythonProject,
 		"override": True
 	}

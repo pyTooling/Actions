@@ -3,7 +3,7 @@
 #   Patrick Lehmann                                                                                                    #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2024 The pyTooling Authors                                                                            #
+# Copyright 2020-2025 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -86,20 +86,20 @@ on:
       codecov:
         description: 'Publish merged coverage report to Codecov.'
         required: false
-        default: false
-        type: boolean
+        default: 'false'
+        type: string
       codacy:
         description: 'Publish merged coverage report to Codacy.'
         required: false
-        default: false
-        type: boolean
+        default: 'false'
+        type: string
     secrets:
       CODECOV_TOKEN:
         description: 'Token to push result to Codecov.'
-        required: true
+        required: false
       CODACY_TOKEN:
         description: 'Token to push result to Codacy.'
-        required: true
+        required: false
 
 jobs:
   PublishCoverageResults:
@@ -200,7 +200,8 @@ jobs:
 
       - name: 📊 Publish code coverage at CodeCov
         uses: codecov/codecov-action@v5
-        if: inputs.codecov
+        id: codecov
+        if: inputs.codecov == 'true'
         continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -212,8 +213,22 @@ jobs:
 
       - name: 📉 Publish code coverage at Codacy
         uses: codacy/codacy-coverage-reporter-action@v1
-        if: inputs.codacy
+        id: codacy
+        if: inputs.codacy == 'true'
         continue-on-error: true
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
           coverage-reports: ${{ inputs.coverage_report_xml_directory }}/${{ inputs.coverage_report_xml_filename }}
+
+      - name: Generate error messages
+        run: |
+          if [[ "${{ steps.codecov.outcome }}" == "failure" ]]; then
+            printf "::error title=%s::%s\n" "Publish Code Coverage Results / Codecov" "Failed to publish code coverage results."
+          else
+            printf "Codecov: No errors to report.\n"
+          fi
+          if [[ "${{ steps.codacy.outcome }}" == "failure" ]]; then
+            printf "::error title=%s::%s\n" "Publish Code Coverage Results / Codacy" "Failed to publish code coverage results."
+          else
+            printf "Codacy:  No errors to report.\n"
+          fi

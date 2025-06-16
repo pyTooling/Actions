@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2024 The pyTooling Authors                                                                            #
+# Copyright 2020-2025 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -134,20 +134,21 @@ jobs:
 
           packages = {
             "coverage":            "python-coverage:p",
-            "docstr_coverage":     "python-pyyaml:p",
+            "docstr_coverage":     "python-pyyaml:p python-types-pyyaml:p",
             "igraph":              "igraph:p",
             "jinja2":              "python-markupsafe:p",
             "lxml":                "python-lxml:p",
             "numpy":               "python-numpy:p",
             "markupsafe":          "python-markupsafe:p",
             "pip":                 "python-pip:p",
-            "pyyaml":              "python-pyyaml:p",
+            "pyyaml":              "python-pyyaml:p python-types-pyyaml:p",
             "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             "sphinx":              "python-markupsafe:p",
             "tomli":               "python-tomli:p",
             "wheel":               "python-wheel:p",
             "pyEDAA.ProjectModel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
             "pyEDAA.Reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
+            "sphinx-reports":      "python-markupsafe:p python-pyaml:p python-types-pyyaml:p",
           }
           subPackages = {
             "pytooling": {

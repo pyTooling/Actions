@@ -39,13 +39,16 @@ packageName =            "pyDummy"
 packageDirectory =       packageName
 packageInformationFile = Path(f"{packageDirectory}/__init__.py")
 
-setup(**DescribePythonPackageHostedOnGitHub(
-	packageName=packageName,
-	description="pyDummy is a test package to verify GitHub actions for Python projects.",
-	gitHubNamespace=gitHubNamespace,
-	unittestRequirementsFile=Path("tests/requirements.txt"),
-	sourceFileWithVersion=packageInformationFile,
-	dataFiles={
-		packageName: ["py.typed"]
-	}
-))
+setup(
+	**DescribePythonPackageHostedOnGitHub(
+		packageName=packageName,
+		description="pyDummy is a test package to verify GitHub actions for Python projects.",
+		gitHubNamespace=gitHubNamespace,
+		unittestRequirementsFile=Path("tests/requirements.txt"),
+		sourceFileWithVersion=packageInformationFile,
+		dataFiles={
+			packageName: ["py.typed"]
+		},
+		debug=True
+	)
+)

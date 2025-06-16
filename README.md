@@ -77,7 +77,7 @@ As shown in the screenshots above, the expected order is:
 
   [**NightlyRelease**](.github/workflows/NightlyRelease.yml): publish GitHub Release.
 
-  [**Release**](.github/workflows/Release.yml): publish GitHub Release.
+  [**PublishReleaseNotes**](.github/workflows/PublishReleaseNotes.yml): publish GitHub Release.
 - **Documentation:**  
   [**SphinxDocumentation**](.github/workflows/PublishCoverageResults.yml): create HTML and LaTeX documentation using
   Sphinx.
