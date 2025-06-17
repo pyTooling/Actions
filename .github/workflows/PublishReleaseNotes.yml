@@ -1,0 +1,801 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2020-2025 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+      ubuntu_image:
+        description: 'Name of the Ubuntu image.'
+        required: false
+        default: 'ubuntu-24.04'
+        type: string
+      release_branch:
+        description: 'Name of the branch containing releases.'
+        required: false
+        default: 'main'
+        type: string
+      mode:
+        description: 'Release mode: nightly or release.'
+        required: false
+        default: 'release'
+        type: string
+      tag:
+        description: 'Name of the release (tag).'
+        required: false
+        default: ''
+        type: string
+      title:
+        description: 'Title of the release.'
+        required: false
+        default: ''
+        type: string
+      description:
+        description: 'Multi-line description of the release.'
+        required: false
+        default: ''
+        type: string
+      description_file:
+        description: 'Description of the release from a Markdown file.'
+        required: false
+        default: ''
+        type: string
+      description_footer:
+        description: 'Footer line(s) in every release.'
+        required: false
+        default: |
+
+          --------
+          Published from [%%gh_workflow_name%%](%%gh_server%%/%%gh_owner_repo%%/actions/runs/%%gh_runid%%) workflow triggered by %%gh_actor%% on %%datetime%%.
+
+          This automatic release was created by [pyTooling/Actions](http://github.com/pyTooling/Actions)::Release.yml
+        type: string
+      draft:
+        description: 'Specify if this is a draft.'
+        required: false
+        default: false
+        type: boolean
+      prerelease:
+        description: 'Specify if this is a pre-release.'
+        required: false
+        default: false
+        type: boolean
+      latest:
+        description: 'Specify if this is the latest release.'
+        required: false
+        default: false
+        type: boolean
+      replacements:
+        description: 'Multi-line string containing search=replace patterns.'
+        required: false
+        default: ''
+        type: string
+      assets:
+        description: 'Multi-line string containing artifact:file:title asset descriptions.'
+        required: false
+        type: string
+        default: ''
+      inventory-json:
+        type: string
+        required: false
+        default: ''
+      inventory-version:
+        type: string
+        required: false
+        default: ''
+      inventory-categories:
+        type: string
+        required: false
+        default: ''
+      tarball-name:
+        type: string
+        required: false
+        default: '__pyTooling_upload_artifact__.tar'
+      can-fail:
+        type: boolean
+        required: false
+        default: false
+    outputs:
+      release-page:
+        description: "URL to the release page."
+        value:       ${{ jobs.Release.outputs.release-page }}
+
+jobs:
+  Release:
+    name: 📝 Create or Update Release Page on GitHub
+    runs-on: ${{ inputs.ubuntu_image }}
+    continue-on-error: ${{ inputs.can-fail }}
+    permissions:
+      contents: write
+      actions:  write
+#      attestations: write
+    outputs:
+      release-page: ${{ steps.removeDraft.outputs.release_page }}
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # The command 'git describe' (used for version) needs the history.
+          fetch-depth: 0
+
+      - name: 🔧 Install zstd
+        run: sudo apt-get install -y --no-install-recommends zstd
+
+      - name: 📑 Prepare
+        id: prepare
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_LIGHT_BLUE=$'\x1b[94m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          printf "Release mode: ${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "${{ inputs.mode }}"
+          case "${{ inputs.mode }}" in
+            "release")
+              ;;
+            "nightly")
+              printf "→ Allow deletion and recreation of existing release pages for rolling releases (nightly releases)\n"
+              ;;
+            *)
+              printf "Unknown mode '%s'\n" "${{ inputs.mode }}"
+              printf "::error title=%s::%s\n" "InternalError" "Unknown mode '${{ inputs.mode }}'."
+              exit 1
+          esac
+
+      - name: 📑 Delete (old) Release Page
+        id: deleteReleasePage
+        if: inputs.mode == 'nightly'
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_LIGHT_BLUE=$'\x1b[94m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          export GH_TOKEN=${{ github.token }}
+
+          printf "Deleting release '%s' ... " "${{ inputs.tag }}"
+          message="$(gh release delete ${{ inputs.tag }} --yes 2>&1)"
+          if [[ $? -eq 0 ]]; then
+            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+          elif [[ "${message}" == "release not found" ]]; then
+            printf "${ANSI_LIGHT_YELLOW}[NOT FOUND]${ANSI_NOCOLOR}\n"
+          else
+            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf "  ${ANSI_LIGHT_RED}Couldn't delete release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
+            printf "::error title=%s::%s\n" "InternalError" "Couldn't delete release '${{ inputs.tag }}' -> Error: '${message}'."
+            exit 1
+          fi
+
+      - name: 📑 Assemble Release Notes
+        id: createReleaseNotes
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_LIGHT_BLUE=$'\x1b[94m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          export GH_TOKEN=${{ github.token }}
+
+          # Save release description (from parameter in a file)
+          head -c -1 <<'EOF' > __DESCRIPTION__.md
+          ${{ inputs.description }}
+          EOF
+
+          # Save release footer (from parameter in a file)
+          head -c -1 <<'EOF' > __FOOTER__.md
+          ${{ inputs.description_footer }}
+          EOF
+
+          # Download Markdown from PullRequest
+          #  Readout second parent's SHA
+          #  Search PR with that SHA
+          #  Load description of that PR
+          printf "Read second parent of current SHA (%s) ... " "${{ github.ref }}"
+          FATHER_SHA=$(git rev-parse ${{ github.ref }}^2 -- 2> /dev/null)
+          if [[ $? -ne 0 || "{FATHER_SHA}" == "" ]]; then
+            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf "→ ${ANSI_LIGHT_YELLOW}Skipped readout of pull request description. This is not a merge commit.${ANSI_NOCOLOR}\n"
+          else
+            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+
+            printf "Search Pull Request to '%s' and branch containing SHA %s ... " "${{ inputs.release_branch }}" "${FATHER_SHA}"
+            PULL_REQUESTS=$(gh pr list --base "${{ inputs.release_branch }}" --search "${FATHER_SHA}" --state "merged" --json "title,number,mergedBy,mergedAt,body")
+            if [[ $? -ne 0 || "${PULL_REQUESTS}" == "" ]]; then
+              printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+              printf "${ANSI_LIGHT_RED}Couldn't find a merged Pull Request to '%s'. -> %s${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
+              printf "::error title=PullRequest::Couldn't find a merged Pull Request to '%s'. -> %s\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
+              exit 1
+            else
+              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+
+              PR_TITLE="$(    printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].title")"
+              PR_NUMBER="$(   printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].number")"
+              PR_BODY="$(     printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].body")"
+              PR_MERGED_BY="$(printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].mergedBy.login")"
+              PR_MERGED_AT="$(printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].mergedAt")"
+
+              printf "Found Pull Request:\n"
+              printf "  %s\n" "Title:    ${PR_TITLE}"
+              printf "  %s\n" "Number:   ${PR_NUMBER}"
+              printf "  %s\n" "MergedBy: ${PR_MERGED_BY}"
+              printf "  %s\n" "MergedAt: ${PR_MERGED_AT} ($(date -d"${PR_MERGED_AT}" '+%d.%m.%Y - %H:%M:%S'))"
+            fi
+
+            echo "${PR_BODY}" > __PULLREQUEST__.md
+          fi
+
+          # Check if a release description file should be used and exists.
+          if [[ "${{ inputs.description_file }}" != "" ]]; then
+            if [[ ! -f "${{ inputs.description_file }}" ]]; then
+              printf "${ANSI_LIGHT_RED}Release description file '%s' not found.${ANSI_NOCOLOR}\n" "${{ inputs.description_file }}"
+              printf "::error title=%s::%s\n" "FileNotFound" "Release description file '${{ inputs.description_file }}' not found."
+              exit 1
+            elif [[ -s "${{ inputs.description_file }}" ]]; then
+              printf "Use '%s' as main release description.\n" "${{ inputs.description_file }}"
+              cp -v "${{ inputs.description_file }}" __NOTES__.md
+            else
+              printf "${ANSI_LIGHT_RED}Release description file '%s' is empty.${ANSI_NOCOLOR}\n" "${{ inputs.description_file }}"
+              printf "::error title=%s::%s\n" "FileNotFound" "Release description file '${{ inputs.description_file }}' is empty."
+              exit 1
+            fi
+          # Check if the main release description is provided by a template parameter
+          elif [[ -s __DESCRIPTION__.md ]]; then
+            printf "Use '__DESCRIPTION__.md' as main release description.\n"
+            mv -v __DESCRIPTION__.md __NOTES__.md
+          # Check if the pull request serves as the main release description text.
+          elif [[ -s __PULLREQUEST__.md ]]; then
+            printf "Use '__PULLREQUEST__.md' as main release description.\n"
+            mv -v __PULLREQUEST__.md __NOTES__.md
+
+            printf "Append '%%%%FOOTER%%%%' to '__NOTES__.md'.\n"
+            printf "\n%%%%FOOTER%%%%\n" >> __NOTES__.md
+          else
+            printf "${ANSI_LIGHT_RED}No release description specified (file, parameter, PR text).${ANSI_NOCOLOR}\n"
+            printf "::error title=%s::%s\n" "MissingDescription" "No release description specified (file, parameter, PR text)."
+            exit 1
+          fi
+
+          # Read release notes main file for placeholder substitution
+          NOTES=$(<__NOTES__.md)
+
+          # Inline description
+          if [[ -s __DESCRIPTION__.md ]]; then
+            NOTES="${NOTES//%%DESCRIPTION%%/$(<__DESCRIPTION__.md)}"
+          fi
+
+          # Inline PullRequest and increase headline levels
+          if [[ -s __PULLREQUEST__.md ]]; then
+            while [[ "${NOTES}" =~ %%(PULLREQUEST(\+[0-3])?)%% ]]; do
+              case "${BASH_REMATCH[1]}" in
+                "PULLREQUEST+0" | "PULLREQUEST")
+                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(<__PULLREQUEST__.md)}"
+                  ;;
+                "PULLREQUEST+1")
+                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1# /gm;t')}"
+                  ;;
+                "PULLREQUEST+2")
+                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1### /gm;t')}"
+                  ;;
+                "PULLREQUEST+3")
+                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1### /gm;t')}"
+                  ;;
+              esac
+            done
+          fi
+
+          # inline Footer
+          if [[ -s __FOOTER__.md ]]; then
+            NOTES="${NOTES//%%FOOTER%%/$(<__FOOTER__.md)}"
+          fi
+
+          # Apply replacements
+          while IFS=$'\r\n' read -r patternLine; do
+            # skip empty lines
+            [[ "$patternLine" == "" ]] && continue
+
+            pattern="%${patternLine%%=*}%"
+            replacement="${patternLine#*=}"
+            NOTES="${NOTES//$pattern/$replacement}"
+          done <<<'${{ inputs.replacements }}'
+
+          # Workarounds for stupid GitHub variables
+          owner_repo="${{ github.repository }}"
+          repo=${owner_repo##*/}
+
+          # Replace special identifiers
+          NOTES="${NOTES//%%gh_server%%/${{ github.server_url }}}"
+          NOTES="${NOTES//%%gh_workflow_name%%/${{ github.workflow }}}"
+          NOTES="${NOTES//%%gh_owner%%/${{ github.repository_owner }}}"
+          NOTES="${NOTES//%%gh_repo%%/${repo}}"
+          NOTES="${NOTES//%%gh_owner_repo%%/${{ github.repository_owner }}}"
+          #NOTES="${NOTES//%%gh_pages%%/https://${{ github.repository_owner }}.github.io/${repo}/}"
+          NOTES="${NOTES//%%gh_runid%%/${{ github.run_id }}}"
+          NOTES="${NOTES//%%gh_actor%%/${{ github.actor }}}"
+          NOTES="${NOTES//%%gh_sha%%/${{ github.sha }}}"
+          NOTES="${NOTES//%%date%%/$(date '+%Y-%m-%d')}"
+          NOTES="${NOTES//%%time%%/$(date '+%H:%M:%S %Z')}"
+          NOTES="${NOTES//%%datetime%%/$(date '+%Y-%m-%d %H:%M:%S %Z')}"
+
+          # Write final release notes to file
+          echo "${NOTES}" > __NOTES__.md
+
+          # Display partial contents for debugging
+          if [[ -s __DESCRIPTION__.md ]]; then
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__DESCRIPTION__.md' ($(stat --printf="%s" "__DESCRIPTION__.md") B) ...."
+            cat __DESCRIPTION__.md
+            printf "::endgroup::\n"
+          else
+            printf "${ANSI_LIGHT_YELLOW}No '__DESCRIPTION__.md' found.${ANSI_NOCOLOR}\n"
+          fi
+          if [[ -s __PULLREQUEST__.md ]]; then
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__PULLREQUEST__.md' ($(stat --printf="%s" "__PULLREQUEST__.md") B) ...."
+            cat __PULLREQUEST__.md
+            printf "::endgroup::\n"
+          else
+            printf "${ANSI_LIGHT_YELLOW}No '__PULLREQUEST__.md' found.${ANSI_NOCOLOR}\n"
+          fi
+          if [[ -s __FOOTER__.md ]]; then
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__FOOTER__.md' ($(stat --printf="%s" "__FOOTER__.md") B) ...."
+            cat __FOOTER__.md
+            printf "::endgroup::\n"
+          else
+            printf "${ANSI_LIGHT_YELLOW}No '__FOOTER__.md' found.${ANSI_NOCOLOR}\n"
+          fi
+
+          # Print final release notes
+          printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__NOTES__.md' ($(stat --printf="%s" "__NOTES__.md") B) ...."
+          cat __NOTES__.md
+          printf "::endgroup::\n"
+
+      - name: 📑 Create new Release Page
+        id: createReleasePage
+        if: inputs.mode == 'release'
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_LIGHT_BLUE=$'\x1b[94m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          export GH_TOKEN=${{ github.token }}
+
+          if [[ "${{ inputs.prerelease }}" == "true" ]]; then
+            addPreRelease="--prerelease"
+          fi
+
+          if [[ "${{ inputs.latest }}" == "false" ]]; then
+            addLatest="--latest=false"
+          fi
+
+          if [[ "${{ inputs.title }}" != "" ]]; then
+            addTitle=("--title" "${{ inputs.title }}")
+          fi
+
+          if [[ -s __NOTES__.md ]]; then
+            addNotes=("--notes-file" "__NOTES__.md")
+          fi
+
+          printf "Creating release '%s' ... " "${{ inputs.tag }}"
+          message="$(gh release create "${{ inputs.tag }}" --verify-tag --draft $addPreRelease $addLatest "${addTitle[@]}" "${addNotes[@]}" 2>&1)"
+          if [[ $? -eq 0 ]]; then
+            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf "  Release page: %s\n" "${message}"
+          else
+            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf "  ${ANSI_LIGHT_RED}Couldn't create release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
+            printf "::error title=%s::%s\n" "InternalError" "Couldn't create release '${{ inputs.tag }}' -> Error: '${message}'."
+            exit 1
+          fi
+
+      - name: 📑 Recreate Release Page
+        id: recreateReleasePage
+        if: inputs.mode == 'nightly'
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_LIGHT_BLUE=$'\x1b[94m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          export GH_TOKEN=${{ github.token }}
+
+          addDraft="--draft"
+          if [[ "${{ inputs.prerelease }}" == "true" ]]; then
+            addPreRelease="--prerelease"
+          fi
+
+          if [[ "${{ inputs.latest }}" == "false" ]]; then
+            addLatest="--latest=false"
+          fi
+
+          if [[ "${{ inputs.title }}" != "" ]]; then
+            addTitle=("--title" "${{ inputs.title }}")
+          fi
+
+          if [[ -s __NOTES__.md ]]; then
+            addNotes=("--notes-file" "__NOTES__.md")
+          fi
+
+          printf "Creating release '%s' ... " "${{ inputs.tag }}"
+          message="$(gh release create "${{ inputs.tag }}" --verify-tag --draft $addPreRelease $addLatest "${addTitle[@]}" "${addNotes[@]}" 2>&1)"
+          if [[ $? -eq 0 ]]; then
+            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf "  Release page: %s\n" "${message}"
+          else
+            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf "  ${ANSI_LIGHT_RED}Couldn't recreate release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
+            printf "::error title=%s::%s\n" "InternalError" "Couldn't recreate release '${{ inputs.tag }}' -> Error: '${message}'."
+            exit 1
+          fi
+
+      - name: 📥 Download artifacts and upload as assets
+        id: uploadAssets
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_LIGHT_BLUE=$'\x1b[94m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          export GH_TOKEN=${{ github.token }}
+
+          Replace() {
+            line="$1"
+            while IFS=$'\r\n' read -r patternLine; do
+              # skip empty lines
+              [[ "$patternLine" == "" ]] && continue
+
+              pattern="${patternLine%%=*}"
+              replacement="${patternLine#*=}"
+              line="${line//"%$pattern%"/"$replacement"}"
+            done <<<'${{ inputs.replacements }}'
+            printf "%s\n" "$line"
+          }
+
+          # Create JSON inventory
+          if [[ "${{ inputs.inventory-json }}" != "" ]]; then
+            VERSION="1.0"
+
+            # Split categories by ',' into a Bash array.
+            # See https://stackoverflow.com/a/45201229/3719459
+            if [[ "${{ inputs.inventory-categories }}" != "" ]]; then
+              readarray -td, inventoryCategories <<<"${{ inputs.inventory-categories }},"
+              unset 'inventoryCategories[-1]'
+              declare -p inventoryCategories
+            else
+              inventoryCategories=""
+            fi
+
+            jsonInventory=$(jq -c -n \
+              --arg version "${VERSION}" \
+              --arg date "$(date +"%Y-%m-%dT%H-%M-%S%:z")" \
+              --argjson jsonMeta "$(jq -c -n \
+                --arg tag "${{ inputs.tag }}" \
+                --arg version "${{ inputs.inventory-version }}" \
+                --arg hash "${{ github.sha }}" \
+                --arg repo "${{ github.server_url }}/${{ github.repository }}" \
+                --arg release "${{ github.server_url }}/${{ github.repository }}/releases/download/${{ inputs.tag }}" \
+                --argjson categories "$(jq -c -n \
+                  '$ARGS.positional' \
+                  --args "${inventoryCategories[@]}" \
+                )" \
+                '{"tag": $tag, "version": $version, "git-hash": $hash, "repository-url": $repo, "release-url": $release, "categories": $categories}' \
+              )" \
+              '{"version": 1.0, "timestamp": $date, "meta": $jsonMeta, "files": {}}'
+            )
+          fi
+
+          ERRORS=0
+          # A dictionary of 0/1 to avoid duplicate downloads
+          declare -A downloadedArtifacts
+          # A dictionary to check for duplicate asset files in release
+          declare -A assetFilenames
+          while IFS=$'\r\n' read -r assetLine; do
+            if [[ "${assetLine}" == "" || "${assetLine:0:1}" == "#" ]]; then
+              continue
+            fi
+
+            # split assetLine colon separated triple: artifact:asset:title
+            artifact="${assetLine%%:*}"
+            assetLine="${assetLine#*:}"
+            asset="${assetLine%%:*}"
+            assetLine="${assetLine#*:}"
+            if [[ "${{ inputs.inventory-json }}" == "" ]]; then
+              categories=""
+              title="${assetLine##*:}"
+            else
+              categories="${assetLine%%:*}"
+              title="${assetLine##*:}"
+            fi
+
+            # remove leading whitespace
+            asset="${asset#"${asset%%[![:space:]]*}"}"
+            categories="${categories#"${categories%%[![:space:]]*}"}"
+            title="${title#"${title%%[![:space:]]*}"}"
+
+            # apply replacements
+            asset="$(Replace "${asset}")"
+            title="$(Replace "${title}")"
+
+            printf "Publish asset '%s' from artifact '%s' with title '%s'\n" "${asset}" "${artifact}" "${title}"
+            printf "  Checked asset for duplicates ... "
+            if [[ -n "${assetFilenames[$asset]}" ]]; then
+              printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+              printf "::error title=%s::%s\n" "DuplicateAsset" "Asset '${asset}' from artifact '${artifact}' was already uploaded to release '${{ inputs.tag }}'."
+              ERRORS=$((ERRORS + 1))
+              continue
+            else
+              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              assetFilenames[$asset]=1
+            fi
+
+            # Download artifact by artifact name
+            if [[ -n "${downloadedArtifacts[$artifact]}" ]]; then
+              printf "  downloading '%s' ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n" "${artifact}"
+            else
+              echo    "  downloading '${artifact}' ... "
+              printf "    gh run download $GITHUB_RUN_ID --dir \"%s\" --name \"%s\" " "${artifact}" "${artifact}"
+              gh run download $GITHUB_RUN_ID --dir "${artifact}" --name "${artifact}"
+              if [[ $? -eq 0 ]]; then
+                printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              else
+                printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+                printf "      ${ANSI_LIGHT_RED}Couldn't download artifact '%s'.${ANSI_NOCOLOR}\n" "${artifact}"
+                printf "::error title=%s::%s\n" "ArtifactNotFound" "Couldn't download artifact '${artifact}'."
+                ERRORS=$((ERRORS + 1))
+                continue
+              fi
+              downloadedArtifacts[$artifact]=1
+
+              printf "  Checking for embedded tarball ... "
+              if [[ -f "${artifact}/${{ inputs.tarball-name }}" ]]; then
+                printf "${ANSI_LIGHT_GREEN}[FOUND]${ANSI_NOCOLOR}\n"
+
+                pushd "${artifact}" > /dev/null
+
+                printf "    Extracting embedded tarball ... "
+                tar -xf "${{ inputs.tarball-name }}"
+                if [[ $? -ne 0 ]]; then
+                  printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                else
+                  printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                fi
+
+                printf "    Removing temporary tarball ... "
+                rm -f "${{ inputs.tarball-name }}"
+                if [[ $? -ne 0 ]]; then
+                  printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                else
+                  printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                fi
+
+                popd > /dev/null
+              else
+                printf "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
+              fi
+            fi
+
+            # Check if artifact should be compressed (zip, tgz) or if asset was part of the downloaded artifact.
+            printf "  checking asset '%s' ... " "${artifact}/${asset}"
+            if [[ "${asset}" == !*.zip ]]; then
+              printf "${ANSI_LIGHT_GREEN}[ZIP]${ANSI_NOCOLOR}\n"
+              asset="${asset##*!}"
+              printf "::group::    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
+              (
+                cd "${artifact}" && \
+                zip -r "../${asset}" *
+              )
+              retCode=$?
+              printf "::endgroup::\n"
+              if [[ $retCode -eq 0 ]]; then
+                printf "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                uploadFile="${asset}"
+              else
+                printf "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+                printf "      ${ANSI_LIGHT_RED}Couldn't compress '%s' to zip file '%s'.${ANSI_NOCOLOR}\n" "${artifact}" "${asset}"
+                printf "::error title=%s::%s\n" "CompressionError" "Couldn't compress '${artifact}' to zip file '${asset}'."
+                ERRORS=$((ERRORS + 1))
+                continue
+              fi
+            elif [[ "${asset}" == !*.tgz || "${asset}" == !*.tar.gz || "${asset}" == \$*.tgz || "${asset}" == \$*.tar.gz ]]; then
+              printf "${ANSI_LIGHT_GREEN}[TAR/GZ]${ANSI_NOCOLOR}\n"
+
+              if [[ "${asset:0:1}" == "\$" ]]; then
+                asset="${asset##*$}"
+                dirName="${asset%.*}"
+                printf "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
+                tar -c --gzip --owner=0 --group=0 --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
+                retCode=$?
+              else
+                asset="${asset##*!}"
+                printf "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
+                (
+                  cd "${artifact}" && \
+                  tar -c --gzip --owner=0 --group=0 --file="../${asset}" *
+                )
+                retCode=$?
+              fi
+
+              if [[ $retCode -eq 0 ]]; then
+                printf "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                uploadFile="${asset}"
+              else
+                printf "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+                printf "      ${ANSI_LIGHT_RED}Couldn't compress '%s' to tgz file '%s'.${ANSI_NOCOLOR}\n" "${artifact}" "${asset}"
+                printf "::error title=%s::%s\n" "CompressionError" "Couldn't compress '${artifact}' to tgz file '${asset}'."
+                ERRORS=$((ERRORS + 1))
+                continue
+              fi
+            elif [[ "${asset}" == !*.tzst || "${asset}" == !*.tar.zst || "${asset}" == \$*.tzst || "${asset}" == \$*.tar.zst ]]; then
+              printf "${ANSI_LIGHT_GREEN}[ZST]${ANSI_NOCOLOR}\n"
+
+              if [[ "${asset:0:1}" == "\$" ]]; then
+                asset="${asset##*$}"
+                dirName="${asset%.*}"
+                printf "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
+                tar -c --zstd --owner=0 --group=0 --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
+                retCode=$?
+              else
+                asset="${asset##*!}"
+                printf "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
+                (
+                  cd "${artifact}" && \
+                  tar -c --zstd --owner=0 --group=0 --file="../${asset}" *
+                )
+                retCode=$?
+              fi
+
+              if [[ $retCode -eq 0 ]]; then
+                printf "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                uploadFile="${asset}"
+              else
+                printf "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+                printf "      ${ANSI_LIGHT_RED}Couldn't compress '%s' to zst file '%s'.${ANSI_NOCOLOR}\n" "${artifact}" "${asset}"
+                printf "::error title=%s::%s\n" "CompressionError" "Couldn't compress '${artifact}' to zst file '${asset}'."
+                ERRORS=$((ERRORS + 1))
+                continue
+              fi
+            elif [[ -e "${artifact}/${asset}" ]]; then
+              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              uploadFile="${artifact}/${asset}"
+            else
+              printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+              printf "    ${ANSI_LIGHT_RED}Couldn't find asset '%s' in artifact '%s'.${ANSI_NOCOLOR}\n" "${asset}" "${artifact}"
+              printf "::error title=%s::%s\n" "FileNotFound" "Couldn't find asset '${asset}' in artifact '${artifact}'."
+              ERRORS=$((ERRORS + 1))
+              continue
+            fi
+
+            # Add asset to JSON inventory
+            if [[ "${{ inputs.inventory-json }}" != "" ]]; then
+              if [[ "${categories}" != "${title}" ]]; then
+                printf "  adding file '%s' with '%s' to JSON inventory ...\n" "${uploadFile#*/}" "${categories//;/ → }"
+                category=""
+                jsonEntry=$(jq -c -n \
+                  --arg title "${title}" \
+                  --arg file "${uploadFile#*/}" \
+                  '{"file": $file, "title": $title}' \
+                )
+
+                while [[ "${categories}" != "${category}" ]]; do
+                  category="${categories##*,}"
+                  categories="${categories%,*}"
+                  jsonEntry=$(jq -c -n --arg cat "${category}" --argjson value "${jsonEntry}" '{$cat: $value}')
+                done
+
+                jsonInventory=$(jq -c -n \
+                  --argjson inventory "${jsonInventory}" \
+                  --argjson file "${jsonEntry}" \
+                  '$inventory * {"files": $file}' \
+                )
+              else
+                printf "  adding file '%s' to JSON inventory ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n" "${uploadFile#*/}"
+              fi
+            fi
+
+            # Upload asset to existing release page
+            printf "  uploading asset '%s' from '%s' with title '%s' ... " "${asset}" "${uploadFile}" "${title}"
+            gh release upload ${{ inputs.tag }} "${uploadFile}#${title}" --clobber
+            if [[ $? -eq 0 ]]; then
+              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            else
+              printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+              printf "    ${ANSI_LIGHT_RED}Couldn't upload asset '%s' from '%s' to release '%s'.${ANSI_NOCOLOR}\n" "${asset}" "${uploadFile}" "${{ inputs.tag }}"
+              printf "::error title=%s::%s\n" "UploadError" "Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.tag }}'."
+              ERRORS=$((ERRORS + 1))
+              continue
+            fi
+          done <<<'${{ inputs.assets }}'
+
+          if [[ "${{ inputs.inventory-json }}" != "" ]]; then
+            inventoryTitle="Release Inventory (JSON)"
+
+            printf "Publish asset '%s' with title '%s'\n" "${{ inputs.inventory-json }}" "${inventoryTitle}"
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Writing JSON inventory to '${{ inputs.inventory-json }}' ...."
+            printf "%s\n" "$(jq -n --argjson inventory "${jsonInventory}" '$inventory')" > "${{ inputs.inventory-json }}"
+            cat "${{ inputs.inventory-json }}"
+            printf "::endgroup::\n"
+
+            # Upload inventory asset to existing release page
+            printf "  uploading asset '%s' title '%s' ... " "${{ inputs.inventory-json }}" "${inventoryTitle}"
+            gh release upload ${{ inputs.tag }} "${{ inputs.inventory-json }}#${inventoryTitle}" --clobber
+            if [[ $? -eq 0 ]]; then
+              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            else
+              printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+              printf "    ${ANSI_LIGHT_RED}Couldn't upload asset '%s' to release '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.inventory-json }}" "${{ inputs.tag }}"
+              printf "::error title=%s::%s\n" "UploadError" "Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.tag }}'."
+              ERRORS=$((ERRORS + 1))
+              continue
+            fi
+          fi
+
+          printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Inspecting downloaded artifacts ..."
+          tree -pash -L 3 .
+          printf "::endgroup::\n"
+
+          if [[ $ERRORS -ne 0 ]]; then
+            printf "${ANSI_LIGHT_RED}%s errors detected in previous steps.${ANSI_NOCOLOR}\n" "${ERRORS}"
+            exit 1
+          fi
+
+      - name: 📑 Remove draft state from Release Page
+        id: removeDraft
+        if: ${{ ! inputs.draft }}
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          export GH_TOKEN=${{ github.token }}
+
+          # Remove draft-state from release page
+          printf "Remove draft-state from release '%s' ... " "${title}"
+          releasePage=$(gh release edit --draft=false "${{ inputs.tag }}")
+          if [[ $? -eq 0 ]]; then
+            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf "  Release page: %s\n" "${releasePage}"
+
+            printf "release_page=%s\n" "${releasePage}" >> "${GITHUB_OUTPUT}"
+          else
+            printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+            printf "  ${ANSI_LIGHT_RED}Couldn't remove draft-state from release '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}"
+            printf "::error title=%s::%s\n" "ReleasePage" "Couldn't remove draft-state from release '${{ inputs.tag }}'."
+          fi

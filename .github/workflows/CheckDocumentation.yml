@@ -3,7 +3,7 @@
 #   Patrick Lehmann                                                                                                    #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2024 The pyTooling Authors                                                                            #
+# Copyright 2020-2025 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -64,9 +64,20 @@ jobs:
       - name: Run 'interrogate' Documentation Coverage Check
         continue-on-error: true
         run: |
-          interrogate -c pyproject.toml --fail-under=${{ inputs.fail_under }} && printf "%s\n" "::error title=interrogate::Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
+          set +e
+
+          interrogate -c pyproject.toml --fail-under=${{ inputs.fail_under }} ${{ inputs.directory }}
+          if [[ $? -ne 0 ]]; then
+            printf "::error title=%s::%s\n" "interrogate" "Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
+          fi
 
       - name: Run 'docstr_coverage' Documentation Coverage Check
         continue-on-error: true
         run: |
-          docstr-coverage -v 2 --fail-under=${{ inputs.fail_under }} ${{ inputs.directory }} && printf "%s\n" "::error title=docstr-coverage::Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
+          set +e
+
+          docstr-coverage --fail-under=${{ inputs.fail_under }} ${{ inputs.directory }}
+          if [[ $? -ne 0 ]]; then
+            printf "%s\n" "::error title=docstr-coverage::Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
+          fi
+

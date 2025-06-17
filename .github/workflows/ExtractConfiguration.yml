@@ -3,7 +3,7 @@
 #   Patrick Lehmann                                                                                                    #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2024 The pyTooling Authors                                                                            #
+# Copyright 2020-2025 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -145,6 +145,12 @@ jobs:
           namespace = "${{ inputs.package_namespace }}".strip()
           name = "${{ inputs.package_name }}".strip()
 
+          print(dedent(f"""\
+            INPUTS:
+              package_namespace: {namespace}
+              package_name:      {name}
+          """))
+
           if namespace == "" or namespace == ".":
             fullname = f"{name}"
             directory = f"{name}"
@@ -153,6 +159,13 @@ jobs:
             fullname = f"{namespace}.{name}"
             directory = f"{namespace}/{name}"
             mypy_prepare_command = f"touch {namespace}/__init__.py"
+
+          print(dedent(f"""\
+            OUTPUTS:
+              package_fullname:     {fullname}
+              package_directory:    {directory}
+              mypy_prepare_command: {mypy_prepare_command}
+          """))
 
           github_output = Path(getenv("GITHUB_OUTPUT"))
           print(f"GITHUB_OUTPUT: {github_output}")
@@ -234,4 +247,11 @@ jobs:
               coverage_report_json={coverageJSONFile.as_posix()}
             """))
 
-          print(f"DEBUG:\n  unittest xml:        {unittestXMLFile}\n  merged unittest xml: {mergedUnittestXMLFile}\n  coverage html:       {coverageHTMLDirectory}\n  coverage xml:        {coverageXMLFile}\n  coverage json:       {coverageJSONFile}")
+          print(dedent(f"""\
+            DEBUG:
+              unittest xml:        {unittestXMLFile}
+              merged unittest xml: {mergedUnittestXMLFile}
+              coverage html:       {coverageHTMLDirectory}
+              coverage xml:        {coverageXMLFile}
+              coverage json:       {coverageJSONFile}
+          """))

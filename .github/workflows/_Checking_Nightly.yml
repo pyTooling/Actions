@@ -42,14 +42,12 @@ jobs:
           retention-days: 1
 
   NightlyPage:
-    uses: pyTooling/Actions/.github/workflows/NightlyRelease.yml@r4
+    uses: pyTooling/Actions/.github/workflows/NightlyRelease.yml@r5
     needs:
       - Build
-    secrets: inherit
     permissions:
       contents: write
-      actions: write
-#      attestations: write
+      actions:  write
     with:
       can-fail: true
       prerelease: true
@@ -78,16 +76,15 @@ jobs:
         document:$archive7.tar.gz: Archive 7 - tar.gz + dir
         document:$archive8.tzst:   Archive 8 - tzst + dir
         document:$archive9.tar.zst:Archive 9 - tar.zst + dir
+    secrets: inherit
 
   NightlyPageWithInventory:
     uses: ./.github/workflows/NightlyRelease.yml
     needs:
       - Build
-    secrets: inherit
     permissions:
       contents: write
-      actions: write
-#      attestations: write
+      actions:  write
     with:
       can-fail: true
       replacements: |
@@ -121,3 +118,4 @@ jobs:
         document:$archive7.tar.gz:            Archive 7 - tar.gz + dir
         document:$archive8.tzst:              Archive 8 - tzst + dir
         document:$archive9.tar.zst:           Archive 9 - tar.zst + dir
+    secrets: inherit

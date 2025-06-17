@@ -55,8 +55,7 @@ Simple Example
        uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r4
        with:
          artifact: Coverage
-       secrets:
-         codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+       secrets: inherit
 
 Complex Example
 ===============
@@ -71,8 +70,7 @@ Complex Example
        with:
          python_version: ${{ needs.Params.outputs.python_version }}
          artifact: ${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_html }}
-       secrets:
-         codacy_token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+       secrets: inherit
 
 Parameters
 **********

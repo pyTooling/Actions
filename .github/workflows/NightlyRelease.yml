@@ -3,7 +3,7 @@
 #   Patrick Lehmann                                                                                                    #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2024 The pyTooling Authors                                                                            #
+# Copyright 2020-2025 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -96,7 +96,7 @@ jobs:
     continue-on-error: ${{ inputs.can-fail }}
     permissions:
       contents: write
-      actions: write
+      actions:  write
 #      attestations: write
 
     steps:
@@ -130,7 +130,7 @@ jobs:
           else
             printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
             printf "  %s\n" "${ANSI_LIGHT_RED}Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
-            printf "%s\n" "::error title=InternalError::Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'."
+            printf "::error title=%s::%s\n" "InternalError" "Couldn't delete release '${{ inputs.nightly_name }}' -> Error: '${message}'."
             exit 1
           fi
 
@@ -190,7 +190,7 @@ jobs:
           else
             printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
             printf "  %s\n" "${ANSI_LIGHT_RED}Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'.${ANSI_NOCOLOR}"
-            printf "%s\n" "::error title=InternalError::Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'."
+            printf "::error title=%s::%s\n" "InternalError" "Couldn't create release '${{ inputs.nightly_name }}' -> Error: '${message}'."
             exit 1
           fi
 
@@ -289,7 +289,7 @@ jobs:
             printf "  %s" "Checked asset for duplicates ... "
             if [[ -n "${assetFilenames[$asset]}" ]]; then
               printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
-              printf "%s\n" "::error title=DuplicateAsset::Asset '${asset}' from artifact '${artifact}' was already uploaded to release '${{ inputs.nightly_name }}'."
+              printf "::error title=%s::%s\n" "DuplicateAsset" "Asset '${asset}' from artifact '${artifact}' was already uploaded to release '${{ inputs.nightly_name }}'."
               ERRORS=$((ERRORS + 1))
               continue
             else
@@ -309,7 +309,7 @@ jobs:
               else
                 printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
                 printf "      %s\n" "${ANSI_LIGHT_RED}Couldn't download artifact '${artifact}'.${ANSI_NOCOLOR}"
-                printf "%s\n" "::error title=ArtifactNotFound::Couldn't download artifact '${artifact}'."
+                printf "::error title=%s::%s\n" "ArtifactNotFound" "Couldn't download artifact '${artifact}'."
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
@@ -361,7 +361,7 @@ jobs:
               else
                 printf "    %s\n" "Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
                 printf "      %s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zip file '${asset}'.${ANSI_NOCOLOR}"
-                printf "%s\n" "::error title=CompressionError::Couldn't compress '${artifact}' to zip file '${asset}'."
+                printf "::error title=%s::%s\n" "CompressionError" "Couldn't compress '${artifact}' to zip file '${asset}'."
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
@@ -390,7 +390,7 @@ jobs:
               else
                 printf "    %s\n" "Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
                 printf "      %s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to tgz file '${asset}'.${ANSI_NOCOLOR}"
-                printf "%s\n" "::error title=CompressionError::Couldn't compress '${artifact}' to tgz file '${asset}'."
+                printf "::error title=%s::%s\n" "CompressionError" "Couldn't compress '${artifact}' to tgz file '${asset}'."
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
@@ -419,7 +419,7 @@ jobs:
               else
                 printf "    %s\n" "Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
                 printf "      %s\n" "${ANSI_LIGHT_RED}Couldn't compress '${artifact}' to zst file '${asset}'.${ANSI_NOCOLOR}"
-                printf "%s\n" "::error title=CompressionError::Couldn't compress '${artifact}' to zst file '${asset}'."
+                printf "::error title=%s::%s\n" "CompressionError" "Couldn't compress '${artifact}' to zst file '${asset}'."
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
@@ -429,7 +429,7 @@ jobs:
             else
               printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
               printf "    %s\n" "${ANSI_LIGHT_RED}Couldn't find asset '${asset}' in artifact '${artifact}'.${ANSI_NOCOLOR}"
-              printf "%s\n" "::error title=FileNotFound::Couldn't find asset '${asset}' in artifact '${artifact}'."
+              printf "::error title=%s::%s\n" "FileNotFound" "Couldn't find asset '${asset}' in artifact '${artifact}'."
               ERRORS=$((ERRORS + 1))
               continue
             fi
@@ -469,7 +469,7 @@ jobs:
             else
               printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
               printf "    %s\n" "${ANSI_LIGHT_RED}Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
-              printf "%s\n" "::error title=UploadError::Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'."
+              printf "::error title=%s::%s\n" "UploadError" "Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.nightly_name }}'."
               ERRORS=$((ERRORS + 1))
               continue
             fi
@@ -492,7 +492,7 @@ jobs:
             else
               printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
               printf "    %s\n" "${ANSI_LIGHT_RED}Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
-              printf "%s\n" "::error title=UploadError::Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.nightly_name }}'."
+              printf "::error title=%s::%s\n" "UploadError" "Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.nightly_name }}'."
               ERRORS=$((ERRORS + 1))
               continue
             fi
@@ -526,5 +526,5 @@ jobs:
           else
             printf "%s\n" "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}"
             printf "  %s\n" "${ANSI_LIGHT_RED}Couldn't remove draft-state from release '${{ inputs.nightly_name }}'.${ANSI_NOCOLOR}"
-            printf "%s\n" "::error title=ReleasePage::Couldn't remove draft-state from release '${{ inputs.nightly_name }}'."
+            printf "::error title=%s::%s\n" "ReleasePage" "Couldn't remove draft-state from release '${{ inputs.nightly_name }}'."
           fi

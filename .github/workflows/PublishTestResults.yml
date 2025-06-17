@@ -4,7 +4,7 @@
 #   Unai Martinez-Corral                                                                                               #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2024 The pyTooling Authors                                                                            #
+# Copyright 2020-2025 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -57,8 +57,8 @@ on:
       publish:
         description: 'Publish test report summary via Dorny Test-Reporter'
         required: false
-        default: true
-        type: boolean
+        default: 'true'
+        type: string
       report_title:
         description: 'Title of the summary report in the pipeline''s sidebar'
         required: false
@@ -67,17 +67,22 @@ on:
       dorny:
         description: 'Publish merged unittest results via Dorny Test-Reporter.'
         required: false
-        default: true
-        type: boolean
+        default: 'true'
+        type: string
       codecov:
         description: 'Publish merged unittest results to Codecov.'
         required: false
-        default: true
-        type: boolean
+        default: 'false'
+        type: string
+      codecov_flags:
+        description: 'Flags applied to the upload to Codecov'
+        required: false
+        default: 'unittest'
+        type: string
     secrets:
       CODECOV_TOKEN:
         description: 'Token to push result to Codecov.'
-        required: true
+        required: false
 
 jobs:
   PublishTestResults:
@@ -117,7 +122,7 @@ jobs:
 
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v2
-        if: (inputs.dorny || inputs.publish) && inputs.report_title != ''
+        if: ( inputs.dorny  == 'true' || inputs.publish  == 'true' ) && inputs.report_title != ''
         with:
           name: ${{ inputs.report_title }}
           path: ${{ inputs.merged_junit_filename }}
@@ -125,12 +130,23 @@ jobs:
 
       - name: 📊 Publish unittest results at CodeCov
         uses: codecov/test-results-action@v1
-        if: inputs.codecov
+        id: codecov
+        if: inputs.codecov == 'true'
+        continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           disable_search: true
           files: ${{ inputs.merged_junit_filename }}
+          flags: ${{ inputs.codecov_flags }}
           fail_ci_if_error: true
+
+      - name: Generate error messages
+        run: |
+          if [[ "${{ steps.codecov.outcome }}" == "failure" ]]; then
+            printf "::error title=%s::%s\n" "Publish Unit Test Results / Codecov" "Failed to publish unittest results."
+          else
+            printf "Codecov: No errors to report.\n"
+          fi
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
         uses: pyTooling/upload-artifact@v4
