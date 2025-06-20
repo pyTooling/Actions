@@ -290,6 +290,8 @@ jobs:
           # Inline description
           if [[ -s __DESCRIPTION__.md ]]; then
             NOTES="${NOTES//%%DESCRIPTION%%/$(<__DESCRIPTION__.md)}"
+          else
+            NOTES="${NOTES//%%DESCRIPTION%%/}"
           fi
 
           # Inline PullRequest and increase headline levels
@@ -310,11 +312,17 @@ jobs:
                   ;;
               esac
             done
+          else
+            while [[ "${NOTES}" =~ %%(PULLREQUEST(\+[0-3])?)%% ]]; do
+              NOTES="${NOTES//${BASH_REMATCH[0]}/}"
+            done
           fi
 
           # inline Footer
           if [[ -s __FOOTER__.md ]]; then
             NOTES="${NOTES//%%FOOTER%%/$(<__FOOTER__.md)}"
+          else
+            NOTES="${NOTES//%%FOOTER%%/}"
           fi
 
           # Apply replacements
