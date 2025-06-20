@@ -290,6 +290,8 @@ jobs:
           # Inline description
           if [[ -s __DESCRIPTION__.md ]]; then
             NOTES="${NOTES//%%DESCRIPTION%%/$(<__DESCRIPTION__.md)}"
+          else
+            NOTES="${NOTES//%%DESCRIPTION%%/}"
           fi
 
           # Inline PullRequest and increase headline levels
@@ -310,11 +312,17 @@ jobs:
                   ;;
               esac
             done
+          else
+            while [[ "${NOTES}" =~ %%(PULLREQUEST(\+[0-3])?)%% ]]; do
+              NOTES="${NOTES//${BASH_REMATCH[0]}/}"
+            done
           fi
 
           # inline Footer
           if [[ -s __FOOTER__.md ]]; then
             NOTES="${NOTES//%%FOOTER%%/$(<__FOOTER__.md)}"
+          else
+            NOTES="${NOTES//%%FOOTER%%/}"
           fi
 
           # Apply replacements
@@ -525,6 +533,8 @@ jobs:
           declare -A downloadedArtifacts
           # A dictionary to check for duplicate asset files in release
           declare -A assetFilenames
+          # A dictionary of SHA256 checksums
+          declare -A sha256Checksums
           while IFS=$'\r\n' read -r assetLine; do
             if [[ "${assetLine}" == "" || "${assetLine:0:1}" == "#" ]]; then
               continue
@@ -552,7 +562,7 @@ jobs:
             asset="$(Replace "${asset}")"
             title="$(Replace "${title}")"
 
-            printf "Publish asset '%s' from artifact '%s' with title '%s'\n" "${asset}" "${artifact}" "${title}"
+            printf "${ANSI_LIGHT_BLUE}Publish asset '%s' from artifact '%s' with title '%s'${ANSI_NOCOLOR}\n" "${asset}" "${artifact}" "${title}"
             printf "  Checked asset for duplicates ... "
             if [[ -n "${assetFilenames[$asset]}" ]]; then
               printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
@@ -566,7 +576,7 @@ jobs:
 
             # Download artifact by artifact name
             if [[ -n "${downloadedArtifacts[$artifact]}" ]]; then
-              printf "  downloading '%s' ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n" "${artifact}"
+              printf "  downloading artifact '%s' ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n" "${artifact}"
             else
               echo    "  downloading '${artifact}' ... "
               printf "    gh run download $GITHUB_RUN_ID --dir \"%s\" --name \"%s\" " "${artifact}" "${artifact}"
@@ -701,6 +711,11 @@ jobs:
               continue
             fi
 
+            printf "  compute SHA256 checksum of '${uploadFile}' ... "
+            sha256=$(sha256sum -b ${uploadFile} | cut -d " " -f1)
+            sha256Checksums[$asset]="sha256:${sha256}"
+            printf "${ANSI_LIGHT_BLUE}${sha256}${ANSI_NOCOLOR}\n"
+
             # Add asset to JSON inventory
             if [[ "${{ inputs.inventory-json }}" != "" ]]; then
               if [[ "${categories}" != "${title}" ]]; then
@@ -708,8 +723,9 @@ jobs:
                 category=""
                 jsonEntry=$(jq -c -n \
                   --arg title "${title}" \
+                  --arg sha256 "${sha256}" \
                   --arg file "${uploadFile#*/}" \
-                  '{"file": $file, "title": $title}' \
+                  '{"file": $file, "sha256": $sha256, "title": $title}' \
                 )
 
                 while [[ "${categories}" != "${category}" ]]; do
@@ -733,6 +749,20 @@ jobs:
             gh release upload ${{ inputs.tag }} "${uploadFile}#${title}" --clobber
             if [[ $? -eq 0 ]]; then
               printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+
+              printf "  checking assets SHA256 checksum ... \n"
+              ghSHA256=$(gh release view --json assets --jq ".assets[] | select(.name == \"${asset}\") | .digest" ${{ inputs.tag }})
+              if [[ "${ghSHA256}" == "${sha256Checksums[$asset]}" ]]; then
+                printf "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
+              else
+                printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                printf "    ${ANSI_LIGHT_RED}SHA256 checksum compare failed.${ANSI_NOCOLOR}\n"
+                printf "      ${ANSI_LIGHT_RED}Local:  %s${ANSI_NOCOLOR}\n" "${sha256Checksums[$asset]}"
+                printf "      ${ANSI_LIGHT_RED}GitHub: %s${ANSI_NOCOLOR}\n" "${ghSHA256}"
+                printf "::error title=%s::%s\n" "ChecksumError" "SHA256 checksum compare failed. Local=${sha256Checksums[$asset]} GitHub=${ghSHA256}"
+                ERRORS=$((ERRORS + 1))
+                continue
+              fi
             else
               printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
               printf "    ${ANSI_LIGHT_RED}Couldn't upload asset '%s' from '%s' to release '%s'.${ANSI_NOCOLOR}\n" "${asset}" "${uploadFile}" "${{ inputs.tag }}"
