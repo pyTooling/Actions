@@ -291,6 +291,7 @@ jobs:
       - PublishTestResults
       - PublishCoverageResults
 #      - VerifyDocs
+    if: success() || failure()
     with:
       python_version:                 ${{ needs.UnitTestingParams.outputs.python_version }}
       coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
@@ -305,7 +306,7 @@ jobs:
       - UnitTestingParams
       - PublishCoverageResults
       - PublishTestResults
-    if: inputs.cleanup  == 'true'
+    if: ( success() || failure() ) && inputs.cleanup  == 'true'
     with:
       sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-
       xml_unittest_artifacts_prefix:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
