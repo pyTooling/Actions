@@ -122,7 +122,9 @@ jobs:
 
       - name: 📊 Publish Unit Test Results
         uses: dorny/test-reporter@v2
+        id: test-reporter
         if: ( inputs.dorny  == 'true' || inputs.publish  == 'true' ) && inputs.report_title != ''
+        continue-on-error: true
         with:
           name: ${{ inputs.report_title }}
           path: ${{ inputs.merged_junit_filename }}
@@ -140,14 +142,6 @@ jobs:
           flags: ${{ inputs.codecov_flags }}
           fail_ci_if_error: true
 
-      - name: Generate error messages
-        run: |
-          if [[ "${{ steps.codecov.outcome }}" == "failure" ]]; then
-            printf "::error title=%s::%s\n" "Publish Unit Test Results / Codecov" "Failed to publish unittest results."
-          else
-            printf "Codecov: No errors to report.\n"
-          fi
-
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
         uses: pyTooling/upload-artifact@v4
         if: inputs.merged_junit_artifact != ''
@@ -157,3 +151,24 @@ jobs:
           if-no-files-found: error
           retention-days: 1
           investigate: true
+
+      - name: Generate error messages
+        run: |
+          exitCode=0
+          if [[ "${{ steps.test-reporter.outcome }}" == "failure" ]]; then
+            printf "❌ Dorney/Test-Reporter: %s\n" "Failed to publish unittest results."
+            printf "::error title=%s::%s\n" "Dorney/Test-Reporter" "Failed to publish unittest results."
+            exitCode=1
+          else
+            printf "✅ Dorney/Test-Reporter: No errors to report.\n"
+          fi
+
+          if [[ "${{ steps.codecov.outcome }}" == "failure" ]]; then
+            printf "❌ CodeCov: %s\n" "Failed to publish unittest and code coverage results."
+            printf "::error title=%s::%s\n" "CodeCov" "Failed to publish unittest and code coverage results."
+            exitCode=1
+          else
+            printf "✅ CodeCov: No errors to report.\n"
+          fi
+
+          exit $exitCode
