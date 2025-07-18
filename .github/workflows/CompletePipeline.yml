@@ -245,6 +245,7 @@ jobs:
       - ConfigParams
       - UnitTestingParams
       - UnitTesting
+    if: success() || failure()
     with:
 #      coverage_sqlite_artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
 #      coverage_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
@@ -267,6 +268,7 @@ jobs:
       - ConfigParams
       - UnitTestingParams
       - UnitTesting
+    if: success() || failure()
     with:
       testsuite-summary-name: ${{ needs.ConfigParams.outputs.package_fullname }}
       merged_junit_filename:  ${{ needs.ConfigParams.outputs.unittest_merged_report_xml_filename }}
