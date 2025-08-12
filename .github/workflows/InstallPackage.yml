@@ -53,7 +53,7 @@ jobs:
 
     steps:
       - name: 📥 Download artifacts '${{ inputs.wheel }}' from 'Package' job
-        uses: pyTooling/download-artifact@v4
+        uses: pyTooling/download-artifact@v5
         with:
           name: ${{ inputs.wheel }}
           path: install

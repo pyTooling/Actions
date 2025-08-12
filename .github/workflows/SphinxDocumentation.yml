@@ -81,7 +81,7 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           lfs: true
           submodules: true
@@ -100,7 +100,7 @@ jobs:
           python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
-        uses: pyTooling/download-artifact@v4
+        uses: pyTooling/download-artifact@v5
         if: inputs.unittest_xml_artifact != ''
         with:
           name: ${{ inputs.unittest_xml_artifact }}
@@ -108,7 +108,7 @@ jobs:
           investigate: true
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
-        uses: pyTooling/download-artifact@v4
+        uses: pyTooling/download-artifact@v5
         if: inputs.coverage_json_artifact != ''
         with:
           name: ${{ inputs.coverage_json_artifact }}
@@ -140,7 +140,7 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           lfs: true
           submodules: true
@@ -159,7 +159,7 @@ jobs:
           python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
-        uses: pyTooling/download-artifact@v4
+        uses: pyTooling/download-artifact@v5
         if: inputs.unittest_xml_artifact != ''
         with:
           name: ${{ inputs.unittest_xml_artifact }}
@@ -167,7 +167,7 @@ jobs:
           investigate: true
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
-        uses: pyTooling/download-artifact@v4
+        uses: pyTooling/download-artifact@v5
         if: inputs.coverage_json_artifact != ''
         with:
           name: ${{ inputs.coverage_json_artifact }}
