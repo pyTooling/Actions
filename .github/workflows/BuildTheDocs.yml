@@ -41,7 +41,7 @@ jobs:
         run: printf "::warning title=%s::%s\n" "Deprecated" "'BuildTheDocs.yml' is not maintained anymore. Please switch to 'SphinxDocumentation.yml', 'LaTeXDocumentation.yml' and 'ExtractConfiguration.yml'."
 
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: 🛳️ Build documentation
         uses: buildthedocs/btd@v0

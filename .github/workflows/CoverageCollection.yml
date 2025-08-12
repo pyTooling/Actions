@@ -75,7 +75,7 @@ jobs:
         run: printf "::warning title=%s::%s\n" "Deprecated" "'CoverageCollection.yml' is not maintained anymore. Please switch to 'UnitTesting.yml', 'PublishCoverageResults.yml' and 'PublishTestResults.yml'."
 
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           lfs: true
           submodules: true
