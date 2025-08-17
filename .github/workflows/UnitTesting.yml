@@ -161,7 +161,7 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           lfs: true
           submodules: true
@@ -342,6 +342,7 @@ jobs:
 # Run pytests
 
       - name: ✅ Run unit tests (Ubuntu/macOS)
+        id: pytest_bash
         if: matrix.system != 'windows'
         continue-on-error: true
         run: |
@@ -359,6 +360,7 @@ jobs:
           fi
 
       - name: ✅ Run unit tests (Windows)
+        id: pytest_posh
         if: matrix.system == 'windows'
         continue-on-error: true
         run: |
@@ -376,16 +378,19 @@ jobs:
           }
 
       - name: Convert coverage to XML format (Cobertura)
+        id: convert_xml
         if: inputs.coverage_xml_artifact != ''
         continue-on-error: true
         run: coverage xml --data-file=.coverage
 
       - name: Convert coverage to JSON format
+        id: convert_json
         if: inputs.coverage_json_artifact != ''
         continue-on-error: true
         run: coverage json --data-file=.coverage
 
       - name: Convert coverage to HTML format
+        id: convert_html
         if: inputs.coverage_html_artifact != ''
         continue-on-error: true
         run: |
@@ -427,7 +432,7 @@ jobs:
           retention-days: 1
 
       - name: 📤 Upload 'Coverage XML Report' artifact
-        if: inputs.coverage_xml_artifact != ''
+        if: inputs.coverage_xml_artifact != '' && steps.convert_xml.outcome == 'success'
         continue-on-error: true
         uses: pyTooling/upload-artifact@v4
         with:
@@ -437,7 +442,7 @@ jobs:
           retention-days: 1
 
       - name: 📤 Upload 'Coverage JSON Report' artifact
-        if: inputs.coverage_json_artifact != ''
+        if: inputs.coverage_json_artifact != '' && steps.convert_json.outcome == 'success'
         continue-on-error: true
         uses: pyTooling/upload-artifact@v4
         with:
@@ -447,7 +452,7 @@ jobs:
           retention-days: 1
 
       - name: 📤 Upload 'Coverage HTML Report' artifact
-        if: inputs.coverage_html_artifact != ''
+        if: inputs.coverage_html_artifact != '' && steps.convert_html.outcome == 'success'
         continue-on-error: true
         uses: pyTooling/upload-artifact@v4
         with:
@@ -456,3 +461,17 @@ jobs:
           path: '*'
           if-no-files-found: error
           retention-days: 1
+
+      - name: Generate error messages
+        shell: bash
+        run: |
+          exitCode=0
+          if [[ "${{ steps.pytest_bash.outcome }}" == "failure" || "${{ steps.pytest_posh.outcome }}" == "failure" ]]; then
+            printf "❌ pytest: %s\n" "Error in pytest execution."
+            printf "::error title=%s::%s\n" "pytest" "Error in pytest execution."
+            exitCode=1
+          else
+            printf "✅ pytest: No errors.\n"
+          fi
+
+          exit $exitCode

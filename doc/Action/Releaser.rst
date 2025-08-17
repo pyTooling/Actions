@@ -85,7 +85,7 @@ The following block shows a minimal YAML workflow file:
        steps:
 
        # Clone repository
-       - uses: actions/checkout@v4
+       - uses: actions/checkout@v5
 
        # Build your application, tool, artifacts, etc.
        - name: Build
