@@ -109,6 +109,26 @@ on:
         required: false
         default: 'pyproject.toml'
         type: string
+      coverage_report_xml_directory:
+        description: 'Directory where the coverage report in XML format will be generated.'
+        required: false
+        default: 'report/coverage'
+        type: string
+      coverage_report_xml_filename:
+        description: 'Filename how the coverage report in XML format will be named.'
+        required: false
+        default: 'coverage.xml'
+        type: string
+      coverage_report_json_directory:
+        description: 'Directory where the coverage report in JSON format will be generated.'
+        required: false
+        default: 'report/coverage'
+        type: string
+      coverage_report_json_filename:
+        description: 'Filename how the coverage report in JSON format will be named.'
+        required: false
+        default: 'report/coverage/coverage.json'
+        type: string
       coverage_report_html_directory:
         description: 'Directory where the coverage report in HTML format will be generated.'
         required: false
@@ -416,7 +436,7 @@ jobs:
 #        uses: pyTooling/upload-artifact@v4
 #        with:
 #          name: ${{ inputs.unittest_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-#          path: ${{ steps.getVariables.outputs.unittest_report_html_directory }}
+#          path: ${{ inputs.unittest_report_html_directory }}
 #          if-no-files-found: error
 #          retention-days: 1
 
@@ -437,7 +457,8 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          path: ${{ steps.getVariables.outputs.coverage_report_xml }}
+          working-directory: ${{ inputs.coverage_report_xml_directory }}
+          path: ${{ inputs.coverage_report_xml_filename }}
           if-no-files-found: error
           retention-days: 1
 
@@ -447,7 +468,8 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_json_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          path: ${{ steps.getVariables.outputs.coverage_report_json }}
+          working-directory: ${{ inputs.coverage_report_json_directory }}
+          path: ${{ inputs.coverage_report_json_filename }}
           if-no-files-found: error
           retention-days: 1
 
@@ -457,7 +479,7 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          working-directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          working-directory: ${{ inputs.coverage_report_html_directory }}
           path: '*'
           if-no-files-found: error
           retention-days: 1
