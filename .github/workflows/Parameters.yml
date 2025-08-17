@@ -300,7 +300,7 @@ jobs:
             {
               "sysicon": data["runtime"][runtime]["icon"],
               "system":  "msys2",
-              "runs-on": "windows-latest",
+              "runs-on": "${{ inputs.windows_image }}",
               "runtime": runtime.upper(),
               "shell":   "msys2 {0}",
               "pyicon":  data["python"][currentMSYS2Version]["icon"],
