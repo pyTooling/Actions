@@ -110,7 +110,7 @@ on:
         default: 'pyproject.toml'
         type: string
       coverage_report_html_directory:
-        description: ''
+        description: 'Directory where the coverage report in HTML format will be generated.'
         required: false
         default: 'report/coverage/html'
         type: string
