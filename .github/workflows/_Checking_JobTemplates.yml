@@ -42,13 +42,17 @@ jobs:
       jobs:                           ${{ needs.UnitTestingParams.outputs.python_jobs }}
       unittest_report_xml_directory:  ${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}
       unittest_report_xml_filename:   ${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}
+      coverage_report_xml_directory:  ${{ needs.ConfigParams.outputs.coverage_report_xml_directory }}
+      coverage_report_xml_filename:   ${{ needs.ConfigParams.outputs.coverage_report_xml_filename }}
+      coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
+      coverage_report_json_filename:  ${{ needs.ConfigParams.outputs.coverage_report_json_filename }}
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
       unittest_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       unittest_html_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_html }}
       coverage_sqlite_artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
-#      coverage_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
-#      coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
-#      coverage_html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+      coverage_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
+      coverage_json_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
+      coverage_html_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
 
   PlatformTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
@@ -61,6 +65,10 @@ jobs:
       unittest_directory:             platform
       unittest_report_xml_directory:  ${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}
       unittest_report_xml_filename:   ${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}
+      coverage_report_xml_directory:  ${{ needs.ConfigParams.outputs.coverage_report_xml_directory }}
+      coverage_report_xml_filename:   ${{ needs.ConfigParams.outputs.coverage_report_xml_filename }}
+      coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
+      coverage_report_json_filename:  ${{ needs.ConfigParams.outputs.coverage_report_json_filename }}
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
       unittest_xml_artifact:          ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_xml }}
       unittest_html_artifact:         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_html }}
