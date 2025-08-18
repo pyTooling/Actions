@@ -260,28 +260,28 @@ todo_link_only = True
 # ==============================================================================
 # sphinx-reports
 # ==============================================================================
-# report_unittest_testsuites = {
-# 	"src": {
-# 		"name":        f"{pythonProject}",
-# 		"xml_report":  "../report/unit/unittest.xml",
-# 	}
-# }
-# report_codecov_packages = {
-# 	"src": {
-# 		"name":        f"{pythonProject}",
-# 		"json_report": "../report/coverage/coverage.json",
-# 		"fail_below":  80,
-# 		"levels":      "default"
-# 	}
-# }
-# report_doccov_packages = {
-# 	"src": {
-# 		"name":       f"{pythonProject}",
-# 		"directory":  f"../{directoryName}",
-# 		"fail_below": 80,
-# 		"levels":     "default"
-# 	}
-# }
+report_unittest_testsuites = {
+	"src": {
+		"name":        f"{pythonProject}",
+		"xml_report":  "../report/unit/unittest.xml",
+	}
+}
+report_codecov_packages = {
+	"src": {
+		"name":        f"{pythonProject}",
+		"json_report": "../report/coverage/coverage.json",
+		"fail_below":  80,
+		"levels":      "default"
+	}
+}
+report_doccov_packages = {
+	"src": {
+		"name":       f"{pythonProject}",
+		"directory":  f"../{directoryName}",
+		"fail_below": 80,
+		"levels":     "default"
+	}
+}
 
 
 # ==============================================================================
