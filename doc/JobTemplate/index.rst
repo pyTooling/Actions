@@ -4,45 +4,84 @@ Overview
 ########
 
 The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
-Workflow). They can also serve as an example for creating or driving own job templates.
+Workflow). They can also serve as an example for creating or deriving own job templates.
 
-**Table of Contents:**
+.. grid:: 5
 
-.. hlist::
-   :columns: 2
+   .. grid-item::
+      :columns: 2
 
-   * **Global Templates**
+      .. rubric:: All-In-One Templates
 
-     * :ref:`JOBTMPL/Parameters`
+      * :ref:`JOBTMPL/CompletePipeline`
 
-   * **Unit Tests, Code Coverage, Code Quality, ...**
+      .. rubric:: Global Templates
 
-     * :ref:`JOBTMPL/UnitTesting`
-     * :ref:`JOBTMPL/CodeCoverage`
-     * :ref:`JOBTMPL/StaticTypeChecking`
-     * *code formatting (planned)*
-     * *coding style (planned)*
-     * *code linting (planned)*
+      * :ref:`JOBTMPL/Parameters`
+      * :ref:`JOBTMPL/PrepareJob`
+      * :ref:`JOBTMPL/ExtractConfiguration`
 
-   * **Build and Packaging**
+   .. grid-item::
+      :columns: 2
 
-     * :ref:`JOBTMPL/Package`
+      .. rubric:: Documentation
 
-   * **Documentation**
+      * :ref:`JOBTMPL/CheckDocumentation`
+      * :ref:`JOBTMPL/VerifyDocs`
+      * :ref:`JOBTMPL/SphinxDocumentation`
+      * :ref:`JOBTMPL/LaTeXDocumentation`
 
-     * :ref:`JOBTMPL/VerifyDocumentation`
-     * :ref:`JOBTMPL/BuildTheDocs`
+      .. rubric:: Unit Tests, Code Coverage
 
-   * **Releasing, Publishing**
+      * :ref:`JOBTMPL/ApplicationTesting`
+      * :ref:`JOBTMPL/UnitTesting`
 
-     * :ref:`JOBTMPL/GitHubReleasePage`
-     * :ref:`JOBTMPL/PyPI`
-     * :ref:`JOBTMPL/PublishTestResults`
-     * :ref:`JOBTMPL/PublishToGitHubPages`
+   .. grid-item::
+      :columns: 2
 
-   * **Cleanups**
+      .. rubric:: Code Quality
 
-     * :ref:`JOBTMPL/ArtifactCleanup`
+      * :ref:`JOBTMPL/StaticTypeChecking`
+      * *code formatting (planned)*
+      * *coding style (planned)*
+      * *code linting (planned)*
+
+      .. rubric:: Build and Packaging
+
+      * :ref:`JOBTMPL/Package`
+      * :ref:`JOBTMPL/InstallPackage`
+
+   .. grid-item::
+      :columns: 2
+
+      .. rubric:: Publishing
+
+      * :ref:`JOBTMPL/PublishOnPyPI`
+      * :ref:`JOBTMPL/PublishTestResults`
+      * :ref:`JOBTMPL/PublishCoverageResults`
+      * :ref:`JOBTMPL/PublishToGitHubPages`
+
+      .. rubric:: Releasing
+
+      * :ref:`JOBTMPL/PublishReleaseNotes`
+      * :ref:`JOBTMPL/TagReleaseCommit`
+
+   .. grid-item::
+      :columns: 2
+
+      .. rubric:: Cleanup Templates
+
+      * :ref:`JOBTMPL/IntermediateCleanup`
+      * :ref:`JOBTMPL/ArtifactCleanup`
+
+   .. grid-item::
+      :columns: 2
+
+      .. rubric:: :ref:`JOBTMPL/Deprecated`
+
+      * :ref:`JOBTMPL/CodeCoverage`
+      * :ref:`JOBTMPL/NightlyRelease`
+      * :ref:`JOBTMPL/BuildTheDocs`
 
 
 Instantiation

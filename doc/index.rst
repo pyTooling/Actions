@@ -41,41 +41,82 @@ GitHub Action Job Templates
 The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
 Workflow):
 
-.. hlist::
-   :columns: 2
+.. grid:: 5
 
-   * **Global Templates**
+   .. grid-item::
+      :columns: 2
 
-     * :ref:`JOBTMPL/Parameters`
+      .. rubric:: All-In-One Templates
 
-   * **Unit Tests, Code Coverage, Code Quality, ...**
+      * :ref:`JOBTMPL/CompletePipeline`
 
-     * :ref:`JOBTMPL/UnitTesting`
-     * :ref:`JOBTMPL/CodeCoverage`
-     * :ref:`JOBTMPL/StaticTypeChecking`
-     * *code formatting (planned)*
-     * *coding style (planned)*
-     * *code linting (planned)*
+      .. rubric:: Global Templates
 
-   * **Build and Packaging**
+      * :ref:`JOBTMPL/Parameters`
+      * :ref:`JOBTMPL/PrepareJob`
+      * :ref:`JOBTMPL/ExtractConfiguration`
 
-     * :ref:`JOBTMPL/Package`
+   .. grid-item::
+      :columns: 2
 
-   * **Documentation**
+      .. rubric:: Documentation
 
-     * :ref:`JOBTMPL/VerifyDocumentation`
-     * :ref:`JOBTMPL/BuildTheDocs`
+      * :ref:`JOBTMPL/CheckDocumentation`
+      * :ref:`JOBTMPL/VerifyDocs`
+      * :ref:`JOBTMPL/SphinxDocumentation`
+      * :ref:`JOBTMPL/LaTeXDocumentation`
 
-   * **Releasing, Publishing**
+      .. rubric:: Unit Tests, Code Coverage
 
-     * :ref:`JOBTMPL/GitHubReleasePage`
-     * :ref:`JOBTMPL/PyPI`
-     * :ref:`JOBTMPL/PublishTestResults`
-     * :ref:`JOBTMPL/PublishToGitHubPages`
+      * :ref:`JOBTMPL/ApplicationTesting`
+      * :ref:`JOBTMPL/UnitTesting`
 
-   * **Cleanups**
+   .. grid-item::
+      :columns: 2
 
-     * :ref:`JOBTMPL/ArtifactCleanup`
+      .. rubric:: Code Quality
+
+      * :ref:`JOBTMPL/StaticTypeChecking`
+      * *code formatting (planned)*
+      * *coding style (planned)*
+      * *code linting (planned)*
+
+      .. rubric:: Build and Packaging
+
+      * :ref:`JOBTMPL/Package`
+      * :ref:`JOBTMPL/InstallPackage`
+
+   .. grid-item::
+      :columns: 2
+
+      .. rubric:: Publishing
+
+      * :ref:`JOBTMPL/PublishOnPyPI`
+      * :ref:`JOBTMPL/PublishTestResults`
+      * :ref:`JOBTMPL/PublishCoverageResults`
+      * :ref:`JOBTMPL/PublishToGitHubPages`
+
+      .. rubric:: Releasing
+
+      * :ref:`JOBTMPL/PublishReleaseNotes`
+      * :ref:`JOBTMPL/TagReleaseCommit`
+
+   .. grid-item::
+      :columns: 2
+
+      .. rubric:: Cleanup Templates
+
+      * :ref:`JOBTMPL/IntermediateCleanup`
+      * :ref:`JOBTMPL/ArtifactCleanup`
+
+   .. grid-item::
+      :columns: 2
+
+      .. rubric:: :ref:`JOBTMPL/Deprecated`
+
+      * :ref:`JOBTMPL/CodeCoverage`
+      * :ref:`JOBTMPL/NightlyRelease`
+      * :ref:`JOBTMPL/BuildTheDocs`
 
 
 Example Pipelines
@@ -155,18 +196,22 @@ License
    :hidden:
 
    JobTemplate/index
-   JobTemplate/Parameters
-   JobTemplate/CoverageCollection
+   JobTemplate/AllInOne/index
+   JobTemplate/Global/index
+   JobTemplate/Documentation/index
    JobTemplate/UnitTesting
+   JobTemplate/ApplicationTesting
    JobTemplate/StaticTypeCheck
    JobTemplate/PublishTestResults
+   JobTemplate/PublishCoverageResults
    JobTemplate/Package
+   JobTemplate/InstallPackage
    JobTemplate/PublishOnPyPI
-   JobTemplate/VerifyDocs
-   JobTemplate/BuildTheDocs
    JobTemplate/PublishToGitHubPages
-   JobTemplate/Release
-   JobTemplate/ArtifactCleanUp
+   JobTemplate/TagReleaseCommit
+   JobTemplate/PublishReleaseNotes
+   JobTemplate/Cleanup/index
+   JobTemplate/Deprecated/index
 
 .. raw:: latex
 
@@ -179,6 +224,7 @@ License
    pyDummy/pyDummy
    unittests/index
    coverage/index
+   CodeCoverage
    Doc. Coverage Report <DocCoverage>
    Static Type Check Report ➚ <typing/index>
 
