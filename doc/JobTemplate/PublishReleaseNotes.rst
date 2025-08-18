@@ -1,7 +1,7 @@
-.. _JOBTMPL/GitHubReleasePage:
+.. _JOBTMPL/PublishReleaseNotes:
 
-Release
-#######
+PublishReleaseNotes
+###################
 
 This job creates a Release Page on GitHub.
 

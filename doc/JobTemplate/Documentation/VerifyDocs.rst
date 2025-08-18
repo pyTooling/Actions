@@ -1,4 +1,4 @@
-.. _JOBTMPL/VerifyDocumentation:
+.. _JOBTMPL/VerifyDocs:
 
 VerifyDocs
 ##########

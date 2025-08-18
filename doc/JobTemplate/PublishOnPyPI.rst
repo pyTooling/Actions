@@ -1,4 +1,4 @@
-.. _JOBTMPL/PyPI:
+.. _JOBTMPL/PublishOnPyPI:
 
 PublishOnPyPI
 #############
