@@ -1,4 +1,4 @@
-.. _JOBTMPL/StaticTypeChecking:
+.. _JOBTMPL/StaticTypeCheck:
 
 StaticTypeCheck
 ###############
