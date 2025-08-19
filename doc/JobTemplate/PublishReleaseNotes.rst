@@ -62,7 +62,7 @@ Simple Example
 
    jobs:
      Release:
-       uses: pyTooling/Actions/.github/workflows/Release.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Release.yml@r5
 
 
 Complex Example
@@ -72,7 +72,7 @@ Complex Example
 
    jobs:
      Release:
-       uses: pyTooling/Actions/.github/workflows/Release.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Release.yml@r5
        if: startsWith(github.ref, 'refs/tags')
        needs:
          - Package

@@ -52,7 +52,7 @@ Simple Example
 
    jobs:
      Coverage:
-       uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r0
+       uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r5
        with:
          artifact: Coverage
        secrets: inherit
@@ -64,7 +64,7 @@ Complex Example
 
    jobs:
      Coverage:
-       uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r0
+       uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r5
        needs:
          - Params
        with:
