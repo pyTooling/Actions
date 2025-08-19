@@ -35,6 +35,13 @@ However, Python being equally popular and capable, usage of JS/TS might be bypas
 This repository gathers reusable CI tooling for testing, packaging and distributing Python projects and documentation.
 
 
+GitHub Actions
+**************
+
+* :ref:`ACTION/Releaser`
+* :ref:`ACTION/WithPostStep`
+
+
 GitHub Action Job Templates
 ***************************
 
@@ -76,7 +83,7 @@ Workflow):
 
       .. rubric:: Code Quality
 
-      * :ref:`JOBTMPL/StaticTypeChecking`
+      * :ref:`JOBTMPL/StaticTypeCheck`
       * *code formatting (planned)*
       * *coding style (planned)*
       * *code linting (planned)*
@@ -122,19 +129,78 @@ Workflow):
 Example Pipelines
 =================
 
-``ExamplePipeline.yml`` is an example Workflow which uses all of the Reusable Workflows.
-Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
-Minimal required modifications are the following:
+.. grid:: 2
 
-- Set the ``name`` input of job ``Parameters``.
-- Specify the ``commands`` input of job ``StaticTypeCheck``.
+   .. grid-item::
+      :columns: 6
 
+      ``ExamplePipeline.yml`` is an example Workflow which uses all of the Reusable Workflows.
+      Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
+      Minimal required modifications are the following:
 
-GitHub Actions
-**************
+      * Set the ``name`` input of job ``Parameters``.
+      * Specify the ``commands`` input of job ``StaticTypeCheck``.
 
-* :ref:`ACTION/Releaser`
-* :ref:`ACTION/WithPostStep`
+   .. grid-item::
+      :columns: 6
+
+      .. tab-set::
+
+         .. tab-item:: Simple Package
+
+            .. code-block:: yaml
+
+               name: Pipeline
+
+               on:
+                 push:
+                 workflow_dispatch:
+                 schedule:
+               # Every Friday at 22:00 - rerun pipeline to check for dependency-based issues
+                   - cron: '0 22 * * 5'
+
+               jobs:
+                 SimplePackage:
+                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                   with:
+                     package_name: myPackage
+                     codecov:      true
+                     codacy:       true
+                     dorny:        true
+                   secrets:
+                     PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
+                     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+                     CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
+
+         .. tab-item:: Namespace Package
+
+            .. code-block:: yaml
+
+               name: Pipeline
+
+               on:
+                 push:
+                 workflow_dispatch:
+                 schedule:
+               # Every Friday at 22:00 - rerun pipeline to check for dependency-based issues
+                   - cron: '0 22 * * 5'
+
+               jobs:
+                 NamespacePackage:
+                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                   with:
+                     package_namespace: myFramework
+                     package_name:      Extension
+                     codecov:           true
+                     codacy:            true
+                     dorny:             true
+                   secrets:
+                     PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
+                     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+                     CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
+
+.. image:: _static/pyTooling-Actions-SimplePackage.png
+
 
 References
 **********
@@ -199,17 +265,11 @@ License
    JobTemplate/AllInOne/index
    JobTemplate/Global/index
    JobTemplate/Documentation/index
-   JobTemplate/UnitTesting
-   JobTemplate/ApplicationTesting
-   JobTemplate/StaticTypeCheck
-   JobTemplate/PublishTestResults
-   JobTemplate/PublishCoverageResults
-   JobTemplate/Package
-   JobTemplate/InstallPackage
-   JobTemplate/PublishOnPyPI
-   JobTemplate/PublishToGitHubPages
-   JobTemplate/TagReleaseCommit
-   JobTemplate/PublishReleaseNotes
+   JobTemplate/Testing/index
+   JobTemplate/Quality/index
+   JobTemplate/Package/index
+   JobTemplate/Publish/index
+   JobTemplate/Release/index
    JobTemplate/Cleanup/index
    JobTemplate/Deprecated/index
 

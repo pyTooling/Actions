@@ -41,7 +41,7 @@ Workflow). They can also serve as an example for creating or deriving own job te
 
       .. rubric:: Code Quality
 
-      * :ref:`JOBTMPL/StaticTypeChecking`
+      * :ref:`JOBTMPL/StaticTypeCheck`
       * *code formatting (planned)*
       * *coding style (planned)*
       * *code linting (planned)*

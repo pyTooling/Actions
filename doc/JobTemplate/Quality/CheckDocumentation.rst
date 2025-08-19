@@ -3,7 +3,7 @@
 CheckDocumentation
 ##################
 
-.. todo:: CheckDocumentation:Behavior needs documentation.
+.. todo:: CheckDocumentation:Needs documentation.
 
 **Behavior:**
 
