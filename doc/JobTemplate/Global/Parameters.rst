@@ -35,7 +35,7 @@ requires a `name` parameter to create the artifact names.
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
 
@@ -81,7 +81,7 @@ over resulting in the following combinations:
 
    jobs:
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
          python_version_list: "3.8 3.9 3.10 3.11 pypy-3.9 pypy-3.10"
@@ -89,7 +89,7 @@ over resulting in the following combinations:
          exclude_list: "windows:pypy-3.9 windows:pypy-3.10"
 
      PerformanceTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
          python_version_list: "3.11 3.12"
@@ -297,12 +297,12 @@ variables. Thus, this job is used to compute an output parameter that can be reu
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
 
      CodeCoverage:
-       uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r0
+       uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r5
        needs:
          - Params
        with:
@@ -330,7 +330,7 @@ A job description contains the following key-value pairs:
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
 
@@ -389,7 +389,7 @@ The supported artifacts are:
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
 

@@ -29,7 +29,7 @@ Simple Example
        # ...
 
      PublishToGitHubPages:
-       uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r0
+       uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r5
        needs:
          - BuildTheDocs
        with:
@@ -43,7 +43,7 @@ Complex Example
 
    jobs:
      PublishToGitHubPages:
-       uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r0
+       uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r5
        needs:
          - Params
          - BuildTheDocs

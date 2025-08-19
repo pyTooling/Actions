@@ -30,7 +30,7 @@ Simple Example
 
    jobs:
      BuildTheDocs:
-       uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@r0
+       uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@r5
 
 
 Complex Example
@@ -40,7 +40,7 @@ Complex Example
 
    jobs:
      BuildTheDocs:
-       uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@r0
+       uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@r5
        needs:
          - Params
        with:
