@@ -35,6 +35,6 @@ requires a `name` parameter to create the artifact names.
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r0
+       uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
        with:
          name: pyTooling
