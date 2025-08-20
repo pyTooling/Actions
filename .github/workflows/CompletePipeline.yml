@@ -71,7 +71,7 @@ on:
       apptest_python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: ""
+        default: ''
         type: string
       apptest_system_list:
         description: 'Space separated list of systems to run tests on.'

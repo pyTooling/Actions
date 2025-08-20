@@ -11,7 +11,7 @@ IntermediateCleanUp
 
 **Dependencies:**
 
-.. todo:: IntermediateCleanUp:Dependencies needs documentation.
+* :gh:`geekyeggo/delete-artifact`
 
 Instantiation
 *************
