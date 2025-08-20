@@ -3,6 +3,13 @@
 Releaser
 ########
 
+.. attention::
+
+   The **Releaser** action is deprecated.
+
+   Use the new GitHub Action workflow template :ref:`JOBTMPL/PublishReleaseNotes` as a replacement with lots of
+   additional features.
+
 **Releaser** is a Docker GitHub Action written in Python.
 
 **Releaser** allows to keep a GitHub Release of type pre-release and its artifacts up to date with latest builds.

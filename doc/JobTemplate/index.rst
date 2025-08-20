@@ -6,101 +6,50 @@ Overview
 The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
 Workflow). They can also serve as an example for creating or deriving own job templates.
 
-.. grid:: 5
+.. include:: Templates.rst
 
-   .. grid-item::
-      :columns: 2
 
-      .. rubric:: All-In-One Templates
-
-      * :ref:`JOBTMPL/CompletePipeline`
-
-      .. rubric:: Global Templates
-
-      * :ref:`JOBTMPL/Parameters`
-      * :ref:`JOBTMPL/PrepareJob`
-      * :ref:`JOBTMPL/ExtractConfiguration`
-
-   .. grid-item::
-      :columns: 2
-
-      .. rubric:: Documentation
-
-      * :ref:`JOBTMPL/CheckDocumentation`
-      * :ref:`JOBTMPL/VerifyDocs`
-      * :ref:`JOBTMPL/SphinxDocumentation`
-      * :ref:`JOBTMPL/LaTeXDocumentation`
-
-      .. rubric:: Unit Tests, Code Coverage
-
-      * :ref:`JOBTMPL/ApplicationTesting`
-      * :ref:`JOBTMPL/UnitTesting`
-
-   .. grid-item::
-      :columns: 2
-
-      .. rubric:: Code Quality
-
-      * :ref:`JOBTMPL/StaticTypeCheck`
-      * *code formatting (planned)*
-      * *coding style (planned)*
-      * *code linting (planned)*
-
-      .. rubric:: Build and Packaging
-
-      * :ref:`JOBTMPL/Package`
-      * :ref:`JOBTMPL/InstallPackage`
-
-   .. grid-item::
-      :columns: 2
-
-      .. rubric:: Publishing
-
-      * :ref:`JOBTMPL/PublishOnPyPI`
-      * :ref:`JOBTMPL/PublishTestResults`
-      * :ref:`JOBTMPL/PublishCoverageResults`
-      * :ref:`JOBTMPL/PublishToGitHubPages`
-
-      .. rubric:: Releasing
-
-      * :ref:`JOBTMPL/PublishReleaseNotes`
-      * :ref:`JOBTMPL/TagReleaseCommit`
-
-   .. grid-item::
-      :columns: 2
-
-      .. rubric:: Cleanup Templates
-
-      * :ref:`JOBTMPL/IntermediateCleanup`
-      * :ref:`JOBTMPL/ArtifactCleanup`
-
-   .. grid-item::
-      :columns: 2
-
-      .. rubric:: :ref:`JOBTMPL/Deprecated`
-
-      * :ref:`JOBTMPL/CodeCoverage`
-      * :ref:`JOBTMPL/NightlyRelease`
-      * :ref:`JOBTMPL/BuildTheDocs`
-
+.. _JOBTMPL/Instantiation:
 
 Instantiation
 *************
 
 When instantiating a template, a ``jobs:<Name>:uses`` is used to refer to a template file. Unfortunately, besides the
-GitHub SLUG (*<Organization>/<Repository>*), also the full path to the template needs to be gives, but still it can't be
-outside of ``.github/workflows`` to create a cleaner repository structure. Finally, the path contains a branch name
-postfixed by ``@<branch>`` (tags are still not supported by GitHub Actions). A ``jobs:<Name>:with:`` section can be used
-to handover input parameters to the template.
+GitHub SLUG (*<Organization>/<Repository>*), also the full path to the template needs to be gives. Unfortunately, it
+can't be outside of the ``.github/workflows`` directory creating a cleaner repository structure. Finally, the path
+contains a branch name postfixed by ``@<branch>`` (tags are still not supported by GitHub Actions). Repositories usually
+offer a ``@v2``/``@r2`` syntax for refering to the second version/revision.
+
+Allmost all templates are generic and offer lots of configuration options. For handing over input parameters, a
+``jobs:<Name>:with:`` node with a dictionary can be used. Additionally, some templates might require secrets, which
+are passed from GitHub's ``secrets`` context to the template by using a ``jobs:<Name>:secrets:`` node.
+
+Some templates might provide output parameters, which can be used in dependent jobs by setting a job dependency using
+``jobs:<Name>:needs:``. The output parameter can be retrieved by accessing the ``needs`` context.
 
 .. code-block:: yaml
 
    on:
      push:
      workflow_dispatch:
+     schedule:
+   # Every Friday at 22:00 - rerun pipeline to check for dependency-based issues
+       - cron: '0 22 * * 5'
 
    jobs:
      <InstanceName>:
-       uses: <GitHubOrganization>/<Repository>/.github/workflows/<Template>.yml@v0
+       uses: <GitHubOrganization>/<Repository>/.github/workflows/<Template>.yml@r5
        with:
-         <Param1>: <Value>
+         <Param1>: <Value1>
+         <Param2>: <Value2>
+       secrets:
+         <Secret1>: ${{ secrets.<SecretVariable1> }}
+         <Secret2>: ${{ secrets.<SecretVariable2> }}
+
+     <OtherInstance>:
+       ...
+       needs:
+         - <InstanceName>
+       ...
+       with:
+         <Param1>: ${{ needs.<InstanceName>.outputs.<Output1> }}
