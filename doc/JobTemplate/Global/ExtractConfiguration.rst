@@ -38,3 +38,16 @@ requires a `name` parameter to create the artifact names.
        uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
        with:
          name: pyTooling
+
+Parameters
+**********
+
+
+Secrets
+*******
+
+
+Results
+*******
+
+
