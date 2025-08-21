@@ -15,12 +15,12 @@ jobs:
         include:
           - {icon: '🐧', name: 'Ubuntu 22.04 (x86-64)',  image: 'ubuntu-22.04',     shell: 'bash'}
           - {icon: '🐧', name: 'Ubuntu 24.04 (x86-64)',  image: 'ubuntu-24.04',     shell: 'bash'}  # latest
-          - {icon: '🍎', name: 'macOS-13 (x86-64)',      image: 'macos-13-large',   shell: 'bash'}
+          - {icon: '🍎', name: 'macOS-13 (x86-64)',      image: 'macos-13',         shell: 'bash'}
           - {icon: '🍎', name: 'macOS-14 (x86-64)',      image: 'macos-14-large',   shell: 'bash'}  # not in free plan
           - {icon: '🍎', name: 'macOS-15 (x86-64)',      image: 'macos-15-large',   shell: 'bash'}  # not in free plan
           - {icon: '🍏', name: 'macOS-13 (aarch64)',     image: 'macos-13-xlarge',  shell: 'bash'}
-          - {icon: '🍏', name: 'macOS-14 (aarch64)',     image: 'macos-14-xlarge',  shell: 'bash'}  # latest
-          - {icon: '🍏', name: 'macOS-15 (aarch64)',     image: 'macos-15-xlarge',  shell: 'bash'}
+          - {icon: '🍏', name: 'macOS-14 (aarch64)',     image: 'macos-14',         shell: 'bash'}  # latest
+          - {icon: '🍏', name: 'macOS-15 (aarch64)',     image: 'macos-15',         shell: 'bash'}
           - {icon: '🪟', name: 'Windows Server 2022',    image: 'windows-2022',     shell: 'bash'}
           - {icon: '🪟', name: 'Windows Server 2025',    image: 'windows-2022',     shell: 'bash'}  # latest
         # Third party images by ARM for aarch64
@@ -33,5 +33,5 @@ jobs:
         shell: ${{ matrix.shell }}
 
     steps:
-      - name: uname
+      - name: 'uname -a'
         run: uname -a
