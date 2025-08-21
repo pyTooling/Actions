@@ -71,7 +71,7 @@ on:
       apptest_python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: ""
+        default: ''
         type: string
       apptest_system_list:
         description: 'Space separated list of systems to run tests on.'
@@ -181,6 +181,10 @@ jobs:
 #      pacboy: "msys/git python-lxml:p"
       unittest_report_xml_directory:  ${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}
       unittest_report_xml_filename:   ${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}
+      coverage_report_xml_directory:  ${{ needs.ConfigParams.outputs.coverage_report_xml_directory }}
+      coverage_report_xml_filename:   ${{ needs.ConfigParams.outputs.coverage_report_xml_filename }}
+      coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
+      coverage_report_json_filename:  ${{ needs.ConfigParams.outputs.coverage_report_json_filename }}
       coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
       unittest_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       coverage_sqlite_artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}

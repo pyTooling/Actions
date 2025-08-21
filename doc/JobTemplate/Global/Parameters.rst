@@ -35,7 +35,7 @@ requires a `name` parameter to create the artifact names.
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
 
@@ -81,7 +81,7 @@ over resulting in the following combinations:
 
    jobs:
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
          python_version_list: "3.8 3.9 3.10 3.11 pypy-3.9 pypy-3.10"
@@ -89,7 +89,7 @@ over resulting in the following combinations:
          exclude_list: "windows:pypy-3.9 windows:pypy-3.10"
 
      PerformanceTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
          python_version_list: "3.11 3.12"
@@ -142,36 +142,7 @@ python_version_list
 
 Space separated list of CPython versions and/or mypy version to run tests with.
 
-**Possible values:**
-
-* ``3.7``, ``3.8``, ``3.9``, ``3.10`` , ``3.11``, ``3.12``, ``3.13``
-* ``pypy-3.7``, ``pypy-3.8``, ``pypy-3.9``, ``pypy-3.10``
-
-+------+-----------+------------------+-----------------------------------------+
-| Icon | Version   | Maintained until | Comments                                |
-+======+===========+==================+=========================================+
-| ⚫   | 3.7       | 2023.06.27       | :red:`outdated`                         |
-+------+-----------+------------------+-----------------------------------------+
-| 🔴   | 3.8       | 2024.10          |                                         |
-+------+-----------+------------------+-----------------------------------------+
-| 🟠   | 3.9       | 2025.10          |                                         |
-+------+-----------+------------------+-----------------------------------------+
-| 🟡   | 3.10      | 2026.10          |                                         |
-+------+-----------+------------------+-----------------------------------------+
-| 🟢   | 3.11      | 2027.10          |                                         |
-+------+-----------+------------------+-----------------------------------------+
-| 🟢   | 3.12      | 2028.10          | :green:`latest`                         |
-+------+-----------+------------------+-----------------------------------------+
-| 🟣   | 3.13      | 2029.10          | Python 3.13 alpha (or RC) will be used. |
-+------+-----------+------------------+-----------------------------------------+
-| ⟲⚫  | pypy-3.7  | ????.??          |                                         |
-+------+-----------+------------------+-----------------------------------------+
-| ⟲🔴  | pypy-3.8  | ????.??          |                                         |
-+------+-----------+------------------+-----------------------------------------+
-| ⟲🟠  | pypy-3.9  | ????.??          |                                         |
-+------+-----------+------------------+-----------------------------------------+
-| ⟲🟡  | pypy-3.10 | ????.??          |                                         |
-+------+-----------+------------------+-----------------------------------------+
+.. include:: ../PythonVersionList.rst
 
 
 system_list
@@ -185,34 +156,8 @@ system_list
 
 Space separated list of systems to run tests on.
 
-**Possible values:**
+.. include:: ../SystemList.rst
 
-* Native systems: ``ubuntu``, ``windows``, ``macos``
-* MSYS2: ``msys``, ``mingw32``, ``mingw64``, ``clang32``, ``clang64``, ``ucrt64``
-
-+------+-----------+------------------------------+-----------------------------------------------------------------+
-| Icon | System    | Used version                 | Comments                                                        |
-+======+===========+==============================+=================================================================+
-| 🧊   | Windows   | Windows Server 2022 (latest) |                                                                 |
-+------+-----------+------------------------------+-----------------------------------------------------------------+
-| 🐧   | Ubuntu    | Ubuntu 22.04 (LTS) (latest)  |                                                                 |
-+------+-----------+------------------------------+-----------------------------------------------------------------+
-| 🍎   | macOS     | macOS Monterey 12 (latest)   | While this marked latest, macOS Ventura 13 is already provided. |
-+------+-----------+------------------------------+-----------------------------------------------------------------+
-| 🟪   | MSYS      |                              |                                                                 |
-+------+-----------+------------------------------+-----------------------------------------------------------------+
-| ⬛   | MinGW32   |                              |                                                                 |
-+------+-----------+------------------------------+-----------------------------------------------------------------+
-| 🟦   | MinGW64   |                              |                                                                 |
-+------+-----------+------------------------------+-----------------------------------------------------------------+
-| 🟫   | Clang32   |                              |                                                                 |
-+------+-----------+------------------------------+-----------------------------------------------------------------+
-| 🟧   | Clang64   |                              |                                                                 |
-+------+-----------+------------------------------+-----------------------------------------------------------------+
-| 🟨   | UCRT64    |                              |                                                                 |
-+------+-----------+------------------------------+-----------------------------------------------------------------+
-
-Source: `Images provided by GitHub <https://github.com/actions/runner-images>`__
 
 include_list
 ============
@@ -297,12 +242,12 @@ variables. Thus, this job is used to compute an output parameter that can be reu
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
 
      CodeCoverage:
-       uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r0
+       uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r5
        needs:
          - Params
        with:
@@ -330,7 +275,7 @@ A job description contains the following key-value pairs:
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
 
@@ -389,7 +334,7 @@ The supported artifacts are:
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r0
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
        with:
          name: pyTooling
 

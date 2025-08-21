@@ -83,7 +83,7 @@ on:
       windows_image:
         description: 'The used GitHub Action image for Windows based jobs.'
         required: false
-        default: 'windows-2022'
+        default: 'windows-2025'
         type: string
       macos_intel_image:
         description: 'The used GitHub Action image for macOS (Intel x86-64) based jobs.'
@@ -300,7 +300,7 @@ jobs:
             {
               "sysicon": data["runtime"][runtime]["icon"],
               "system":  "msys2",
-              "runs-on": "windows-latest",
+              "runs-on": "${{ inputs.windows_image }}",
               "runtime": runtime.upper(),
               "shell":   "msys2 {0}",
               "pyicon":  data["python"][currentMSYS2Version]["icon"],

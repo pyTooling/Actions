@@ -27,7 +27,7 @@ The simplest variant just uses the artifact name for the package.
 
    jobs:
      ArtifactCleanUp:
-       uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r0
+       uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r5
        with:
          package: Package
 
@@ -39,7 +39,7 @@ Complex Example
 
    jobs:
      ArtifactCleanUp:
-       uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r0
+       uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r5
        needs:
          - Params
          - UnitTesting

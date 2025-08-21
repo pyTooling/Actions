@@ -35,65 +35,96 @@ However, Python being equally popular and capable, usage of JS/TS might be bypas
 This repository gathers reusable CI tooling for testing, packaging and distributing Python projects and documentation.
 
 
+GitHub Actions
+**************
+
+.. include:: Action/Actions.rst
+
+
 GitHub Action Job Templates
 ***************************
 
 The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
 Workflow):
 
-.. hlist::
-   :columns: 2
-
-   * **Global Templates**
-
-     * :ref:`JOBTMPL/Parameters`
-
-   * **Unit Tests, Code Coverage, Code Quality, ...**
-
-     * :ref:`JOBTMPL/UnitTesting`
-     * :ref:`JOBTMPL/CodeCoverage`
-     * :ref:`JOBTMPL/StaticTypeChecking`
-     * *code formatting (planned)*
-     * *coding style (planned)*
-     * *code linting (planned)*
-
-   * **Build and Packaging**
-
-     * :ref:`JOBTMPL/Package`
-
-   * **Documentation**
-
-     * :ref:`JOBTMPL/VerifyDocumentation`
-     * :ref:`JOBTMPL/BuildTheDocs`
-
-   * **Releasing, Publishing**
-
-     * :ref:`JOBTMPL/GitHubReleasePage`
-     * :ref:`JOBTMPL/PyPI`
-     * :ref:`JOBTMPL/PublishTestResults`
-     * :ref:`JOBTMPL/PublishToGitHubPages`
-
-   * **Cleanups**
-
-     * :ref:`JOBTMPL/ArtifactCleanup`
+.. include:: JobTemplate/Templates.rst
 
 
 Example Pipelines
 =================
 
-``ExamplePipeline.yml`` is an example Workflow which uses all of the Reusable Workflows.
-Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
-Minimal required modifications are the following:
+.. grid:: 2
 
-- Set the ``name`` input of job ``Parameters``.
-- Specify the ``commands`` input of job ``StaticTypeCheck``.
+   .. grid-item::
+      :columns: 6
 
+      ``ExamplePipeline.yml`` is an example Workflow which uses all of the Reusable Workflows.
+      Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
+      Minimal required modifications are the following:
 
-GitHub Actions
-**************
+      * Set the ``name`` input of job ``Parameters``.
+      * Specify the ``commands`` input of job ``StaticTypeCheck``.
 
-* :ref:`ACTION/Releaser`
-* :ref:`ACTION/WithPostStep`
+   .. grid-item::
+      :columns: 6
+
+      .. tab-set::
+
+         .. tab-item:: Simple Package
+
+            .. code-block:: yaml
+
+               name: Pipeline
+
+               on:
+                 push:
+                 workflow_dispatch:
+                 schedule:
+               # Every Friday at 22:00 - rerun pipeline to check for dependency-based issues
+                   - cron: '0 22 * * 5'
+
+               jobs:
+                 SimplePackage:
+                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                   with:
+                     package_name: myPackage
+                     codecov:      true
+                     codacy:       true
+                     dorny:        true
+                   secrets:
+                     PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
+                     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+                     CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
+
+         .. tab-item:: Namespace Package
+
+            .. code-block:: yaml
+
+               name: Pipeline
+
+               on:
+                 push:
+                 workflow_dispatch:
+                 schedule:
+               # Every Friday at 22:00 - rerun pipeline to check for dependency-based issues
+                   - cron: '0 22 * * 5'
+
+               jobs:
+                 NamespacePackage:
+                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                   with:
+                     package_namespace: myFramework
+                     package_name:      Extension
+                     codecov:           true
+                     codacy:            true
+                     dorny:             true
+                   secrets:
+                     PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
+                     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+                     CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
+
+.. image:: _static/pyTooling-Actions-SimplePackage.png
+
 
 References
 **********
@@ -155,18 +186,16 @@ License
    :hidden:
 
    JobTemplate/index
-   JobTemplate/Parameters
-   JobTemplate/CoverageCollection
-   JobTemplate/UnitTesting
-   JobTemplate/StaticTypeCheck
-   JobTemplate/PublishTestResults
-   JobTemplate/Package
-   JobTemplate/PublishOnPyPI
-   JobTemplate/VerifyDocs
-   JobTemplate/BuildTheDocs
-   JobTemplate/PublishToGitHubPages
-   JobTemplate/Release
-   JobTemplate/ArtifactCleanUp
+   JobTemplate/AllInOne/index
+   JobTemplate/Global/index
+   JobTemplate/Documentation/index
+   JobTemplate/Testing/index
+   JobTemplate/Quality/index
+   JobTemplate/Package/index
+   JobTemplate/Publish/index
+   JobTemplate/Release/index
+   JobTemplate/Cleanup/index
+   JobTemplate/Deprecated/index
 
 .. raw:: latex
 
@@ -179,6 +208,7 @@ License
    pyDummy/pyDummy
    unittests/index
    coverage/index
+   CodeCoverage
    Doc. Coverage Report <DocCoverage>
    Static Type Check Report ➚ <typing/index>
 
