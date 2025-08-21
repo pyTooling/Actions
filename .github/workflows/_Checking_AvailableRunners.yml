@@ -1,0 +1,37 @@
+name: Testing available GitHub Action Images
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  RunnerTest:
+    name: ${{ matrix.icon }} ${{ matrix.name }}
+
+    runs-on: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {icon: '🐧', name: 'Ubuntu 22.04 (x86-64)',  image: 'ubuntu-22.04',     shell: 'bash'}
+          - {icon: '🐧', name: 'Ubuntu 24.04 (x86-64)',  image: 'ubuntu-24.04',     shell: 'bash'}  # latest
+          - {icon: '🍎', name: 'macOS-13 (x86-64)',      image: 'macos-13',         shell: 'bash'}
+          - {icon: '🍎', name: 'macOS-14 (x86-64)',      image: 'macos-14-large',   shell: 'bash'}  # not in free plan
+          - {icon: '🍎', name: 'macOS-15 (x86-64)',      image: 'macos-15-large',   shell: 'bash'}  # not in free plan
+          - {icon: '🍏', name: 'macOS-13 (aarch64)',     image: 'macos-13-xlarge',  shell: 'bash'}
+          - {icon: '🍏', name: 'macOS-14 (aarch64)',     image: 'macos-14',         shell: 'bash'}  # latest
+          - {icon: '🍏', name: 'macOS-15 (aarch64)',     image: 'macos-15',         shell: 'bash'}
+          - {icon: '🪟', name: 'Windows Server 2022',    image: 'windows-2022',     shell: 'bash'}
+          - {icon: '🪟', name: 'Windows Server 2025',    image: 'windows-2022',     shell: 'bash'}  # latest
+        # Third party images by ARM for aarch64
+          - {icon: '🐧', name: 'Ubuntu 22.04 (aarch64)', image: 'ubuntu-22.04-arm', shell: 'bash'}
+          - {icon: '🐧', name: 'Ubuntu 24.04 (aarch64)', image: 'ubuntu-24.04-arm', shell: 'bash'}
+          - {icon: '🪟', name: 'Windows 11 (arch64)',    image: 'windows-11-arm',   shell: 'bash'}
+
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+
+    steps:
+      - name: 'uname -a'
+        run: uname -a
