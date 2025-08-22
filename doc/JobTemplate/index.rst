@@ -4,7 +4,8 @@ Overview
 ########
 
 The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
-Workflow). They can also serve as an example for creating or deriving own job templates.
+Workflow). They can also serve as an example for creating or deriving own job templates. All job templates are highly
+customizable.
 
 .. include:: Templates.rst
 
@@ -47,9 +48,44 @@ Some templates might provide output parameters, which can be used in dependent j
          <Secret2>: ${{ secrets.<SecretVariable2> }}
 
      <OtherInstance>:
-       ...
        needs:
          - <InstanceName>
        ...
        with:
          <Param1>: ${{ needs.<InstanceName>.outputs.<Output1> }}
+
+
+.. _JOBTMPL/CommonParameters:
+
+Common Parameters
+*****************
+
+All jobs specified in the templates are executed in
+`images provided by GitHub Actions <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__.
+Except for platform specific jobs (e.g., unit testing on macOS, Ubuntu, Windows Server, ...) allmost all other jobs use
+an Ubuntu image. This image can be configured by the job template input parameter :ref:`JOBTMPL/Common/Input/ubuntu_image`.
+Similarly, many jobs rely on Python scripting and therefore need a Python version, which can be configured via
+:ref:`JOBTMPL/Common/Input/python_version`.
+
+.. _JOBTMPL/Common/Input/ubuntu_image:
+
+ubuntu_image
+============
+
+:Type:            string
+:Required:        usually no
+:Default Value:   ``'ubuntu-24.04'``
+:Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
+:Description:     Name of the Ubuntu image used to run a job.
+
+
+.. _JOBTMPL/Common/Input/python_version:
+
+python_version
+==============
+
+:Type:            string
+:Required:        usually no
+:Default Value:   ``'3.13'``
+:Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
+:Description:     Python version used to run Python scripts in a job.
