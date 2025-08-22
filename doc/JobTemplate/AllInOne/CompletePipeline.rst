@@ -155,6 +155,7 @@ It can be used for simple Python packages as well as namespace packages.
    * :ref:`pyTooling/Actions/.github/workflows/PrepareJob.yml <JOBTMPL/PrepareJob>`
 
      * :gh:`actions/checkout`
+     * :gh:`GitHub command line tool 'gh' <cli/cli>`
 
    * :ref:`pyTooling/Actions/.github/workflows/Parameters.yml <JOBTMPL/Parameters>`
    * :ref:`pyTooling/Actions/.github/workflows/ExtractConfiguration.yml <JOBTMPL/ExtractConfiguration>`
@@ -185,11 +186,8 @@ It can be used for simple Python packages as well as namespace packages.
 Instantiation
 *************
 
-Simple Example
-==============
-
-The following instantiation example creates a job `Params` derived from job template `Parameters` version `r0`. It only
-requires a `name` parameter to create the artifact names.
+The following instantiation example creates a job ``Params`` derived from job template ``Parameters`` version ``@r5``.
+It only requires a `name` parameter to create the artifact names.
 
 .. code-block:: yaml
 
@@ -205,394 +203,381 @@ requires a `name` parameter to create the artifact names.
        with:
          name: pyTooling
 
+
 .. _JOBTMPL/CompletePipeline/Parameters:
 
-Parameters
-**********
+Parameter Summary
+*****************
 
-.. topic:: Parameter Summary
+.. rubric:: Goto :ref:`input parameters <JOBTMPL/CompletePipeline/Inputs>`
 
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | Parameter Name                                                      | Required | Type     | Default                                      |
-   +=====================================================================+==========+==========+==============================================+
-   | :ref:`JOBTMPL/CompletePipeline/Param/package_namespace`             | no       | string   | ``''``                                       |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/package_name`                  | yes      | string   | — — — —                                      |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/unittest_python_version`       | no       | string   | ``'3.13'``                                   |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/unittest_python_version_list`  | no       | string   | ``'3.9 3.10 3.11 3.12 3.13'``                |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/unittest_system_list`          | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``  |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/unittest_include_list`         | no       | string   | ``''``                                       |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/unittest_exclude_list`         | no       | string   | ``''``                                       |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/unittest_disable_list`         | no       | string   | ``''``                                       |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/apptest_python_version`        | no       | string   | ``'3.13'``                                   |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/apptest_python_version_list`   | no       | string   | ``''``                                       |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/apptest_system_list`           | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``  |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/apptest_include_list`          | no       | string   | ``''``                                       |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/apptest_exclude_list`          | no       | string   | ``''``                                       |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/apptest_disable_list`          | no       | string   | ``''``                                       |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/codecov`                       | no       | string   | ``'false'``                                  |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/codacy`                        | no       | string   | ``'false'``                                  |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/dorny`                         | no       | string   | ``'false'``                                  |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-   | :ref:`JOBTMPL/CompletePipeline/Param/cleanup`                       | no       | string   | ``'true'``                                   |
-   +---------------------------------------------------------------------+----------+----------+----------------------------------------------+
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| Parameter Name                                                      | Required | Type     | Default                                      |
++=====================================================================+==========+==========+==============================================+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_namespace`             | no       | string   | ``''``                                       |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_name`                  | yes      | string   | — — — —                                      |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`       | no       | string   | ``'3.13'``                                   |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list`  | no       | string   | ``'3.9 3.10 3.11 3.12 3.13'``                |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`          | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``  |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_include_list`         | no       | string   | ``''``                                       |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`         | no       | string   | ``''``                                       |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`         | no       | string   | ``''``                                       |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`        | no       | string   | ``'3.13'``                                   |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`   | no       | string   | ``''``                                       |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_system_list`           | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``  |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_include_list`          | no       | string   | ``''``                                       |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`          | no       | string   | ``''``                                       |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`          | no       | string   | ``''``                                       |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/codecov`                       | no       | string   | ``'false'``                                  |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/codacy`                        | no       | string   | ``'false'``                                  |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/dorny`                         | no       | string   | ``'false'``                                  |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                       | no       | string   | ``'true'``                                   |
++---------------------------------------------------------------------+----------+----------+----------------------------------------------+
 
-.. topic:: :ref:`Secret Summary <JOBTMPL/CompletePipeline/Secrets>`
+.. rubric:: Goto Goto :ref:`secrets <JOBTMPL/CompletePipeline/Secrets>`
 
-   +-----------------------------------------------------------+----------+----------+--------------+
-   | Token Name                                                | Required | Type     | Default      |
-   +===========================================================+==========+==========+==============+
-   | :ref:`JOBTMPL/CompletePipeline/Secret/PYPI_TOKEN`         | no       | string   | — — — —      |
-   +-----------------------------------------------------------+----------+----------+--------------+
-   | :ref:`JOBTMPL/CompletePipeline/Secret/CODECOV_TOKEN`      | no       | string   | — — — —      |
-   +-----------------------------------------------------------+----------+----------+--------------+
-   | :ref:`JOBTMPL/CompletePipeline/Secret/CODACY_TOKEN`       | no       | string   | — — — —      |
-   +-----------------------------------------------------------+----------+----------+--------------+
++-----------------------------------------------------------+----------+----------+--------------+
+| Token Name                                                | Required | Type     | Default      |
++===========================================================+==========+==========+==============+
+| :ref:`JOBTMPL/CompletePipeline/Secret/PYPI_TOKEN`         | no       | string   | — — — —      |
++-----------------------------------------------------------+----------+----------+--------------+
+| :ref:`JOBTMPL/CompletePipeline/Secret/CODECOV_TOKEN`      | no       | string   | — — — —      |
++-----------------------------------------------------------+----------+----------+--------------+
+| :ref:`JOBTMPL/CompletePipeline/Secret/CODACY_TOKEN`       | no       | string   | — — — —      |
++-----------------------------------------------------------+----------+----------+--------------+
 
-.. topic:: :ref:`Output Summary <JOBTMPL/CompletePipeline/Results>`
+.. rubric:: Goto Goto :ref:`output parameters <JOBTMPL/CompletePipeline/Outputs>`
 
-   This job template has no output parameters.
+This job template has no output parameters.
 
 
-.. _JOBTMPL/CompletePipeline/Param/package_namespace:
+.. _JOBTMPL/CompletePipeline/Inputs:
+
+Input Parameters
+****************
+
+.. _JOBTMPL/CompletePipeline/Input/package_namespace:
 
 package_namespace
 =================
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| package_namespace             | no       | string   | ``''``       |
-+-------------------------------+----------+----------+--------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid Python namespace.
+:Description:     In case the package is a Python namespace package, the name of the library's or package's namespace
+                  needs to be specified using this parameter. |br|
+                  In case of a simple Python package, this parameter must be specified as an empty string (``''``),
+                  which is the default.
 
-In case the package is a Python namespace package, the name of the library's or package's namespace needs to be
-specified using this parameter. |br|
-In case of a simple Python package, this parameter must be specified as an empty string (``''``), which is the default.
+:Example:
+                  .. grid:: 2
 
-.. grid:: 2
+                     .. grid-item::
+                        :columns: 5
 
-   .. grid-item::
-      :columns: 4
+                        .. rubric:: Example Instantiation
 
-      .. rubric:: Example
+                        .. code-block:: yaml
 
-      .. code-block:: yaml
+                           name: Pipeline
 
-         jobs:
-           NamespacePackage:
-             uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
-             with:
-               package_namespace: myFramework
-               package_name:      Extension
+                           jobs:
+                             NamespacePackage:
+                               uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                               with:
+                                 package_namespace: myFramework
+                                 package_name:      Extension
 
-   .. grid-item::
-      :columns: 4
+                     .. grid-item::
+                        :columns: 4
 
-      .. rubric:: Example
+                        .. rubric:: Example Directory Structure
 
-      .. code-block::
+                        .. code-block::
 
-         📂ProjectRoot/
-           📂myFramework/
-             📂Extension/
-               📦SubPackage/
-                 🐍__init__.py
-                 🐍SubModuleA.py
-               🐍__init__.py
-               🐍ModuleB.py
+                           📂ProjectRoot/
+                             📂myFramework/
+                               📂Extension/
+                                 📦SubPackage/
+                                   🐍__init__.py
+                                   🐍SubModuleA.py
+                                 🐍__init__.py
+                                 🐍ModuleB.py
 
 
-.. _JOBTMPL/CompletePipeline/Param/package_name:
+.. _JOBTMPL/CompletePipeline/Input/package_name:
 
 package_name
 ============
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| package_name                  | yes      | string   | — — — —      |
-+-------------------------------+----------+----------+--------------+
+:Type:            string
+:Required:        yes
+:Default Value:   — — — —
+:Possible Values: Any valid Python package name.
+:Description:     In case of a simple Python package, this package's name is specified using this parameter. |br|
+                  In case the package is a Python namespace package, the parameter
+                  :ref:`JOBTMPL/CompletePipeline/Input/package_namespace` must be specified, too.
+:Example:
+                  .. grid:: 2
 
-In case of a simple Python package, this package's name is specified using this parameter. |br|
-In case the package is a Python namespace package, the parameter :ref:`JOBTMPL/CompletePipeline/Param/package_namespace`
-must be specified, too.
+                     .. grid-item::
+                        :columns: 5
 
-.. rubric:: Example
+                        .. rubric:: Example Instantiation
 
-.. grid:: 2
+                        .. code-block:: yaml
 
-   .. grid-item::
-      :columns: 4
+                           name: Pipeline
 
-      .. rubric:: Example
+                           jobs:
+                             SimplePackage:
+                               uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                               with:
+                                 package_name: myPackage
 
-      .. code-block:: yaml
+                     .. grid-item::
+                        :columns: 4
 
-         jobs:
-           SimplePackage:
-             uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
-             with:
-               package_name: myPackage
+                        .. rubric:: Example Directory Structure
 
-   .. grid-item::
-      :columns: 4
+                        .. code-block::
 
-      .. rubric:: Example
+                           📂ProjectRoot/
+                             📂myFramework/
+                               📦SubPackage/
+                                 🐍__init__.py
+                                 🐍SubModuleA.py
+                               🐍__init__.py
+                               🐍ModuleB.py
 
-      .. code-block::
 
-         📂ProjectRoot/
-           📂myFramework/
-             📦SubPackage/
-               🐍__init__.py
-               🐍SubModuleA.py
-             🐍__init__.py
-             🐍ModuleB.py
-
-.. _JOBTMPL/CompletePipeline/Param/unittest_python_version:
+.. _JOBTMPL/CompletePipeline/Input/unittest_python_version:
 
 unittest_python_version
 =======================
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| unittest_python_version       | no       | string   | ``'3.13'``   |
-+-------------------------------+----------+----------+--------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``'3.13'``
+:Possible Values: Any valid Python version conforming to the pattern ``major.minor``.
+:Description:     The default Python version used for intermediate jobs using Python tools.
 
-The default Python version used for intermediate jobs using Python tools.
+                  In case :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list` is empty, this default
+                  version is used to populate the :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list`
+                  parameter.
 
-In case :ref:`JOBTMPL/CompletePipeline/Param/unittest_python_version_list` is empty, this default version is used to
-populate the ``unittest_python_version_list`` parameter.
 
-
-.. _JOBTMPL/CompletePipeline/Param/unittest_python_version_list:
+.. _JOBTMPL/CompletePipeline/Input/unittest_python_version_list:
 
 unittest_python_version_list
 ============================
 
-+-------------------------------+----------+----------+-------------------------------------+
-| Parameter Name                | Required | Type     | Default                             |
-+===============================+==========+==========+=====================================+
-| unittest_python_version_list  | no       | string   | ``'3.9 3.10 3.11 3.12 3.13'``       |
-+-------------------------------+----------+----------+-------------------------------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``'3.9 3.10 3.11 3.12 3.13'``
+:Possible Values: A space separated list of valid Python versions conforming to the pattern ``major.minor``.
+:Description:     The list of space-separated Python versions used for unit testing.
 
-The list of space-separated Python versions used for unit testing.
-
-.. include:: ../PythonVersionList.rst
+                  .. include:: ../PythonVersionList.rst
 
 
-.. _JOBTMPL/CompletePipeline/Param/unittest_system_list:
+.. _JOBTMPL/CompletePipeline/Input/unittest_system_list:
 
 unittest_system_list
 ====================
 
-+-------------------------------+----------+----------+-----------------------------------------------------+
-| Parameter Name                | Required | Type     | Default                                             |
-+===============================+==========+==========+=====================================================+
-| unittest_system_list          | no       | string   | ``'ubuntu windows macos macos-arm mingw64 ucrt64'`` |
-+-------------------------------+----------+----------+-----------------------------------------------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``'ubuntu windows macos macos-arm mingw64 ucrt64'``
+:Possible Values: A space separated list of system names.
+:Description:     The list of space-separated systems used for unit testing.
 
-The list of space-separated systems used for unit testing.
-
-.. include:: ../SystemList.rst
+                  .. include:: ../SystemList.rst
 
 
-.. _JOBTMPL/CompletePipeline/Param/unittest_include_list:
+.. _JOBTMPL/CompletePipeline/Input/unittest_include_list:
 
 unittest_include_list
 =====================
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| unittest_include_list         | no       | string   | ``''``       |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Description:
 
 
-.. _JOBTMPL/CompletePipeline/Param/unittest_exclude_list:
+.. _JOBTMPL/CompletePipeline/Input/unittest_exclude_list:
 
 unittest_exclude_list
 =====================
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| unittest_exclude_list         | no       | string   | ``''``       |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Description:
 
 
-.. _JOBTMPL/CompletePipeline/Param/unittest_disable_list:
+.. _JOBTMPL/CompletePipeline/Input/unittest_disable_list:
 
 unittest_disable_list
 =====================
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| unittest_disable_list         | no       | string   | ``''``       |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Description:
 
 
-.. _JOBTMPL/CompletePipeline/Param/apptest_python_version:
+.. _JOBTMPL/CompletePipeline/Input/apptest_python_version:
 
 apptest_python_version
 ======================
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| apptest_python_version        | no       | string   | ``'3.13'``   |
-+-------------------------------+----------+----------+--------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``'3.13'``
+:Possible Values: Any valid Python version conforming to the pattern ``major.minor``.
+:Description:     The default Python version used for intermediate jobs using Python tools.
 
-The name of the library or package.
+                  In case :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list` is empty, this default
+                  version is used to populate the :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`
+                  parameter.
 
 
-.. _JOBTMPL/CompletePipeline/Param/apptest_python_version_list:
+.. _JOBTMPL/CompletePipeline/Input/apptest_python_version_list:
 
 apptest_python_version_list
 ===========================
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| apptest_python_version_list   | no       | string   | ``''``       |
-+-------------------------------+----------+----------+--------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: A space separated list of valid Python versions conforming to the pattern ``major.minor``.
+:Description:     The list of space-separated Python versions used for application testing.
 
-The name of the library or package.
+                  As this list is empty by default, the value is derived from
+                  :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`.
+
+                  .. include:: ../PythonVersionList.rst
 
 
-.. _JOBTMPL/CompletePipeline/Param/apptest_system_list:
+.. _JOBTMPL/CompletePipeline/Input/apptest_system_list:
 
 apptest_system_list
 ===================
 
-+-------------------------------+----------+----------+--------------------------------------------------+
-| Parameter Name                | Required | Type     | Default                                          |
-+===============================+==========+==========+==================================================+
-| apptest_system_list           | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``      |
-+-------------------------------+----------+----------+--------------------------------------------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``'ubuntu windows macos macos-arm mingw64 ucrt64'``
+:Possible Values: A space separated list of system names.
+:Description:     The list of space-separated systems used for application testing.
 
-The name of the library or package.
+                  .. include:: ../SystemList.rst
 
 
-.. _JOBTMPL/CompletePipeline/Param/apptest_include_list:
+.. _JOBTMPL/CompletePipeline/Input/apptest_include_list:
 
 apptest_include_list
 ====================
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| apptest_include_list          | no       | string   | ``''``       |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Description:
 
 
-.. _JOBTMPL/CompletePipeline/Param/apptest_exclude_list:
+.. _JOBTMPL/CompletePipeline/Input/apptest_exclude_list:
 
 apptest_exclude_list
 ====================
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| apptest_exclude_list          | no       | string   | ``''``       |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Description:
 
 
-.. _JOBTMPL/CompletePipeline/Param/apptest_disable_list:
+.. _JOBTMPL/CompletePipeline/Input/apptest_disable_list:
 
 apptest_disable_list
 ====================
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| apptest_disable_list          | no       | string   | ``''``       |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Description:
 
 
-.. _JOBTMPL/CompletePipeline/Param/codecov:
+.. _JOBTMPL/CompletePipeline/Input/codecov:
 
 codecov
 =======
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| codecov                       | no       | string   | ``'false'``  |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'``, ``'false'``
+:Description:
 
 
-.. _JOBTMPL/CompletePipeline/Param/codacy:
+.. _JOBTMPL/CompletePipeline/Input/codacy:
 
 codacy
 ======
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| codacy                        | no       | string   | ``'false'``  |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'``, ``'false'``
+:Description:
 
 
-.. _JOBTMPL/CompletePipeline/Param/dorny:
+.. _JOBTMPL/CompletePipeline/Input/dorny:
 
 dorny
 =====
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| dorny                         | no       | string   | ``'false'``  |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'``, ``'false'``
+:Description:
 
 
-.. _JOBTMPL/CompletePipeline/Param/cleanup:
+.. _JOBTMPL/CompletePipeline/Input/cleanup:
 
 cleanup
 =======
 
-+-------------------------------+----------+----------+--------------+
-| Parameter Name                | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| cleanup                       | no       | string   | ``'true'``   |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'``, ``'false'``
+:Description:
 
 
 .. _JOBTMPL/CompletePipeline/Secrets:
@@ -602,18 +587,16 @@ Secrets
 
 The workflow template uses the following secrets to publish results to other services.
 
+
 .. _JOBTMPL/CompletePipeline/Secret/PYPI_TOKEN:
 
 PYPI_TOKEN
 ==========
 
-+-------------------------------+----------+----------+--------------+
-| Token Name                    | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| PYPI_TOKEN                    | no       | string   | — — — —      |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   — — — —
+:Description:     The token to publish and upload packages on `PyPI <https://pypi.org/>`__.
 
 
 .. _JOBTMPL/CompletePipeline/Secret/CODECOV_TOKEN:
@@ -621,13 +604,10 @@ The name of the library or package.
 CODECOV_TOKEN
 =============
 
-+-------------------------------+----------+----------+--------------+
-| Token Name                    | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| CODECOV_TOKEN                 | no       | string   | — — — —      |
-+-------------------------------+----------+----------+--------------+
-
-The name of the library or package.
+:Type:            string
+:Required:        no
+:Default Value:   — — — —
+:Description:     The token to publish code coverage and unit test results to `CodeCov <https://about.codecov.io//>`__.
 
 
 .. _JOBTMPL/CompletePipeline/Secret/CODACY_TOKEN:
@@ -635,17 +615,15 @@ The name of the library or package.
 CODACY_TOKEN
 ============
 
-+-------------------------------+----------+----------+--------------+
-| Token Name                    | Required | Type     | Default      |
-+===============================+==========+==========+==============+
-| CODACY_TOKEN                  | no       | string   | — — — —      |
-+-------------------------------+----------+----------+--------------+
+:Type:            string
+:Required:        no
+:Default Value:   — — — —
+:Description:     The token to publish code coverage results to `Codacy <https://www.codacy.com/>`__.
 
-The name of the library or package.
 
-.. _JOBTMPL/CompletePipeline/Results:
+.. _JOBTMPL/CompletePipeline/Outputs:
 
-Results
+Outputs
 *******
 
 This job template has no output parameters.
