@@ -3,11 +3,11 @@
    .. grid-item::
       :columns: 2
 
-      .. rubric:: All-In-One Templates
+      .. rubric:: All-In-One
 
       * :ref:`JOBTMPL/CompletePipeline` |br| |br| |br| |br|
 
-      .. rubric:: Global Templates
+      .. rubric:: Pipeline Setup
 
       * :ref:`JOBTMPL/Parameters`
       * :ref:`JOBTMPL/PrepareJob`
@@ -61,7 +61,7 @@
    .. grid-item::
       :columns: 2
 
-      .. rubric:: Cleanup Templates
+      .. rubric:: Cleanup
 
       * :ref:`JOBTMPL/IntermediateCleanup`
       * :ref:`JOBTMPL/ArtifactCleanup`
