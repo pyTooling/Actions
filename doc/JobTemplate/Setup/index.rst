@@ -1,9 +1,9 @@
-.. _JOBTMPL/Global:
+.. _JOBTMPL/Setup:
 
-Global
-######
+Pipeline Setup
+##############
 
-The category *global* provides workflow templates implementing preparation steps suitable for every pipeline.
+The category *pipeline setup* provides workflow templates implementing preparation steps suitable for every pipeline.
 
 * :ref:`JOBTMPL/Parameters` - Compute a matrix of (operating system |times| Python version |times| environment)
   combinations for unit testing, platform testing or application testing and provide the result as a JSON string via

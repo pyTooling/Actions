@@ -153,6 +153,9 @@ It can be used for simple Python packages as well as namespace packages.
 .. topic:: Dependencies
 
    * :ref:`pyTooling/Actions/.github/workflows/PrepareJob.yml <JOBTMPL/PrepareJob>`
+
+     * :gh:`actions/checkout`
+
    * :ref:`pyTooling/Actions/.github/workflows/Parameters.yml <JOBTMPL/Parameters>`
    * :ref:`pyTooling/Actions/.github/workflows/ExtractConfiguration.yml <JOBTMPL/ExtractConfiguration>`
    * :ref:`pyTooling/Actions/.github/workflows/UnitTesting.yml <JOBTMPL/UnitTesting>`

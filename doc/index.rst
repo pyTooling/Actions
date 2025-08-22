@@ -187,7 +187,7 @@ License
 
    JobTemplate/index
    JobTemplate/AllInOne/index
-   JobTemplate/Global/index
+   JobTemplate/Setup/index
    JobTemplate/Documentation/index
    JobTemplate/Testing/index
    JobTemplate/Quality/index
