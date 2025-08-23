@@ -23,15 +23,15 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: pyDummy
-      python_version_list: "3.9 3.10 3.11 3.12 3.13 pypy-3.9 pypy-3.10"
-#      disable_list: "windows:pypy-3.10"
+      python_version_list: '3.9 3.10 3.11 3.12 3.13 pypy-3.10 pypy-3.11'
+      disable_list: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
 
   PlatformTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Platform
-      python_version_list: ""
-      system_list: "ubuntu windows macos mingw64 clang64 ucrt64"
+      python_version_list: ''
+      system_list: 'ubuntu ubuntu-arm windows windows-arm macos mingw64 clang64 ucrt64'
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
@@ -199,7 +199,7 @@ jobs:
     with:
       document: Actions
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
-      pdf_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
+      pdf_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
 
   PublishToGitHubPages:
     uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@dev

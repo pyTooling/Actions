@@ -225,7 +225,7 @@ jobs:
           python -m pip install --disable-pip-version-check -U install/*.whl
 
       - name: ✅ Run application tests (Ubuntu/macOS)
-        if: matrix.system != 'windows'
+        if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
 
@@ -240,7 +240,7 @@ jobs:
           fi
 
       - name: ✅ Run application tests (Windows)
-        if: matrix.system == 'windows'
+        if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
 
