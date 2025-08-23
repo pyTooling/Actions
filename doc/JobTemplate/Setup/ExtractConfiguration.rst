@@ -10,7 +10,8 @@ The ``ExtractConfiguration`` job template is a .....
 .. topic:: Features
 
    * Concatenate :ref:`JOBTMPL/ExtractConfiguration/Input/package_namespace` and :ref:`JOBTMPL/ExtractConfiguration/Input/package_name`
-     to :ref:`JOBTMPL/ExtractConfiguration/Output/package_fullname` and :ref:`JOBTMPL/ExtractConfiguration/Output/package_directory`.
+     to :ref:`JOBTMPL/ExtractConfiguration/Output/package_fullname` (with dot) and :ref:`JOBTMPL/ExtractConfiguration/Output/package_directory`
+     (with slash).
    * Provide commands to prepare the source code directory structure suitable for mypy.
    * Extract the unittest XML report file (pytest JUnit XML) as directory name, filename and full path from :file:`pyproject.toml`.
    * Extract the merged unittest XML report file as directory name, filename and full path from :file:`pyproject.toml`.

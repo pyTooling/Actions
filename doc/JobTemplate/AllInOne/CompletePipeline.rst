@@ -401,7 +401,8 @@ unittest_python_version_list
 :Type:            string
 :Required:        no
 :Default Value:   ``'3.9 3.10 3.11 3.12 3.13'``
-:Possible Values: A space separated list of valid Python versions conforming to the pattern ``major.minor``.
+:Possible Values: A space separated list of valid Python versions conforming to the pattern ``<major>.<minor>`` or
+                  ``pypy-<major>.<minor>``.
 :Description:     The list of space-separated Python versions used for unit testing.
 
                   .. include:: ../PythonVersionList.rst
@@ -429,7 +430,7 @@ unittest_include_list
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:
 
 
@@ -441,7 +442,7 @@ unittest_exclude_list
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:
 
 
@@ -453,7 +454,7 @@ unittest_disable_list
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:
 
 
@@ -483,7 +484,8 @@ apptest_python_version_list
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: A space separated list of valid Python versions conforming to the pattern ``major.minor``.
+:Possible Values: A space separated list of valid Python versions conforming to the pattern ``<major>.<minor>`` or
+                  ``pypy-<major>.<minor>```.
 :Description:     The list of space-separated Python versions used for application testing.
 
                   As this list is empty by default, the value is derived from
@@ -514,7 +516,7 @@ apptest_include_list
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:
 
 
@@ -526,7 +528,7 @@ apptest_exclude_list
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:
 
 
@@ -538,7 +540,7 @@ apptest_disable_list
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: A space separated list of ``system:python_version`` tuples.
+:Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:
 
 
