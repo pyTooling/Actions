@@ -46,7 +46,7 @@ on:
       unittest_system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu windows macos macos-arm mingw64 ucrt64'
+        default: 'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'
         type: string
       unittest_include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'
@@ -56,12 +56,12 @@ on:
       unittest_exclude_list:
         description: 'Space separated list of system:python items to be excluded from the list of test.'
         required: false
-        default: ''
+        default: 'windows-arm:3.9 windows-arm:3.10'
         type: string
       unittest_disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
         required: false
-        default: ''
+        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
         type: string
       apptest_python_version:
         description: 'Python version.'
@@ -76,7 +76,7 @@ on:
       apptest_system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu windows macos macos-arm ucrt64'
+        default: 'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'
         type: string
       apptest_include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'
@@ -86,12 +86,12 @@ on:
       apptest_exclude_list:
         description: 'Space separated list of system:python items to be excluded from the list of test.'
         required: false
-        default: ''
+        default: 'windows-arm:3.9 windows-arm:3.10'
         type: string
       apptest_disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
         required: false
-        default: ''
+        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
         type: string
       codecov:
         description: 'Publish merged coverage and unittest reports to Codecov.'

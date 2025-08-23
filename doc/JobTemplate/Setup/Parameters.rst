@@ -168,9 +168,9 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/include_list`                        | no       | string   | ``''``                                                            |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/exclude_list`                        | no       | string   | ``''``                                                            |
+| :ref:`JOBTMPL/Parameters/Input/exclude_list`                        | no       | string   | ``'windows-arm:3.9 windows-arm:3.10'``                            |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/disable_list`                        | no       | string   | ``''``                                                            |
+| :ref:`JOBTMPL/Parameters/Input/disable_list`                        | no       | string   | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                 |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/ubuntu_image`                        | no       | string   | ``'ubuntu-24.04'``                                                |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
@@ -182,7 +182,7 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/macos_intel_image`                   | no       | string   | ``'macos-13'``                                                    |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/macos_arm_image`                     | no       | string   | ``'macos-14'``                                                    |
+| :ref:`JOBTMPL/Parameters/Input/macos_arm_image`                     | no       | string   | ``'macos-15'``                                                    |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/pipeline-delay`                      | no       | number   | ``0``                                                             |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
@@ -418,7 +418,7 @@ exclude_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'windows-arm:3.9 windows-arm:3.10'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be excluded from the list of test
                   variants.
@@ -440,7 +440,7 @@ disable_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be temporarily disabled from the list
                   of test variants. |br|
@@ -471,6 +471,18 @@ ubuntu_image
 :Description:     Name of the Ubuntu x86-64 image and version used to run a Ubuntu jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
 
 
+.. _JOBTMPL/Parameters/Input/ubuntu_arm_image:
+
+ubuntu_arm_image
+================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'ubuntu-24.04-arm'``
+:Possible Values: See `actions/partner-runner-images - Available Images <https://github.com/actions/partner-runner-images?tab=readme-ov-file#available-images>`__
+:Description:     Name of the Ubuntu aarch64 image and version used to run a Ubuntu ARM jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
+
+
 .. _JOBTMPL/Parameters/Input/windows_image:
 
 windows_image
@@ -481,6 +493,18 @@ windows_image
 :Default Value:   ``'windows-2025'``
 :Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
 :Description:     Name of the Windows Server x86-64 image and version used to run a Widnows jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
+
+
+.. _JOBTMPL/Parameters/Input/windows_arm_image:
+
+windows_arm_image
+=================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'windows-11-arm'``
+:Possible Values: See `actions/partner-runner-images - Available Images <https://github.com/actions/partner-runner-images?tab=readme-ov-file#available-images>`__
+:Description:     Name of the Windows aarch64 image and version used to run a Windows ARM jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
 
 
 .. _JOBTMPL/Parameters/Input/macos_intel_image:
@@ -647,11 +671,11 @@ python_jobs
                        {"sysicon": "🍎",  "system": "macos",     "runs-on": "macos-13",     "runtime": "native",  "shell": "bash",      "pyicon": "🟡", "python": "3.11", "envname": "macOS (x86-64)"                  },
                        {"sysicon": "🍎",  "system": "macos",     "runs-on": "macos-13",     "runtime": "native",  "shell": "bash",      "pyicon": "🟢", "python": "3.12", "envname": "macOS (x86-64)"                  },
                        {"sysicon": "🍎",  "system": "macos",     "runs-on": "macos-13",     "runtime": "native",  "shell": "bash",      "pyicon": "🟢", "python": "3.13", "envname": "macOS (x86-64)"                  },
-                       {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-14",     "runtime": "native",  "shell": "bash",      "pyicon": "🔴", "python": "3.9",  "envname": "macOS (aarch64)"                 },
-                       {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-14",     "runtime": "native",  "shell": "bash",      "pyicon": "🟠", "python": "3.10", "envname": "macOS (aarch64)"                 },
-                       {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-14",     "runtime": "native",  "shell": "bash",      "pyicon": "🟡", "python": "3.11", "envname": "macOS (aarch64)"                 },
-                       {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-14",     "runtime": "native",  "shell": "bash",      "pyicon": "🟢", "python": "3.12", "envname": "macOS (aarch64)"                 },
-                       {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-14",     "runtime": "native",  "shell": "bash",      "pyicon": "🟢", "python": "3.13", "envname": "macOS (aarch64)"                 },
+                       {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-15",     "runtime": "native",  "shell": "bash",      "pyicon": "🔴", "python": "3.9",  "envname": "macOS (aarch64)"                 },
+                       {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-15",     "runtime": "native",  "shell": "bash",      "pyicon": "🟠", "python": "3.10", "envname": "macOS (aarch64)"                 },
+                       {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-15",     "runtime": "native",  "shell": "bash",      "pyicon": "🟡", "python": "3.11", "envname": "macOS (aarch64)"                 },
+                       {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-15",     "runtime": "native",  "shell": "bash",      "pyicon": "🟢", "python": "3.12", "envname": "macOS (aarch64)"                 },
+                       {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-15",     "runtime": "native",  "shell": "bash",      "pyicon": "🟢", "python": "3.13", "envname": "macOS (aarch64)"                 },
                        {"sysicon": "🪟🟦", "system": "msys2",    "runs-on": "windows-2025", "runtime": "MINGW64", "shell": "msys2 {0}", "pyicon": "🟢", "python": "3.12", "envname": "Windows+MSYS2 (x86-64) - MinGW64"},
                        {"sysicon": "🪟🟨", "system": "msys2",    "runs-on": "windows-2025", "runtime": "UCRT64",  "shell": "msys2 {0}", "pyicon": "🟢", "python": "3.12", "envname": "Windows+MSYS2 (x86-64) - UCRT64" }
                      ]

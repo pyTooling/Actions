@@ -192,7 +192,7 @@ jobs:
         run: brew install ${{ inputs.brew }}
 
       - name: 🔧 Install apt dependencies on Ubuntu
-        if: matrix.system == 'ubuntu' && inputs.apt != ''
+        if: ( matrix.system == 'ubuntu' || matrix.system == 'ubuntu-arm' ) && inputs.apt != ''
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ${{ inputs.apt }}
@@ -346,7 +346,7 @@ jobs:
         run: ${{ inputs.macos_arm_before_script }}
 
       - name: 🐧 Ubuntu before scripts
-        if: matrix.system == 'ubuntu' && inputs.ubuntu_before_script != ''
+        if: ( matrix.system == 'ubuntu' || matrix.system == 'ubuntu-arm' ) && inputs.ubuntu_before_script != ''
         run: ${{ inputs.ubuntu_before_script }}
 
       # Windows before script
@@ -363,7 +363,7 @@ jobs:
 
       - name: ✅ Run unit tests (Ubuntu/macOS)
         id: pytest_bash
-        if: matrix.system != 'windows'
+        if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
         continue-on-error: true
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
@@ -381,7 +381,7 @@ jobs:
 
       - name: ✅ Run unit tests (Windows)
         id: pytest_posh
-        if: matrix.system == 'windows'
+        if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
         continue-on-error: true
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"

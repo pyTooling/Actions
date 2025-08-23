@@ -14,7 +14,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
-      python_version_list: "3.11 3.12 pypy-3.9 pypy-3.10"
+      python_version_list: "3.12 3.13 pypy-3.10 pypy-3.11"
 
   Params_Systems:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
@@ -26,25 +26,25 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
-      python_version_list: "3.11"
+      python_version_list: "3.12"
       system_list: "ubuntu windows macos macos-arm"
-      include_list: "ubuntu:3.12 ubuntu:3.13"
+      include_list: "ubuntu:3.13 ubuntu:3.14 ubuntu-arm:3.12"
 
   Params_Exclude:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
-      python_version_list: "3.12"
+      python_version_list: "3.13"
       system_list: "ubuntu windows macos macos-arm"
-      exclude_list: "windows:3.12 windows:3.13"
+      exclude_list: "windows:3.13 windows:3.14"
 
   Params_Disable:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
-      python_version_list: "3.12"
+      python_version_list: "3.13"
       system_list: "ubuntu windows macos macos-arm"
-      disable_list: "windows:3.12 windows:3.13"
+      disable_list: "windows:3.13 windows:3.14"
 
   Params_All:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
@@ -55,15 +55,9 @@ jobs:
       include_list: "windows:3.10 windows:3.11 windows:3.13"
       exclude_list: "macos:3.12 macos:3.13"
 
-  Params_Check:
+  Params_Check_Default:
     needs:
       - Params_Default
-      - Params_PythonVersions
-      - Params_Systems
-      - Params_Include
-      - Params_Exclude
-      - Params_Disable
-      - Params_All
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -72,7 +66,7 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: pip install --disable-pip-version-check --break-system-packages pyTooling
-      # Params_Default
+
       - name: Checking results from 'Params_Default'
         run: |
           from json import loads as json_loads
@@ -82,8 +76,10 @@ jobs:
 
           expectedPythonVersion = "3.13"
           expectedPythons = ["3.9", "3.10", "3.11", "3.12", "3.13"]
-          expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.12", "ucrt64:3.11"]
+          expectedSystems = ["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]
+          excludedJobs =    ["windows-arm:3.9", "windows-arm:3.10"]
+          includeJobs =     ["mingw64:3.12", "ucrt64:3.12"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -135,7 +131,18 @@ jobs:
             print(f"All checks PASSED.")
           exit(errors)
 
-      # Params_PythonVersions
+  Params_Check_PythonVersions:
+    needs:
+      - Params_PythonVersions
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: python
+    steps:
+      - name: Install dependencies
+        shell: bash
+        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+
       - name: Checking results from 'Params_PythonVersions'
         run: |
           from json import loads as json_loads
@@ -144,9 +151,11 @@ jobs:
           from pyTooling.Common import zipdicts
 
           expectedPythonVersion = "3.13"
-          expectedPythons = ["3.11", "3.12", "pypy-3.9", "pypy-3.10"]
-          expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw64:3.12", "ucrt64:3.11"]
+          expectedPythons = ["3.12", "3.13", "pypy-3.10", "pypy-3.11"]
+          expectedSystems = ["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]
+          excludedJobs =    ["windows-arm:pypy-3.10", "windows-arm:pypy-3.11"]
+          includeJobs =     ["mingw64:3.12", "ucrt64:3.12"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -198,7 +207,18 @@ jobs:
             print(f"All checks PASSED.")
           exit(errors)
 
-      # Params_Systems
+  Params_Check_Systems:
+    needs:
+      - Params_Systems
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: python
+    steps:
+      - name: Install dependencies
+        shell: bash
+        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+
       - name: Checking results from 'Params_Systems'
         run: |
           from json import loads as json_loads
@@ -209,7 +229,9 @@ jobs:
           expectedPythonVersion = "3.13"
           expectedPythons = ["3.9", "3.10", "3.11", "3.12", "3.13"]
           expectedSystems = ["windows"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["mingw32:3.12", "mingw64:3.11"]
+          excludedJobs =    []
+          includeJobs =     ["mingw64:3.12", "ucrt64:3.12"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -261,7 +283,18 @@ jobs:
             print(f"All checks PASSED.")
           exit(errors)
 
-      # Params_Include
+  Params_Check_Include:
+    needs:
+      - Params_Include
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: python
+    steps:
+      - name: Install dependencies
+        shell: bash
+        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+
       - name: Checking results from 'Params_Include'
         run: |
           from json import loads as json_loads
@@ -272,7 +305,9 @@ jobs:
           expectedPythonVersion = "3.13"
           expectedPythons = ["3.12"]
           expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["ubuntu:3.11", "ubuntu:3.12"]
+          excludedJobs =    []
+          includeJobs =     ["ubuntu:3.13", "ubuntu:3.14", "ubuntu-arm:3.12"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -324,7 +359,18 @@ jobs:
             print(f"All checks PASSED.")
           exit(errors)
 
-      # Params_Exclude
+  Params_Check_Exclude:
+    needs:
+      - Params_Exclude
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: python
+    steps:
+      - name: Install dependencies
+        shell: bash
+        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+
       - name: Checking results from 'Params_Exclude'
         run: |
           from json import loads as json_loads
@@ -333,9 +379,11 @@ jobs:
           from pyTooling.Common import zipdicts
 
           expectedPythonVersion = "3.13"
-          expectedPythons = ["3.12"]
+          expectedPythons = ["3.13"]
           expectedSystems = ["ubuntu", "macos", "macos-arm"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons]
+          excludedJobs =    []
+          includeJobs =     []
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -387,7 +435,18 @@ jobs:
             print(f"All checks PASSED.")
           exit(errors)
 
-      # Params_Disable
+  Params_Check_Disable:
+    needs:
+      - Params_Disable
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: python
+    steps:
+      - name: Install dependencies
+        shell: bash
+        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+
       - name: Checking results from 'Params_Disable'
         run: |
           from json import loads as json_loads
@@ -396,9 +455,11 @@ jobs:
           from pyTooling.Common import zipdicts
 
           expectedPythonVersion = "3.13"
-          expectedPythons = ["3.12"]
-          expectedSystems = ["ubuntu", "macos", "macos-arm"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons]
+          expectedPythons = ["3.13"]
+          expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
+          excludedJobs =    ["windows:3.13"]
+          includeJobs =     []
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
@@ -417,9 +478,9 @@ jobs:
             "documentation_pdf":   f"{expectedName}-Documentation-PDF",
           }
 
-          actualPythonVersion =            """${{ needs.Params_Exclude.outputs.python_version }}"""
-          actualPythonJobs =    json_loads("""${{ needs.Params_Exclude.outputs.python_jobs }}""".replace("'", '"'))
-          actualArtifactNames = json_loads("""${{ needs.Params_Exclude.outputs.artifact_names }}""".replace("'", '"'))
+          actualPythonVersion =            """${{ needs.Params_Disable.outputs.python_version }}"""
+          actualPythonJobs =    json_loads("""${{ needs.Params_Disable.outputs.python_jobs }}""".replace("'", '"'))
+          actualArtifactNames = json_loads("""${{ needs.Params_Disable.outputs.artifact_names }}""".replace("'", '"'))
           errors = 0
 
           if actualPythonVersion != expectedPythonVersion:
@@ -450,7 +511,18 @@ jobs:
             print(f"All checks PASSED.")
           exit(errors)
 
-      # Params_All
+  Params_Check_All:
+    needs:
+      - Params_All
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: python
+    steps:
+      - name: Install dependencies
+        shell: bash
+        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+
       - name: Checking results from 'Params_All'
         run: |
           from json import loads as json_loads
@@ -461,7 +533,9 @@ jobs:
           expectedPythonVersion = "3.13"
           expectedPythons = ["3.12", "3.13"]
           expectedSystems = ["ubuntu", "macos-arm", "windows"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons] + ["windows:3.10", "windows:3.11", "windows:3.13"]
+          excludedJobs =    []
+          includeJobs =     ["windows:3.10", "windows:3.11", "windows:3.13"]
+          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
           expectedName =    "Example"
           expectedArtifacts = {
             "unittesting_xml":     f"{expectedName}-UnitTestReportSummary-XML",
