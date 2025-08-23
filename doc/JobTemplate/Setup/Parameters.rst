@@ -187,11 +187,11 @@ Parameter Summary
 | :ref:`JOBTMPL/Parameters/Input/pipeline-delay`                      | no       | number   | ``0``                                                             |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 
-.. rubric:: Goto Goto :ref:`secrets <JOBTMPL/Parameters/Secrets>`
+.. rubric:: Goto :ref:`secrets <JOBTMPL/Parameters/Secrets>`
 
 This job template needs no secrets.
 
-.. rubric:: Goto Goto :ref:`output parameters <JOBTMPL/Parameters/Outputs>`
+.. rubric:: Goto :ref:`output parameters <JOBTMPL/Parameters/Outputs>`
 
 +---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
 | Result Name                                                         | Type     | Description                                                       |

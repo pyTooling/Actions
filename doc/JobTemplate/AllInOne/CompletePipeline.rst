@@ -258,7 +258,7 @@ Parameter Summary
 | :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                       | no       | string   | ``'true'``                                      |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
 
-.. rubric:: Goto Goto :ref:`secrets <JOBTMPL/CompletePipeline/Secrets>`
+.. rubric:: Goto :ref:`secrets <JOBTMPL/CompletePipeline/Secrets>`
 
 +-----------------------------------------------------------+----------+----------+--------------+
 | Token Name                                                | Required | Type     | Default      |
@@ -270,7 +270,7 @@ Parameter Summary
 | :ref:`JOBTMPL/CompletePipeline/Secret/CODACY_TOKEN`       | no       | string   | — — — —      |
 +-----------------------------------------------------------+----------+----------+--------------+
 
-.. rubric:: Goto Goto :ref:`output parameters <JOBTMPL/CompletePipeline/Outputs>`
+.. rubric:: Goto :ref:`output parameters <JOBTMPL/CompletePipeline/Outputs>`
 
 This job template has no output parameters.
 

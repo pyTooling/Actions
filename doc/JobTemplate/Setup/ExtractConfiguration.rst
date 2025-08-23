@@ -112,11 +112,11 @@ Parameter Summary
 | :ref:`JOBTMPL/ExtractConfiguration/Input/coverage_config`           | no       | string   | ``'pyproject.toml'``                                              |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 
-.. rubric:: Goto Goto :ref:`secrets <JOBTMPL/ExtractConfiguration/Secrets>`
+.. rubric:: Goto :ref:`secrets <JOBTMPL/ExtractConfiguration/Secrets>`
 
 This job template needs no secrets.
 
-.. rubric:: Goto Goto :ref:`output parameters <JOBTMPL/ExtractConfiguration/Outputs>`
+.. rubric:: Goto :ref:`output parameters <JOBTMPL/ExtractConfiguration/Outputs>`
 
 +---------------------------------------------------------------------------------+----------+-------------------------------------------------------------------+
 | Result Name                                                                     | Type     | Description                                                       |
