@@ -159,6 +159,13 @@ It can be used for simple Python packages as well as namespace packages.
 
    * :ref:`pyTooling/Actions/.github/workflows/Parameters.yml <JOBTMPL/Parameters>`
    * :ref:`pyTooling/Actions/.github/workflows/ExtractConfiguration.yml <JOBTMPL/ExtractConfiguration>`
+
+     * :gh:`actions/checkout`
+     * :gh:`actions/setup-python`
+
+       * :pypi:`wheel`
+       * :pypi:`tomli`
+
    * :ref:`pyTooling/Actions/.github/workflows/UnitTesting.yml <JOBTMPL/UnitTesting>`
    * :ref:`pyTooling/Actions/.github/workflows/ApplicationTesting.yml <JOBTMPL/ApplicationTesting>`
    * :ref:`pyTooling/Actions/.github/workflows/CheckDocumentation.yml <JOBTMPL/CheckDocumentation>`
@@ -201,7 +208,7 @@ It only requires a `name` parameter to create the artifact names.
      Params:
        uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
        with:
-         name: pyTooling
+         package_name: myPackage
 
 
 .. _JOBTMPL/CompletePipeline/Parameters:
@@ -286,7 +293,6 @@ package_namespace
                   needs to be specified using this parameter. |br|
                   In case of a simple Python package, this parameter must be specified as an empty string (``''``),
                   which is the default.
-
 :Example:
                   .. grid:: 2
 
@@ -377,7 +383,9 @@ unittest_python_version
 :Type:            string
 :Required:        no
 :Default Value:   ``'3.13'``
-:Possible Values: Any valid Python version conforming to the pattern ``major.minor``.
+:Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
+                  See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
+                  and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
 :Description:     The default Python version used for intermediate jobs using Python tools.
 
                   In case :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list` is empty, this default
@@ -457,7 +465,9 @@ apptest_python_version
 :Type:            string
 :Required:        no
 :Default Value:   ``'3.13'``
-:Possible Values: Any valid Python version conforming to the pattern ``major.minor``.
+:Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
+                  See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
+                  and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
 :Description:     The default Python version used for intermediate jobs using Python tools.
 
                   In case :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list` is empty, this default

@@ -87,5 +87,7 @@ python_version
 :Type:            string
 :Required:        usually no
 :Default Value:   ``'3.13'``
-:Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
+:Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
+                  See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
+                  and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
 :Description:     Python version used to run Python scripts in a job.
