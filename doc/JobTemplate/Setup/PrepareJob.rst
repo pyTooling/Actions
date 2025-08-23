@@ -113,11 +113,11 @@ Parameter Summary
 | :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`                 | no       | string   | ``'(v|r)?[0-9]+(\.[0-9]+){0,2}(-(dev|alpha|beta|rc)([0-9]*))?'``  |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 
-.. rubric:: Goto Goto :ref:`secrets <JOBTMPL/PrepareJob/Secrets>`
+.. rubric:: Goto :ref:`secrets <JOBTMPL/PrepareJob/Secrets>`
 
 This job template needs no secrets.
 
-.. rubric:: Goto Goto :ref:`output parameters <JOBTMPL/PrepareJob/Outputs>`
+.. rubric:: Goto :ref:`output parameters <JOBTMPL/PrepareJob/Outputs>`
 
 +---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
 | Result Name                                                         | Type     | Description                                                       |
