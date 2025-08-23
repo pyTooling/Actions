@@ -214,11 +214,12 @@ autodoc_typehints = "both"
 # Sphinx.Ext.ExtLinks
 # ==============================================================================
 extlinks = {
-	"gh":      (f"https://GitHub.com/%s", "gh:%s"),
+	"gh":      (f"https://GitHub.com/%s", "GitHub: %s"),
 	"ghissue": (f"https://GitHub.com/{githubNamespace}/{githubProject}/issues/%s", "issue #%s"),
 	"ghpull":  (f"https://GitHub.com/{githubNamespace}/{githubProject}/pull/%s", "pull request #%s"),
 	"ghsrc":   (f"https://GitHub.com/{githubNamespace}/{githubProject}/blob/main/%s", None),
 	"wiki":    (f"https://en.wikipedia.org/wiki/%s", None),
+	"pypi":    (f"https://pypi.org/project/%s/", "PyPI: %s"),
 }
 
 
