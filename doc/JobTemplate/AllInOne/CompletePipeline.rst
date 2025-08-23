@@ -218,45 +218,45 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/CompletePipeline/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                      |
-+=====================================================================+==========+==========+==============================================+
-| :ref:`JOBTMPL/CompletePipeline/Input/package_namespace`             | no       | string   | ``''``                                       |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/package_name`                  | yes      | string   | — — — —                                      |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`       | no       | string   | ``'3.13'``                                   |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list`  | no       | string   | ``'3.9 3.10 3.11 3.12 3.13'``                |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`          | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``  |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_include_list`         | no       | string   | ``''``                                       |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`         | no       | string   | ``''``                                       |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`         | no       | string   | ``''``                                       |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`        | no       | string   | ``'3.13'``                                   |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`   | no       | string   | ``''``                                       |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_system_list`           | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``  |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_include_list`          | no       | string   | ``''``                                       |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`          | no       | string   | ``''``                                       |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`          | no       | string   | ``''``                                       |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/codecov`                       | no       | string   | ``'false'``                                  |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/codacy`                        | no       | string   | ``'false'``                                  |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/dorny`                         | no       | string   | ``'false'``                                  |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                       | no       | string   | ``'true'``                                   |
-+---------------------------------------------------------------------+----------+----------+----------------------------------------------+
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| Parameter Name                                                      | Required | Type     | Default                                         |
++=====================================================================+==========+==========+=================================================+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_namespace`             | no       | string   | ``''``                                          |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_name`                  | yes      | string   | — — — —                                         |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`       | no       | string   | ``'3.13'``                                      |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list`  | no       | string   | ``'3.9 3.10 3.11 3.12 3.13'``                   |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`          | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``     |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_include_list`         | no       | string   | ``''``                                          |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`         | no       | string   | ``'windows-arm:3.9 windows-arm:3.10'``          |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`         | no       | string   | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'`` |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`        | no       | string   | ``'3.13'``                                      |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`   | no       | string   | ``''``                                          |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_system_list`           | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``     |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_include_list`          | no       | string   | ``''``                                          |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`          | no       | string   | ``'windows-arm:3.9 windows-arm:3.10'``          |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`          | no       | string   | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'`` |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/codecov`                       | no       | string   | ``'false'``                                     |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/codacy`                        | no       | string   | ``'false'``                                     |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/dorny`                         | no       | string   | ``'false'``                                     |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                       | no       | string   | ``'true'``                                      |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
 
 .. rubric:: Goto Goto :ref:`secrets <JOBTMPL/CompletePipeline/Secrets>`
 
@@ -441,7 +441,7 @@ unittest_exclude_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'windows-arm:3.9 windows-arm:3.10'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:
 
@@ -453,7 +453,7 @@ unittest_disable_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:
 
@@ -527,7 +527,7 @@ apptest_exclude_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'windows-arm:3.9 windows-arm:3.10'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:
 
@@ -539,7 +539,7 @@ apptest_disable_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:
 

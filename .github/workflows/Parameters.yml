@@ -58,7 +58,7 @@ on:
       system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu windows macos macos-arm mingw64 ucrt64'
+        default: 'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'
         type: string
       include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'
@@ -68,22 +68,32 @@ on:
       exclude_list:
         description: 'Space separated list of system:python items to be excluded from the list of test.'
         required: false
-        default: ''
+        default: 'windows-arm:3.9 windows-arm:3.10'
         type: string
       disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
         required: false
-        default: ''
+        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
         type: string
       ubuntu_image:
-        description: 'The used GitHub Action image for Ubuntu based jobs.'
+        description: 'The used GitHub Action image for Ubuntu (x86-64) based jobs.'
         required: false
         default: 'ubuntu-24.04'
         type: string
+      ubuntu_arm_image:
+        description: 'The used GitHub Action image for Ubuntu (aarch64) based jobs.'
+        required: false
+        default: 'ubuntu-24.04-arm'
+        type: string
       windows_image:
-        description: 'The used GitHub Action image for Windows based jobs.'
+        description: 'The used GitHub Action image for Windows Server (x86-64) based jobs.'
         required: false
         default: 'windows-2025'
+        type: string
+      windows_arm_image:
+        description: 'The used GitHub Action image for Windows (aarch64) based jobs.'
+        required: false
+        default: 'windows-11-arm'
         type: string
       macos_intel_image:
         description: 'The used GitHub Action image for macOS (Intel x86-64) based jobs.'
@@ -93,7 +103,7 @@ on:
       macos_arm_image:
         description: 'The used GitHub Action image for macOS (ARM aarch64) based jobs.'
         required: false
-        default: 'macos-14'
+        default: 'macos-15'
         type: string
       pipeline-delay:
         description: 'Slow down this job, to delay the startup of the GitHub Action pipline.'
@@ -160,7 +170,7 @@ jobs:
 
           currentMSYS2Version = "3.12"
           currentAlphaVersion = "3.14"
-          currentAlphaRelease = "3.14.0-alpha.1"
+          currentAlphaRelease = "3.14.0-rc.2"
 
           if systems == "":
             print("::error title=Parameter::system_list is empty.")
@@ -194,7 +204,7 @@ jobs:
           if currentAlphaVersion in versions:
             print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
           for disable in disabled:
-            print(f"::warning title=Disabled Python Job::System '{disable}' temporarily disabled.")
+            print(f"::warning title=Disabled Python Job::{name}: Job combination '{disable}' temporarily disabled.")
 
           # see https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
           data = {
@@ -215,10 +225,12 @@ jobs:
             },
             # Runner systems (runner images) supported by GitHub Actions
             "sys": {
-              "ubuntu":    { "icon": "🐧", "runs-on": "${{ inputs.ubuntu_image }}",      "shell": "bash", "name": "Linux (x86-64)"   },
-              "windows":   { "icon": "🪟", "runs-on": "${{ inputs.windows_image }}",     "shell": "pwsh", "name": "Windows (x86-64)" },
-              "macos":     { "icon": "🍎", "runs-on": "${{ inputs.macos_intel_image }}", "shell": "bash", "name": "macOS (x86-64)"   },
-              "macos-arm": { "icon": "🍏", "runs-on": "${{ inputs.macos_arm_image }}",   "shell": "bash", "name": "macOS (aarch64)"  },
+              "ubuntu":      { "icon": "🐧", "runs-on": "${{ inputs.ubuntu_image }}",      "shell": "bash", "name": "Linux (x86-64)"   },
+              "ubuntu-arm":  { "icon": "⛄", "runs-on": "${{ inputs.ubuntu_arm_image }}",  "shell": "bash", "name": "Linux (aarch64)"   },
+              "windows":     { "icon": "🪟", "runs-on": "${{ inputs.windows_image }}",     "shell": "pwsh", "name": "Windows (x86-64)" },
+              "windows-arm": { "icon": "🏢", "runs-on": "${{ inputs.windows_arm_image }}", "shell": "pwsh", "name": "Windows (aarch64)" },
+              "macos":       { "icon": "🍎", "runs-on": "${{ inputs.macos_intel_image }}", "shell": "bash", "name": "macOS (x86-64)"   },
+              "macos-arm":   { "icon": "🍏", "runs-on": "${{ inputs.macos_arm_image }}",   "shell": "bash", "name": "macOS (aarch64)"  },
             },
             # Runtimes provided by MSYS2
             "runtime": {
