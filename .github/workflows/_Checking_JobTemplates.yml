@@ -23,7 +23,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: pyDummy
-      python_version_list: "3.9 3.10 3.11 3.12 3.13 pypy-3.9 pypy-3.10"
+      python_version_list: "3.9 3.10 3.11 3.12 3.13 pypy-3.10 pypy-3.11"
 #      disable_list: "windows:pypy-3.10"
 
   PlatformTestingParams:
@@ -31,7 +31,7 @@ jobs:
     with:
       name: Platform
       python_version_list: ""
-      system_list: "ubuntu windows macos mingw64 clang64 ucrt64"
+      system_list: "ubuntu ubuntu-arm windows windows-arm macos mingw64 clang64 ucrt64"
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
