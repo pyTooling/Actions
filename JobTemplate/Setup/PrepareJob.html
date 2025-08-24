@@ -1,0 +1,826 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrepareJob &mdash; Project name not set 0.4.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-reports.089ed2e62f89368aa21ac7591d90c12a.css?v=83177741" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/override.css?v=aed75351" />
+
+  
+    <link rel="shortcut icon" href="../../_static/icon.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=340bb9e5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Parameters" href="Parameters.html" />
+    <link rel="prev" title="Pipeline Setup" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AllInOne/index.html">All-In-One</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Pipeline Setup</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PrepareJob</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instantiation">Instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameter-summary">Parameter Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-parameters">Input Parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ubuntu-image">ubuntu_image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main-branch">main_branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#development-branch">development_branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#release-branch">release_branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nightly-tag-pattern">nightly_tag_pattern</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#release-tag-pattern">release_tag_pattern</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#secrets">Secrets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#outputs">Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#on-main-branch">on_main_branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on-dev-branch">on_dev_branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on-release-branch">on_release_branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#is-regular-commit">is_regular_commit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#is-merge-commit">is_merge_commit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#is-release-commit">is_release_commit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#is-nightly-tag">is_nightly_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#is-release-tag">is_release_tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ref-kind">ref_kind</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#branch">branch</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tag">tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#version">version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pr-title">pr_title</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pr-number">pr_number</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExtractConfiguration.html">ExtractConfiguration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Documentation/index.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Testing/index.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Quality/index.html">Quality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Package/index.html">Packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Publish/index.html">Publish</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Release/index.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cleanup/index.html">Cleanup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deprecated/index.html">Deprecated</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../pyDummy/pyDummy.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CodeCoverage.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../DocCoverage.html">Doc. Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Project name not set</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Pipeline Setup</a></li>
+      <li class="breadcrumb-item active">PrepareJob</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/JobTemplate/Setup/PrepareJob.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="preparejob">
+<span id="jobtmpl-preparejob"></span><h1>PrepareJob<a class="headerlink" href="#preparejob" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">PrepareJob</span></code> template is a workaround for the limitations of GitHub Actions to handle global variables in GitHub
+Actions workflows (see <a class="reference external" href="https://github.com/actions/runner/issues/480">actions/runner#480</a>) as well as providing basic
+string operations (see GitHub Action’s <a class="reference external" href="https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#functions">limited set of functions</a>).</p>
+<p>The job template generates various output parameters derived from
+<a class="reference external" href="https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#github-context">${{ github }} context</a>.</p>
+<aside class="topic">
+<p class="topic-title">Features</p>
+<ul class="simple">
+<li><p>Provide branch name or tag name from <code class="docutils literal notranslate"><span class="pre">${{</span> <span class="pre">github.ref</span> <span class="pre">}}</span></code> variable.</p></li>
+<li><p>Check if pipeline is a branch or tag pipeline.</p></li>
+<li><p>Check if a commit is a merge commit.</p></li>
+<li><p>Check if a commit is a release commit.</p></li>
+<li><p>Check if a tag is a nightly tag (rolling release tag).</p></li>
+<li><p>Check if a tag is a release tag.</p></li>
+<li><p>Find associated pull-request (PR) for a merge commit/release commit.</p></li>
+<li><p>Provide a version from tag name or pull-request name.</p></li>
+</ul>
+</aside>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Due to GitHub Action’s broken type system and missing implicit type conversions in YAML files, <em>boolean</em> values need
+to be returned as <em>string</em> values otherwise type compatibility and comparison are broken. This also requires all
+inputs to be <em>string</em> parameters, otherwise step’s, job’s or template’s output cannot be assigned to a template’s
+input.</p>
+<p><strong>Problems:</strong></p>
+<ol class="arabic simple">
+<li><p>Scripts (Bash, Python, …) return results as strings. There is no option or operation provided by GitHub Actions
+to convert outputs of <code class="docutils literal notranslate"><span class="pre">printf</span></code> to a <code class="docutils literal notranslate"><span class="pre">boolean</span></code> in the YAML file.</p></li>
+<li><p>Unlike job template inputs, outputs have no type information. These are all considered <em>string</em> values. Again no
+implicit or explicit type conversion is provided.</p></li>
+<li><p>While inputs might be defined as <code class="docutils literal notranslate"><span class="pre">boolean</span></code> and a matching default can be set as a <em>boolean</em> value (e.g.,
+<code class="docutils literal notranslate"><span class="pre">false</span></code>), a connected variable from <code class="docutils literal notranslate"><span class="pre">${{</span> <span class="pre">needs</span> <span class="pre">}}</span></code> context will either cause a typing error or a later
+comparison will not work as expected. Either the comparison works with <code class="docutils literal notranslate"><span class="pre">inputs.param</span> <span class="pre">==</span> <span class="pre">false</span></code> for the default
+value, <strong>or</strong> it works with a value from <code class="docutils literal notranslate"><span class="pre">${{</span> <span class="pre">needs</span> <span class="pre">}}</span></code> context, which is a string <code class="docutils literal notranslate"><span class="pre">inputs.param</span> <span class="pre">==</span> <span class="pre">'false'</span></code>.</p></li>
+</ol>
+</div>
+<aside class="topic">
+<p class="topic-title">Job Execution</p>
+<a class="reference internal image-reference" href="../../_images/pyTooling-Actions-PrepareJob.png"><img alt="../../_images/pyTooling-Actions-PrepareJob.png" src="../../_images/pyTooling-Actions-PrepareJob.png" style="width: 600px;" />
+</a>
+</aside>
+<aside class="topic">
+<p class="topic-title">Dependencies</p>
+<ul class="simple">
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/checkout">GitHub: actions/checkout</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/cli/cli">GitHub command line tool ‘gh’</a></p></li>
+</ul>
+</aside>
+<section id="instantiation">
+<span id="jobtmpl-preparejob-instantiation"></span><h2>Instantiation<a class="headerlink" href="#instantiation" title="Link to this heading"></a></h2>
+<p>The following instantiation example creates a job <code class="docutils literal notranslate"><span class="pre">Prepare</span></code> derived from job template <code class="docutils literal notranslate"><span class="pre">PrepareJob</span></code> version <code class="docutils literal notranslate"><span class="pre">&#64;r5</span></code>.
+In a default usecase, no input parameters need to be specified for the job template assuming a main-branch and
+release-branch called <code class="docutils literal notranslate"><span class="pre">main</span></code>, a development-branch called <code class="docutils literal notranslate"><span class="pre">dev</span></code>, as well as semantic versioning for tags and
+pull-request titles.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">Prepare</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/PrepareJob.yml@r5</span>
+
+<span class="w">  </span><span class="nt">&lt;ReleaseJob&gt;</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Prepare</span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">needs.Prepare.outputs.is_release_tag == &#39;true&#39;</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.Prepare.outputs.version }}</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../Release/TagReleaseCommit.html#jobtmpl-tagreleasecommit"><span class="std std-ref">TagReleaseCommit</span></a></dt><dd><p><code class="docutils literal notranslate"><span class="pre">PrepareJob</span></code> is usualy used to identify if a pipeline’s commit is a merge commit created by a pull-request. If
+so, this commit can be tagged automatically to trigger a release pipeline (tag pipeline) for the same commit
+resulting in a full release (PyPI, GitHub Pages, GitHub Release, …).</p>
+</dd>
+<dt><a class="reference internal" href="../Publish/PublishReleaseNotes.html#jobtmpl-publishreleasenotes"><span class="std std-ref">PublishReleaseNotes</span></a></dt><dd><p><code class="docutils literal notranslate"><span class="pre">PrepareJob</span></code> is usually used to identify if a tag pipeline is a release pipeline.</p>
+</dd>
+</dl>
+</div>
+</section>
+<section id="parameter-summary">
+<span id="jobtmpl-preparejob-parameters"></span><h2>Parameter Summary<a class="headerlink" href="#parameter-summary" title="Link to this heading"></a></h2>
+<p class="rubric">Goto <a class="reference internal" href="#jobtmpl-preparejob-inputs"><span class="std std-ref">input parameters</span></a></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-preparejob-input-ubuntu-image"><span class="std std-ref">ubuntu_image</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'ubuntu-24.04'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-preparejob-input-main-branch"><span class="std std-ref">main_branch</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'main'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-preparejob-input-development-branch"><span class="std std-ref">development_branch</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'dev'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-preparejob-input-release-branch"><span class="std std-ref">release_branch</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'main'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-preparejob-input-nightly-tag-pattern"><span class="std std-ref">nightly_tag_pattern</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'nightly'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-preparejob-input-release-tag-pattern"><span class="std std-ref">release_tag_pattern</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'(v|r)?[0-9]+(\.[0-9]+){0,2}(-(dev|alpha|beta|rc)([0-9]*))?'</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Goto Goto <a class="reference internal" href="#jobtmpl-preparejob-secrets"><span class="std std-ref">secrets</span></a></p>
+<p>This job template needs no secrets.</p>
+<p class="rubric">Goto Goto <a class="reference internal" href="#jobtmpl-preparejob-outputs"><span class="std std-ref">output parameters</span></a></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Result Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-on-main-branch"><span class="std std-ref">on_main_branch</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-on-dev-branch"><span class="std std-ref">on_dev_branch</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-on-release-branch"><span class="std std-ref">on_release_branch</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-is-regular-commit"><span class="std std-ref">is_regular_commit</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-is-merge-commit"><span class="std std-ref">is_merge_commit</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-is-release-commit"><span class="std std-ref">is_release_commit</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-is-nightly-tag"><span class="std std-ref">is_nightly_tag</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-is-release-tag"><span class="std std-ref">is_release_tag</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-ref-kind"><span class="std std-ref">ref_kind</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-branch"><span class="std std-ref">branch</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-tag"><span class="std std-ref">tag</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-version"><span class="std std-ref">version</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-pr-title"><span class="std std-ref">pr_title</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-preparejob-output-pr-number"><span class="std std-ref">pr_number</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="input-parameters">
+<span id="jobtmpl-preparejob-inputs"></span><h2>Input Parameters<a class="headerlink" href="#input-parameters" title="Link to this heading"></a></h2>
+<section id="ubuntu-image">
+<span id="jobtmpl-preparejob-input-ubuntu-image"></span><h3>ubuntu_image<a class="headerlink" href="#ubuntu-image" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'ubuntu-24.04'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>See <a class="reference external" href="https://github.com/actions/runner-images?tab=readme-ov-file#available-images">actions/runner-images - Available Images</a></p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Name of the Ubuntu image used to run this job.</p>
+</dd>
+</dl>
+</section>
+<section id="main-branch">
+<span id="jobtmpl-preparejob-input-main-branch"></span><h3>main_branch<a class="headerlink" href="#main-branch" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'main'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid branch name.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Name of the main branch.</p>
+</dd>
+</dl>
+</section>
+<section id="development-branch">
+<span id="jobtmpl-preparejob-input-development-branch"></span><h3>development_branch<a class="headerlink" href="#development-branch" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'dev'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid branch name.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Name of the development branch.</p>
+</dd>
+</dl>
+</section>
+<section id="release-branch">
+<span id="jobtmpl-preparejob-input-release-branch"></span><h3>release_branch<a class="headerlink" href="#release-branch" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'main'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid branch name.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Name of the branch containing releases.</p>
+</dd>
+</dl>
+</section>
+<section id="nightly-tag-pattern">
+<span id="jobtmpl-preparejob-input-nightly-tag-pattern"></span><h3>nightly_tag_pattern<a class="headerlink" href="#nightly-tag-pattern" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'nightly'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid regular expression. <br />
+Suggested alternative values: <code class="docutils literal notranslate"><span class="pre">latest</span></code>, <code class="docutils literal notranslate"><span class="pre">rolling</span></code></p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Name of the tag used for rolling releases, a.k.a nightly builds.</p>
+</dd>
+</dl>
+</section>
+<section id="release-tag-pattern">
+<span id="jobtmpl-preparejob-input-release-tag-pattern"></span><h3>release_tag_pattern<a class="headerlink" href="#release-tag-pattern" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'(v|r)?[0-9]+(\.[0-9]+){0,2}(-(dev|alpha|beta|rc)([0-9]*))?'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid regular expression.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A regular expression describing a pattern for identifying a release tag.</p>
+<p>The default pattern matches on a <a class="reference external" href="https://semver.org/">semantic version number</a> separated by dots.
+It supports up to 3 digit groups. It accepts an optional <code class="docutils literal notranslate"><span class="pre">v</span></code> or <code class="docutils literal notranslate"><span class="pre">r</span></code> prefix. Optionally, a postfix
+of <code class="docutils literal notranslate"><span class="pre">dev</span></code>, <code class="docutils literal notranslate"><span class="pre">alpha</span></code>, <code class="docutils literal notranslate"><span class="pre">beta</span></code> or <code class="docutils literal notranslate"><span class="pre">rc</span></code> separated by a hyphen can be appended. If needed, the
+postfix can have a digit group.</p>
+<p><strong>Matching tag names as releases:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">v1</span></code>, <code class="docutils literal notranslate"><span class="pre">r1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">1.1</span></code>, <code class="docutils literal notranslate"><span class="pre">1.1.1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">v1.2.8-dev</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">v3.13.5-alpha2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">v4.7.22-beta3</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">v10.2-rc1</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="secrets">
+<span id="jobtmpl-preparejob-secrets"></span><h2>Secrets<a class="headerlink" href="#secrets" title="Link to this heading"></a></h2>
+<p>This job template needs no secrets.</p>
+</section>
+<section id="outputs">
+<span id="jobtmpl-preparejob-outputs"></span><h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h2>
+<section id="on-main-branch">
+<span id="jobtmpl-preparejob-output-on-main-branch"></span><h3>on_main_branch<a class="headerlink" href="#on-main-branch" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">'true'</span></code> if the pipeline’s commit is on <a class="reference internal" href="#jobtmpl-preparejob-input-main-branch"><span class="std std-ref">main branch</span></a>,
+otherwise return <code class="docutils literal notranslate"><span class="pre">'false'</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="on-dev-branch">
+<span id="jobtmpl-preparejob-output-on-dev-branch"></span><h3>on_dev_branch<a class="headerlink" href="#on-dev-branch" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">'true'</span></code> if the pipeline’s commit is on <a class="reference internal" href="#jobtmpl-preparejob-input-development-branch"><span class="std std-ref">development branch</span></a>,
+otherwise return <code class="docutils literal notranslate"><span class="pre">'false'</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="on-release-branch">
+<span id="jobtmpl-preparejob-output-on-release-branch"></span><h3>on_release_branch<a class="headerlink" href="#on-release-branch" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">'true'</span></code> if the pipeline’s commit is on <a class="reference internal" href="#jobtmpl-preparejob-input-release-branch"><span class="std std-ref">release branch</span></a>,
+otherwise return <code class="docutils literal notranslate"><span class="pre">'false'</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="is-regular-commit">
+<span id="jobtmpl-preparejob-output-is-regular-commit"></span><h3>is_regular_commit<a class="headerlink" href="#is-regular-commit" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">'true'</span></code> if the pipeline’s commit is not a <a class="reference internal" href="#jobtmpl-preparejob-output-is-merge-commit"><span class="std std-ref">merge commit</span></a>
+nor <a class="reference internal" href="#jobtmpl-preparejob-output-is-release-commit"><span class="std std-ref">release commit</span></a>, otherwise return <code class="docutils literal notranslate"><span class="pre">'false'</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="is-merge-commit">
+<span id="jobtmpl-preparejob-output-is-merge-commit"></span><h3>is_merge_commit<a class="headerlink" href="#is-merge-commit" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">'true'</span></code> if the pipeline’s commit is on <a class="reference internal" href="#jobtmpl-preparejob-input-main-branch"><span class="std std-ref">main branch</span></a>
+or <a class="reference internal" href="#jobtmpl-preparejob-input-development-branch"><span class="std std-ref">development branch</span></a> and has more than one
+parent (merge commit), otherwise return <code class="docutils literal notranslate"><span class="pre">'false'</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="is-release-commit">
+<span id="jobtmpl-preparejob-output-is-release-commit"></span><h3>is_release_commit<a class="headerlink" href="#is-release-commit" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">'true'</span></code> if the pipeline’s commit is on <a class="reference internal" href="#jobtmpl-preparejob-input-release-branch"><span class="std std-ref">release branch</span></a>
+and has more than one parent (merge commit), otherwise return <code class="docutils literal notranslate"><span class="pre">'false'</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="is-nightly-tag">
+<span id="jobtmpl-preparejob-output-is-nightly-tag"></span><h3>is_nightly_tag<a class="headerlink" href="#is-nightly-tag" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">'true'</span></code> if the pipeline is a tag pipeline for a commit on <a class="reference internal" href="#jobtmpl-preparejob-input-release-branch"><span class="std std-ref">release branch</span></a>
+and the tag’s name matches the <a class="reference internal" href="#jobtmpl-preparejob-input-nightly-tag-pattern"><span class="std std-ref">nightly tag pattern</span></a>,
+otherwise return <code class="docutils literal notranslate"><span class="pre">'false'</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="is-release-tag">
+<span id="jobtmpl-preparejob-output-is-release-tag"></span><h3>is_release_tag<a class="headerlink" href="#is-release-tag" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">'true'</span></code> if the pipeline is a tag pipeline for a commit on <a class="reference internal" href="#jobtmpl-preparejob-input-release-branch"><span class="std std-ref">release branch</span></a>
+and the tag’s name matches the <a class="reference internal" href="#jobtmpl-preparejob-input-release-tag-pattern"><span class="std std-ref">release tag pattern</span></a>,
+otherwise return <code class="docutils literal notranslate"><span class="pre">'false'</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="ref-kind">
+<span id="jobtmpl-preparejob-output-ref-kind"></span><h3>ref_kind<a class="headerlink" href="#ref-kind" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'unknown'</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'branch'</span></code>, <code class="docutils literal notranslate"><span class="pre">'tag'</span></code>, <code class="docutils literal notranslate"><span class="pre">'unknown'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns <code class="docutils literal notranslate"><span class="pre">'branch'</span></code> if pipeline’s commit is on a branch or returns <code class="docutils literal notranslate"><span class="pre">'tag'</span></code> if the pipeline runs for
+a tagged commit, otherwise returns <code class="docutils literal notranslate"><span class="pre">'unknown'</span></code> in case of an internal error.</p>
+<p>If the kind is a branch, the branch name is available in the job’s <a class="reference internal" href="#jobtmpl-preparejob-output-branch"><span class="std std-ref">branch</span></a>
+result. <br />
+If the kind is a tag, the tags name is available in the job’s <a class="reference internal" href="#jobtmpl-preparejob-output-tag"><span class="std std-ref">tag</span></a>
+result. <br />
+Moreover, if the tag matches the <a class="reference internal" href="#jobtmpl-preparejob-input-release-tag-pattern"><span class="std std-ref">release_tag_pattern</span></a>, the extracted
+version is available in the job’s <a class="reference internal" href="#jobtmpl-preparejob-output-version"><span class="std std-ref">version</span></a> result.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>GitHub doesn’t provide standalone branch or tag information, but provides the variable <code class="docutils literal notranslate"><span class="pre">${{</span> <span class="pre">github.ref</span> <span class="pre">}}</span></code>
+specifying the currently active reference (branch, tag, pull, …). This job template parses the context’s variable
+and derives if a pipeline runs for a commit on a branch or a tagged commit.</p>
+</div>
+</section>
+<section id="branch">
+<span id="jobtmpl-preparejob-output-branch"></span><h3>branch<a class="headerlink" href="#branch" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any valid branch name.</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the branch’s name the pipeline’s commit is associated to, if <a class="reference internal" href="#jobtmpl-preparejob-output-ref-kind"><span class="std std-ref">ref_kind</span></a>
+is <code class="docutils literal notranslate"><span class="pre">'branch'</span></code>, otherwise returns an empty string <code class="docutils literal notranslate"><span class="pre">''</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="tag">
+<span id="jobtmpl-preparejob-output-tag"></span><h3>tag<a class="headerlink" href="#tag" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any valid tag name.</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the tag’s name the pipeline’s commit is associated to, if <a class="reference internal" href="#jobtmpl-preparejob-output-ref-kind"><span class="std std-ref">ref_kind</span></a>
+is <code class="docutils literal notranslate"><span class="pre">'tag'</span></code>, otherwise returns an empty string <code class="docutils literal notranslate"><span class="pre">''</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="version">
+<span id="jobtmpl-preparejob-output-version"></span><h3>version<a class="headerlink" href="#version" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any valid version matching <a class="reference internal" href="#jobtmpl-preparejob-input-release-tag-pattern"><span class="std std-ref">release_tag_pattern</span></a>.</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>In case the pipeline runs for a tag, it returns the tag’s name, if the name matches
+<a class="reference internal" href="#jobtmpl-preparejob-input-release-tag-pattern"><span class="std std-ref">release_tag_pattern</span></a>, otherwise returns an empty string <code class="docutils literal notranslate"><span class="pre">''</span></code>. <br />
+In case the pipeline runs for a branch, then the commit is checked if it’s a
+<a class="reference internal" href="#jobtmpl-preparejob-output-is-merge-commit"><span class="std std-ref">merge commit</span></a> and corresponding pull-request (PR) is
+searched. When a matching PR can be located and it’s title matches
+<a class="reference internal" href="#jobtmpl-preparejob-input-release-tag-pattern"><span class="std std-ref">release_tag_pattern</span></a>, then this title is returned as a version,
+otherwise it returns an empty string <code class="docutils literal notranslate"><span class="pre">''</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="pr-title">
+<span id="jobtmpl-preparejob-output-pr-title"></span><h3>pr_title<a class="headerlink" href="#pr-title" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the associated pull-request’s title, if the pipeline’s commit is a
+<a class="reference internal" href="#jobtmpl-preparejob-output-is-merge-commit"><span class="std std-ref">merge commit</span></a> and the located pull-request’s title
+for this commit matches <a class="reference internal" href="#jobtmpl-preparejob-input-release-tag-pattern"><span class="std std-ref">release_tag_pattern</span></a>, otherwise returns an
+empty string <code class="docutils literal notranslate"><span class="pre">''</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="pr-number">
+<span id="jobtmpl-preparejob-output-pr-number"></span><h3>pr_number<a class="headerlink" href="#pr-number" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Default Value<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the associated pull-request’s number, if the pipeline’s commit is a
+<a class="reference internal" href="#jobtmpl-preparejob-output-is-merge-commit"><span class="std std-ref">merge commit</span></a> and the located pull-request’s title
+for this commit matches <a class="reference internal" href="#jobtmpl-preparejob-input-release-tag-pattern"><span class="std std-ref">release_tag_pattern</span></a>, otherwise returns an
+empty string <code class="docutils literal notranslate"><span class="pre">''</span></code>.</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Pipeline Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Parameters.html" class="btn btn-neutral float-right" title="Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2025, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 24.08.2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
