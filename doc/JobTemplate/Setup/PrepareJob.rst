@@ -363,13 +363,15 @@ ref_kind
 
 :Type:            string
 :Default Value:   ``'unknown'``
-:Possible Values: ``'branch'``, ``'tag'``, ``'unknown'``
+:Possible Values: ``'branch'``, ``'tag'``, ``'pullrequest'``, ``'unknown'``
 :Description:     Returns ``'branch'`` if pipeline's commit is on a branch or returns ``'tag'`` if the pipeline runs for
                   a tagged commit, otherwise returns ``'unknown'`` in case of an internal error.
 
                   If the kind is a branch, the branch name is available in the job's :ref:`JOBTMPL/PrepareJob/Output/branch`
                   result. |br|
                   If the kind is a tag, the tags name is available in the job's :ref:`JOBTMPL/PrepareJob/Output/tag`
+                  result. |br|
+                  If the kind is a pull-request, the pull request's id is available in the job's :ref:`JOBTMPL/PrepareJob/Output/pr_number`
                   result. |br|
                   Moreover, if the tag matches the :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`, the extracted
                   version is available in the job's :ref:`JOBTMPL/PrepareJob/Output/version` result.
