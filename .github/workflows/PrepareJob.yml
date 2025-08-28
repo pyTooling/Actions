@@ -103,7 +103,7 @@ jobs:
       version:           ${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}
 #      release_version:   ${{ steps.FindPullRequest.outputs.release_version }}
       pr_title:          ${{ steps.FindPullRequest.outputs.pr_title }}
-      pr_number:         ${{ steps.FindPullRequest.outputs.pr_number }}
+      pr_number:         ${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}
 
     steps:
       - name: ⏬ Checkout repository
@@ -144,6 +144,7 @@ jobs:
           ref_kind="unknown"
           branch=""
           tag=""
+          pr_number=""
           version=""
 
           if [[ "${ref:0:11}" == "refs/heads/" ]]; then
@@ -225,6 +226,13 @@ jobs:
               printf "::error title=RexExpCheck::Tag name '%s' doesn't conform to regexp '%s' nor '%s'.\n" "${tag}" "${NIGHTLY_TAG_PATTERN}" "${RELEASE_TAG_PATTERN}"
               exit 1
             fi
+          elif [[ "${ref:0:10}" == "refs/pull/" ]]; then
+            ref_kind="pullrequest"
+            pr_number=${ref:11}
+            pr_number=${pr_number%%/*}
+
+            printf "Pull Request check:\n"
+            printf "  Number: %s\n" "${pr_number}"
           else
             printf "${ANSI_LIGHT_RED}Unknown Git reference '%s'.${ANSI_NOCOLOR}\n" "${{ github.ref }}"
             printf "::error title=Classify Commit::Unknown Git reference '%s'.\n" "${{ github.ref }}"
@@ -243,6 +251,7 @@ jobs:
           ref_kind=${ref_kind}
           branch=${branch}
           tag=${tag}
+          pr_number=${pr_number}
           version=${version}
           EOF
 
@@ -327,8 +336,10 @@ jobs:
           printf "ref_kind:          %s\n" "${{ steps.Classify.outputs.ref_kind }}"
           printf "branch:            %s\n" "${{ steps.Classify.outputs.branch }}"
           printf "tag:               %s\n" "${{ steps.Classify.outputs.tag }}"
-          printf "version from tag:  %s\n" "${{ steps.Classify.outputs.version }}"
-          printf "version from pr:   %s\n" "${{ steps.FindPullRequest.outputs.pr_version }}"
           printf "version:           %s\n" "${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}"
+          printf "  from tag:        %s\n" "${{ steps.Classify.outputs.version }}"
+          printf "  from pr:         %s\n" "${{ steps.FindPullRequest.outputs.pr_version }}"
           printf "pr title:          %s\n" "${{ steps.FindPullRequest.outputs.pr_title }}"
-          printf "pr number:         %s\n" "${{ steps.FindPullRequest.outputs.pr_number }}"
+          printf "pr number:         %s\n" "${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}"
+          printf "  from merge:      %s\n" "${{ steps.Classify.outputs.pr_number }}"
+          printf "  from pr:         %s\n" "${{ steps.FindPullRequest.outputs.pr_number }}"
