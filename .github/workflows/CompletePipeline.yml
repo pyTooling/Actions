@@ -245,6 +245,7 @@ jobs:
       - ConfigParams
       - UnitTestingParams
       - UnitTesting
+    if: success() || failure()
     with:
 #      coverage_sqlite_artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
 #      coverage_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
@@ -267,6 +268,7 @@ jobs:
       - ConfigParams
       - UnitTestingParams
       - UnitTesting
+    if: success() || failure()
     with:
       testsuite-summary-name: ${{ needs.ConfigParams.outputs.package_fullname }}
       merged_junit_filename:  ${{ needs.ConfigParams.outputs.unittest_merged_report_xml_filename }}
@@ -291,6 +293,7 @@ jobs:
       - PublishTestResults
       - PublishCoverageResults
 #      - VerifyDocs
+    if: success() || failure()
     with:
       python_version:                 ${{ needs.UnitTestingParams.outputs.python_version }}
       coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
@@ -305,7 +308,7 @@ jobs:
       - UnitTestingParams
       - PublishCoverageResults
       - PublishTestResults
-    if: inputs.cleanup  == 'true'
+    if: ( success() || failure() ) && inputs.cleanup  == 'true'
     with:
       sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-
       xml_unittest_artifacts_prefix:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
@@ -343,7 +346,7 @@ jobs:
 #      - StaticTypeCheck
       - Package
       - PublishToGitHubPages
-    if: needs.Prepare.outputs.is_release_commit
+    if: needs.Prepare.outputs.is_release_commit && github.event_name != 'schedule'
     permissions:
       contents: write  # required for create tag
       actions:  write  # required for trigger workflow
