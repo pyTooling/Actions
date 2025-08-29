@@ -102,6 +102,10 @@ on:
         type: string
         required: false
         default: ''
+      inventory-latest-version:
+        type: string
+        required: false
+        default: ''
       inventory-categories:
         type: string
         required: false
@@ -526,6 +530,19 @@ jobs:
               )" \
               '{"version": 1.0, "timestamp": $date, "meta": $jsonMeta, "files": {}}'
             )
+
+            if [[ "${{ inputs.inventory-latest-version }}" != "" ]]; then
+              jsonLatest=$(jq -c -n \
+                --arg version "${{ inputs.inventory-latest-version }}" \
+                '{"version": $version}' \
+              )
+
+              jsonInventory=$(jq -c -n \
+                --argjson inventory "${jsonInventory}" \
+                --argjson latest "${jsonLatest}" \
+                '$inventory * {"latest": $latest}' \
+              )
+            fi
           fi
 
           ERRORS=0
