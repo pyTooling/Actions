@@ -44,6 +44,16 @@ on:
         required: false
         default: ''
         type: string
+      merge-input-dialect:
+        description: 'JUnit dialect used to load and parse inputs for merging.'
+        required: false
+        default: 'pyTest-JUnit'
+        type: string
+      merge-output-dialect:
+        description: 'JUnit dialect used for writing the merged report.'
+        required: false
+        default: 'pyTest-JUnit'
+        type: string
       additional_merge_args:
         description: 'Additional merging arguments.'
         required: false
@@ -116,7 +126,10 @@ jobs:
 
       - name: 🔁 Merge JUnit Unit Test Summaries
         run: |
-          pyedaa-reports -v unittest "--name=${{ inputs.testsuite-summary-name }}" "--merge=pyTest-JUnit:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=pyTest-JUnit:${{ inputs.merged_junit_filename }}"
+          if [[ -n "${{ inputs.testsuite-summary-name }}" ]]; then
+            name="\"--name=${{ inputs.testsuite-summary-name }}\""
+          fi
+          pyedaa-reports -v unittest $name "--merge=${{ inputs.merge-input-dialect }}:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=${{ inputs.merge-output-dialect }}:${{ inputs.merged_junit_filename }}"
           printf "%s\n" "cat ${{ inputs.merged_junit_filename }}"
           cat ${{ inputs.merged_junit_filename }}
 
