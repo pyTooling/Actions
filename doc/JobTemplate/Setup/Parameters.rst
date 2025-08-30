@@ -740,3 +740,20 @@ params
                   * ``params['typing']`` |rarr| ``artifact_names['statictyping_html']``
                   * ``params['package']`` |rarr| ``artifact_names['package_all']``
                   * ``params['doc']`` |rarr| ``artifact_names['documentation_html']``
+
+
+.. _JOBTMPL/LatexDocumentation/Optimizations:
+
+Optimizations
+*************
+
+This template offers no optimizations (reduced job runtime).
+
+Nontheless, the generated output :ref:`JOBTMPL/Parameters/Output/python_jobs` is influenced by many input parameters
+generating :math:`N^2` many Python job combinations, which in turn will influence the overall pipeline runtime and how many
+jobs (parallel VMs) are needed to execute the matrix.
+
+.. hint::
+
+   Some VM images (macOS, Windows) have parallelism limitations and run slower then Ubuntu-based jobs. Additionally,
+   environments like MSYS2 require an additional setup time increasing a jobs runtime segnificantly.

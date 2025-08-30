@@ -5,6 +5,8 @@ LatexDocumentation
 
 The ``LatexDocumentation`` job template ................
 
+* uses xelatex and latexmk
+
 .. topic:: Features
 
    * Translate a LaTeX document to PDF.
@@ -30,7 +32,7 @@ The ``LatexDocumentation`` job template ................
 
    * :gh:`addnab/docker-run-action`
 
-     * :dockerhub:`pytooling/miktex:sphinx`
+     * :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>`
 
 
 .. _JOBTMPL/LatexDocumentation/Instantiation:
@@ -92,9 +94,11 @@ Parameter Summary
 +=====================================================================+==========+==========+===================================================================+
 | :ref:`JOBTMPL/LatexDocumentation/Input/ubuntu_image_version`        | no       | string   | ``'24.04'``                                                       |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/LatexDocumentation/Input/latex_artifact`              | yes      | string   | — — — —                                                           |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/LatexDocumentation/Input/document`                    | yes      | string   | — — — —                                                           |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/LatexDocumentation/Input/latex_artifact`              | no       | string   | ``''``                                                            |
+| :ref:`JOBTMPL/LatexDocumentation/Input/processor`                   | no       | string   | ``'xelatex'``                                                     |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/LatexDocumentation/Input/pdf_artifact`                | no       | string   | ``''``                                                            |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
@@ -131,6 +135,18 @@ ubuntu_image_version
                      thus, the usual Ubuntu image name like ``'ubuntu-24.04'`` can't be split into image name and image
                      version.
 
+.. _JOBTMPL/LatexDocumentation/Input/latex_artifact:
+
+latex_artifact
+==============
+
+:Type:            string
+:Required:        yes
+:Default Value:   — — — —
+:Possible Values: Any valid artifact name.
+:Description:     name of the artifact containing the LaTeX document to translate.
+
+
 .. _JOBTMPL/LatexDocumentation/Input/document:
 
 document
@@ -139,20 +155,20 @@ document
 :Type:            string
 :Required:        yes
 :Default Value:   — — — —
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any valid document name.
+:Description:     Name of the LaTeX document
 
 
-.. _JOBTMPL/LatexDocumentation/Input/latex_artifact:
+.. _JOBTMPL/LatexDocumentation/Input/processor:
 
-latex_artifact
-==============
+processor
+=========
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
-:Possible Values: tbd
-:Description:     tbd
+:Default Value:   ``'xelatex'``
+:Possible Values: Any supported LaTeX processor supported by MikTeX and ``latexmk``.
+:Description:     Name of the used LaTeX processor.
 
 
 .. _JOBTMPL/LatexDocumentation/Input/pdf_artifact:
@@ -163,9 +179,12 @@ pdf_artifact
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact containing the generated PDF document.
+:Optimization:
+                  .. hint::
 
+                     If this parameter is empty, no PDF file will be generated and no artifact will be uploaded.
 
 .. _JOBTMPL/LatexDocumentation/Secrets:
 
@@ -181,3 +200,14 @@ Outputs
 *******
 
 This job template has no output parameters.
+
+
+.. _JOBTMPL/LatexDocumentation/Optimizations:
+
+Optimizations
+*************
+
+The following optimizations can be used to reduce the template's runtime.
+
+Disable PDF generation and PDF artifact
+  If parameter :ref:`JOBTMPL/LatexDocumentation/Input/pdf_artifact` is empty, no PDF will be generated and uploaded.

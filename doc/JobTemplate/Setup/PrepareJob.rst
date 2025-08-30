@@ -449,3 +449,11 @@ pr_number
                   :ref:`merge commit <JOBTMPL/PrepareJob/Output/is_merge_commit>` and the located pull-request's title
                   for this commit matches :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`, otherwise returns an
                   empty string ``''``.
+
+
+.. _JOBTMPL/LatexDocumentation/Optimizations:
+
+Optimizations
+*************
+
+This template offers no optimizations (reduced job runtime).

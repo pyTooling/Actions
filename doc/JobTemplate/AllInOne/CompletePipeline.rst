@@ -639,3 +639,14 @@ Outputs
 *******
 
 This job template has no output parameters.
+
+
+.. _JOBTMPL/CompletePipeline/Optimizations:
+
+Optimizations
+*************
+
+The following optimizations can be used to reduce the template's runtime.
+
+TBD
+  tbd tbd tbd

@@ -45,7 +45,7 @@ The ``SphinxDocumentation`` job template ..........
 
    * pip
 
-     * :pip:`wheel`
+     * :pypi:`wheel`
      * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements`.
 
 
@@ -174,8 +174,10 @@ requirements
 :Type:            string
 :Required:        no
 :Default Value:   ``'-r doc/requirements.txt'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any valid list of parameters for ``pip install``. |br|
+                  Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
+                  packages can be specified using a space separated list like ``'Sphinx sphinx_rtd_theme sphinxcontrib-mermaid'``.
+:Description:     Python dependencies to be installed through pip.
 
 
 .. _JOBTMPL/SphinxDocumentation/Input/doc_directory:
@@ -186,8 +188,13 @@ doc_directory
 :Type:            string
 :Required:        no
 :Default Value:   ``'doc'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any valid directory or sub-directory.
+:Description:     Directory where the Sphinx documentation is located.
+
+                  .. attention::
+
+                     When this parameter gets changed, :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` needs to be
+                     adjusted as well.
 
 
 .. _JOBTMPL/SphinxDocumentation/Input/coverage_report_json_directory:
@@ -198,7 +205,7 @@ coverage_report_json_directory
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: tbd
+:Possible Values: Any valid directory or sub-directory.
 :Description:     tbd
 
 
@@ -210,8 +217,8 @@ coverage_json_artifact
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact containing the code coverage report in JSON format.
 
 
 .. _JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact:
@@ -222,8 +229,8 @@ unittest_xml_artifact
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact containing the unittest XML report summary in XML format.
 
 
 .. _JOBTMPL/SphinxDocumentation/Input/unittest_xml_directory:
@@ -233,9 +240,9 @@ unittest_xml_directory
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
-:Possible Values: tbd
-:Description:     tbd
+:Default Value:   ``'report/unit'``
+:Possible Values: Any valid directory or sub-directory.
+:Description:     Directory where unittest XML artifact will be extracted.
 
 
 .. _JOBTMPL/SphinxDocumentation/Input/html_artifact:
@@ -246,8 +253,12 @@ html_artifact
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact containing the generated HTML website.
+:Optimization:
+                  .. hint::
+
+                     If this parameter is empty, no HTML website will be generated and no artifact will be uploaded.
 
 
 .. _JOBTMPL/SphinxDocumentation/Input/latex_artifact:
@@ -258,8 +269,12 @@ latex_artifact
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact containing the generated LaTeX document and resource files (e.g., images).
+:Optimization:
+                  .. hint::
+
+                     If this parameter is empty, no LaTeX document will be generated and no artifact will be uploaded.
 
 
 .. _JOBTMPL/SphinxDocumentation/Secrets:
@@ -276,3 +291,18 @@ Outputs
 *******
 
 This job template has no output parameters.
+
+
+.. _JOBTMPL/SphinxDocumentation/Optimizations:
+
+Optimizations
+*************
+
+The following optimizations can be used to reduce the template's runtime.
+
+Disable HTML website generation and HTML artifact
+  If parameter :ref:`JOBTMPL/SphinxDocumentation/Input/html_artifact` is empty, no HTML website will be generated and
+  uploaded.
+Disable LaTeX document generation and laTeX artifact
+  If parameter :ref:`JOBTMPL/SphinxDocumentation/Input/latex_artifact` is empty, no LaTeX document will be generated and
+  uploaded.

@@ -592,3 +592,11 @@ coverage_report_json
 
                      [tool.coverage.json]
                      output = "report/coverage/coverage.json"
+
+
+.. _JOBTMPL/LatexDocumentation/Optimizations:
+
+Optimizations
+*************
+
+This template offers no optimizations (reduced job runtime).

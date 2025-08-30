@@ -59,7 +59,7 @@ on:
         default: ''
         type: string
       unittest_xml_directory:
-        description: 'Directory where unittest XML artifact is extracted.'
+        description: 'Directory where unittest XML artifact will be extracted.'
         required: false
         default: 'report/unit'
         type: string
