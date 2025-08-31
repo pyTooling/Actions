@@ -205,7 +205,7 @@ License
    :caption: pyDummy Example
    :hidden:
 
-   pyDummy/pyDummy
+   myPackage/myPackage
    unittests/index
    coverage/index
    CodeCoverage

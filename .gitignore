@@ -25,7 +25,7 @@ coverage.xml
 
 # Sphinx
 doc/_build/
-doc/pyDummy/**/*.*
+doc/myPackage/**/*.*
 !doc/myPackage/index.rst
 
 # BuildTheDocs

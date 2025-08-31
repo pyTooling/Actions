@@ -46,7 +46,6 @@ on:
         type: string
 
 jobs:
-
   Package:
     name: 📦 Package in Source and Wheel Format
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"

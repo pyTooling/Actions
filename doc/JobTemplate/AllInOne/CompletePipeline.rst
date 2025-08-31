@@ -193,6 +193,18 @@ It can be used for simple Python packages as well as namespace packages.
    * :ref:`pyTooling/Actions/.github/workflows/CheckDocumentation.yml <JOBTMPL/CheckDocumentation>`
    * :ref:`pyTooling/Actions/.github/workflows/StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`
    * :ref:`pyTooling/Actions/.github/workflows/Package.yml <JOBTMPL/Package>`
+   
+     * :gh:`actions/checkout`
+     * :gh:`actions/setup-python`
+     * :gh:`pyTooling/upload-artifact`
+
+       * :gh:`actions/upload-artifact`
+
+     * pip
+
+       * :pypi:`build`
+       * :pypi:`wheel`
+
    * :ref:`pyTooling/Actions/.github/workflows/PublishTestResults.yml <JOBTMPL/PublishTestResults>`
    * :ref:`pyTooling/Actions/.github/workflows/PublishCoverageResults.yml <JOBTMPL/PublishCoverageResults>`
    * :ref:`pyTooling/Actions/.github/workflows/SphinxDocumentation.yml <JOBTMPL/SphinxDocumentation>`
