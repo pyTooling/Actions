@@ -30,7 +30,7 @@
 #
 from unittest import TestCase
 
-from pyDummy import Application
+from myPackage import Application
 
 
 class Instantiation(TestCase):

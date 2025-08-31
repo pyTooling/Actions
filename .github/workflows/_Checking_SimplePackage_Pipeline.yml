@@ -8,7 +8,7 @@ jobs:
   SimplePackage:
     uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@dev
     with:
-      package_name: pyDummy
+      package_name: myPackage
       codecov:      true
       codacy:       true
       dorny:        true

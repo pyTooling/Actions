@@ -8,8 +8,8 @@ jobs:
   NamespacePackage:
     uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@dev
     with:
-      package_namespace: pyExamples
-      package_name:      Extensions
+      package_namespace: myFramework
+      package_name:      Extension
       codecov:           true
       codacy:            true
       dorny:             true

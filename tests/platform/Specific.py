@@ -33,7 +33,7 @@ from unittest           import TestCase
 from pytest             import mark
 from pyTooling.Platform import CurrentPlatform
 
-from pyDummy            import Application
+from myPackage          import Application
 
 
 if __name__ == "__main__":  # pragma: no cover

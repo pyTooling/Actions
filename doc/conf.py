@@ -12,7 +12,7 @@ from pyTooling.Packaging import extractVersionInformation
 # ==============================================================================
 githubNamespace = "pyTooling"
 githubProject = "Actions"
-pythonProject = "pyDummy"
+pythonProject = "myPackage"
 directoryName = pythonProject.replace('.', '/')
 
 
