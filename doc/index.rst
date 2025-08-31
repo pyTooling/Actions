@@ -188,9 +188,9 @@ License
    JobTemplate/index
    JobTemplate/AllInOne/index
    JobTemplate/Setup/index
-   JobTemplate/Documentation/index
    JobTemplate/Testing/index
    JobTemplate/Quality/index
+   JobTemplate/Documentation/index
    JobTemplate/Package/index
    JobTemplate/Publish/index
    JobTemplate/Release/index

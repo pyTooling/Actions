@@ -42,7 +42,7 @@ The ``ExtractConfiguration`` job template is a .....
 Instantiation
 *************
 
-The following instantiation example creates a job ``ConfigParams`` derived from job template ``ExtractConfiguration``
+The following instantiation example creates a ``ConfigParams`` job derived from job template ``ExtractConfiguration``
 version ``@r5``. It only requires a :ref:`JOBTMPL/ExtractConfiguration/Input/package_name` parameter to extract unit
 test (pytest) and code coverage (Coverage.py) settings.
 
@@ -594,7 +594,7 @@ coverage_report_json
                      output = "report/coverage/coverage.json"
 
 
-.. _JOBTMPL/LatexDocumentation/Optimizations:
+.. _JOBTMPL/ExtractConfiguration/Optimizations:
 
 Optimizations
 *************

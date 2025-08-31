@@ -85,12 +85,12 @@ on:
         default: ''
         type: string
       tests_directory:
-        description: 'Path to the directory containing tests (relative to root_directory).'
+        description: 'Path to the directory containing tests (relative from root_directory).'
         required: false
         default: 'tests'
         type: string
       unittest_directory:
-        description: 'Path to the directory containing unit tests (relative to tests_directory).'
+        description: 'Path to the directory containing unit tests (relative from tests_directory).'
         required: false
         default: 'unit'
         type: string
@@ -127,7 +127,7 @@ on:
       coverage_report_json_filename:
         description: 'Filename how the coverage report in JSON format will be named.'
         required: false
-        default: 'report/coverage/coverage.json'
+        default: 'coverage.json'
         type: string
       coverage_report_html_directory:
         description: 'Directory where the coverage report in HTML format will be generated.'
@@ -349,7 +349,7 @@ jobs:
         if: ( matrix.system == 'ubuntu' || matrix.system == 'ubuntu-arm' ) && inputs.ubuntu_before_script != ''
         run: ${{ inputs.ubuntu_before_script }}
 
-      # Windows before script
+      # TODO: Windows before script
 
       - name: 🪟🟦 MinGW64 before scripts
         if: matrix.system == 'msys2' && matrix.runtime == 'MINGW64' && inputs.mingw64_before_script != ''
@@ -361,6 +361,7 @@ jobs:
 
 # Run pytests
 
+      # TODO: allow configuration of pytest_args
       - name: ✅ Run unit tests (Ubuntu/macOS)
         id: pytest_bash
         if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )

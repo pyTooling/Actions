@@ -55,7 +55,7 @@ The job template generates various output parameters derived from
 Instantiation
 *************
 
-The following instantiation example creates a job ``Prepare`` derived from job template ``PrepareJob`` version ``@r5``.
+The following instantiation example creates a ``Prepare`` job derived from job template ``PrepareJob`` version ``@r5``.
 In a default usecase, no input parameters need to be specified for the job template assuming a main-branch and
 release-branch called ``main``, a development-branch called ``dev``, as well as semantic versioning for tags and
 pull-request titles.
@@ -451,7 +451,7 @@ pr_number
                   empty string ``''``.
 
 
-.. _JOBTMPL/LatexDocumentation/Optimizations:
+.. _JOBTMPL/PrepareJob/Optimizations:
 
 Optimizations
 *************

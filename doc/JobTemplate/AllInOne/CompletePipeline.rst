@@ -167,6 +167,28 @@ It can be used for simple Python packages as well as namespace packages.
        * :pypi:`tomli`
 
    * :ref:`pyTooling/Actions/.github/workflows/UnitTesting.yml <JOBTMPL/UnitTesting>`
+
+     * :gh:`actions/checkout`
+     * :gh:`msys2/setup-msys2`
+     * :gh:`actions/setup-python`
+     * :gh:`pyTooling/download-artifact`
+
+       * :gh:`actions/download-artifact`
+
+     * :gh:`pyTooling/upload-artifact`
+
+       * :gh:`actions/upload-artifact`
+
+     * apt: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/apt` parameter.
+     * homebrew: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/brew` parameter.
+     * MSYS2: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/pacboy` parameter.
+     * pip
+
+       * :pypi:`wheel`
+       * :pypi:`tomli`
+       * Python packages specified via :ref:`JOBTMPL/UnitTesting/Input/requirements` or
+         :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
+
    * :ref:`pyTooling/Actions/.github/workflows/ApplicationTesting.yml <JOBTMPL/ApplicationTesting>`
    * :ref:`pyTooling/Actions/.github/workflows/CheckDocumentation.yml <JOBTMPL/CheckDocumentation>`
    * :ref:`pyTooling/Actions/.github/workflows/StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`
@@ -174,7 +196,40 @@ It can be used for simple Python packages as well as namespace packages.
    * :ref:`pyTooling/Actions/.github/workflows/PublishTestResults.yml <JOBTMPL/PublishTestResults>`
    * :ref:`pyTooling/Actions/.github/workflows/PublishCoverageResults.yml <JOBTMPL/PublishCoverageResults>`
    * :ref:`pyTooling/Actions/.github/workflows/SphinxDocumentation.yml <JOBTMPL/SphinxDocumentation>`
+
+     * :gh:`actions/checkout`
+     * :gh:`actions/setup-python`
+     * :gh:`pyTooling/download-artifact`
+
+       * :gh:`actions/download-artifact`
+
+     * :gh:`pyTooling/upload-artifact`
+
+       * :gh:`actions/upload-artifact`
+
+     * apt
+
+       * `graphviz <https://graphviz.org/>`__
+
+     * pip
+
+       * :pypi:`wheel`
+       * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` parameter.
+
    * :ref:`pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml <JOBTMPL/LaTeXDocumentation>`
+
+     * :gh:`pyTooling/download-artifact`
+
+       * :gh:`actions/download-artifact`
+
+     * :gh:`pyTooling/upload-artifact`
+
+       * :gh:`actions/upload-artifact`
+
+     * :gh:`addnab/docker-run-action`
+
+       * :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>`
+
    * :ref:`pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml <JOBTMPL/PublishToGitHubPages>`
    * :ref:`pyTooling/Actions/.github/workflows/PublishOnPyPI.yml <JOBTMPL/PublishOnPyPI>`
    * :ref:`pyTooling/Actions/.github/workflows/TagReleaseCommit.yml <JOBTMPL/TagReleaseCommit>`
@@ -193,7 +248,7 @@ It can be used for simple Python packages as well as namespace packages.
 Instantiation
 *************
 
-The following instantiation example creates a job ``Params`` derived from job template ``Parameters`` version ``@r5``.
+The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r5``.
 It only requires a `name` parameter to create the artifact names.
 
 .. code-block:: yaml
@@ -218,45 +273,45 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/CompletePipeline/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                         |
-+=====================================================================+==========+==========+=================================================+
-| :ref:`JOBTMPL/CompletePipeline/Input/package_namespace`             | no       | string   | ``''``                                          |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/package_name`                  | yes      | string   | — — — —                                         |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`       | no       | string   | ``'3.13'``                                      |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list`  | no       | string   | ``'3.9 3.10 3.11 3.12 3.13'``                   |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`          | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``     |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_include_list`         | no       | string   | ``''``                                          |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`         | no       | string   | ``'windows-arm:3.9 windows-arm:3.10'``          |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| Parameter Name                                                      | Required | Type     | Default                                           |
++=====================================================================+==========+==========+===================================================+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_namespace`             | no       | string   | ``''``                                            |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_name`                  | yes      | string   | — — — —                                           |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`       | no       | string   | ``'3.13'``                                        |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list`  | no       | string   | ``'3.9 3.10 3.11 3.12 3.13'``                     |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`          | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``       |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_include_list`         | no       | string   | ``''``                                            |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`         | no       | string   | ``'windows-arm:3.9 windows-arm:3.10'``            |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`         | no       | string   | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'`` |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`        | no       | string   | ``'3.13'``                                      |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`   | no       | string   | ``''``                                          |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_system_list`           | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``     |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_include_list`          | no       | string   | ``''``                                          |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`          | no       | string   | ``'windows-arm:3.9 windows-arm:3.10'``          |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`        | no       | string   | ``'3.13'``                                        |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`   | no       | string   | ``''``                                            |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_system_list`           | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``       |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_include_list`          | no       | string   | ``''``                                            |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`          | no       | string   | ``'windows-arm:3.9 windows-arm:3.10'``            |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`          | no       | string   | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'`` |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/codecov`                       | no       | string   | ``'false'``                                     |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/codacy`                        | no       | string   | ``'false'``                                     |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/dorny`                         | no       | string   | ``'false'``                                     |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                       | no       | string   | ``'true'``                                      |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------+
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/codecov`                       | no       | string   | ``'false'``                                       |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/codacy`                        | no       | string   | ``'false'``                                       |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/dorny`                         | no       | string   | ``'false'``                                       |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                       | no       | string   | ``'true'``                                        |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/CompletePipeline/Secrets>`
 

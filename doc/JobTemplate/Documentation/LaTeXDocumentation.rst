@@ -40,7 +40,7 @@ The ``LatexDocumentation`` job template ................
 Instantiation
 *************
 
-The following instantiation example creates a job `Params` derived from job template `Parameters` version `r0`. It only
+The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r5``. It only
 requires a `name` parameter to create the artifact names.
 
 .. code-block:: yaml

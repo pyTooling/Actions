@@ -37,7 +37,7 @@ Simple Example
    .. grid-item::
       :columns: 5
 
-      The following instantiation example creates a job ``Params`` derived from job template ``Parameters`` version
+      The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version
       ``@r5``. It only requires a :ref:`JOBTMPL/Parameters/Input/package_name` parameter to create the artifact names.
 
    .. grid-item::
@@ -74,15 +74,15 @@ Complex Example
 
       The following instantiation example creates 3 jobs from the same template, but with differing input parameters.
 
-      The first job ``UnitTestingParams`` might be used to create a job matrix of unit tests. It creates the cross of
+      The first ``UnitTestingParams`` job might be used to create a job matrix of unit tests. It creates the cross of
       default systems (Windows, Ubuntu, macOS, macOS-ARM, MinGW64, UCRT64) and the given list of Python versions
       including some mypy versions. In addition a list of excludes (marked as :deletion:`deletions`) and includes
       (marked as :addition:`additions`) is handed over resulting in the following combinations.
 
-      The second job ``PerformanceTestingParams`` might be used to create a job matrix for performance tests. Here a
+      The second ``PerformanceTestingParams`` job might be used to create a job matrix for performance tests. Here a
       pipeline might be limited to the latest two Python versions on a selected list of platforms.
 
-      The third job ``PlatformTestingParams`` might be used to create a job matrix for platform compatibility tests.
+      The third ``PlatformTestingParams`` job might be used to create a job matrix for platform compatibility tests.
       Here a pipeline might be limited to the latest Python version, but all available platforms.
 
    .. grid-item::
@@ -742,7 +742,7 @@ params
                   * ``params['doc']`` |rarr| ``artifact_names['documentation_html']``
 
 
-.. _JOBTMPL/LatexDocumentation/Optimizations:
+.. _JOBTMPL/Parameters/Optimizations:
 
 Optimizations
 *************

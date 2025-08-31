@@ -46,7 +46,7 @@ The ``SphinxDocumentation`` job template ..........
    * pip
 
      * :pypi:`wheel`
-     * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements`.
+     * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` parameter.
 
 
 .. _JOBTMPL/SphinxDocumentation/Instantiation:
@@ -54,7 +54,7 @@ The ``SphinxDocumentation`` job template ..........
 Instantiation
 *************
 
-The following instantiation example creates a job `Params` derived from job template `Parameters` version `r0`. It only
+The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r5``. It only
 requires a `name` parameter to create the artifact names.
 
 .. code-block:: yaml
@@ -177,7 +177,7 @@ requirements
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'Sphinx sphinx_rtd_theme sphinxcontrib-mermaid'``.
-:Description:     Python dependencies to be installed through pip.
+:Description:     Python dependencies to be installed through *pip*.
 
 
 .. _JOBTMPL/SphinxDocumentation/Input/doc_directory:
