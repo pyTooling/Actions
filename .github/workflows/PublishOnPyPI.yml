@@ -69,17 +69,17 @@ jobs:
       - name: ⚙ Install dependencies for packaging and release
         run: python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
-      - name: ⤴ Release Python source package to PyPI
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: twine upload dist/*.tar.gz
-
-      - name: ⤴ Release Python wheel package to PyPI
+      - name: ⤴ Publish Python wheel package to PyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: twine upload dist/*.whl
+
+      - name: ⤴ Publish Python source package to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: twine upload dist/*.tar.gz
 
       - name: 🗑️ Delete packaging Artifacts
         uses: geekyeggo/delete-artifact@v5

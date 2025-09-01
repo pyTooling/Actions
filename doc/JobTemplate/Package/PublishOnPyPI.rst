@@ -3,29 +3,46 @@
 PublishOnPyPI
 #############
 
-Publish a source (``*.tar.gz``) package and/or wheel (``*.whl``) packages to `PyPI <https://pypi.org/>`__.
+Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to `PyPI <https://pypi.org/>`__.
 
-**Behavior:**
+.. topic:: Features
 
-1. Download package artifact
-2. Publish source package(s) (``*.tar.gz``)
-3. Publish wheel package(s) (``*.whl``)
-4. Delete the artifact
+   * Publish a Python package to `PyPI <https://pypi.org/>`__.
 
-**Preconditions:**
+.. topic:: Behavior:
 
-A PyPI account was created and the package name is either not occupied or the user has access rights for that package.
+   1. Download package artifact
+   2. Publish source package(s) (``*.tar.gz``)
+   3. Publish wheel package(s) (``*.whl``)
+   4. Delete the artifact
 
-**Requirements:**
+.. topic:: Preconditions:
 
-Setup a secret (e.g. ``PYPI_TOKEN``) in GitHub to handover the PyPI token to the job.
+   1. A PyPI account was created and the package name is either not occupied or the user has access rights for that
+      package.
+   2. An access token was generated at PyPI, which can be used for uploading packages.
+   3. A secret (e.g. ``PYPI_TOKEN``) was setup in GitHub Actions to handover the PyPI token to the pipeline.
 
-**Dependencies:**
+.. topic:: Job Execution
 
-* :gh:`actions/download-artifact`
-* :gh:`actions/setup-python`
-* :gh:`geekyeggo/delete-artifact`
+   .. image:: ../../_static/pyTooling-Actions-PublishOnPyPI.png
+      :width: 500px
 
+.. topic:: Dependencies
+
+   * :gh:`pyTooling/download-artifact`
+
+     * :gh:`actions/download-artifact`
+   * :gh:`actions/setup-python`
+   * :gh:`geekyeggo/delete-artifact`
+
+   * pip
+
+     * :pypi:`wheel`
+     * :pypi:`twine`
+
+
+.. _JOBTMPL/PublishOnPyPI/Instantiation:
 
 Instantiation
 *************
@@ -78,62 +95,136 @@ by that job. Finally, the list of requirements is overwritten to load a list of 
        secrets:
          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
+.. seealso::
 
-Parameters
-**********
+   :ref:`JOBTMPL/Package`
+
+
+.. _JOBTMPL/PublishOnPyPI/Parameters:
+
+Parameter Summary
+*****************
+
+.. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishOnPyPI/Inputs>`
+
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| Parameter Name                                                      | Required | Type     | Default                                                           |
++=====================================================================+==========+==========+===================================================================+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/ubuntu_image_version`             | no       | string   | ``'24.04'``                                                       |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/python_version`                   | no       | string   | ``'3.13'``                                                        |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/requirements`                     | no       | string   | ``'wheel twine'``                                                 |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/artifact`                         | yes      | string   | — — — —                                                           |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+
+.. rubric:: Goto :ref:`secrets <JOBTMPL/PublishOnPyPI/Secrets>`
+
++-----------------------------------------------------------+----------+----------+--------------+
+| Token Name                                                | Required | Type     | Default      |
++===========================================================+==========+==========+==============+
+| :ref:`JOBTMPL/PublishOnPyPI/Secret/PYPI_TOKEN`            | no       | string   | — — — —      |
++-----------------------------------------------------------+----------+----------+--------------+
+
+.. rubric:: Goto :ref:`output parameters <JOBTMPL/PublishOnPyPI/Outputs>`
+
+This job template has no output parameters.
+
+
+.. _JOBTMPL/PublishOnPyPI/Inputs:
+
+Input Parameters
+****************
+
+.. _JOBTMPL/PublishOnPyPI/Input/ubuntu_image_version:
+
+ubuntu_image_version
+====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'24.04'``
+:Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
+                  for available Ubuntu image versions.
+:Description:     Version of the Ubuntu image used to run this job.
+
+                  .. note::
+
+                     Unfortunately, GitHub Actions has only a `limited set of functions <https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#functions>`__,
+                     thus, the usual Ubuntu image name like ``'ubuntu-24.04'`` can't be split into image name and image
+                     version.
+
+
+.. _JOBTMPL/PublishOnPyPI/Input/python_version:
 
 python_version
 ==============
 
-+----------------+----------+----------+----------+
-| Parameter Name | Required | Type     | Default  |
-+================+==========+==========+==========+
-| python_version | optional | string   | ``3.11`` |
-+----------------+----------+----------+----------+
+:Type:            string
+:Required:        no
+:Default Value:   ``'3.13'``
+:Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
+                  See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
+                  and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
+:Description:     Python version used as default for other jobs requiring a single Python version. |br|
+                  In case :ref:`JOBTMPL/Parameters/Input/python_version_list` is an empty string, this version is used
+                  to populate the version list.
 
-Python version used for uploading the package contents via `twine` to PyPI.
 
+.. _JOBTMPL/PublishOnPyPI/Input/requirements:
 
 requirements
 ============
 
-+----------------+----------+----------+-----------------+
-| Parameter Name | Required | Type     | Default         |
-+================+==========+==========+=================+
-| requirements   | optional | string   | ``wheel twine`` |
-+----------------+----------+----------+-----------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid list of parameters for ``pip install``. |br|
+                  Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
+                  packages can be specified using a space separated list like ``'wheel twine'``.
+:Description:     Python dependencies to be installed through *pip*.
 
-List of requirements to be installed for uploading the package contents to PyPI.
 
+.. _JOBTMPL/PublishOnPyPI/Input/artifact:
 
 artifact
 ========
 
-+----------------+----------+----------+--------------+
-| Parameter Name | Required | Type     | Default      |
-+================+==========+==========+==============+
-| artifact       | yes      | string   | — — — —      |
-+----------------+----------+----------+--------------+
+:Type:            string
+:Required:        yes
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact containing the packaged Python package(s).
 
-Name of the artifact containing the package(s).
 
+.. _JOBTMPL/PublishOnPyPI/Secrets:
 
 Secrets
 *******
 
+
+.. _JOBTMPL/PublishOnPyPI/Secret/PYPI_TOKEN:
+
 PYPI_TOKEN
 ==========
 
-+----------------+----------+----------+--------------+
-| Secret Name    | Required | Type     | Default      |
-+================+==========+==========+==============+
-| PYPI_TOKEN     | yes      | string   | — — — —      |
-+----------------+----------+----------+--------------+
-
-The token to access the package at PyPI for uploading new data.
+:Type:            string
+:Required:        no
+:Default Value:   — — — —
+:Description:     The token to publish and upload packages on `PyPI <https://pypi.org/>`__.
 
 
-Results
+.. _JOBTMPL/PublishOnPyPI/Outputs:
+
+Outputs
 *******
 
 This job template has no output parameters.
+
+
+.. _JOBTMPL/PublishOnPyPI/Optimizations:
+
+Optimizations
+*************
+
+This template offers no optimizations (reduced job runtime).

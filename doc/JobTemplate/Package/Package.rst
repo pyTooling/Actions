@@ -162,7 +162,7 @@ requirements
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'build wheel'``.
 :Behavior:        If the value is an empty string, :pypi:`build` is used for packaging. |br|
-                  if the value is ``no-isolation``, :ypy:`build` is used in *no-isolation* mode for packaging. |br|
+                  if the value is ``no-isolation``, :pypi:`build` is used in *no-isolation* mode for packaging. |br|
                   otherwise, a list of requirements is assumed and :pypi:`setuptools` is used for packaging.
 :Description:     Python dependencies to be installed through *pip*.
 
@@ -175,7 +175,7 @@ artifact
 :Type:            string
 :Required:        yes
 :Possible Values: Any valid artifact name.
-:Description:     Name of the artifact containing the unittest report summary in XML format.
+:Description:     Name of the artifact containing the packaged Python code.
 
 
 .. _JOBTMPL/Package/Secrets:
