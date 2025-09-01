@@ -22,7 +22,7 @@ file.
      * Provide code coverage results as pytest JSON file.
      * Provide code coverage results as HTML report.
 
-.. topic:: Behavior:
+.. topic:: Behavior
 
    .. todo:: UnitTesting:Behavior needs documentation.
 

@@ -18,7 +18,7 @@ The ``SphinxDocumentation`` job template ..........
    * Optionally: download code coverage artifact (JSON format) given by :ref:`JOBTMPL/SphinxDocumentation/Input/coverage_json_artifact`.
    * Optionally: download unit test report artifact (XML format) given by :ref:`JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact`.
 
-.. topic:: Behavior:
+.. topic:: Behavior
 
    .. todo:: SphinxDocumentation:Behavior needs documentation.
 

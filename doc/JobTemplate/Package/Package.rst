@@ -11,7 +11,7 @@ as an artifact.
    * Package source code as wheel and source distribution.
    * Support packaging using :pypi:`build` (recommended) or :pypi:`setuptools`.
 
-.. topic:: Behavior:
+.. topic:: Behavior
 
    1. Checkout repository.
    2. Setup Python and install dependencies.

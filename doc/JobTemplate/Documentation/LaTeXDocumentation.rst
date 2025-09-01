@@ -11,7 +11,7 @@ The ``LatexDocumentation`` job template ................
 
    * Translate a LaTeX document to PDF.
 
-.. topic:: Behavior:
+.. topic:: Behavior
 
    .. todo:: LatexDocumentation:Behavior needs documentation.
 

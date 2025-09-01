@@ -72,7 +72,7 @@ It can be used for simple Python packages as well as namespace packages.
          * Automatic tagging of merge commits on main branch to trigger a tagged pipeline (release pipeline).
          * Create a release page with text derived from pull request description.
 
-.. topic:: Behavior:
+.. topic:: Behavior
 
    .. todo:: CompletePipeline:Behavior needs documentation.
 
@@ -193,7 +193,7 @@ It can be used for simple Python packages as well as namespace packages.
    * :ref:`pyTooling/Actions/.github/workflows/CheckDocumentation.yml <JOBTMPL/CheckDocumentation>`
    * :ref:`pyTooling/Actions/.github/workflows/StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`
    * :ref:`pyTooling/Actions/.github/workflows/Package.yml <JOBTMPL/Package>`
-   
+
      * :gh:`actions/checkout`
      * :gh:`actions/setup-python`
      * :gh:`pyTooling/upload-artifact`

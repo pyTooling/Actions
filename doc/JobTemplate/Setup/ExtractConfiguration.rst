@@ -19,7 +19,7 @@ The ``ExtractConfiguration`` job template is a .....
    * Extract code coverage XML report file as directory name, filename and full path from :file:`pyproject.toml`.
    * Extract code coverage JSON report file as directory name, filename and full path from :file:`pyproject.toml`.
 
-.. topic:: Behavior:
+.. topic:: Behavior
 
    .. todo:: ExtractConfiguration:Behavior needs documentation.
 

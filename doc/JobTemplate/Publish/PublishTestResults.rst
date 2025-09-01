@@ -3,26 +3,71 @@
 PublishTestResults
 ##################
 
-This job downloads all artifacts and uploads jUnit XML reports as a Markdown page to GitHub Actions to visualize the
-results a an item in the job list. For publishing, :gh:`dorny/test-reporter` is used.
+This job downloads all matching JUnit report artifacts, merged the reports into one single report and then publishes the
+JUnit test summary reports to multiple services for visualization and longterm statistical tracking.
 
-**Behavior:**
+Supported services are:
 
-1. Checkout repository
-2. Download (all) artifacts
-3. Publish test results as a markdown report page to GitHub Actions.
+* GitHub Actions - Job results using :gh:`dorny/test-reporter`
+* `Codecov <https://about.codecov.io/>`__
 
-.. note::
+.. topic:: Features
 
-   The :gh:`actions/download-artifact` does not support wildcards to specify a subset of artifacts for downloading.
-   Thus, all artifacts need to be downloaded.
+   * Package source code as wheel and source distribution.
+   * Support packaging using :pypi:`build` (recommended) or :pypi:`setuptools`.
 
-**Dependencies:**
+.. topic:: Behavior
 
-* :gh:`actions/checkout`
-* :gh:`actions/download-artifact`
-* :gh:`dorny/test-reporter`
+   1. Checkout repository
+   2. Download multiple artifacts containing test report summaries in JUnit XML format conforming to an artifact name
+      pattern (see :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern`) for limiting the number of
+      downloaded artifacts and the herby generated traffic.
+   3. Rename the found JUnit XML files.
+   4. Merge all found JUnit XML files using :pypi:`pyEDAA.Reports` into a new JUnit XML file. |br|
+      Optionally, apply certain transformation and cleanup operations to the JUnit report structure.
+   5. Publish test results as a markdown report page to GitHub Actions using :gh:`dorny/test-reporter`.
+   6. Publish test results to `Codecov <https://about.codecov.io/>`__ using :gh:`codecov/test-results-action`.
 
+.. topic:: Job Execution
+
+   .. grid:: 2
+
+      .. grid-item::
+         :columns: 4
+
+         .. rubric:: Job Steps
+
+         .. image:: ../../_static/pyTooling-Actions-PublishTestResults.png
+            :width: 500px
+
+      .. grid-item::
+         :columns: 4
+
+         .. rubric:: Generated Dorny Report below Pipeline Graph
+
+         .. image:: ../../_static/pyTooling-Actions-PublishTestResults-Dorny.png
+            :width: 500px
+
+.. topic:: Dependencies
+
+   * :gh:`actions/checkout`
+   * :gh:`pyTooling/download-artifact`
+
+     * :gh:`actions/download-artifact`
+
+   * pip
+
+     * :pypi:`pyEDAA.Reports`
+
+   * :gh:`dorny/test-reporter`
+   * :gh:`codecov/test-results-action`
+   * :gh:`pyTooling/upload-artifact`
+
+     * :gh:`actions/upload-artifact`
+
+
+
+.. _JOBTMPL/PublishTestResults/Instantiation:
 
 Instantiation
 *************
@@ -54,35 +99,263 @@ Complex Example
          - CodeCoverage
          - UnitTesting
 
+.. seealso::
 
-Parameters
-**********
+   :ref:`JOBTMPL/UnitTesting`
+     tbd
+   :ref:`JOBTMPL/PublishCoverageResults`
+     tbd
 
-report_files
+
+.. _JOBTMPL/PublishTestResults/Parameters:
+
+Parameter Summary
+*****************
+
+.. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishTestResults/Inputs>`
+
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| Parameter Name                                                      | Required | Type     | Default                                                             |
++=====================================================================+==========+==========+=====================================================================+
+| :ref:`JOBTMPL/PublishTestResults/Input/ubuntu_image_version`        | no       | string   | ``'24.04'``                                                         |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern`  | no       | string   | ``'*-UnitTestReportSummary-XML-*'``                                 |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/merged_junit_filename`       | no       | string   | ``'Unittesting.xml'``                                               |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/merged_junit_artifact`       | no       | string   | ``''``                                                              |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/merge-input-dialect`         | no       | string   | ``'pyTest-JUnit'``                                                  |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect`        | no       | string   | ``'pyTest-JUnit'``                                                  |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/additional_merge_args`       | no       | string   | ``'"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'`` |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/testsuite-summary-name`      | no       | string   | ``''``                                                              |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/publish`                     | no       | string   | ``'true'``                                                          |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/report_title`                | no       | string   | ``'Unit Test Results'``                                             |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/dorny`                       | no       | string   | ``'true'``                                                          |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/codecov`                     | no       | string   | ``'false'``                                                         |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/codecov_flags`               | no       | string   | ``'unittest'``                                                      |
++---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
+
+.. rubric:: Goto :ref:`secrets <JOBTMPL/PublishTestResults/Secrets>`
+
++-----------------------------------------------------------+----------+----------+--------------+
+| Token Name                                                | Required | Type     | Default      |
++===========================================================+==========+==========+==============+
+| :ref:`JOBTMPL/PublishTestResults/Secret/CODECOV_TOKEN`    | no       | string   | — — — —      |
++-----------------------------------------------------------+----------+----------+--------------+
+
+.. rubric:: Goto :ref:`output parameters <JOBTMPL/PublishTestResults/Outputs>`
+
+This job template has no output parameters.
+
+
+.. _JOBTMPL/PublishTestResults/Inputs:
+
+Input Parameters
+****************
+
+.. _JOBTMPL/PublishTestResults/Input/ubuntu_image_version:
+
+ubuntu_image_version
+====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'24.04'``
+:Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
+                  for available Ubuntu image versions.
+:Description:     Version of the Ubuntu image used to run this job.
+
+                  .. note::
+
+                     Unfortunately, GitHub Actions has only a `limited set of functions <https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#functions>`__,
+                     thus, the usual Ubuntu image name like ``'ubuntu-24.04'`` can't be split into image name and image
+                     version.
+
+
+.. _JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern:
+
+unittest_artifacts_pattern
+==========================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'*-UnitTestReportSummary-XML-*'``
+:Possible Values: Any valid artifact matching pattern using fixed text and ``*`` characters.
+:Description:     tbd
+
+
+.. _JOBTMPL/PublishTestResults/Input/merged_junit_filename:
+
+merged_junit_filename
+=====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'Unittesting.xml'``
+:Possible Values: Any valid filename suitable for a JUnit XML report.
+:Description:     The filename for the merged JUnit report in XML format. |br|
+                  See :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect` for the used JUnit dialect in the
+                  merged report file.
+
+
+.. _JOBTMPL/PublishTestResults/Input/merged_junit_artifact:
+
+merged_junit_artifact
+=====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid artifact name.
+:Description:
+
+
+.. _JOBTMPL/PublishTestResults/Input/merge-input-dialect:
+
+merge-input-dialect
+===================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'pyTest-JUnit'``
+:Possible Values: tbd
+:Description:     tbd
+
+
+.. _JOBTMPL/PublishTestResults/Input/merge-output-dialect:
+
+merge-output-dialect
+====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'pyTest-JUnit'``
+:Possible Values: tbd
+:Description:     tbd
+
+
+.. _JOBTMPL/PublishTestResults/Input/additional_merge_args:
+
+additional_merge_args
+=====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'``
+:Possible Values: tbd
+:Description:     tbd
+
+
+.. _JOBTMPL/PublishTestResults/Input/testsuite-summary-name:
+
+testsuite-summary-name
+======================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: tbd
+:Description:     tbd
+
+
+.. _JOBTMPL/PublishTestResults/Input/publish:
+
+publish
+=======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: tbd
+:Description:     tbd
+
+
+.. _JOBTMPL/PublishTestResults/Input/report_title:
+
+report_title
 ============
 
-+----------------+----------+----------+---------------------------------+
-| Parameter Name | Required | Type     | Default                         |
-+================+==========+==========+=================================+
-| report_files   | optional | string   | ``artifacts/**/*.xml``          |
-+----------------+----------+----------+---------------------------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``'Unit Test Results'``
+:Possible Values: tbd
+:Description:     tbd
 
-Pattern of jUnit report files to publish as Markdown.
 
-The parameter can be a comma separated list. Wildcards are supported.
+.. _JOBTMPL/PublishTestResults/Input/dorny:
 
-.. hint::
+dorny
+=====
 
-   All artifacts are downloaded into directory ``artifacts``, thus the pattern should include this directory as a
-   prefix.
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: tbd
+:Description:     tbd
 
+
+.. _JOBTMPL/PublishTestResults/Input/codecov:
+
+codecov
+=======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: tbd
+:Description:     tbd
+
+
+.. _JOBTMPL/PublishTestResults/Input/codecov_flags:
+
+codecov_flags
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'unittest'``
+:Possible Values: tbd
+:Description:     tbd
+
+
+.. _JOBTMPL/PublishTestResults/Secrets:
 
 Secrets
 *******
 
-This job template needs no secrets.
+.. _JOBTMPL/PublishTestResults/Secret/CODECOV_TOKEN:
 
-Results
+CODECOV_TOKEN
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   — — — —
+:Description:     The token to publish unit test results on  `Codecov <https://about.codecov.io/>`__.
+
+
+.. _JOBTMPL/PublishTestResults/Outputs:
+
+Outputs
 *******
 
 This job template has no output parameters.
+
+
+.. _JOBTMPL/PublishTestResults/Optimizations:
+
+Optimizations
+*************
+
+This template offers no optimizations (reduced job runtime).
+
+merged_junit_artifact

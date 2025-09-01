@@ -9,14 +9,14 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to `Py
 
    * Publish a Python package to `PyPI <https://pypi.org/>`__.
 
-.. topic:: Behavior:
+.. topic:: Behavior
 
    1. Download package artifact
    2. Publish source package(s) (``*.tar.gz``)
    3. Publish wheel package(s) (``*.whl``)
    4. Delete the artifact
 
-.. topic:: Preconditions:
+.. topic:: Preconditions
 
    1. A PyPI account was created and the package name is either not occupied or the user has access rights for that
       package.
