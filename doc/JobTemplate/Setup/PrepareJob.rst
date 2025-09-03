@@ -166,6 +166,7 @@ ubuntu_image
 :Required:        no
 :Default Value:   ``'ubuntu-24.04'``
 :Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
+                  for available Ubuntu image versions.
 :Description:     Name of the Ubuntu image used to run this job.
 
 

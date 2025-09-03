@@ -468,6 +468,7 @@ ubuntu_image
 :Required:        no
 :Default Value:   ``'ubuntu-24.04'``
 :Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
+                  for available Ubuntu image versions.
 :Description:     Name of the Ubuntu x86-64 image and version used to run a Ubuntu jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
 
 
@@ -480,6 +481,7 @@ ubuntu_arm_image
 :Required:        no
 :Default Value:   ``'ubuntu-24.04-arm'``
 :Possible Values: See `actions/partner-runner-images - Available Images <https://github.com/actions/partner-runner-images?tab=readme-ov-file#available-images>`__
+                  for available Ubuntu ARM image versions.
 :Description:     Name of the Ubuntu aarch64 image and version used to run a Ubuntu ARM jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
 
 

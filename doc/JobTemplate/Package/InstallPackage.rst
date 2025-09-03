@@ -20,7 +20,7 @@ the installation is verified. This aims for packaging and dependency mistakes in
 .. topic:: Job Execution
 
    .. image:: ../../_static/pyTooling-Actions-InstallPackage.png
-      :width: 600px
+      :width: 500px
 
 .. topic:: Dependencies
 

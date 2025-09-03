@@ -22,7 +22,7 @@ jobs:
           - {icon: '🍏', name: 'macOS-14 (aarch64)',     image: 'macos-14',         shell: 'bash'}  # latest
           - {icon: '🍏', name: 'macOS-15 (aarch64)',     image: 'macos-15',         shell: 'bash'}
           - {icon: '🪟', name: 'Windows Server 2022',    image: 'windows-2022',     shell: 'bash'}
-          - {icon: '🪟', name: 'Windows Server 2025',    image: 'windows-2022',     shell: 'bash'}  # latest
+          - {icon: '🪟', name: 'Windows Server 2025',    image: 'windows-2025',     shell: 'bash'}  # latest
         # Third party images by ARM for aarch64
           - {icon: '🐧', name: 'Ubuntu 22.04 (aarch64)', image: 'ubuntu-22.04-arm', shell: 'bash'}
           - {icon: '🐧', name: 'Ubuntu 24.04 (aarch64)', image: 'ubuntu-24.04-arm', shell: 'bash'}
