@@ -1,0 +1,344 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview &mdash; Project name not set 0.4.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-reports.089ed2e62f89368aa21ac7591d90c12a.css?v=83177741" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/override.css?v=aed75351" />
+
+  
+    <link rel="shortcut icon" href="../_static/icon.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=340bb9e5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="All-In-One" href="AllInOne/index.html" />
+    <link rel="prev" title="with-post-step" href="../Action/With-post-step.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#instantiation">Instantiation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#common-parameters">Common Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-image">ubuntu_image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-version">python_version</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AllInOne/index.html">All-In-One</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Setup/index.html">Pipeline Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Testing/index.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Quality/index.html">Quality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Documentation/index.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Package/index.html">Packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Publish/index.html">Publish</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Release/index.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Cleanup/index.html">Cleanup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deprecated/index.html">Deprecated</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../myPackage/myPackage.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CodeCoverage.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../DocCoverage.html">Doc. Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Project name not set</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/JobTemplate/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="overview">
+<span id="jobtmpl"></span><h1>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h1>
+<p>The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
+Workflow). They can also serve as an example for creating or deriving own job templates. All job templates are highly
+customizable.</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-5 sd-row-cols-xs-5 sd-row-cols-sm-5 sd-row-cols-md-5 sd-row-cols-lg-5 docutils">
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">All-In-One</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="AllInOne/CompletePipeline.html#jobtmpl-completepipeline"><span class="std std-ref">CompletePipeline</span></a> <br /> <br /> <br /> <br /></p></li>
+</ul>
+<p class="rubric">Pipeline Setup</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Setup/Parameters.html#jobtmpl-parameters"><span class="std std-ref">Parameters</span></a></p></li>
+<li><p><a class="reference internal" href="Setup/PrepareJob.html#jobtmpl-preparejob"><span class="std std-ref">PrepareJob</span></a></p></li>
+<li><p><a class="reference internal" href="Setup/ExtractConfiguration.html#jobtmpl-extractconfiguration"><span class="std std-ref">ExtractConfiguration</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">Documentation</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Quality/CheckDocumentation.html#jobtmpl-checkdocumentation"><span class="std std-ref">CheckDocumentation</span></a></p></li>
+<li><p><a class="reference internal" href="Documentation/VerifyDocs.html#jobtmpl-verifydocs"><span class="std std-ref">VerifyDocs</span></a></p></li>
+<li><p><a class="reference internal" href="Documentation/SphinxDocumentation.html#jobtmpl-sphinxdocumentation"><span class="std std-ref">SphinxDocumentation</span></a></p></li>
+<li><p><a class="reference internal" href="Documentation/LaTeXDocumentation.html#jobtmpl-latexdocumentation"><span class="std std-ref">LatexDocumentation</span></a></p></li>
+</ul>
+<p class="rubric">Unit Tests, Code Coverage</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Testing/ApplicationTesting.html#jobtmpl-applicationtesting"><span class="std std-ref">ApplicationTesting</span></a></p></li>
+<li><p><a class="reference internal" href="Testing/UnitTesting.html#jobtmpl-unittesting"><span class="std std-ref">UnitTesting</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">Code Quality</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Quality/StaticTypeCheck.html#jobtmpl-statictypecheck"><span class="std std-ref">StaticTypeCheck</span></a></p></li>
+<li><p><em>code formatting (planned)</em></p></li>
+<li><p><em>coding style (planned)</em></p></li>
+<li><p><em>code linting (planned)</em></p></li>
+</ul>
+<p class="rubric">Build and Packaging</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Package/Package.html#jobtmpl-package"><span class="std std-ref">Package</span></a></p></li>
+<li><p><a class="reference internal" href="Package/InstallPackage.html#jobtmpl-installpackage"><span class="std std-ref">InstallPackage (beta)</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">Publishing</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Package/PublishOnPyPI.html#jobtmpl-publishonpypi"><span class="std std-ref">PublishOnPyPI</span></a></p></li>
+<li><p><a class="reference internal" href="Publish/PublishTestResults.html#jobtmpl-publishtestresults"><span class="std std-ref">PublishTestResults</span></a></p></li>
+<li><p><a class="reference internal" href="Publish/PublishCoverageResults.html#jobtmpl-publishcoverageresults"><span class="std std-ref">PublishCoverageResults</span></a></p></li>
+<li><p><a class="reference internal" href="Publish/PublishToGitHubPages.html#jobtmpl-publishtogithubpages"><span class="std std-ref">PublishToGitHubPages</span></a></p></li>
+</ul>
+<p class="rubric">Releasing</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Release/PublishReleaseNotes.html#jobtmpl-publishreleasenotes"><span class="std std-ref">PublishReleaseNotes</span></a></p></li>
+<li><p><a class="reference internal" href="Release/TagReleaseCommit.html#jobtmpl-tagreleasecommit"><span class="std std-ref">TagReleaseCommit</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">Cleanup</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Cleanup/IntermediateCleanup.html#jobtmpl-intermediatecleanup"><span class="std std-ref">IntermediateCleanUp</span></a></p></li>
+<li><p><a class="reference internal" href="Cleanup/ArtifactCleanup.html#jobtmpl-artifactcleanup"><span class="std std-ref">ArtifactCleanUp</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric"><a class="reference internal" href="Deprecated/index.html#jobtmpl-deprecated"><span class="std std-ref">Deprecated</span></a></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Deprecated/CoverageCollection.html#jobtmpl-codecoverage"><span class="std std-ref">CoverageCollection</span></a></p></li>
+<li><p><a class="reference internal" href="Deprecated/NightlyRelease.html#jobtmpl-nightlyrelease"><span class="std std-ref">NightlyRelease</span></a></p></li>
+<li><p><a class="reference internal" href="Deprecated/BuildTheDocs.html#jobtmpl-buildthedocs"><span class="std std-ref">BuildTheDocs</span></a></p></li>
+</ul>
+</div>
+</div>
+</div>
+<section id="instantiation">
+<span id="jobtmpl-instantiation"></span><h2>Instantiation<a class="headerlink" href="#instantiation" title="Link to this heading"></a></h2>
+<p>When instantiating a template, a <code class="docutils literal notranslate"><span class="pre">jobs:&lt;Name&gt;:uses</span></code> is used to refer to a template file. Unfortunately, besides the
+GitHub SLUG (<em>&lt;Organization&gt;/&lt;Repository&gt;</em>), also the full path to the template needs to be gives. Unfortunately, it
+can’t be outside of the <code class="docutils literal notranslate"><span class="pre">.github/workflows</span></code> directory creating a cleaner repository structure. Finally, the path
+contains a branch name postfixed by <code class="docutils literal notranslate"><span class="pre">&#64;&lt;branch&gt;</span></code> (tags are still not supported by GitHub Actions). Repositories usually
+offer a <code class="docutils literal notranslate"><span class="pre">&#64;v2</span></code>/<code class="docutils literal notranslate"><span class="pre">&#64;r2</span></code> syntax for refering to the second version/revision.</p>
+<p>Allmost all templates are generic and offer lots of configuration options. For handing over input parameters, a
+<code class="docutils literal notranslate"><span class="pre">jobs:&lt;Name&gt;:with:</span></code> node with a dictionary can be used. Additionally, some templates might require secrets, which
+are passed from GitHub’s <code class="docutils literal notranslate"><span class="pre">secrets</span></code> context to the template by using a <code class="docutils literal notranslate"><span class="pre">jobs:&lt;Name&gt;:secrets:</span></code> node.</p>
+<p>Some templates might provide output parameters, which can be used in dependent jobs by setting a job dependency using
+<code class="docutils literal notranslate"><span class="pre">jobs:&lt;Name&gt;:needs:</span></code>. The output parameter can be retrieved by accessing the <code class="docutils literal notranslate"><span class="pre">needs</span></code> context.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
+<span class="c1"># Every Friday at 22:00 - rerun pipeline to check for dependency-based issues</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0</span><span class="nv"> </span><span class="s">22</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">5&#39;</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">&lt;InstanceName&gt;</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;GitHubOrganization&gt;/&lt;Repository&gt;/.github/workflows/&lt;Template&gt;.yml@r5</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">&lt;Param1&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;Value1&gt;</span>
+<span class="w">      </span><span class="nt">&lt;Param2&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;Value2&gt;</span>
+<span class="w">    </span><span class="nt">secrets</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">&lt;Secret1&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.&lt;SecretVariable1&gt; }}</span>
+<span class="w">      </span><span class="nt">&lt;Secret2&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.&lt;SecretVariable2&gt; }}</span>
+
+<span class="w">  </span><span class="nt">&lt;OtherInstance&gt;</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;InstanceName&gt;</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">&lt;Param1&gt;</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.&lt;InstanceName&gt;.outputs.&lt;Output1&gt; }}</span>
+</pre></div>
+</div>
+</section>
+<section id="common-parameters">
+<span id="jobtmpl-commonparameters"></span><h2>Common Parameters<a class="headerlink" href="#common-parameters" title="Link to this heading"></a></h2>
+<p>All jobs specified in the templates are executed in
+<a class="reference external" href="https://github.com/actions/runner-images?tab=readme-ov-file#available-images">images provided by GitHub Actions</a>.
+Except for platform specific jobs (e.g., unit testing on macOS, Ubuntu, Windows Server, …) allmost all other jobs use
+an Ubuntu image. This image can be configured by the job template input parameter <a class="reference internal" href="#jobtmpl-common-input-ubuntu-image"><span class="std std-ref">ubuntu_image</span></a>.
+Similarly, many jobs rely on Python scripting and therefore need a Python version, which can be configured via
+<a class="reference internal" href="#jobtmpl-common-input-python-version"><span class="std std-ref">python_version</span></a>.</p>
+<section id="ubuntu-image">
+<span id="jobtmpl-common-input-ubuntu-image"></span><h3>ubuntu_image<a class="headerlink" href="#ubuntu-image" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>usually no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'ubuntu-24.04'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>See <a class="reference external" href="https://github.com/actions/runner-images?tab=readme-ov-file#available-images">actions/runner-images - Available Images</a>
+for available Ubuntu image versions.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Name of the Ubuntu image used to run a job.</p>
+</dd>
+</dl>
+</section>
+<section id="python-version">
+<span id="jobtmpl-common-input-python-version"></span><h3>python_version<a class="headerlink" href="#python-version" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>usually no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'3.13'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid Python version conforming to the pattern <code class="docutils literal notranslate"><span class="pre">&lt;major&gt;.&lt;minor&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">pypy-&lt;major&gt;.&lt;minor&gt;</span></code>. <br />
+See <a class="reference external" href="https://github.com/actions/python-versions">actions/python-versions - available Python versions</a>
+and <a class="reference external" href="https://github.com/actions/setup-python">actions/setup-python - configurable Python versions</a>.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Python version used to run Python scripts in a job.</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../Action/With-post-step.html" class="btn btn-neutral float-left" title="with-post-step" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="AllInOne/index.html" class="btn btn-neutral float-right" title="All-In-One" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2025, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 04.09.2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

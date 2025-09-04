@@ -1,0 +1,966 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ExtractConfiguration &mdash; Project name not set 0.4.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-reports.089ed2e62f89368aa21ac7591d90c12a.css?v=83177741" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/override.css?v=aed75351" />
+
+  
+    <link rel="shortcut icon" href="../../_static/icon.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=340bb9e5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Testing" href="../Testing/index.html" />
+    <link rel="prev" title="Parameters" href="Parameters.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AllInOne/index.html">All-In-One</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Pipeline Setup</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="PrepareJob.html">PrepareJob</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Parameters.html">Parameters</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ExtractConfiguration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instantiation">Instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameter-summary">Parameter Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-parameters">Input Parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ubuntu-image-version">ubuntu_image_version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-version">python_version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#package-namespace">package_namespace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#package-name">package_name</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-config">coverage_config</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#secrets">Secrets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#outputs">Outputs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#package-fullname">package_fullname</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#package-directory">package_directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mypy-prepare-command">mypy_prepare_command</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-report-xml-directory">unittest_report_xml_directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-report-xml-filename">unittest_report_xml_filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-report-xml">unittest_report_xml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-merged-report-xml-directory">unittest_merged_report_xml_directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-merged-report-xml-filename">unittest_merged_report_xml_filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-merged-report-xml">unittest_merged_report_xml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-report-html-directory">coverage_report_html_directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-report-xml-directory">coverage_report_xml_directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-report-xml-filename">coverage_report_xml_filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-report-xml">coverage_report_xml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-report-json-directory">coverage_report_json_directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-report-json-filename">coverage_report_json_filename</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-report-json">coverage_report_json</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#optimizations">Optimizations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Testing/index.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Quality/index.html">Quality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Documentation/index.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Package/index.html">Packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Publish/index.html">Publish</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Release/index.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cleanup/index.html">Cleanup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deprecated/index.html">Deprecated</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../myPackage/myPackage.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CodeCoverage.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../DocCoverage.html">Doc. Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Project name not set</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Pipeline Setup</a></li>
+      <li class="breadcrumb-item active">ExtractConfiguration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/JobTemplate/Setup/ExtractConfiguration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="extractconfiguration">
+<span id="jobtmpl-extractconfiguration"></span><h1>ExtractConfiguration<a class="headerlink" href="#extractconfiguration" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">ExtractConfiguration</span></code> job template is a …..</p>
+<aside class="topic">
+<p class="topic-title">Features</p>
+<ul class="simple">
+<li><p>Concatenate <a class="reference internal" href="#jobtmpl-extractconfiguration-input-package-namespace"><span class="std std-ref">package_namespace</span></a> and <a class="reference internal" href="#jobtmpl-extractconfiguration-input-package-name"><span class="std std-ref">package_name</span></a>
+to <a class="reference internal" href="#jobtmpl-extractconfiguration-output-package-fullname"><span class="std std-ref">package_fullname</span></a> (with dot) and <a class="reference internal" href="#jobtmpl-extractconfiguration-output-package-directory"><span class="std std-ref">package_directory</span></a>
+(with slash).</p></li>
+<li><p>Provide commands to prepare the source code directory structure suitable for mypy.</p></li>
+<li><p>Extract the unittest XML report file (pytest JUnit XML) as directory name, filename and full path from <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
+<li><p>Extract the merged unittest XML report file as directory name, filename and full path from <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
+<li><p>Extract code coverage report HTML directory from <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
+<li><p>Extract code coverage XML report file as directory name, filename and full path from <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
+<li><p>Extract code coverage JSON report file as directory name, filename and full path from <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
+</ul>
+</aside>
+<aside class="topic">
+<p class="topic-title">Behavior</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>ExtractConfiguration:Behavior needs documentation.</p>
+</div>
+</aside>
+<aside class="topic">
+<p class="topic-title">Job Execution</p>
+<a class="reference internal image-reference" href="../../_images/pyTooling-Actions-ExtractConfiguration.png"><img alt="../../_images/pyTooling-Actions-ExtractConfiguration.png" src="../../_images/pyTooling-Actions-ExtractConfiguration.png" style="width: 600px;" />
+</a>
+</aside>
+<aside class="topic">
+<p class="topic-title">Dependencies</p>
+<ul class="simple">
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/checkout">GitHub: actions/checkout</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/setup-python">GitHub: actions/setup-python</a></p>
+<ul>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/wheel/">PyPI: wheel</a></p></li>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/tomli/">PyPI: tomli</a></p></li>
+</ul>
+</li>
+</ul>
+</aside>
+<section id="instantiation">
+<span id="jobtmpl-extractconfiguration-instantiation"></span><h2>Instantiation<a class="headerlink" href="#instantiation" title="Link to this heading"></a></h2>
+<p>The following instantiation example creates a <code class="docutils literal notranslate"><span class="pre">ConfigParams</span></code> job derived from job template <code class="docutils literal notranslate"><span class="pre">ExtractConfiguration</span></code>
+version <code class="docutils literal notranslate"><span class="pre">&#64;r5</span></code>. It only requires a <a class="reference internal" href="#jobtmpl-extractconfiguration-input-package-name"><span class="std std-ref">package_name</span></a> parameter to extract unit
+test (pytest) and code coverage (Coverage.py) settings.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ConfigParams</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myPackage</span>
+
+<span class="w">  </span><span class="nt">UnitTesting</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/UnitTesting.yml@r5</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigParams</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">unittest_report_xml_directory</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}</span>
+<span class="w">      </span><span class="nt">unittest_report_xml_filename</span><span class="p">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}</span>
+<span class="w">      </span><span class="nt">coverage_report_xml_directory</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.coverage_report_xml_directory }}</span>
+<span class="w">      </span><span class="nt">coverage_report_xml_filename</span><span class="p">:</span><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.coverage_report_xml_filename }}</span>
+<span class="w">      </span><span class="nt">coverage_report_json_directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.coverage_report_json_directory }}</span>
+<span class="w">      </span><span class="nt">coverage_report_json_filename</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.coverage_report_json_filename }}</span>
+<span class="w">      </span><span class="nt">coverage_report_html_directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.coverage_report_html_directory }}</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../Testing/UnitTesting.html#jobtmpl-unittesting"><span class="std std-ref">UnitTesting</span></a></dt><dd><p><code class="docutils literal notranslate"><span class="pre">UnitTesting</span></code> is usualy</p>
+</dd>
+<dt><a class="reference internal" href="../Quality/StaticTypeCheck.html#jobtmpl-statictypecheck"><span class="std std-ref">StaticTypeCheck</span></a></dt><dd><p>xxx</p>
+</dd>
+<dt><a class="reference internal" href="../Quality/CheckDocumentation.html#jobtmpl-checkdocumentation"><span class="std std-ref">CheckDocumentation</span></a></dt><dd><p>xxx</p>
+</dd>
+<dt><a class="reference internal" href="../Package/InstallPackage.html#jobtmpl-installpackage"><span class="std std-ref">InstallPackage (beta)</span></a></dt><dd><p>xxx</p>
+</dd>
+<dt><a class="reference internal" href="../Publish/PublishCoverageResults.html#jobtmpl-publishcoverageresults"><span class="std std-ref">PublishCoverageResults</span></a></dt><dd><p>xxx</p>
+</dd>
+<dt><a class="reference internal" href="../Publish/PublishTestResults.html#jobtmpl-publishtestresults"><span class="std std-ref">PublishTestResults</span></a></dt><dd><p>xxx</p>
+</dd>
+<dt><a class="reference internal" href="../Documentation/SphinxDocumentation.html#jobtmpl-sphinxdocumentation"><span class="std std-ref">SphinxDocumentation</span></a></dt><dd><p>xxx</p>
+</dd>
+</dl>
+</div>
+</section>
+<section id="parameter-summary">
+<span id="jobtmpl-extractconfiguration-parameters"></span><h2>Parameter Summary<a class="headerlink" href="#parameter-summary" title="Link to this heading"></a></h2>
+<p class="rubric">Goto <a class="reference internal" href="#jobtmpl-extractconfiguration-inputs"><span class="std std-ref">input parameters</span></a></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-input-ubuntu-image-version"><span class="std std-ref">ubuntu_image_version</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'24.04'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-input-python-version"><span class="std std-ref">python_version</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'3.13'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-input-package-namespace"><span class="std std-ref">package_namespace</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-input-package-name"><span class="std std-ref">package_name</span></a></p></td>
+<td><p>yes</p></td>
+<td><p>string</p></td>
+<td><p>— — — —</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-input-coverage-config"><span class="std std-ref">coverage_config</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'pyproject.toml'</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Goto <a class="reference internal" href="#jobtmpl-extractconfiguration-secrets"><span class="std std-ref">secrets</span></a></p>
+<p>This job template needs no secrets.</p>
+<p class="rubric">Goto <a class="reference internal" href="#jobtmpl-extractconfiguration-outputs"><span class="std std-ref">output parameters</span></a></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Result Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-package-fullname"><span class="std std-ref">package_fullname</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-package-directory"><span class="std std-ref">package_directory</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-mypy-prepare-command"><span class="std std-ref">mypy_prepare_command</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-report-xml-directory"><span class="std std-ref">unittest_report_xml_directory</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-report-xml-filename"><span class="std std-ref">unittest_report_xml_filename</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-report-xml"><span class="std std-ref">unittest_report_xml</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-merged-report-xml-directory"><span class="std std-ref">unittest_merged_report_xml_directory</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-merged-report-xml-filename"><span class="std std-ref">unittest_merged_report_xml_filename</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-merged-report-xml"><span class="std std-ref">unittest_merged_report_xml</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-html-directory"><span class="std std-ref">coverage_report_html_directory</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-xml-directory"><span class="std std-ref">coverage_report_xml_directory</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-xml-filename"><span class="std std-ref">coverage_report_xml_filename</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-xml"><span class="std std-ref">coverage_report_xml</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-json-directory"><span class="std std-ref">coverage_report_json_directory</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-json-filename"><span class="std std-ref">coverage_report_json_filename</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-json"><span class="std std-ref">coverage_report_json</span></a></p></td>
+<td><p>string</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="input-parameters">
+<span id="jobtmpl-extractconfiguration-inputs"></span><h2>Input Parameters<a class="headerlink" href="#input-parameters" title="Link to this heading"></a></h2>
+<section id="ubuntu-image-version">
+<span id="jobtmpl-extractconfiguration-input-ubuntu-image-version"></span><h3>ubuntu_image_version<a class="headerlink" href="#ubuntu-image-version" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'24.04'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>See <a class="reference external" href="https://github.com/actions/runner-images?tab=readme-ov-file#available-images">actions/runner-images - Available Images</a>
+for available Ubuntu image versions.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Version of the Ubuntu image used to run this job.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unfortunately, GitHub Actions has only a <a class="reference external" href="https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#functions">limited set of functions</a>,
+thus, the usual Ubuntu image name like <code class="docutils literal notranslate"><span class="pre">'ubuntu-24.04'</span></code> can’t be split into image name and image
+version.</p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="python-version">
+<span id="jobtmpl-extractconfiguration-input-python-version"></span><h3>python_version<a class="headerlink" href="#python-version" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'3.13'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid Python version conforming to the pattern <code class="docutils literal notranslate"><span class="pre">&lt;major&gt;.&lt;minor&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">pypy-&lt;major&gt;.&lt;minor&gt;</span></code>. <br />
+See <a class="reference external" href="https://github.com/actions/python-versions">actions/python-versions - available Python versions</a>
+and <a class="reference external" href="https://github.com/actions/setup-python">actions/setup-python - configurable Python versions</a>.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Python version used to run Python code in this job.</p>
+</dd>
+</dl>
+</section>
+<section id="package-namespace">
+<span id="jobtmpl-extractconfiguration-input-package-namespace"></span><h3>package_namespace<a class="headerlink" href="#package-namespace" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid Python namespace.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>In case the package is a Python namespace package, the name of the library’s or package’s namespace
+needs to be specified using this parameter. <br />
+In case of a simple Python package, this parameter must be specified as an empty string (<code class="docutils literal notranslate"><span class="pre">''</span></code>),
+which is the default.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-column sd-col-5 sd-col-xs-5 sd-col-sm-5 sd-col-md-5 sd-col-lg-5 docutils">
+<p class="rubric">Example Instantiation</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ConfigParams</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">package_namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myFramework</span>
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">Extension</span>
+</pre></div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-4 sd-col-xs-4 sd-col-sm-4 sd-col-md-4 sd-col-lg-4 docutils">
+<p class="rubric">Example Directory Structure</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>📂ProjectRoot/
+  📂myFramework/
+    📂Extension/
+      📦SubPackage/
+        🐍__init__.py
+        🐍SubModuleA.py
+      🐍__init__.py
+      🐍ModuleB.py
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="package-name">
+<span id="jobtmpl-extractconfiguration-input-package-name"></span><h3>package_name<a class="headerlink" href="#package-name" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid Python package name.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>In case of a simple Python package, this package’s name is specified using this parameter. <br />
+In case the package is a Python namespace package, the parameter
+<a class="reference internal" href="#jobtmpl-extractconfiguration-input-package-namespace"><span class="std std-ref">package_namespace</span></a> must be specified, too.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-column sd-col-5 sd-col-xs-5 sd-col-sm-5 sd-col-md-5 sd-col-lg-5 docutils">
+<p class="rubric">Example Instantiation</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ConfigParams</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myPackage</span>
+</pre></div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-4 sd-col-xs-4 sd-col-sm-4 sd-col-md-4 sd-col-lg-4 docutils">
+<p class="rubric">Example Directory Structure</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>📂ProjectRoot/
+  📂myFramework/
+    📦SubPackage/
+      🐍__init__.py
+      🐍SubModuleA.py
+    🐍__init__.py
+    🐍ModuleB.py
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-config">
+<span id="jobtmpl-extractconfiguration-input-coverage-config"></span><h3>coverage_config<a class="headerlink" href="#coverage-config" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'pyproject.toml'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid path to a <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file. <br />
+Alternatively, path to a <code class="file docutils literal notranslate"><span class="pre">.coveragerc</span></code> file (deprecated).</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to a Python project configuration file for extraction of project settings.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-column sd-col-5 sd-col-xs-5 sd-col-sm-5 sd-col-md-5 sd-col-lg-5 docutils">
+<p class="rubric">Extracted values from <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code></p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pytest]</span>
+<span class="n">junit_xml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/unit/UnittestReportSummary.xml&quot;</span>
+
+<span class="k">[tool.pyedaa-reports]</span>
+<span class="n">junit_xml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/unit/unittest.xml&quot;</span>
+
+<span class="k">[tool.coverage.xml]</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/coverage.xml&quot;</span>
+
+<span class="k">[tool.coverage.json]</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/coverage.json&quot;</span>
+
+<span class="k">[tool.coverage.html]</span>
+<span class="n">directory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/html&quot;</span>
+<span class="n">title</span><span class="o">=</span><span class="s2">&quot;Code Coverage of pyDummy&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</section>
+</section>
+<section id="secrets">
+<span id="jobtmpl-extractconfiguration-secrets"></span><h2>Secrets<a class="headerlink" href="#secrets" title="Link to this heading"></a></h2>
+<p>This job template needs no secrets.</p>
+</section>
+<section id="outputs">
+<span id="jobtmpl-extractconfiguration-outputs"></span><h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h2>
+<section id="package-fullname">
+<span id="jobtmpl-extractconfiguration-output-package-fullname"></span><h3>package_fullname<a class="headerlink" href="#package-fullname" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the full package name composed from <a class="reference internal" href="#jobtmpl-extractconfiguration-input-package-namespace"><span class="std std-ref">package_namespace</span></a>
+and <a class="reference internal" href="#jobtmpl-extractconfiguration-input-package-name"><span class="std std-ref">package_name</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">myFramework.Extension</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="package-directory">
+<span id="jobtmpl-extractconfiguration-output-package-directory"></span><h3>package_directory<a class="headerlink" href="#package-directory" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the full package path composed from <a class="reference internal" href="#jobtmpl-extractconfiguration-input-package-namespace"><span class="std std-ref">package_namespace</span></a>
+and <a class="reference internal" href="#jobtmpl-extractconfiguration-input-package-name"><span class="std std-ref">package_name</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">myFramework/Extension</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="mypy-prepare-command">
+<span id="jobtmpl-extractconfiguration-output-mypy-prepare-command"></span><h3>mypy_prepare_command<a class="headerlink" href="#mypy-prepare-command" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a preparation command for <a class="reference external" href="https://mypy-lang.org/">mypy</a>. <br />
+In case the Python package is a namespace package, an <code class="file docutils literal notranslate"><span class="pre">__init__.py</span></code> must be created, otherwise
+mypy has problems analyzing the namespace package.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">touch</span> <span class="pre">myFramework/__init__.py</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="unittest-report-xml-directory">
+<span id="jobtmpl-extractconfiguration-output-unittest-report-xml-directory"></span><h3>unittest_report_xml_directory<a class="headerlink" href="#unittest-report-xml-directory" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the directory where the unittest XML report file (<a class="reference external" href="https://docs.pytest.org/">pytest</a> JUnit XML)
+will be created. <br />
+This is the directory portion of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-report-xml"><span class="std std-ref">unittest_report_xml</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">reports/unit</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pytest]</span>
+<span class="n">junit_xml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/unit/UnittestReportSummary.xml&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="unittest-report-xml-filename">
+<span id="jobtmpl-extractconfiguration-output-unittest-report-xml-filename"></span><h3>unittest_report_xml_filename<a class="headerlink" href="#unittest-report-xml-filename" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the filename of the unittest XML report file (<a class="reference external" href="https://docs.pytest.org/">pytest</a> JUnit XML). <br />
+This is the filename portion of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-report-xml"><span class="std std-ref">unittest_report_xml</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">UnittestReportSummary.xml</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pytest]</span>
+<span class="n">junit_xml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/unit/UnittestReportSummary.xml&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="unittest-report-xml">
+<span id="jobtmpl-extractconfiguration-output-unittest-report-xml"></span><h3>unittest_report_xml<a class="headerlink" href="#unittest-report-xml" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the path where the unittest XML report file (<a class="reference external" href="https://docs.pytest.org/">pytest</a> JUnit XML)
+will be created. <br />
+This is the concatenation of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-report-xml-directory"><span class="std std-ref">directory portion</span></a>
+and <a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-report-xml-filename"><span class="std std-ref">filename portion</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">reports/unit/UnittestReportSummary.xml</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pytest]</span>
+<span class="n">junit_xml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/unit/UnittestReportSummary.xml&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="unittest-merged-report-xml-directory">
+<span id="jobtmpl-extractconfiguration-output-unittest-merged-report-xml-directory"></span><h3>unittest_merged_report_xml_directory<a class="headerlink" href="#unittest-merged-report-xml-directory" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the directory where the merged unittest XML report file
+(<a class="reference external" href="https://edaa-org.github.io/pyEDAA.Reports/">pyedaa-reports</a> JUnit XML) will be created. <br />
+This is the directory portion of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-merged-report-xml"><span class="std std-ref">unittest_merged_report_xml</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">reports/unit</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pyedaa-reports]</span>
+<span class="n">junit_xml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/unit/unittest.xml&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="unittest-merged-report-xml-filename">
+<span id="jobtmpl-extractconfiguration-output-unittest-merged-report-xml-filename"></span><h3>unittest_merged_report_xml_filename<a class="headerlink" href="#unittest-merged-report-xml-filename" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the filename of the merged unittest XML report
+(<a class="reference external" href="https://edaa-org.github.io/pyEDAA.Reports/">pyedaa-reports</a> JUnit XML). <br />
+This is the filename portion of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-merged-report-xml"><span class="std std-ref">unittest_merged_report_xml</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">unittest.xml</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pyedaa-reports]</span>
+<span class="n">junit_xml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/unit/unittest.xml&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="unittest-merged-report-xml">
+<span id="jobtmpl-extractconfiguration-output-unittest-merged-report-xml"></span><h3>unittest_merged_report_xml<a class="headerlink" href="#unittest-merged-report-xml" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the path where the merged unittest XML report file (<a class="reference external" href="https://edaa-org.github.io/pyEDAA.Reports/">pyedaa-reports</a> JUnit XML)
+will be created. <br />
+This is the concatenation of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-merged-report-xml-directory"><span class="std std-ref">directory portion</span></a>
+and <a class="reference internal" href="#jobtmpl-extractconfiguration-output-unittest-merged-report-xml-filename"><span class="std std-ref">filename portion</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">report/unit/unittest.xml</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pyedaa-reports]</span>
+<span class="n">junit_xml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/unit/unittest.xml&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-report-html-directory">
+<span id="jobtmpl-extractconfiguration-output-coverage-report-html-directory"></span><h3>coverage_report_html_directory<a class="headerlink" href="#coverage-report-html-directory" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the directory where the code coverage HTML report (<a class="reference external" href="https://coverage.readthedocs.io/">Coverage.py</a>)
+will be generated.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">report/coverage/html</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.coverage.html]</span>
+<span class="n">directory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/html&quot;</span>
+<span class="n">title</span><span class="o">=</span><span class="s2">&quot;Code Coverage of pyDummy&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-report-xml-directory">
+<span id="jobtmpl-extractconfiguration-output-coverage-report-xml-directory"></span><h3>coverage_report_xml_directory<a class="headerlink" href="#coverage-report-xml-directory" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the directory where the code coverage XML report file (<a class="reference external" href="https://coverage.readthedocs.io/">Coverage.py</a>)
+will be created. <br />
+This is the directory portion of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-xml"><span class="std std-ref">coverage_report_xml</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">reports/coverage</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.coverage.xml]</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/coverage.xml&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-report-xml-filename">
+<span id="jobtmpl-extractconfiguration-output-coverage-report-xml-filename"></span><h3>coverage_report_xml_filename<a class="headerlink" href="#coverage-report-xml-filename" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the filename of the code coverage XML report file (<a class="reference external" href="https://coverage.readthedocs.io/">Coverage.py</a>). <br />
+This is the filename portion of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-xml"><span class="std std-ref">coverage_report_xml</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">coverage.xml</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.coverage.xml]</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/coverage.xml&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-report-xml">
+<span id="jobtmpl-extractconfiguration-output-coverage-report-xml"></span><h3>coverage_report_xml<a class="headerlink" href="#coverage-report-xml" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the path where the code coverage XML report file (<a class="reference external" href="https://coverage.readthedocs.io/">Coverage.py</a>)
+will be created. <br />
+This is the concatenation of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-xml-directory"><span class="std std-ref">directory portion</span></a>
+and <a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-xml-filename"><span class="std std-ref">filename portion</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">report/coverage/coverage.xml</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.coverage.xml]</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/coverage.xml&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-report-json-directory">
+<span id="jobtmpl-extractconfiguration-output-coverage-report-json-directory"></span><h3>coverage_report_json_directory<a class="headerlink" href="#coverage-report-json-directory" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the directory where the code coverage JSON report file (<a class="reference external" href="https://coverage.readthedocs.io/">Coverage.py</a>)
+will be created. <br />
+This is the directory portion of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-json"><span class="std std-ref">coverage_report_json</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">reports/coverage</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.coverage.json]</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/coverage.json&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-report-json-filename">
+<span id="jobtmpl-extractconfiguration-output-coverage-report-json-filename"></span><h3>coverage_report_json_filename<a class="headerlink" href="#coverage-report-json-filename" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the filename of the code coverage JSON report file (<a class="reference external" href="https://coverage.readthedocs.io/">Coverage.py</a>). <br />
+This is the filename portion of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-json"><span class="std std-ref">coverage_report_json</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">coverage.json</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.coverage.json]</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/coverage.json&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-report-json">
+<span id="jobtmpl-extractconfiguration-output-coverage-report-json"></span><h3>coverage_report_json<a class="headerlink" href="#coverage-report-json" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns the path where the code coverage JSON report file (<a class="reference external" href="https://coverage.readthedocs.io/">Coverage.py</a>)
+will be created. <br />
+This is the concatenation of <a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-json-directory"><span class="std std-ref">directory portion</span></a>
+and <a class="reference internal" href="#jobtmpl-extractconfiguration-output-coverage-report-json-filename"><span class="std std-ref">filename portion</span></a>.</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="file docutils literal notranslate"><span class="pre">report/coverage/coverage.json</span></code></p>
+</dd>
+<dt class="field-even">pyproject.toml<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.coverage.json]</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/coverage.json&quot;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+</section>
+<section id="optimizations">
+<span id="jobtmpl-extractconfiguration-optimizations"></span><h2>Optimizations<a class="headerlink" href="#optimizations" title="Link to this heading"></a></h2>
+<p>This template offers no optimizations (reduced job runtime).</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Parameters.html" class="btn btn-neutral float-left" title="Parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Testing/index.html" class="btn btn-neutral float-right" title="Testing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2025, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 04.09.2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

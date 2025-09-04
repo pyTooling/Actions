@@ -1,0 +1,1431 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CompletePipeline &mdash; Project name not set 0.4.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-reports.089ed2e62f89368aa21ac7591d90c12a.css?v=83177741" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/override.css?v=aed75351" />
+
+  
+    <link rel="shortcut icon" href="../../_static/icon.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=340bb9e5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Pipeline Setup" href="../Setup/index.html" />
+    <link rel="prev" title="All-In-One" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">All-In-One</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">CompletePipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instantiation">Instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameter-summary">Parameter Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-parameters">Input Parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#package-namespace">package_namespace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#package-name">package_name</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-python-version">unittest_python_version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-python-version-list">unittest_python_version_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-system-list">unittest_system_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-include-list">unittest_include_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-exclude-list">unittest_exclude_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-disable-list">unittest_disable_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apptest-python-version">apptest_python_version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apptest-python-version-list">apptest_python_version_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apptest-system-list">apptest_system_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apptest-include-list">apptest_include_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apptest-exclude-list">apptest_exclude_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apptest-disable-list">apptest_disable_list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#codecov">codecov</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#codacy">codacy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dorny">dorny</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cleanup">cleanup</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#secrets">Secrets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pypi-token">PYPI_TOKEN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#codecov-token">CODECOV_TOKEN</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#codacy-token">CODACY_TOKEN</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#outputs">Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimizations">Optimizations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Setup/index.html">Pipeline Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Testing/index.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Quality/index.html">Quality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Documentation/index.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Package/index.html">Packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Publish/index.html">Publish</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Release/index.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cleanup/index.html">Cleanup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deprecated/index.html">Deprecated</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../myPackage/myPackage.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CodeCoverage.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../DocCoverage.html">Doc. Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Project name not set</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">All-In-One</a></li>
+      <li class="breadcrumb-item active">CompletePipeline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/JobTemplate/AllInOne/CompletePipeline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="completepipeline">
+<span id="jobtmpl-completepipeline"></span><h1>CompletePipeline<a class="headerlink" href="#completepipeline" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">CompletePipeline</span></code> job template is the combination of almost all job templates offered by pyTooling/Actions in a
+single workflow template. If fulfills all needs to test, package, document, publish and release Python code from GitHub.
+It can be used for simple Python packages as well as namespace packages.</p>
+<aside class="topic">
+<p class="topic-title">Features</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-3 sd-row-cols-xs-3 sd-row-cols-sm-3 sd-row-cols-md-3 sd-row-cols-lg-3 docutils">
+<div class="sd-col sd-d-flex-column sd-col-4 sd-col-xs-4 sd-col-sm-4 sd-col-md-4 sd-col-lg-4 docutils">
+<p class="rubric">Testing</p>
+<ul class="simple">
+<li><p>Run unit tests.</p></li>
+<li><p>Run platform tests.</p></li>
+<li><p>Run application tests on target platform.</p></li>
+</ul>
+<p class="rubric">Code Quality</p>
+<ul class="simple">
+<li><p>Collect code coverage.</p></li>
+<li><p>Check documentation coverage.</p></li>
+<li><p>Check static typing closure.</p></li>
+</ul>
+<p class="rubric">Report Handling</p>
+<ul class="simple">
+<li><p>Merge unit test results into a single summary report.</p></li>
+<li><p>Merge code coverage results into a single summary report.</p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-4 sd-col-xs-4 sd-col-sm-4 sd-col-md-4 sd-col-lg-4 docutils">
+<p class="rubric">Documentation</p>
+<ul class="simple">
+<li><p>Compile documentation using Sphinx as HTML and LaTeX.</p></li>
+<li><p>Translate LaTeX documentation to PDF.</p></li>
+</ul>
+<p class="rubric">Publishing Results</p>
+<ul class="simple">
+<li><p>GitHub Pipeline Summary</p>
+<ul>
+<li><p>Publich unittest results using <a class="extlink-gh reference external" href="https://GitHub.com/dorny/test-reporter">GitHub: dorny/test-reporter</a>.</p></li>
+</ul>
+</li>
+<li><p>GitHub Pages</p>
+<ul>
+<li><p>Publish HTML documentation to GitHub Pages.</p></li>
+</ul>
+</li>
+<li><p>Codacy</p>
+<ul>
+<li><p>Publish code coverage to Codacy.</p></li>
+</ul>
+</li>
+<li><p>CodeCov</p>
+<ul>
+<li><p>Publish code coverage to CodeCov.</p></li>
+<li><p>Publish unittest results to CodeCov.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-4 sd-col-xs-4 sd-col-sm-4 sd-col-md-4 sd-col-lg-4 docutils">
+<p class="rubric">Packaging</p>
+<ul class="simple">
+<li><p>Package as wheel.</p></li>
+<li><p>Install wheel on target platform.</p></li>
+<li><p>Upload to PyPI.</p></li>
+</ul>
+<p class="rubric">Releasing</p>
+<ul class="simple">
+<li><p>Automatic tagging of merge commits on main branch to trigger a tagged pipeline (release pipeline).</p></li>
+<li><p>Create a release page with text derived from pull request description.</p></li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+<aside class="topic">
+<p class="topic-title">Behavior</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>CompletePipeline:Behavior needs documentation.</p>
+</div>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-column sd-col-6 sd-col-xs-6 sd-col-sm-6 sd-col-md-6 sd-col-lg-6 docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Simple" for="sd-tab-item-0">
+Simple Package</label><div class="sd-tab-content docutils">
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">SimplePackage</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myPackage</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Namespace" for="sd-tab-item-1">
+Namespace Package</label><div class="sd-tab-content docutils">
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">NamespacePackage</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">package_namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myFramework</span>
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">Extension</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-6 sd-col-xs-6 sd-col-sm-6 sd-col-md-6 sd-col-lg-6 docutils">
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Simple" for="sd-tab-item-2">
+Simple Package</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>📂ProjectRoot/
+  📂myFramework/
+
+    📦SubPackage/
+      🐍__init__.py
+      🐍SubModuleA.py
+    🐍__init__.py
+    🐍ModuleB.py
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="tab" data-sync-id="Namespace" for="sd-tab-item-3">
+Namespace Package</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>📂ProjectRoot/
+  📂myFramework/
+    📂Extension/
+      📦SubPackage/
+        🐍__init__.py
+        🐍SubModuleA.py
+      🐍__init__.py
+      🐍ModuleB.py
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<aside class="topic">
+<p class="topic-title">Pipeline Graph</p>
+<img alt="../../_images/pyTooling-Actions-SimplePackage.png" src="../../_images/pyTooling-Actions-SimplePackage.png" />
+</aside>
+<aside class="topic">
+<p class="topic-title">Dependencies</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../Setup/PrepareJob.html#jobtmpl-preparejob"><span class="std std-ref">pyTooling/Actions/.github/workflows/PrepareJob.yml</span></a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/checkout">GitHub: actions/checkout</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/cli/cli">GitHub command line tool ‘gh’</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="../Setup/Parameters.html#jobtmpl-parameters"><span class="std std-ref">pyTooling/Actions/.github/workflows/Parameters.yml</span></a></p></li>
+<li><p><a class="reference internal" href="../Setup/ExtractConfiguration.html#jobtmpl-extractconfiguration"><span class="std std-ref">pyTooling/Actions/.github/workflows/ExtractConfiguration.yml</span></a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/checkout">GitHub: actions/checkout</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/setup-python">GitHub: actions/setup-python</a></p>
+<ul>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/wheel/">PyPI: wheel</a></p></li>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/tomli/">PyPI: tomli</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="../Testing/UnitTesting.html#jobtmpl-unittesting"><span class="std std-ref">pyTooling/Actions/.github/workflows/UnitTesting.yml</span></a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/checkout">GitHub: actions/checkout</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/msys2/setup-msys2">GitHub: msys2/setup-msys2</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/setup-python">GitHub: actions/setup-python</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/pyTooling/download-artifact">GitHub: pyTooling/download-artifact</a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/download-artifact">GitHub: actions/download-artifact</a></p></li>
+</ul>
+</li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/pyTooling/upload-artifact">GitHub: pyTooling/upload-artifact</a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/upload-artifact">GitHub: actions/upload-artifact</a></p></li>
+</ul>
+</li>
+<li><p>apt: Packages specified via <a class="reference internal" href="../Testing/UnitTesting.html#jobtmpl-unittesting-input-apt"><span class="std std-ref">apt</span></a> parameter.</p></li>
+<li><p>homebrew: Packages specified via <a class="reference internal" href="../Testing/UnitTesting.html#jobtmpl-unittesting-input-brew"><span class="std std-ref">brew</span></a> parameter.</p></li>
+<li><p>MSYS2: Packages specified via <a class="reference internal" href="../Testing/UnitTesting.html#jobtmpl-unittesting-input-pacboy"><span class="std std-ref">pacboy</span></a> parameter.</p></li>
+<li><p>pip</p>
+<ul>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/wheel/">PyPI: wheel</a></p></li>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/tomli/">PyPI: tomli</a></p></li>
+<li><p>Python packages specified via <a class="reference internal" href="../Testing/UnitTesting.html#jobtmpl-unittesting-input-requirements"><span class="std std-ref">requirements</span></a> or
+<a class="reference internal" href="../Testing/UnitTesting.html#jobtmpl-unittesting-input-mingw-requirements"><span class="std std-ref">mingw_requirements</span></a> parameter.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="../Testing/ApplicationTesting.html#jobtmpl-applicationtesting"><span class="std std-ref">pyTooling/Actions/.github/workflows/ApplicationTesting.yml</span></a></p></li>
+<li><p><a class="reference internal" href="../Quality/CheckDocumentation.html#jobtmpl-checkdocumentation"><span class="std std-ref">pyTooling/Actions/.github/workflows/CheckDocumentation.yml</span></a></p></li>
+<li><p><a class="reference internal" href="../Quality/StaticTypeCheck.html#jobtmpl-statictypecheck"><span class="std std-ref">pyTooling/Actions/.github/workflows/StaticTypeCheck.yml</span></a></p></li>
+<li><p><a class="reference internal" href="../Package/Package.html#jobtmpl-package"><span class="std std-ref">pyTooling/Actions/.github/workflows/Package.yml</span></a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/checkout">GitHub: actions/checkout</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/setup-python">GitHub: actions/setup-python</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/pyTooling/upload-artifact">GitHub: pyTooling/upload-artifact</a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/upload-artifact">GitHub: actions/upload-artifact</a></p></li>
+</ul>
+</li>
+<li><p>pip</p>
+<ul>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/build/">PyPI: build</a></p></li>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/wheel/">PyPI: wheel</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="../Publish/PublishTestResults.html#jobtmpl-publishtestresults"><span class="std std-ref">pyTooling/Actions/.github/workflows/PublishTestResults.yml</span></a></p></li>
+<li><p><a class="reference internal" href="../Publish/PublishCoverageResults.html#jobtmpl-publishcoverageresults"><span class="std std-ref">pyTooling/Actions/.github/workflows/PublishCoverageResults.yml</span></a></p></li>
+<li><p><a class="reference internal" href="../Documentation/SphinxDocumentation.html#jobtmpl-sphinxdocumentation"><span class="std std-ref">pyTooling/Actions/.github/workflows/SphinxDocumentation.yml</span></a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/checkout">GitHub: actions/checkout</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/setup-python">GitHub: actions/setup-python</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/pyTooling/download-artifact">GitHub: pyTooling/download-artifact</a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/download-artifact">GitHub: actions/download-artifact</a></p></li>
+</ul>
+</li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/pyTooling/upload-artifact">GitHub: pyTooling/upload-artifact</a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/upload-artifact">GitHub: actions/upload-artifact</a></p></li>
+</ul>
+</li>
+<li><p>apt</p>
+<ul>
+<li><p><a class="reference external" href="https://graphviz.org/">graphviz</a></p></li>
+</ul>
+</li>
+<li><p>pip</p>
+<ul>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/wheel/">PyPI: wheel</a></p></li>
+<li><p>Python packages specified via <a class="reference internal" href="../Documentation/SphinxDocumentation.html#jobtmpl-sphinxdocumentation-input-requirements"><span class="std std-ref">requirements</span></a> parameter.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="../Documentation/LaTeXDocumentation.html#jobtmpl-latexdocumentation"><span class="std std-ref">pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml</span></a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/pyTooling/download-artifact">GitHub: pyTooling/download-artifact</a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/download-artifact">GitHub: actions/download-artifact</a></p></li>
+</ul>
+</li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/pyTooling/upload-artifact">GitHub: pyTooling/upload-artifact</a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/upload-artifact">GitHub: actions/upload-artifact</a></p></li>
+</ul>
+</li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/addnab/docker-run-action">GitHub: addnab/docker-run-action</a></p>
+<ul>
+<li><p><a class="extlink-dockerhub reference external" href="https://hub.docker.com/r/pytooling/miktex:sphinx">pytooling/miktex</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="../Publish/PublishToGitHubPages.html#jobtmpl-publishtogithubpages"><span class="std std-ref">pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml</span></a></p></li>
+<li><p><a class="reference internal" href="../Package/PublishOnPyPI.html#jobtmpl-publishonpypi"><span class="std std-ref">pyTooling/Actions/.github/workflows/PublishOnPyPI.yml</span></a></p></li>
+<li><p><a class="reference internal" href="../Release/TagReleaseCommit.html#jobtmpl-tagreleasecommit"><span class="std std-ref">pyTooling/Actions/.github/workflows/TagReleaseCommit.yml</span></a></p></li>
+<li><p><a class="reference internal" href="../Release/PublishReleaseNotes.html#jobtmpl-publishreleasenotes"><span class="std std-ref">pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml</span></a></p></li>
+<li><p><a class="reference internal" href="../Cleanup/IntermediateCleanup.html#jobtmpl-intermediatecleanup"><span class="std std-ref">pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml</span></a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/geekyeggo/delete-artifact">GitHub: geekyeggo/delete-artifact</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="../Cleanup/ArtifactCleanup.html#jobtmpl-artifactcleanup"><span class="std std-ref">pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml</span></a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/geekyeggo/delete-artifact">GitHub: geekyeggo/delete-artifact</a></p></li>
+</ul>
+</li>
+</ul>
+</aside>
+<section id="instantiation">
+<span id="jobtmpl-completepipeline-instantiation"></span><h2>Instantiation<a class="headerlink" href="#instantiation" title="Link to this heading"></a></h2>
+<p>The following instantiation example creates a <code class="docutils literal notranslate"><span class="pre">Params</span></code> job derived from job template <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> version <code class="docutils literal notranslate"><span class="pre">&#64;r5</span></code>.
+It only requires a <cite>name</cite> parameter to create the artifact names.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">Params</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myPackage</span>
+</pre></div>
+</div>
+</section>
+<section id="parameter-summary">
+<span id="jobtmpl-completepipeline-parameters"></span><h2>Parameter Summary<a class="headerlink" href="#parameter-summary" title="Link to this heading"></a></h2>
+<p class="rubric">Goto <a class="reference internal" href="#jobtmpl-completepipeline-inputs"><span class="std std-ref">input parameters</span></a></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-package-namespace"><span class="std std-ref">package_namespace</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-package-name"><span class="std std-ref">package_name</span></a></p></td>
+<td><p>yes</p></td>
+<td><p>string</p></td>
+<td><p>— — — —</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-unittest-python-version"><span class="std std-ref">unittest_python_version</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'3.13'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-unittest-python-version-list"><span class="std std-ref">unittest_python_version_list</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'3.9</span> <span class="pre">3.10</span> <span class="pre">3.11</span> <span class="pre">3.12</span> <span class="pre">3.13'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-unittest-system-list"><span class="std std-ref">unittest_system_list</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'ubuntu</span> <span class="pre">windows</span> <span class="pre">macos</span> <span class="pre">macos-arm</span> <span class="pre">ucrt64'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-unittest-include-list"><span class="std std-ref">unittest_include_list</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-unittest-exclude-list"><span class="std std-ref">unittest_exclude_list</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'windows-arm:3.9</span> <span class="pre">windows-arm:3.10'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-unittest-disable-list"><span class="std std-ref">unittest_disable_list</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'windows-arm:pypy-3.10</span> <span class="pre">windows-arm:pypy-3.11'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-apptest-python-version"><span class="std std-ref">apptest_python_version</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'3.13'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-apptest-python-version-list"><span class="std std-ref">apptest_python_version_list</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-apptest-system-list"><span class="std std-ref">apptest_system_list</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'ubuntu</span> <span class="pre">windows</span> <span class="pre">macos</span> <span class="pre">macos-arm</span> <span class="pre">ucrt64'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-apptest-include-list"><span class="std std-ref">apptest_include_list</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-apptest-exclude-list"><span class="std std-ref">apptest_exclude_list</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'windows-arm:3.9</span> <span class="pre">windows-arm:3.10'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-apptest-disable-list"><span class="std std-ref">apptest_disable_list</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'windows-arm:pypy-3.10</span> <span class="pre">windows-arm:pypy-3.11'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-codecov"><span class="std std-ref">codecov</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-codacy"><span class="std std-ref">codacy</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-dorny"><span class="std std-ref">dorny</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-input-cleanup"><span class="std std-ref">cleanup</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Goto <a class="reference internal" href="#jobtmpl-completepipeline-secrets"><span class="std std-ref">secrets</span></a></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Token Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-secret-pypi-token"><span class="std std-ref">PYPI_TOKEN</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p>— — — —</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-secret-codecov-token"><span class="std std-ref">CODECOV_TOKEN</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p>— — — —</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-completepipeline-secret-codacy-token"><span class="std std-ref">CODACY_TOKEN</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p>— — — —</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Goto <a class="reference internal" href="#jobtmpl-completepipeline-outputs"><span class="std std-ref">output parameters</span></a></p>
+<p>This job template has no output parameters.</p>
+</section>
+<section id="input-parameters">
+<span id="jobtmpl-completepipeline-inputs"></span><h2>Input Parameters<a class="headerlink" href="#input-parameters" title="Link to this heading"></a></h2>
+<section id="package-namespace">
+<span id="jobtmpl-completepipeline-input-package-namespace"></span><h3>package_namespace<a class="headerlink" href="#package-namespace" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid Python namespace.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>In case the package is a Python namespace package, the name of the library’s or package’s namespace
+needs to be specified using this parameter. <br />
+In case of a simple Python package, this parameter must be specified as an empty string (<code class="docutils literal notranslate"><span class="pre">''</span></code>),
+which is the default.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-column sd-col-5 sd-col-xs-5 sd-col-sm-5 sd-col-md-5 sd-col-lg-5 docutils">
+<p class="rubric">Example Instantiation</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">NamespacePackage</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">package_namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myFramework</span>
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">Extension</span>
+</pre></div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-4 sd-col-xs-4 sd-col-sm-4 sd-col-md-4 sd-col-lg-4 docutils">
+<p class="rubric">Example Directory Structure</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>📂ProjectRoot/
+  📂myFramework/
+    📂Extension/
+      📦SubPackage/
+        🐍__init__.py
+        🐍SubModuleA.py
+      🐍__init__.py
+      🐍ModuleB.py
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="package-name">
+<span id="jobtmpl-completepipeline-input-package-name"></span><h3>package_name<a class="headerlink" href="#package-name" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>yes</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p>— — — —</p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid Python package name.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>In case of a simple Python package, this package’s name is specified using this parameter. <br />
+In case the package is a Python namespace package, the parameter
+<a class="reference internal" href="#jobtmpl-completepipeline-input-package-namespace"><span class="std std-ref">package_namespace</span></a> must be specified, too.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-column sd-col-5 sd-col-xs-5 sd-col-sm-5 sd-col-md-5 sd-col-lg-5 docutils">
+<p class="rubric">Example Instantiation</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">SimplePackage</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myPackage</span>
+</pre></div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-4 sd-col-xs-4 sd-col-sm-4 sd-col-md-4 sd-col-lg-4 docutils">
+<p class="rubric">Example Directory Structure</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>📂ProjectRoot/
+  📂myFramework/
+    📦SubPackage/
+      🐍__init__.py
+      🐍SubModuleA.py
+    🐍__init__.py
+    🐍ModuleB.py
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="unittest-python-version">
+<span id="jobtmpl-completepipeline-input-unittest-python-version"></span><h3>unittest_python_version<a class="headerlink" href="#unittest-python-version" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'3.13'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid Python version conforming to the pattern <code class="docutils literal notranslate"><span class="pre">&lt;major&gt;.&lt;minor&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">pypy-&lt;major&gt;.&lt;minor&gt;</span></code>. <br />
+See <a class="reference external" href="https://github.com/actions/python-versions">actions/python-versions - available Python versions</a>
+and <a class="reference external" href="https://github.com/actions/setup-python">actions/setup-python - configurable Python versions</a>.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The default Python version used for intermediate jobs using Python tools.</p>
+<p>In case <a class="reference internal" href="#jobtmpl-completepipeline-input-unittest-python-version-list"><span class="std std-ref">unittest_python_version_list</span></a> is empty, this default
+version is used to populate the <a class="reference internal" href="#jobtmpl-completepipeline-input-unittest-python-version-list"><span class="std std-ref">unittest_python_version_list</span></a>
+parameter.</p>
+</dd>
+</dl>
+</section>
+<section id="unittest-python-version-list">
+<span id="jobtmpl-completepipeline-input-unittest-python-version-list"></span><h3>unittest_python_version_list<a class="headerlink" href="#unittest-python-version-list" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'3.9</span> <span class="pre">3.10</span> <span class="pre">3.11</span> <span class="pre">3.12</span> <span class="pre">3.13'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A space separated list of valid Python versions conforming to the pattern <code class="docutils literal notranslate"><span class="pre">&lt;major&gt;.&lt;minor&gt;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">pypy-&lt;major&gt;.&lt;minor&gt;</span></code>.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The list of space-separated Python versions used for unit testing.</p>
+<p class="rubric">Possible values</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">3.8</span></code>, <code class="docutils literal notranslate"><span class="pre">3.9</span></code>, <code class="docutils literal notranslate"><span class="pre">3.10</span></code> , <code class="docutils literal notranslate"><span class="pre">3.11</span></code>, <code class="docutils literal notranslate"><span class="pre">3.12</span></code>, <code class="docutils literal notranslate"><span class="pre">3.13</span></code>, <code class="docutils literal notranslate"><span class="pre">3.14</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypy-3.7</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.8</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.9</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.10</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.11</span></code></p></li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Icon</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Maintained until</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>⚫</p></td>
+<td><p>3.8</p></td>
+<td><p>2024.10</p></td>
+<td><p><span class="colorred">outdated</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>🔴</p></td>
+<td><p>3.9</p></td>
+<td><p>2025.10</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟠</p></td>
+<td><p>3.10</p></td>
+<td><p>2026.10</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟡</p></td>
+<td><p>3.11</p></td>
+<td><p>2027.10</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟢</p></td>
+<td><p>3.12</p></td>
+<td><p>2028.10</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟢</p></td>
+<td><p>3.13</p></td>
+<td><p>2029.10</p></td>
+<td><p><span class="colorgreen">latest CPython</span></p></td>
+</tr>
+<tr class="row-even"><td><p>🟣</p></td>
+<td><p>3.14</p></td>
+<td><p>2030.10</p></td>
+<td><p>Python 3.14 alpha, beta (or RC) will be used.</p></td>
+</tr>
+<tr class="row-odd"><td><p>⟲⚫</p></td>
+<td><p>pypy-3.7</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>⟲⚫</p></td>
+<td><p>pypy-3.8</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>⟲🔴</p></td>
+<td><p>pypy-3.9</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>⟲🟠</p></td>
+<td><p>pypy-3.10</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>⟲🟡</p></td>
+<td><p>pypy-3.11</p></td>
+<td><p>????.??</p></td>
+<td><p><span class="colorgreen">latest PyPy</span></p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</section>
+<section id="unittest-system-list">
+<span id="jobtmpl-completepipeline-input-unittest-system-list"></span><h3>unittest_system_list<a class="headerlink" href="#unittest-system-list" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'ubuntu</span> <span class="pre">windows</span> <span class="pre">macos</span> <span class="pre">macos-arm</span> <span class="pre">mingw64</span> <span class="pre">ucrt64'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A space separated list of system names.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The list of space-separated systems used for unit testing.</p>
+<p class="rubric">Possible values</p>
+<ul class="simple">
+<li><p>Native systems: <code class="docutils literal notranslate"><span class="pre">ubuntu</span></code>, <code class="docutils literal notranslate"><span class="pre">windows</span></code>, <code class="docutils literal notranslate"><span class="pre">macos</span></code></p></li>
+<li><p>MSYS2: <code class="docutils literal notranslate"><span class="pre">msys</span></code>, <code class="docutils literal notranslate"><span class="pre">mingw32</span></code>, <code class="docutils literal notranslate"><span class="pre">mingw64</span></code>, <code class="docutils literal notranslate"><span class="pre">clang32</span></code>, <code class="docutils literal notranslate"><span class="pre">clang64</span></code>, <code class="docutils literal notranslate"><span class="pre">ucrt64</span></code></p></li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Icon</p></th>
+<th class="head"><p>System</p></th>
+<th class="head"><p>Used version</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>🪟</p></td>
+<td><p>Windows</p></td>
+<td><p>Windows Server 2025 (latest)</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🐧</p></td>
+<td><p>Ubuntu</p></td>
+<td><p>Ubuntu 24.04 (LTS) (latest)</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🍎</p></td>
+<td><p>macOS</p></td>
+<td><p>macOS Ventura 13 (latest)</p></td>
+<td><p>While this marked latest, macOS Ventura 13 is already provided.</p></td>
+</tr>
+<tr class="row-odd"><td><p>🍏</p></td>
+<td><p>macOS-arm</p></td>
+<td><p>macOS Sonoma 14 (latest)</p></td>
+<td><p>While this marked latest, macOS Ventura 13 is already provided.</p></td>
+</tr>
+<tr class="row-even"><td><p>🟪</p></td>
+<td><p>MSYS</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>⬛</p></td>
+<td><p>MinGW32</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟦</p></td>
+<td><p>MinGW64</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟫</p></td>
+<td><p>Clang32</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟧</p></td>
+<td><p>Clang64</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟨</p></td>
+<td><p>UCRT64</p></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Source: <a class="reference external" href="https://github.com/actions/runner-images">Images provided by GitHub</a></p>
+</dd>
+</dl>
+</section>
+<section id="unittest-include-list">
+<span id="jobtmpl-completepipeline-input-unittest-include-list"></span><h3>unittest_include_list<a class="headerlink" href="#unittest-include-list" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A space separated list of <code class="docutils literal notranslate"><span class="pre">&lt;system&gt;:&lt;python_version&gt;</span></code> tuples.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</section>
+<section id="unittest-exclude-list">
+<span id="jobtmpl-completepipeline-input-unittest-exclude-list"></span><h3>unittest_exclude_list<a class="headerlink" href="#unittest-exclude-list" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'windows-arm:3.9</span> <span class="pre">windows-arm:3.10'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A space separated list of <code class="docutils literal notranslate"><span class="pre">&lt;system&gt;:&lt;python_version&gt;</span></code> tuples.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</section>
+<section id="unittest-disable-list">
+<span id="jobtmpl-completepipeline-input-unittest-disable-list"></span><h3>unittest_disable_list<a class="headerlink" href="#unittest-disable-list" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'windows-arm:pypy-3.10</span> <span class="pre">windows-arm:pypy-3.11'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A space separated list of <code class="docutils literal notranslate"><span class="pre">&lt;system&gt;:&lt;python_version&gt;</span></code> tuples.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</section>
+<section id="apptest-python-version">
+<span id="jobtmpl-completepipeline-input-apptest-python-version"></span><h3>apptest_python_version<a class="headerlink" href="#apptest-python-version" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'3.13'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid Python version conforming to the pattern <code class="docutils literal notranslate"><span class="pre">&lt;major&gt;.&lt;minor&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">pypy-&lt;major&gt;.&lt;minor&gt;</span></code>. <br />
+See <a class="reference external" href="https://github.com/actions/python-versions">actions/python-versions - available Python versions</a>
+and <a class="reference external" href="https://github.com/actions/setup-python">actions/setup-python - configurable Python versions</a>.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The default Python version used for intermediate jobs using Python tools.</p>
+<p>In case <a class="reference internal" href="#jobtmpl-completepipeline-input-apptest-python-version-list"><span class="std std-ref">apptest_python_version_list</span></a> is empty, this default
+version is used to populate the <a class="reference internal" href="#jobtmpl-completepipeline-input-apptest-python-version-list"><span class="std std-ref">apptest_python_version_list</span></a>
+parameter.</p>
+</dd>
+</dl>
+</section>
+<section id="apptest-python-version-list">
+<span id="jobtmpl-completepipeline-input-apptest-python-version-list"></span><h3>apptest_python_version_list<a class="headerlink" href="#apptest-python-version-list" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A space separated list of valid Python versions conforming to the pattern <code class="docutils literal notranslate"><span class="pre">&lt;major&gt;.&lt;minor&gt;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">pypy-&lt;major&gt;.&lt;minor&gt;`</span></code>.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The list of space-separated Python versions used for application testing.</p>
+<p>As this list is empty by default, the value is derived from
+<a class="reference internal" href="#jobtmpl-completepipeline-input-apptest-python-version"><span class="std std-ref">apptest_python_version</span></a>.</p>
+<p class="rubric">Possible values</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">3.8</span></code>, <code class="docutils literal notranslate"><span class="pre">3.9</span></code>, <code class="docutils literal notranslate"><span class="pre">3.10</span></code> , <code class="docutils literal notranslate"><span class="pre">3.11</span></code>, <code class="docutils literal notranslate"><span class="pre">3.12</span></code>, <code class="docutils literal notranslate"><span class="pre">3.13</span></code>, <code class="docutils literal notranslate"><span class="pre">3.14</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypy-3.7</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.8</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.9</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.10</span></code>, <code class="docutils literal notranslate"><span class="pre">pypy-3.11</span></code></p></li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Icon</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>Maintained until</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>⚫</p></td>
+<td><p>3.8</p></td>
+<td><p>2024.10</p></td>
+<td><p><span class="colorred">outdated</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>🔴</p></td>
+<td><p>3.9</p></td>
+<td><p>2025.10</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟠</p></td>
+<td><p>3.10</p></td>
+<td><p>2026.10</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟡</p></td>
+<td><p>3.11</p></td>
+<td><p>2027.10</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟢</p></td>
+<td><p>3.12</p></td>
+<td><p>2028.10</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟢</p></td>
+<td><p>3.13</p></td>
+<td><p>2029.10</p></td>
+<td><p><span class="colorgreen">latest CPython</span></p></td>
+</tr>
+<tr class="row-even"><td><p>🟣</p></td>
+<td><p>3.14</p></td>
+<td><p>2030.10</p></td>
+<td><p>Python 3.14 alpha, beta (or RC) will be used.</p></td>
+</tr>
+<tr class="row-odd"><td><p>⟲⚫</p></td>
+<td><p>pypy-3.7</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>⟲⚫</p></td>
+<td><p>pypy-3.8</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>⟲🔴</p></td>
+<td><p>pypy-3.9</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>⟲🟠</p></td>
+<td><p>pypy-3.10</p></td>
+<td><p>????.??</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>⟲🟡</p></td>
+<td><p>pypy-3.11</p></td>
+<td><p>????.??</p></td>
+<td><p><span class="colorgreen">latest PyPy</span></p></td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</section>
+<section id="apptest-system-list">
+<span id="jobtmpl-completepipeline-input-apptest-system-list"></span><h3>apptest_system_list<a class="headerlink" href="#apptest-system-list" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'ubuntu</span> <span class="pre">windows</span> <span class="pre">macos</span> <span class="pre">macos-arm</span> <span class="pre">mingw64</span> <span class="pre">ucrt64'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A space separated list of system names.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The list of space-separated systems used for application testing.</p>
+<p class="rubric">Possible values</p>
+<ul class="simple">
+<li><p>Native systems: <code class="docutils literal notranslate"><span class="pre">ubuntu</span></code>, <code class="docutils literal notranslate"><span class="pre">windows</span></code>, <code class="docutils literal notranslate"><span class="pre">macos</span></code></p></li>
+<li><p>MSYS2: <code class="docutils literal notranslate"><span class="pre">msys</span></code>, <code class="docutils literal notranslate"><span class="pre">mingw32</span></code>, <code class="docutils literal notranslate"><span class="pre">mingw64</span></code>, <code class="docutils literal notranslate"><span class="pre">clang32</span></code>, <code class="docutils literal notranslate"><span class="pre">clang64</span></code>, <code class="docutils literal notranslate"><span class="pre">ucrt64</span></code></p></li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Icon</p></th>
+<th class="head"><p>System</p></th>
+<th class="head"><p>Used version</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>🪟</p></td>
+<td><p>Windows</p></td>
+<td><p>Windows Server 2025 (latest)</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🐧</p></td>
+<td><p>Ubuntu</p></td>
+<td><p>Ubuntu 24.04 (LTS) (latest)</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🍎</p></td>
+<td><p>macOS</p></td>
+<td><p>macOS Ventura 13 (latest)</p></td>
+<td><p>While this marked latest, macOS Ventura 13 is already provided.</p></td>
+</tr>
+<tr class="row-odd"><td><p>🍏</p></td>
+<td><p>macOS-arm</p></td>
+<td><p>macOS Sonoma 14 (latest)</p></td>
+<td><p>While this marked latest, macOS Ventura 13 is already provided.</p></td>
+</tr>
+<tr class="row-even"><td><p>🟪</p></td>
+<td><p>MSYS</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>⬛</p></td>
+<td><p>MinGW32</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟦</p></td>
+<td><p>MinGW64</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟫</p></td>
+<td><p>Clang32</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>🟧</p></td>
+<td><p>Clang64</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>🟨</p></td>
+<td><p>UCRT64</p></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Source: <a class="reference external" href="https://github.com/actions/runner-images">Images provided by GitHub</a></p>
+</dd>
+</dl>
+</section>
+<section id="apptest-include-list">
+<span id="jobtmpl-completepipeline-input-apptest-include-list"></span><h3>apptest_include_list<a class="headerlink" href="#apptest-include-list" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A space separated list of <code class="docutils literal notranslate"><span class="pre">&lt;system&gt;:&lt;python_version&gt;</span></code> tuples.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</section>
+<section id="apptest-exclude-list">
+<span id="jobtmpl-completepipeline-input-apptest-exclude-list"></span><h3>apptest_exclude_list<a class="headerlink" href="#apptest-exclude-list" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'windows-arm:3.9</span> <span class="pre">windows-arm:3.10'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A space separated list of <code class="docutils literal notranslate"><span class="pre">&lt;system&gt;:&lt;python_version&gt;</span></code> tuples.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</section>
+<section id="apptest-disable-list">
+<span id="jobtmpl-completepipeline-input-apptest-disable-list"></span><h3>apptest_disable_list<a class="headerlink" href="#apptest-disable-list" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'windows-arm:pypy-3.10</span> <span class="pre">windows-arm:pypy-3.11'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A space separated list of <code class="docutils literal notranslate"><span class="pre">&lt;system&gt;:&lt;python_version&gt;</span></code> tuples.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</section>
+<section id="codecov">
+<span id="jobtmpl-completepipeline-input-codecov"></span><h3>codecov<a class="headerlink" href="#codecov" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</section>
+<section id="codacy">
+<span id="jobtmpl-completepipeline-input-codacy"></span><h3>codacy<a class="headerlink" href="#codacy" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</section>
+<section id="dorny">
+<span id="jobtmpl-completepipeline-input-dorny"></span><h3>dorny<a class="headerlink" href="#dorny" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</section>
+<section id="cleanup">
+<span id="jobtmpl-completepipeline-input-cleanup"></span><h3>cleanup<a class="headerlink" href="#cleanup" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code></p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</section>
+</section>
+<section id="secrets">
+<span id="jobtmpl-completepipeline-secrets"></span><h2>Secrets<a class="headerlink" href="#secrets" title="Link to this heading"></a></h2>
+<p>The workflow template uses the following secrets to publish results to other services.</p>
+<section id="pypi-token">
+<span id="jobtmpl-completepipeline-secret-pypi-token"></span><h3>PYPI_TOKEN<a class="headerlink" href="#pypi-token" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p>— — — —</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>The token to publish and upload packages on <a class="reference external" href="https://pypi.org/">PyPI</a>.</p>
+</dd>
+</dl>
+</section>
+<section id="codecov-token">
+<span id="jobtmpl-completepipeline-secret-codecov-token"></span><h3>CODECOV_TOKEN<a class="headerlink" href="#codecov-token" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p>— — — —</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>The token to publish code coverage and unit test results to <a class="reference external" href="https://about.codecov.io//">CodeCov</a>.</p>
+</dd>
+</dl>
+</section>
+<section id="codacy-token">
+<span id="jobtmpl-completepipeline-secret-codacy-token"></span><h3>CODACY_TOKEN<a class="headerlink" href="#codacy-token" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p>— — — —</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>The token to publish code coverage results to <a class="reference external" href="https://www.codacy.com/">Codacy</a>.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="outputs">
+<span id="jobtmpl-completepipeline-outputs"></span><h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h2>
+<p>This job template has no output parameters.</p>
+</section>
+<section id="optimizations">
+<span id="jobtmpl-completepipeline-optimizations"></span><h2>Optimizations<a class="headerlink" href="#optimizations" title="Link to this heading"></a></h2>
+<p>The following optimizations can be used to reduce the template’s runtime.</p>
+<dl class="simple">
+<dt>TBD</dt><dd><p>tbd tbd tbd</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="All-In-One" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../Setup/index.html" class="btn btn-neutral float-right" title="Pipeline Setup" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2025, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 04.09.2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
