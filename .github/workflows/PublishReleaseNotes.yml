@@ -41,8 +41,7 @@ on:
         type: string
       tag:
         description: 'Name of the release (tag).'
-        required: false
-        default: ''
+        required: true
         type: string
       title:
         description: 'Title of the release.'

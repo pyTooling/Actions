@@ -24,9 +24,9 @@ jobs:
           - {icon: '🪟', name: 'Windows Server 2022',    image: 'windows-2022',     shell: 'bash'}
           - {icon: '🪟', name: 'Windows Server 2025',    image: 'windows-2025',     shell: 'bash'}  # latest
         # Third party images by ARM for aarch64
-          - {icon: '🐧', name: 'Ubuntu 22.04 (aarch64)', image: 'ubuntu-22.04-arm', shell: 'bash'}
-          - {icon: '🐧', name: 'Ubuntu 24.04 (aarch64)', image: 'ubuntu-24.04-arm', shell: 'bash'}
-          - {icon: '🪟', name: 'Windows 11 (arch64)',    image: 'windows-11-arm',   shell: 'bash'}
+          - {icon: '⛄', name: 'Ubuntu 22.04 (aarch64)', image: 'ubuntu-22.04-arm', shell: 'bash'}
+          - {icon: '⛄', name: 'Ubuntu 24.04 (aarch64)', image: 'ubuntu-24.04-arm', shell: 'bash'}
+          - {icon: '🏢', name: 'Windows 11 (arch64)',    image: 'windows-11-arm',   shell: 'bash'}
 
     defaults:
       run:

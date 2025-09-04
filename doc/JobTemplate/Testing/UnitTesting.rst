@@ -24,8 +24,6 @@ file.
 
 .. topic:: Behavior
 
-   .. todo:: UnitTesting:Behavior needs documentation.
-
    1. Checkout repository.
    2. Setup environment and install dependencies (``apt``, ``homebrew``, ``pacman``, ...).
    3. Setup Python and install dependencies (``pip``).
@@ -67,9 +65,6 @@ file.
 
 Instantiation
 *************
-
-Simple Example
-==============
 
 The following instantiation example creates a ``UnitTesting`` job derived from job template ``UnitTesting`` version
 `@r5`. For providing the job matrix as a JSON string, the :ref:`JOBTMPL/Parameters` job template is used. Additionally,
