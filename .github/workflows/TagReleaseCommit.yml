@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: 🏷 Create release tag '${{ steps.FindPullRequest.outputs.version }}'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         id: createReleaseTag
 #        if: inputs.auto_tag == 'true'
         with:
@@ -71,7 +71,7 @@ jobs:
             })
 
       - name: Trigger Workflow
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         id: runReleaseTag
 #        if: inputs.auto_tag == 'true'
         with:
