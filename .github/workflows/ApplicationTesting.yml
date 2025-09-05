@@ -199,7 +199,7 @@ jobs:
             ${{ inputs.pacboy }}
 
       - name: 🐍 Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         if: matrix.system != 'msys2'
         with:
           python-version: ${{ matrix.python }}
