@@ -245,7 +245,18 @@ It can be used for simple Python packages as well as namespace packages.
    * :ref:`pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml <JOBTMPL/PublishToGitHubPages>`
    * :ref:`pyTooling/Actions/.github/workflows/PublishOnPyPI.yml <JOBTMPL/PublishOnPyPI>`
    * :ref:`pyTooling/Actions/.github/workflows/TagReleaseCommit.yml <JOBTMPL/TagReleaseCommit>`
+
+     * :gh:`actions/github-script`
+
    * :ref:`pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml <JOBTMPL/PublishReleaseNotes>`
+
+     * :gh:`actions/checkout`
+     * ``gh`` (GitHub command line interface)
+     * ``jq`` (JSON processing)
+     * apt
+
+       zstd
+
    * :ref:`pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml <JOBTMPL/IntermediateCleanUp>`
 
      * :gh:`geekyeggo/delete-artifact`
