@@ -41,7 +41,7 @@ on:
       fail_under:
         description: 'Minimum required documentation coverage level'
         required: false
-        default: 80
+        default: '80'
         type: string
 
 jobs:
@@ -57,7 +57,7 @@ jobs:
         with:
           python-version: ${{ inputs.python_version }}
 
-      - name: 🔧 Install wheel,tomli and pip dependencies (native)
+      - name: 🔧 Install docstr_coverage and interrogate dependencies
         run: |
           python -m pip install --disable-pip-version-check -U docstr_coverage interrogate[png]
 
@@ -80,4 +80,3 @@ jobs:
           if [[ $? -ne 0 ]]; then
             printf "%s\n" "::error title=docstr-coverage::Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
           fi
-

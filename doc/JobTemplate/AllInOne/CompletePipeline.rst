@@ -191,6 +191,14 @@ It can be used for simple Python packages as well as namespace packages.
 
    * :ref:`pyTooling/Actions/.github/workflows/ApplicationTesting.yml <JOBTMPL/ApplicationTesting>`
    * :ref:`pyTooling/Actions/.github/workflows/CheckDocumentation.yml <JOBTMPL/CheckDocumentation>`
+
+     * :gh:`actions/checkout`
+     * :gh:`actions/setup-python`
+     * pip
+
+       * :pypi:`docstr_coverage`
+       * :pypi:`interrogate`
+
    * :ref:`pyTooling/Actions/.github/workflows/StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`
    * :ref:`pyTooling/Actions/.github/workflows/Package.yml <JOBTMPL/Package>`
 

@@ -145,9 +145,7 @@ python_version
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
                   and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
-:Description:     Python version used as default for other jobs requiring a single Python version. |br|
-                  In case :ref:`JOBTMPL/Parameters/Input/python_version_list` is an empty string, this version is used
-                  to populate the version list.
+:Description:     Python version used to run Python code in this job.
 
 
 .. _JOBTMPL/Package/Input/requirements:
