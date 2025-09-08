@@ -138,22 +138,22 @@ jobs:
         run: coverage combine --data-file=.coverage coverage/
 
       - name: Report code coverage
-        run: coverage report --rcfile=pyproject.toml --data-file=.coverage
+        run: coverage report --rcfile=${{ inputs.coverage_config }} --data-file=.coverage
 
       - name: Convert to XML format (Cobertura)
         if: inputs.coverage_xml_artifact != '' || inputs.codecov || inputs.codacy
-        run: coverage xml --data-file=.coverage
+        run: coverage xml --rcfile=${{ inputs.coverage_config }} --data-file=.coverage
 
       - name: Convert to JSON format
         if: inputs.coverage_json_artifact != ''
-        run: coverage json --data-file=.coverage
+        run: coverage json --rcfile=${{ inputs.coverage_config }} --data-file=.coverage
 
       - name: Convert to HTML format
         if: inputs.coverage_html_artifact != ''
         run: |
-          coverage html --data-file=.coverage -d report/coverage/html
-          rm report/coverage/html/.gitignore
-          tree -pash report/coverage/html
+          coverage html --rcfile=${{ inputs.coverage_config }} --data-file=.coverage
+          rm ${{ inputs.coverage_report_html_directory }}/.gitignore
+          tree -pash ${{ inputs.coverage_report_html_directory }}
 
       - name: 📤 Upload 'Coverage SQLite Database' artifact
         uses: pyTooling/upload-artifact@v4

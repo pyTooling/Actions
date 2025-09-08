@@ -214,7 +214,41 @@ It can be used for simple Python packages as well as namespace packages.
        * :pypi:`wheel`
 
    * :ref:`pyTooling/Actions/.github/workflows/PublishTestResults.yml <JOBTMPL/PublishTestResults>`
+
+     * :gh:`actions/checkout`
+     * :gh:`pyTooling/download-artifact`
+
+       * :gh:`actions/download-artifact`
+
+     * pip
+
+       * :pypi:`pyEDAA.Reports`
+
+     * :gh:`dorny/test-reporter`
+     * :gh:`codecov/test-results-action`
+     * :gh:`pyTooling/upload-artifact`
+
+       * :gh:`actions/upload-artifact`
+
    * :ref:`pyTooling/Actions/.github/workflows/PublishCoverageResults.yml <JOBTMPL/PublishCoverageResults>`
+
+     * :gh:`actions/checkout`
+     * :gh:`pyTooling/download-artifact`
+
+       * :gh:`actions/download-artifact`
+
+     * pip
+
+       * :pypi:`coverage`
+       * :pypi:`tomli`
+
+     * :gh:`pyTooling/upload-artifact`
+
+       * :gh:`actions/upload-artifact`
+
+     * :gh:`codecov/codecov-action`
+     * :gh:`codacy/codacy-coverage-reporter-action`
+
    * :ref:`pyTooling/Actions/.github/workflows/SphinxDocumentation.yml <JOBTMPL/SphinxDocumentation>`
 
      * :gh:`actions/checkout`
@@ -252,6 +286,18 @@ It can be used for simple Python packages as well as namespace packages.
 
    * :ref:`pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml <JOBTMPL/PublishToGitHubPages>`
    * :ref:`pyTooling/Actions/.github/workflows/PublishOnPyPI.yml <JOBTMPL/PublishOnPyPI>`
+
+     * :gh:`pyTooling/download-artifact`
+
+       * :gh:`actions/download-artifact`
+     * :gh:`actions/setup-python`
+     * :gh:`geekyeggo/delete-artifact`
+
+     * pip
+
+       * :pypi:`wheel`
+       * :pypi:`twine`
+
    * :ref:`pyTooling/Actions/.github/workflows/TagReleaseCommit.yml <JOBTMPL/TagReleaseCommit>`
 
      * :gh:`actions/github-script`

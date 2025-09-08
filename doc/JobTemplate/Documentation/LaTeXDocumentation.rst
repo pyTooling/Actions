@@ -131,7 +131,7 @@ latex_artifact
 :Required:        yes
 :Default Value:   — — — —
 :Possible Values: Any valid artifact name.
-:Description:     name of the artifact containing the LaTeX document to translate.
+:Description:     Name of the artifact containing the LaTeX document to translate.
 
 
 .. _JOBTMPL/LatexDocumentation/Input/document:
