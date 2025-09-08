@@ -81,7 +81,7 @@ on:
       latest:
         description: 'Specify if this is the latest release.'
         required: false
-        default: false
+        default: true
         type: boolean
       replacements:
         description: 'Multi-line string containing search=replace patterns.'
