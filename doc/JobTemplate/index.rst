@@ -80,15 +80,11 @@ ubuntu_image
 :Description:     Name of the Ubuntu image used to run a job.
 
 
+.. _JOBTMPL/Common/Input/ubuntu_image_version:
+
+.. include:: _ubuntu_image_version.rst
+
+
 .. _JOBTMPL/Common/Input/python_version:
 
-python_version
-==============
-
-:Type:            string
-:Required:        usually no
-:Default Value:   ``'3.13'``
-:Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
-                  See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
-                  and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
-:Description:     Python version used to run Python scripts in a job.
+.. include:: _python_version.rst

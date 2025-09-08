@@ -139,35 +139,12 @@ Input Parameters
 
 .. _JOBTMPL/PublishOnPyPI/Input/ubuntu_image_version:
 
-ubuntu_image_version
-====================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'24.04'``
-:Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
-                  for available Ubuntu image versions.
-:Description:     Version of the Ubuntu image used to run this job.
-
-                  .. note::
-
-                     Unfortunately, GitHub Actions has only a `limited set of functions <https://docs.github.com/en/actions/reference/workflows-and-actions/expressions#functions>`__,
-                     thus, the usual Ubuntu image name like ``'ubuntu-24.04'`` can't be split into image name and image
-                     version.
+.. include:: ../_ubuntu_image_version.rst
 
 
 .. _JOBTMPL/PublishOnPyPI/Input/python_version:
 
-python_version
-==============
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'3.13'``
-:Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
-                  See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
-                  and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
-:Description:     Python version used to run Python code in this job.
+.. include:: ../_python_version.rst
 
 
 .. _JOBTMPL/PublishOnPyPI/Input/requirements:
