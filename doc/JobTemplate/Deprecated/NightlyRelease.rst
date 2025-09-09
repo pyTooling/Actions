@@ -3,20 +3,8 @@
 NightlyRelease
 ##############
 
-.. todo:: NightlyRelease:Needs documentation.
+.. attention::
 
-**Behavior:**
+   The ``NightlyRelease`` job template is deprecated.
 
-.. todo:: NightlyRelease:Behavior needs documentation.
-
-**Dependencies:**
-
-.. todo:: NightlyRelease:Dependencies needs documentation.
-
-Instantiation
-*************
-
-Simple Example
-==============
-
-.. todo:: NightlyRelease:Simple example needs documentation.
+   See :ref:`JOBTMPL/PublishReleaseNotes`.

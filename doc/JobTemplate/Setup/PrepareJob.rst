@@ -13,7 +13,7 @@ The job template generates various output parameters derived from
 .. topic:: Features
 
    * Provide branch name or tag name from ``${{ github.ref }}`` variable.
-   * Check if pipeline is a branch or tag pipeline.
+   * Check if pipeline is a branch, tag or pull-request pipeline.
    * Check if a commit is a merge commit.
    * Check if a commit is a release commit.
    * Check if a tag is a nightly tag (rolling release tag).
@@ -21,23 +21,30 @@ The job template generates various output parameters derived from
    * Find associated pull-request (PR) for a merge commit/release commit.
    * Provide a version from tag name or pull-request name.
 
-.. note::
+   .. note::
 
-   Due to GitHub Action's broken type system and missing implicit type conversions in YAML files, *boolean* values need
-   to be returned as *string* values otherwise type compatibility and comparison are broken. This also requires all
-   inputs to be *string* parameters, otherwise step's, job's or template's output cannot be assigned to a template's
-   input.
+      Due to GitHub Action's broken type system and missing implicit type conversions in YAML files, *boolean* values need
+      to be returned as *string* values otherwise type compatibility and comparison are broken. This also requires all
+      inputs to be *string* parameters, otherwise step's, job's or template's output cannot be assigned to a template's
+      input.
 
-   **Problems:**
+      **Problems:**
 
-   1. Scripts (Bash, Python, ...) return results as strings. There is no option or operation provided by GitHub Actions
-      to convert outputs of ``printf`` to a ``boolean`` in the YAML file.
-   2. Unlike job template inputs, outputs have no type information. These are all considered *string* values. Again no
-      implicit or explicit type conversion is provided.
-   3. While inputs might be defined as ``boolean`` and a matching default can be set as a *boolean* value (e.g.,
-      ``false``), a connected variable from ``${{ needs }}`` context will either cause a typing error or a later
-      comparison will not work as expected. Either the comparison works with ``inputs.param == false`` for the default
-      value, **or** it works with a value from ``${{ needs }}`` context, which is a string ``inputs.param == 'false'``.
+      1. Scripts (Bash, Python, ...) return results as strings. There is no option or operation provided by GitHub Actions
+         to convert outputs of ``printf`` to a ``boolean`` in the YAML file.
+      2. Unlike job template inputs, outputs have no type information. These are all considered *string* values. Again no
+         implicit or explicit type conversion is provided.
+      3. While inputs might be defined as ``boolean`` and a matching default can be set as a *boolean* value (e.g.,
+         ``false``), a connected variable from ``${{ needs }}`` context will either cause a typing error or a later
+         comparison will not work as expected. Either the comparison works with ``inputs.param == false`` for the default
+         value, **or** it works with a value from ``${{ needs }}`` context, which is a string ``inputs.param == 'false'``.
+
+.. topic:: Behavior
+
+   1. Checkout repository.
+   2. Classify ``${{ github.ref }}`` into branch, tag or pull-request.
+   3. Compute output parameters.
+   4. Find associated pull-request.
 
 .. topic:: Job Execution
 
@@ -377,11 +384,12 @@ ref_kind
                   Moreover, if the tag matches the :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`, the extracted
                   version is available in the job's :ref:`JOBTMPL/PrepareJob/Output/version` result.
 
-.. note::
+                  .. note::
 
-   GitHub doesn't provide standalone branch or tag information, but provides the variable ``${{ github.ref }}``
-   specifying the currently active reference (branch, tag, pull, ...). This job template parses the context's variable
-   and derives if a pipeline runs for a commit on a branch or a tagged commit.
+                     GitHub doesn't provide standalone branch or tag information, but provides the variable
+                     ``${{ github.ref }}`` specifying the currently active reference (branch, tag, pull, ...). This job
+                     template parses the context's variable and derives if a pipeline runs for a commit on a branch or a
+                     tagged commit.
 
 
 .. _JOBTMPL/PrepareJob/Output/branch:

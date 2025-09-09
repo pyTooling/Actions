@@ -6,13 +6,26 @@ Parameters
 The ``Parameters`` job template is a workaround for the limitations of GitHub Actions to handle global variables in
 GitHub Actions workflows (see `actions/runner#480 <https://github.com/actions/runner/issues/480>`__).
 
-It generates output parameters with artifact names and a job matrix to be used in later running jobs.
+It generates output parameters containing a list of artifact names and a job matrix to be used in later running jobs.
 
 .. topic:: Features
 
-   * Generate names for various artifacts.
-   * Generate a matrix of job combinations made from systems, Python versions and environments as a JSON string.
+   * Generate artifact names for various artifacts.
+   * Generate a matrix of job combinations as a JSON string made from:
+
+     * systems (Ubuntu, macOS, Windows)
+     * architecture (x64-64, aarch64)
+     * Python versions (3.9, 3.10, ..., 3.13),
+     * Python implementation (CPython, PyPy), and
+     * environments (Native, MinGW64, UCRT64, ...).
+
    * Provide a (default) Python version for other jobs.
+
+.. topic:: Behavior
+
+   1. Delay job execution by :ref:`JOBTMPL/Parameters/Input/pipeline-delay` seconds.
+   2. Compute job matrix using an embedded Python script.
+   3. Assemble artifact names using a common prefix derived from Python namespace and package name.
 
 .. topic:: Job Execution
 
@@ -430,8 +443,8 @@ disable_list
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be temporarily disabled from the list
                   of test variants. |br|
-                  Each disabled item creates a warning in the workflow log:
-:Example:
+                  Each disabled item creates a warning in the workflow log.
+:Warning Example:
                   .. code-block:: yaml
 
                      jobs:

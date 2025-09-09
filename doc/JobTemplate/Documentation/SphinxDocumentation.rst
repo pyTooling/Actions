@@ -3,7 +3,8 @@
 SphinxDocumentation
 ###################
 
-The ``SphinxDocumentation`` job template ..........
+The ``SphinxDocumentation`` job template compiles the ReStructured Text documentation using Sphinx to an HTML website
+and a LaTeX documentation. This LaTeX document can be translated using e.g. MikTeX to a PDF file.
 
 .. topic:: Features
 
@@ -20,7 +21,17 @@ The ``SphinxDocumentation`` job template ..........
 
 .. topic:: Behavior
 
-   .. todo:: SphinxDocumentation:Behavior needs documentation.
+   1. Checkout repository.
+   2. Install system dependencies.
+   3. Setup Python environment and install Python dependencies.
+   4. Download optional artifacts for integration of futher reports into the documentation.
+   5. Build the HTML documentation using Sphinx.
+   6. Build the LaTeX documentation using Sphinx.
+
+      1. Apply LaTeX workaround I.
+      2. Apply LaTeX workaround II.
+
+   7. Upload the HTML and LaTeX artifacts.
 
 .. topic:: Job Execution
 
@@ -54,9 +65,6 @@ The ``SphinxDocumentation`` job template ..........
 Instantiation
 *************
 
-The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r5``. It only
-requires a `name` parameter to create the artifact names.
-
 .. code-block:: yaml
 
    name: Pipeline
@@ -80,11 +88,6 @@ requires a `name` parameter to create the artifact names.
          html_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
          latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
-
-.. seealso::
-
-   :ref:`JOBTMPL/TagReleaseCommit`
-     ``SphinxDocumentation`` is usualy
 
 .. _JOBTMPL/SphinxDocumentation/Parameters:
 

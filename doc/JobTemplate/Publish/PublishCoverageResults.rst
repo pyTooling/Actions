@@ -116,12 +116,6 @@ The following
          CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
 
 
-.. seealso::
-
-   :ref:`JOBTMPL/UnitTesting`
-     ``UnitTesting`` is usualy
-
-
 .. _JOBTMPL/PublishCoverageResults/Parameters:
 
 Parameter Summary

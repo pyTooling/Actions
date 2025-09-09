@@ -75,11 +75,6 @@ Instantiation
          tag: ${{ needs.Prepare.outputs.version }}
        secrets: inherit
 
-.. seealso::
-
-   :ref:`JOBTMPL/TagReleaseCommit`
-     ``TagReleaseCommit`` is
-
 
 .. _JOBTMPL/PublishReleaseNotes/ReleaseNotes:
 

@@ -42,28 +42,9 @@ the installation is verified. This aims for packaging and dependency mistakes in
 Instantiation
 *************
 
-The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r5``. It only
-requires a `name` parameter to create the artifact names.
+.. todo::
 
-.. code-block:: yaml
-
-   name: Pipeline
-
-   on:
-     push:
-     workflow_dispatch:
-
-   jobs:
-     Params:
-       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
-       with:
-         name: pyTooling
-
-
-.. seealso::
-
-   :ref:`JOBTMPL/Package`
-     ``InstallPackage`` is usualy
+   InstallPackage:: Needs instantiation instructions.
 
 
 .. _JOBTMPL/InstallPackage/Parameters:
@@ -73,11 +54,9 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/InstallPackage/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                                           |
-+=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/InstallPackage/Input/ubuntu_image`                    | no       | string   | ``'ubuntu-24.04'``                                                |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+.. todo::
+
+   InstallPackage:: Needs a parameter list.
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/InstallPackage/Secrets>`
 
@@ -93,10 +72,9 @@ This job template has no output parameters.
 Input Parameters
 ****************
 
-.. _JOBTMPL/InstallPackage/Input/ubuntu_image:
+.. todo::
 
-ubuntu_image
-============
+   InstallPackage:: Needs input parameter descriptions.
 
 
 .. _JOBTMPL/InstallPackage/Secrets:

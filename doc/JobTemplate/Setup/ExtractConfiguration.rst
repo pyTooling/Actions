@@ -3,8 +3,9 @@
 ExtractConfiguration
 ####################
 
-The ``ExtractConfiguration`` job template is a .....
-
+The ``ExtractConfiguration`` job template extracts Python project settings from :file:`pyproject.toml` and shares the
+values via output parameters with other jobs. Thus, only a single centralized implementation is needed to avoid code
+duplications within jobs.
 
 
 .. topic:: Features
@@ -21,7 +22,14 @@ The ``ExtractConfiguration`` job template is a .....
 
 .. topic:: Behavior
 
-   .. todo:: ExtractConfiguration:Behavior needs documentation.
+   1. Checkout repository.
+   2. Install Python dependencies.
+   3. Compute the full package name and the package source directory.
+   4. Read :file:`pyproject.toml` and extract settings for:
+
+      * pytest
+      * Coverage.py
+      * pyEDAA.Reports
 
 .. topic:: Job Execution
 

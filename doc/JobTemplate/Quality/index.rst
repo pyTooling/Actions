@@ -5,11 +5,13 @@ Quality
 
 The category *quality* provides workflow templates implementing
 
-* :ref:`JOBTMPL/CheckDocumentation` -
-* :ref:`JOBTMPL/StaticTypeCheck` -
+* :ref:`JOBTMPL/VerifyDocs` - Verify code snippets in documentations for correctness.
+* :ref:`JOBTMPL/CheckDocumentation` - Check documentation coverage in Python modules.
+* :ref:`JOBTMPL/StaticTypeCheck` - Check type annotations using mypy.
 
 .. toctree::
    :hidden:
 
+   VerifyDocs
    StaticTypeCheck
    CheckDocumentation

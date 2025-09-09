@@ -97,7 +97,7 @@ on:
         description: 'Publish merged coverage and unittest reports to Codecov.'
         required: false
         default: 'false'
-        type:    string
+        type: string
       codacy:
         description: 'Publish merged coverage report to Codacy.'
         required: false

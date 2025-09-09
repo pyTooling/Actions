@@ -88,13 +88,6 @@ other reason. Its outputs are used to either run a ``TriggerTaggedRelease`` job 
          tag: ${{ needs.Prepare.outputs.version }}
        secrets: inherit
 
-.. seealso::
-
-   :ref:`JOBTMPL/PrepareJob`
-     ``PrepareJob`` ...
-   :ref:`JOBTMPL/PublishReleaseNotes`
-     ``PublishReleaseNotes`` ...
-
 
 .. _JOBTMPL/TagReleaseCommit/Parameters:
 

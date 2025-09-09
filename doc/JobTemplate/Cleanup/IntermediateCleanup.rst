@@ -51,7 +51,8 @@ requires a `name` parameter to create the artifact names.
 .. seealso::
 
    :ref:`JOBTMPL/ArtifactCleanup`
-     ``ArtifactCleanup`` is usualy
+     ``ArtifactCleanup`` is used to remove artifacts like unit test report artifacts after artifact's content has been
+     (post-)processed or published.
 
 
 .. _JOBTMPL/IntermediateCleanUp/Parameters:

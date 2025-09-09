@@ -74,7 +74,218 @@ It can be used for simple Python packages as well as namespace packages.
 
 .. topic:: Behavior
 
-   .. todo:: CompletePipeline:Behavior needs documentation.
+   1. Infer information from ``${{ github.ref }}`` variable.
+   2. Extract Python project settings from :file:`pyproject.toml`.
+   3. Compute job matrix based on system, Python version, environment, ... for job variants.
+   4. Run unit tests using pytest and collect code coverage.
+   5. Run platform tests using pytest and collect code coverage.
+   6. Run application tests using pytest.
+   7. Package code as wheel.
+   8. Check documentation coverage using docstr_coverage and interrogate.
+   9. Verify type annotation using static typing analysis using mypy.
+   10. Merge unit test results and code coverage results.
+   11. Generate HTML and LaTeX documentations using Sphinx.
+   12. Translate LaTeX documentation to PDF using MikTeX.
+   13. Publish unit test and code coverage results to cloud services.
+   14. Publish documentation to GitHub Pages.
+   15. Publish wheel to PyPI.
+   16. Create a GitHub release page and upload release assets.
+
+
+.. topic:: Pipeline Graph
+
+   .. image:: ../../_static/pyTooling-Actions-SimplePackage.png
+
+.. topic:: Dependencies
+
+   .. dropdown:: Expand List
+      :animate: fade-in-slide-down
+      :icon: codescan
+      :color: muted
+
+      .. grid:: 2
+
+         .. grid-item::
+            :columns: 6
+
+            * :ref:`pyTooling/Actions/.github/workflows/PrepareJob.yml <JOBTMPL/PrepareJob>`
+
+              * :gh:`actions/checkout`
+              * :gh:`GitHub command line tool 'gh' <cli/cli>`
+
+            * :ref:`pyTooling/Actions/.github/workflows/Parameters.yml <JOBTMPL/Parameters>`
+            * :ref:`pyTooling/Actions/.github/workflows/ExtractConfiguration.yml <JOBTMPL/ExtractConfiguration>`
+
+              * :gh:`actions/checkout`
+              * :gh:`actions/setup-python`
+
+                * :pypi:`wheel`
+                * :pypi:`tomli`
+
+            * :ref:`pyTooling/Actions/.github/workflows/UnitTesting.yml <JOBTMPL/UnitTesting>`
+
+              * :gh:`actions/checkout`
+              * :gh:`msys2/setup-msys2`
+              * :gh:`actions/setup-python`
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+
+              * :gh:`pyTooling/upload-artifact`
+
+                * :gh:`actions/upload-artifact`
+
+              * apt: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/apt` parameter.
+              * homebrew: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/brew` parameter.
+              * MSYS2: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/pacboy` parameter.
+              * pip
+
+                * :pypi:`wheel`
+                * :pypi:`tomli`
+                * Python packages specified via :ref:`JOBTMPL/UnitTesting/Input/requirements` or
+                  :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
+
+            * :ref:`pyTooling/Actions/.github/workflows/ApplicationTesting.yml <JOBTMPL/ApplicationTesting>`
+            * :ref:`pyTooling/Actions/.github/workflows/CheckDocumentation.yml <JOBTMPL/CheckDocumentation>`
+
+              * :gh:`actions/checkout`
+              * :gh:`actions/setup-python`
+              * pip
+
+                * :pypi:`docstr_coverage`
+                * :pypi:`interrogate`
+
+            * :ref:`pyTooling/Actions/.github/workflows/StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`
+            * :ref:`pyTooling/Actions/.github/workflows/Package.yml <JOBTMPL/Package>`
+
+              * :gh:`actions/checkout`
+              * :gh:`actions/setup-python`
+              * :gh:`pyTooling/upload-artifact`
+
+                * :gh:`actions/upload-artifact`
+
+              * pip
+
+                * :pypi:`build`
+                * :pypi:`wheel`
+
+            * :ref:`pyTooling/Actions/.github/workflows/PublishTestResults.yml <JOBTMPL/PublishTestResults>`
+
+              * :gh:`actions/checkout`
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+
+              * pip
+
+                * :pypi:`pyEDAA.Reports`
+
+              * :gh:`dorny/test-reporter`
+              * :gh:`codecov/test-results-action`
+              * :gh:`pyTooling/upload-artifact`
+
+                * :gh:`actions/upload-artifact`
+
+         .. grid-item::
+            :columns: 6
+
+            * :ref:`pyTooling/Actions/.github/workflows/PublishCoverageResults.yml <JOBTMPL/PublishCoverageResults>`
+
+              * :gh:`actions/checkout`
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+
+              * pip
+
+                * :pypi:`coverage`
+                * :pypi:`tomli`
+
+              * :gh:`pyTooling/upload-artifact`
+
+                * :gh:`actions/upload-artifact`
+
+              * :gh:`codecov/codecov-action`
+              * :gh:`codacy/codacy-coverage-reporter-action`
+
+            * :ref:`pyTooling/Actions/.github/workflows/SphinxDocumentation.yml <JOBTMPL/SphinxDocumentation>`
+
+              * :gh:`actions/checkout`
+              * :gh:`actions/setup-python`
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+
+              * :gh:`pyTooling/upload-artifact`
+
+                * :gh:`actions/upload-artifact`
+
+              * apt
+
+                * `graphviz <https://graphviz.org/>`__
+
+              * pip
+
+                * :pypi:`wheel`
+                * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` parameter.
+
+            * :ref:`pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml <JOBTMPL/LaTeXDocumentation>`
+
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+
+              * :gh:`pyTooling/upload-artifact`
+
+                * :gh:`actions/upload-artifact`
+
+              * :gh:`addnab/docker-run-action`
+
+                * :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>`
+
+            * :ref:`pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml <JOBTMPL/PublishToGitHubPages>`
+            * :ref:`pyTooling/Actions/.github/workflows/PublishOnPyPI.yml <JOBTMPL/PublishOnPyPI>`
+
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+              * :gh:`actions/setup-python`
+              * :gh:`geekyeggo/delete-artifact`
+
+              * pip
+
+                * :pypi:`wheel`
+                * :pypi:`twine`
+
+            * :ref:`pyTooling/Actions/.github/workflows/TagReleaseCommit.yml <JOBTMPL/TagReleaseCommit>`
+
+              * :gh:`actions/github-script`
+
+            * :ref:`pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml <JOBTMPL/PublishReleaseNotes>`
+
+              * :gh:`actions/checkout`
+              * ``gh`` (GitHub command line interface)
+              * ``jq`` (JSON processing)
+              * apt
+
+                * zstd
+
+            * :ref:`pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml <JOBTMPL/IntermediateCleanUp>`
+
+              * :gh:`geekyeggo/delete-artifact`
+
+            * :ref:`pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml <JOBTMPL/ArtifactCleanUp>`
+
+              * :gh:`geekyeggo/delete-artifact`
+
+
+.. _JOBTMPL/CompletePipeline/Instantiation:
+
+Instantiation
+*************
+
+The following instantiation example creates a ``SimplePackage`` job derived from job template ``CompletePipeline``
+version ``@r5``. It only requires the `package_name` parameter to run a full pipeline suitable for a Python project.
 
    .. grid:: 2
 
@@ -144,203 +355,6 @@ It can be used for simple Python packages as well as namespace packages.
                           🐍SubModuleA.py
                         🐍__init__.py
                         🐍ModuleB.py
-
-
-.. topic:: Pipeline Graph
-
-   .. image:: ../../_static/pyTooling-Actions-SimplePackage.png
-
-.. topic:: Dependencies
-
-   * :ref:`pyTooling/Actions/.github/workflows/PrepareJob.yml <JOBTMPL/PrepareJob>`
-
-     * :gh:`actions/checkout`
-     * :gh:`GitHub command line tool 'gh' <cli/cli>`
-
-   * :ref:`pyTooling/Actions/.github/workflows/Parameters.yml <JOBTMPL/Parameters>`
-   * :ref:`pyTooling/Actions/.github/workflows/ExtractConfiguration.yml <JOBTMPL/ExtractConfiguration>`
-
-     * :gh:`actions/checkout`
-     * :gh:`actions/setup-python`
-
-       * :pypi:`wheel`
-       * :pypi:`tomli`
-
-   * :ref:`pyTooling/Actions/.github/workflows/UnitTesting.yml <JOBTMPL/UnitTesting>`
-
-     * :gh:`actions/checkout`
-     * :gh:`msys2/setup-msys2`
-     * :gh:`actions/setup-python`
-     * :gh:`pyTooling/download-artifact`
-
-       * :gh:`actions/download-artifact`
-
-     * :gh:`pyTooling/upload-artifact`
-
-       * :gh:`actions/upload-artifact`
-
-     * apt: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/apt` parameter.
-     * homebrew: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/brew` parameter.
-     * MSYS2: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/pacboy` parameter.
-     * pip
-
-       * :pypi:`wheel`
-       * :pypi:`tomli`
-       * Python packages specified via :ref:`JOBTMPL/UnitTesting/Input/requirements` or
-         :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
-
-   * :ref:`pyTooling/Actions/.github/workflows/ApplicationTesting.yml <JOBTMPL/ApplicationTesting>`
-   * :ref:`pyTooling/Actions/.github/workflows/CheckDocumentation.yml <JOBTMPL/CheckDocumentation>`
-
-     * :gh:`actions/checkout`
-     * :gh:`actions/setup-python`
-     * pip
-
-       * :pypi:`docstr_coverage`
-       * :pypi:`interrogate`
-
-   * :ref:`pyTooling/Actions/.github/workflows/StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`
-   * :ref:`pyTooling/Actions/.github/workflows/Package.yml <JOBTMPL/Package>`
-
-     * :gh:`actions/checkout`
-     * :gh:`actions/setup-python`
-     * :gh:`pyTooling/upload-artifact`
-
-       * :gh:`actions/upload-artifact`
-
-     * pip
-
-       * :pypi:`build`
-       * :pypi:`wheel`
-
-   * :ref:`pyTooling/Actions/.github/workflows/PublishTestResults.yml <JOBTMPL/PublishTestResults>`
-
-     * :gh:`actions/checkout`
-     * :gh:`pyTooling/download-artifact`
-
-       * :gh:`actions/download-artifact`
-
-     * pip
-
-       * :pypi:`pyEDAA.Reports`
-
-     * :gh:`dorny/test-reporter`
-     * :gh:`codecov/test-results-action`
-     * :gh:`pyTooling/upload-artifact`
-
-       * :gh:`actions/upload-artifact`
-
-   * :ref:`pyTooling/Actions/.github/workflows/PublishCoverageResults.yml <JOBTMPL/PublishCoverageResults>`
-
-     * :gh:`actions/checkout`
-     * :gh:`pyTooling/download-artifact`
-
-       * :gh:`actions/download-artifact`
-
-     * pip
-
-       * :pypi:`coverage`
-       * :pypi:`tomli`
-
-     * :gh:`pyTooling/upload-artifact`
-
-       * :gh:`actions/upload-artifact`
-
-     * :gh:`codecov/codecov-action`
-     * :gh:`codacy/codacy-coverage-reporter-action`
-
-   * :ref:`pyTooling/Actions/.github/workflows/SphinxDocumentation.yml <JOBTMPL/SphinxDocumentation>`
-
-     * :gh:`actions/checkout`
-     * :gh:`actions/setup-python`
-     * :gh:`pyTooling/download-artifact`
-
-       * :gh:`actions/download-artifact`
-
-     * :gh:`pyTooling/upload-artifact`
-
-       * :gh:`actions/upload-artifact`
-
-     * apt
-
-       * `graphviz <https://graphviz.org/>`__
-
-     * pip
-
-       * :pypi:`wheel`
-       * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` parameter.
-
-   * :ref:`pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml <JOBTMPL/LaTeXDocumentation>`
-
-     * :gh:`pyTooling/download-artifact`
-
-       * :gh:`actions/download-artifact`
-
-     * :gh:`pyTooling/upload-artifact`
-
-       * :gh:`actions/upload-artifact`
-
-     * :gh:`addnab/docker-run-action`
-
-       * :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>`
-
-   * :ref:`pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml <JOBTMPL/PublishToGitHubPages>`
-   * :ref:`pyTooling/Actions/.github/workflows/PublishOnPyPI.yml <JOBTMPL/PublishOnPyPI>`
-
-     * :gh:`pyTooling/download-artifact`
-
-       * :gh:`actions/download-artifact`
-     * :gh:`actions/setup-python`
-     * :gh:`geekyeggo/delete-artifact`
-
-     * pip
-
-       * :pypi:`wheel`
-       * :pypi:`twine`
-
-   * :ref:`pyTooling/Actions/.github/workflows/TagReleaseCommit.yml <JOBTMPL/TagReleaseCommit>`
-
-     * :gh:`actions/github-script`
-
-   * :ref:`pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml <JOBTMPL/PublishReleaseNotes>`
-
-     * :gh:`actions/checkout`
-     * ``gh`` (GitHub command line interface)
-     * ``jq`` (JSON processing)
-     * apt
-
-       zstd
-
-   * :ref:`pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml <JOBTMPL/IntermediateCleanUp>`
-
-     * :gh:`geekyeggo/delete-artifact`
-
-   * :ref:`pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml <JOBTMPL/ArtifactCleanUp>`
-
-     * :gh:`geekyeggo/delete-artifact`
-
-
-.. _JOBTMPL/CompletePipeline/Instantiation:
-
-Instantiation
-*************
-
-The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r5``.
-It only requires a `name` parameter to create the artifact names.
-
-.. code-block:: yaml
-
-   name: Pipeline
-
-   on:
-     push:
-     workflow_dispatch:
-
-   jobs:
-     Params:
-       uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
-       with:
-         package_name: myPackage
 
 
 .. _JOBTMPL/CompletePipeline/Parameters:
@@ -563,7 +577,10 @@ unittest_include_list
 :Required:        no
 :Default Value:   ``''``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
-:Description:
+:Description:     List of space-separated ``<system>:<python_version>`` tuples to be included into the list of unittest
+                  variants.
+
+                  For more details see :ref:`JOBTMPL/Parameters/Input/include_list`.
 
 
 .. _JOBTMPL/CompletePipeline/Input/unittest_exclude_list:
@@ -575,7 +592,10 @@ unittest_exclude_list
 :Required:        no
 :Default Value:   ``'windows-arm:3.9 windows-arm:3.10'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
-:Description:
+:Description:     List of space-separated ``<system>:<python_version>`` tuples to be excluded from the list of unittest
+                  variants.
+
+                  For more details see :ref:`JOBTMPL/Parameters/Input/exclude_list`.
 
 
 .. _JOBTMPL/CompletePipeline/Input/unittest_disable_list:
@@ -587,7 +607,11 @@ unittest_disable_list
 :Required:        no
 :Default Value:   ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
-:Description:
+:Description:     List of space-separated ``<system>:<python_version>`` tuples to be temporarily disabled from the list
+                  of unittest variants. |br|
+                  Each disabled item creates a warning in the workflow log.
+
+                  For more details see :ref:`JOBTMPL/Parameters/Input/disable_list`.
 
 
 .. _JOBTMPL/CompletePipeline/Input/apptest_python_version:
@@ -649,7 +673,10 @@ apptest_include_list
 :Required:        no
 :Default Value:   ``''``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
-:Description:
+:Description:     List of space-separated ``<system>:<python_version>`` tuples to be included into the list of
+                  application test variants.
+
+                  For more details see :ref:`JOBTMPL/Parameters/Input/include_list`.
 
 
 .. _JOBTMPL/CompletePipeline/Input/apptest_exclude_list:
@@ -661,7 +688,10 @@ apptest_exclude_list
 :Required:        no
 :Default Value:   ``'windows-arm:3.9 windows-arm:3.10'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
-:Description:
+:Description:     List of space-separated ``<system>:<python_version>`` tuples to be excluded from the list of
+                  appliation test variants.
+
+                  For more details see :ref:`JOBTMPL/Parameters/Input/exclude_list`.
 
 
 .. _JOBTMPL/CompletePipeline/Input/apptest_disable_list:
@@ -673,7 +703,11 @@ apptest_disable_list
 :Required:        no
 :Default Value:   ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
-:Description:
+:Description:     List of space-separated ``<system>:<python_version>`` tuples to be temporarily disabled from the list
+                  of application test variants. |br|
+                  Each disabled item creates a warning in the workflow log.
+
+                  For more details see :ref:`JOBTMPL/Parameters/Input/disable_list`.
 
 
 .. _JOBTMPL/CompletePipeline/Input/codecov:
@@ -685,7 +719,8 @@ codecov
 :Required:        no
 :Default Value:   ``'false'``
 :Possible Values: ``'true'``, ``'false'``
-:Description:
+:Description:     If *true*, publish merged code coverage results and a merged unit test summary to CodeCov. |br|
+                  Secret :ref:`JOBTMPL/CompletePipeline/Secret/CODECOV_TOKEN` must be set.
 
 
 .. _JOBTMPL/CompletePipeline/Input/codacy:
@@ -697,7 +732,8 @@ codacy
 :Required:        no
 :Default Value:   ``'false'``
 :Possible Values: ``'true'``, ``'false'``
-:Description:
+:Description:     If *true*, publish merged code coverage results to Codacy. |br|
+                  Secret :ref:`JOBTMPL/CompletePipeline/Secret/CODACY_TOKEN` must be set.
 
 
 .. _JOBTMPL/CompletePipeline/Input/dorny:
@@ -709,7 +745,7 @@ dorny
 :Required:        no
 :Default Value:   ``'false'``
 :Possible Values: ``'true'``, ``'false'``
-:Description:
+:Description:     If *true*, publish a merged unit test summary as pipeline result.
 
 
 .. _JOBTMPL/CompletePipeline/Input/cleanup:
@@ -721,7 +757,8 @@ cleanup
 :Required:        no
 :Default Value:   ``'true'``
 :Possible Values: ``'true'``, ``'false'``
-:Description:
+:Description:     If *false*, do not remove intermediate artifacts. |br|
+                  This might help debugging artifact handovers between jobs.
 
 
 .. _JOBTMPL/CompletePipeline/Secrets:
@@ -780,5 +817,6 @@ Optimizations
 
 The following optimizations can be used to reduce the template's runtime.
 
-TBD
-  tbd tbd tbd
+.. todo::
+
+   CompletePipeline::Optimizations Needs a list of optimizations.

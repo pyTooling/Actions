@@ -3,9 +3,11 @@
 LatexDocumentation
 ##################
 
-The ``LatexDocumentation`` job template ................
+The ``LatexDocumentation`` job template downloads an artifact containing a LaTeX document and translates to a PDF file
+using MikTeX.
 
-* uses xelatex and latexmk
+The translation process uses ``latexmk`` for handling multiple passes. The default LaTeX processor is ``xelatex``, but
+can be switched by a parameter.
 
 .. topic:: Features
 
@@ -13,12 +15,9 @@ The ``LatexDocumentation`` job template ................
 
 .. topic:: Behavior
 
-   .. todo:: LatexDocumentation:Behavior needs documentation.
-
-.. topic:: Job Execution
-
-   .. image:: ../../_static/pyTooling-Actions-LatexDocumentation.png
-      :width: 600px
+   1. Download the LaTeX artifact.
+   2. Build the PDF using ``latexmk``.
+   3. Upload the generated PDF as an artifact.
 
 .. topic:: Dependencies
 
@@ -39,9 +38,6 @@ The ``LatexDocumentation`` job template ................
 
 Instantiation
 *************
-
-The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r5``. It only
-requires a `name` parameter to create the artifact names.
 
 .. code-block:: yaml
 
@@ -76,11 +72,6 @@ requires a `name` parameter to create the artifact names.
          latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
          pdf_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
 
-
-.. seealso::
-
-   :ref:`JOBTMPL/TagReleaseCommit`
-     ``LatexDocumentation`` is usualy
 
 .. _JOBTMPL/LatexDocumentation/Parameters:
 

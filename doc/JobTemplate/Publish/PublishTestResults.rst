@@ -8,7 +8,7 @@ JUnit test summary reports to multiple services for visualization and longterm s
 
 Supported services are:
 
-* GitHub Actions - Job results using :gh:`dorny/test-reporter`
+* GitHub Actions job results using :gh:`dorny/test-reporter`
 * `Codecov <https://about.codecov.io/>`__
 
 .. topic:: Features
@@ -98,13 +98,6 @@ Complex Example
        needs:
          - CodeCoverage
          - UnitTesting
-
-.. seealso::
-
-   :ref:`JOBTMPL/UnitTesting`
-     tbd
-   :ref:`JOBTMPL/PublishCoverageResults`
-     tbd
 
 
 .. _JOBTMPL/PublishTestResults/Parameters:
@@ -343,5 +336,3 @@ Optimizations
 *************
 
 This template offers no optimizations (reduced job runtime).
-
-merged_junit_artifact

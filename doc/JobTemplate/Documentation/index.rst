@@ -5,13 +5,13 @@ Documentation
 
 The category *documentation* provides workflow templates implementing
 
-* :ref:`JOBTMPL/VerifyDocs` -
-* :ref:`JOBTMPL/SphinxDocumentation` -
-* :ref:`JOBTMPL/LaTeXDocumentation` -
+* :ref:`JOBTMPL/SphinxDocumentation` - Translate ReStructured Text to HTML and LaTeX using Sphinx.
+* :ref:`JOBTMPL/LaTeXDocumentation` - Translate LaTeX to PDF using MikTeX.
+* :ref:`JOBTMPL/PublishToGitHubPages` - Upload HTML content to GitHub Pages.
 
 .. toctree::
    :hidden:
 
-   VerifyDocs
    SphinxDocumentation
    LaTeXDocumentation
+   PublishToGitHubPages

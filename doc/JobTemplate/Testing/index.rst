@@ -5,8 +5,8 @@ Testing
 
 The category *testing* provides workflow templates implementing
 
-* :ref:`JOBTMPL/UnitTesting` -
-* :ref:`JOBTMPL/ApplicationTesting` -
+* :ref:`JOBTMPL/UnitTesting` - Run unit tests and collect code coverage.
+* :ref:`JOBTMPL/ApplicationTesting` - Run application tests.
 
 .. toctree::
    :hidden:

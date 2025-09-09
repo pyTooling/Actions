@@ -24,7 +24,6 @@ as an artifact.
       * If parameter :ref:`JOBTMPL/Package/Input/requirements` is non-empty, use :pypi:`setuptools` for package and
         execute ``python setup.py ...``.
 
-
 .. topic:: Job Execution
 
    .. image:: ../../_static/pyTooling-Actions-Package.png
@@ -75,11 +74,6 @@ Complex Example
          python_version: ${{ needs.Params.outputs.python_version }}
          requirements: -r build/requirements.txt
          artifact: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
-
-
-.. seealso::
-
-   :ref:`JOBTMPL/PublishOnPyPI`
 
 
 .. _JOBTMPL/Package/Parameters:
