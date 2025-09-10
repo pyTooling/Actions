@@ -19,9 +19,10 @@
       .. rubric:: Documentation
 
       * :ref:`JOBTMPL/CheckDocumentation`
-      * :ref:`JOBTMPL/VerifyDocs`
       * :ref:`JOBTMPL/SphinxDocumentation`
       * :ref:`JOBTMPL/LaTeXDocumentation`
+
+      .. #* :ref:`JOBTMPL/VerifyDocs`
 
       .. rubric:: Unit Tests, Code Coverage
 

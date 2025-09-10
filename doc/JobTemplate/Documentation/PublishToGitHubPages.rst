@@ -5,102 +5,171 @@ PublishToGitHubPages
 
 This job publishes HTML content from artifacts of other jobs to GitHub Pages.
 
-**Behavior:**
+.. topic:: Features
 
-1. Checkout repository.
-2. Download artifacts.
-3. Push HTML files to branch ``gh-pages``.
+   tbd
 
-**Dependencies:**
 
-* :gh:`actions/checkout`
-* :gh:`actions/download-artifact`
+.. topic:: Behavior
+
+   1. Checkout repository.
+   2. Download artifacts.
+   3. Push HTML files to branch ``gh-pages``.
+
+.. topic:: Job Execution
+
+   .. image:: ../../_static/pyTooling-Actions-PublishToGitHubPages.png
+      :width: 500px
+
+.. topic:: Dependencies
+
+   * :gh:`actions/checkout`
+   * :gh:`pyTooling/download-artifact`
+
+     * :gh:`actions/download-artifact`
+
+
+.. _JOBTMPL/Parameters/Instantiation:
 
 Instantiation
 *************
 
-Simple Example
-==============
+.. grid:: 2
 
-.. code-block:: yaml
+   .. grid-item::
+      :columns: 5
 
-   jobs:
-     BuildTheDocs:
-       # ...
+      .. rubric:: Simple Example
 
-     PublishToGitHubPages:
-       uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r5
-       needs:
-         - BuildTheDocs
-       with:
-         doc: Documentation
+      .. code-block:: yaml
+
+         jobs:
+           BuildTheDocs:
+             # ...
+
+           PublishToGitHubPages:
+             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r5
+             needs:
+               - BuildTheDocs
+             with:
+               doc: Documentation
+
+   .. grid-item::
+      :columns: 5
+
+      .. rubric:: Complex Example
+
+      .. code-block:: yaml
+
+         jobs:
+           PublishToGitHubPages:
+             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r5
+             needs:
+               - Params
+               - BuildTheDocs
+               - Coverage
+               - StaticTypeCheck
+             with:
+               doc:      ${{ fromJson(needs.Params.outputs.artifact_names).documentation_html }}
+               coverage: ${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_html }}
+               typing:   ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
 
 
-Complex Example
-===============
+.. _JOBTMPL/PublishToGitHubPages/Parameters:
 
-.. code-block:: yaml
+Parameter Summary
+*****************
 
-   jobs:
-     PublishToGitHubPages:
-       uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r5
-       needs:
-         - Params
-         - BuildTheDocs
-         - Coverage
-         - StaticTypeCheck
-       with:
-         doc: ${{ fromJson(needs.Params.outputs.artifact_names).documentation_html }}
-         coverage: ${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_html }}
-         typing: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
+.. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishToGitHubPages/Inputs>`
+
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| Parameter Name                                                      | Required | Type     | Default                                                           |
++=====================================================================+==========+==========+===================================================================+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/ubuntu_image_version`      | no       | string   | ``'24.04'``                                                       |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/doc`                       | yes      | string   | — — — —                                                           |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/coverage`                  | no       | string   | ``''``                                                            |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/typing`                    | no       | string   | ``''``                                                            |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+
+.. rubric:: Goto :ref:`secrets <JOBTMPL/PublishToGitHubPages/Secrets>`
+
+This job template needs no secrets.
+
+.. rubric:: Goto :ref:`output parameters <JOBTMPL/PublishToGitHubPages/Outputs>`
+
+This job template has no output parameters.
 
 
-Parameters
-**********
+.. _JOBTMPL/PublishToGitHubPages/Inputs:
+
+Input Parameters
+****************
+
+.. _JOBTMPL/PublishToGitHubPages/Input/ubuntu_image_version:
+
+.. include:: ../_ubuntu_image_version.rst
+
+
+.. _JOBTMPL/PublishToGitHubPages/Input/doc:
 
 doc
 ===
 
-+----------------+----------+----------+--------------+
-| Parameter Name | Required | Type     | Default      |
-+================+==========+==========+==============+
-| doc            | yes      | string   | — — — —      |
-+----------------+----------+----------+--------------+
+:Type:            string
+:Required:        yes
+:Default Value:   — — — —
+:Possible Values: Any valid artifact name.
+:Description:     Name of the documentation artifact containing the HTML website.
 
-Name of the documentation artifact.
 
+.. _JOBTMPL/PublishToGitHubPages/Input/coverage:
 
 coverage
 ========
 
-+----------------+----------+----------+-----------------+
-| Parameter Name | Required | Type     | Default         |
-+================+==========+==========+=================+
-| coverage       | optional | string   | ``""``          |
-+----------------+----------+----------+-----------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid artifact name.
+:Description:     Name of the coverage artifact containing the HTML coverage report, which will be integrated as a
+                  subdirectory.
 
-Name of the coverage artifact.
 
+.. _JOBTMPL/PublishToGitHubPages/Input/typing:
 
 typing
 ======
 
-+----------------+----------+----------+-----------------+
-| Parameter Name | Required | Type     | Default         |
-+================+==========+==========+=================+
-| typing         | optional | string   | ``""``          |
-+----------------+----------+----------+-----------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid artifact name.
+:Description:     Name of the type checking artifact containing the HTML type checker report, which will be integrated
+                  as a subdirectory.
 
-Name of the typing artifact.
 
-
+.. _JOBTMPL/PublishToGitHubPages/Secrets:
 
 Secrets
 *******
 
 This job template needs no secrets.
 
-Results
+
+.. _JOBTMPL/PublishToGitHubPages/Outputs:
+
+Outputs
 *******
 
 This job template has no output parameters.
+
+
+.. _JOBTMPL/PublishToGitHubPages/Optimizations:
+
+Optimizations
+*************
+
+This template offers no optimizations (reduced job runtime).

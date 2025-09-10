@@ -143,6 +143,7 @@ artifact
 
 :Type:            string
 :Required:        yes
+:Default Value:   — — — —
 :Possible Values: Any valid artifact name.
 :Description:     Name of the artifact containing the packaged Python code.
 

@@ -142,6 +142,7 @@ version
 
 :Type:            string
 :Required:        yes
+:Default Value:   — — — —
 :Possible Values: Any valid Git tag name.
 :Description:     The version string to be used for tagging.
 
@@ -153,6 +154,7 @@ auto_tag
 
 :Type:            string
 :Required:        yes
+:Default Value:   — — — —
 :Possible Values: ``'false'``, ``'true'```
 :Description:     If *true*, tag the current commit.
 
