@@ -56,7 +56,8 @@ on:
         type: string
       html_artifact:
         description: 'Name of the typing artifact (HTML report).'
-        required: true
+        required: false
+        default: ''
         type: string
       junit_artifact:
         description: 'Name of the typing junit artifact (junit XML).'
@@ -65,7 +66,6 @@ on:
         type: string
 
 jobs:
-
   StaticTypeCheck:
     name: 👀 Check Static Typing using Python ${{ inputs.python_version }}
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"

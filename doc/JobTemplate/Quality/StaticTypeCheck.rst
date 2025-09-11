@@ -6,18 +6,36 @@ StaticTypeCheck
 This job runs a static type check using mypy and collects the results. These results can be converted to a HTML report
 and then uploaded as an artifact.
 
-**Behavior:**
+.. topic:: Features
 
-1. Checkout repository
-2. Setup Python and install dependencies
-3. Run type checking command(s).
-4. Upload type checking report as an artifact
+   * tbd
 
-**Dependencies:**
+.. topic:: Behavior
 
-* :gh:`actions/checkout`
-* :gh:`actions/setup-python`
-* :gh:`actions/upload-artifact`
+   1. Checkout repository
+   2. Setup Python and install dependencies
+   3. Run type checking command(s).
+   4. Upload type checking report as an artifact
+
+.. topic:: Job Execution
+
+   .. image:: ../../_static/pyTooling-Actions-StaticTypeCheck.png
+      :width: 1000px
+
+.. topic:: Dependencies
+
+   * :gh:`actions/checkout`
+   * :gh:`actions/setup-python`
+   * pip
+
+     * Python packages specified via :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`.
+
+   * :gh:`pyTooling/upload-artifact`
+
+     * :gh:`actions/upload-artifact`
+
+
+.. _JOBTMPL/StaticTypeCheck/Instantiation:
 
 Instantiation
 *************
@@ -83,92 +101,133 @@ Example ``commands``:
         cd Parent
         mypy --html-report ../htmlmypy -p ToolName
 
-Parameters
-**********
 
-python_version
-==============
+.. _JOBTMPL/StaticTypeCheck/Parameters:
 
-+----------------+----------+----------+-----------------+
-| Parameter Name | Required | Type     | Default         |
-+================+==========+==========+=================+
-| python_version | optional | string   | ``3.11``        |
-+----------------+----------+----------+-----------------+
+Parameter Summary
+*****************
 
-Python version.
+.. rubric:: Goto :ref:`input parameters <JOBTMPL/StaticTypeCheck/Inputs>`
 
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| Parameter Name                                                      | Required | Type     | Default                                                           |
++=====================================================================+==========+==========+===================================================================+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/ubuntu_image_version`           | no       | string   | ``'24.04'``                                                       |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/python_version`                 | no       | string   | ``'3.13'``                                                        |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`                   | no       | string   | ``'-r tests/requirements.txt'``                                   |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/commands`                       | yes      | string   | — — — —                                                           |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/html_report`                    | no       | string   | ``'htmlmypy'``                                                    |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/junit_report`                   | no       | string   | ``'StaticTypingSummary.xml'``                                     |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/html_artifact`                  | no       | string   | ``''``                                                            |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/junit_artifact`                 | no       | string   | ``''``                                                            |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+
+.. rubric:: Goto :ref:`secrets <JOBTMPL/StaticTypeCheck/Secrets>`
+
+This job template needs no secrets.
+
+.. rubric:: Goto :ref:`output parameters <JOBTMPL/StaticTypeCheck/Outputs>`
+
+This job template has no output parameters.
+
+
+.. _JOBTMPL/StaticTypeCheck/Inputs:
+
+Input Parameters
+****************
+
+.. _JOBTMPL/StaticTypeCheck/Input/ubuntu_image_version:
+
+.. include:: ../_ubuntu_image_version.rst
+
+
+.. _JOBTMPL/StaticTypeCheck/Input/python_version:
+
+.. include:: ../_python_version.rst
+
+
+.. _JOBTMPL/StaticTypeCheck/Input/requirements:
 
 requirements
 ============
 
-+----------------+----------+----------+-------------------------------+
-| Parameter Name | Required | Type     | Default                       |
-+================+==========+==========+===============================+
-| requirements   | optional | string   | ``-r tests/requirements.txt`` |
-+----------------+----------+----------+-------------------------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``'-r tests/requirements.txt'``
+:Possible Values: Any valid list of parameters for ``pip install``. |br|
+                  Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
+                  packages can be specified using a space separated list like ``'mypy lxml'``.
+:Description:     Python dependencies to be installed through *pip*.
 
-Python dependencies to be installed through pip.
 
+.. _JOBTMPL/StaticTypeCheck/Input/commands:
 
 commands
 ========
 
-+----------------+----------+----------+--------------+
-| Parameter Name | Required | Type     | Default      |
-+================+==========+==========+==============+
-| commands       | yes      | string   | — — — —      |
-+----------------+----------+----------+--------------+
+:Type:            string
+:Required:        yes
+:Default Value:   — — — —
+:Possible Values: tbd
+:Description:     tbd
 
-Commands to run the static type checks.
 
+.. _JOBTMPL/StaticTypeCheck/Input/html_report:
 
 html_report
 ===========
 
-+----------------+----------+----------+-----------------+
-| Parameter Name | Required | Type     | Default         |
-+================+==========+==========+=================+
-| report         | optional | string   | ``htmlmypy``    |
-+----------------+----------+----------+-----------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``'htmlmypy'``
+:Possible Values: Any valid directory or subdirectory path.
+:Description:     The directory containing the generated HTML report.
 
-HTML output directory to upload as an artifact.
 
+.. _JOBTMPL/StaticTypeCheck/Input/junit_report:
 
 junit_report
 ============
 
-+----------------+----------+----------+-----------------------------+
-| Parameter Name | Required | Type     | Default                     |
-+================+==========+==========+=============================+
-| report         | optional | string   | ``StaticTypingSummary.xml`` |
-+----------------+----------+----------+-----------------------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``'StaticTypingSummary.xml'``
+:Possible Values: Any valid file name for mypy's JUnit XML report.
+:Description:     File name for the JUnit XML file.
 
-junit file to upload as an artifact.
 
+.. _JOBTMPL/StaticTypeCheck/Input/html_artifact:
 
 html_artifact
 =============
 
-+----------------+----------+----------+--------------+
-| Parameter Name | Required | Type     | Default      |
-+================+==========+==========+==============+
-| html_artifact  | yes      | string   | — — — —      |
-+----------------+----------+----------+--------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact containing the HTML report.
 
-Name of the typing artifact (HTML report).
 
+.. _JOBTMPL/StaticTypeCheck/Input/junit_artifact:
 
 junit_artifact
 ==============
 
-+----------------+----------+----------+--------------+
-| Parameter Name | Required | Type     | Default      |
-+================+==========+==========+==============+
-| junit_artifact | optional | string   | ``""``       |
-+----------------+----------+----------+--------------+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact containing the JUnit XML report.
 
-Name of the typing junit artifact (junit XML).
 
+.. _JOBTMPL/StaticTypeCheck/Secrets:
 
 Secrets
 *******
@@ -176,7 +235,17 @@ Secrets
 This job template needs no secrets.
 
 
-Results
+.. _JOBTMPL/StaticTypeCheck/Outputs:
+
+Outputs
 *******
 
 This job template has no output parameters.
+
+
+.. _JOBTMPL/StaticTypeCheck/Optimizations:
+
+Optimizations
+*************
+
+This template offers no optimizations (reduced job runtime).
