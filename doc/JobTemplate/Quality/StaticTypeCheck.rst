@@ -20,7 +20,7 @@ and then uploaded as an artifact.
 .. topic:: Job Execution
 
    .. image:: ../../_static/pyTooling-Actions-StaticTypeCheck.png
-      :width: 1000px
+      :width: 400px
 
 .. topic:: Dependencies
 

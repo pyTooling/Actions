@@ -197,7 +197,7 @@ jobs:
       - UnitTestingParams
       - Documentation
     with:
-      document: Actions
+      document:       'Actions'
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
       pdf_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
 
