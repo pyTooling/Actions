@@ -195,9 +195,15 @@ jobs:
       - ConfigParams
       - UnitTestingParams
     with:
-      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
-      html_report:    ${{ needs.ConfigParams.outputs.typing_report_html_directory }}
-      html_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
+      python_version:             ${{ needs.UnitTestingParams.outputs.python_version }}
+      junit_report_directory:     ${{ needs.ConfigParams.outputs.typing_report_junit_directory }}
+      junit_report_file:          ${{ needs.ConfigParams.outputs.typing_report_junit_file }}
+      junit_artifact:             ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_junit }}
+      cobertura_report_directory: ${{ needs.ConfigParams.outputs.typing_report_cobertura_directory }}
+      cobertura_report_file:      ${{ needs.ConfigParams.outputs.typing_report_cobertura_file }}
+      cobertura_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_cobertura }}
+      html_report:                ${{ needs.ConfigParams.outputs.typing_report_html_directory }}
+      html_artifact:              ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   DocCoverage:
     uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@dev
