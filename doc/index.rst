@@ -65,12 +65,48 @@ Example Pipelines
       * Set the ``name`` input of job ``Parameters``.
       * Specify the ``commands`` input of job ``StaticTypeCheck``.
 
+      .. rubric:: Behavior
+
+      .. include:: JobTemplate/AllInOne/_Behavior.rst
+
    .. grid-item::
       :columns: 6
 
       .. tab-set::
 
+         .. tab-item:: Directory Structure
+
+            .. code-block::
+
+               <RepositoryRoot>/
+                 .github/
+                   workflows/
+                     Pipeline.yml
+                 dist/
+                   requirements.txt
+                 docs/
+                   conf.py
+                   index.rst
+                   requirements.txt
+                 myPackage/
+                   ModuleA.py
+                   __init__.py
+                   py.typed
+                 tests/
+                   unit/
+                     TestA.py
+                     requirements.txt
+                   requirements.txt
+                 .editorconfig
+                 .gitignore
+                 LICENSE.md
+                 pyproject.toml
+                 README.md
+                 requirements.txt
+                 setup.py
+
          .. tab-item:: Simple Package
+            :selected:
 
             .. code-block:: yaml
 
@@ -122,6 +158,65 @@ Example Pipelines
                      PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
                      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
                      CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
+
+         .. tab-item:: :file:`pyproject.toml`
+
+            .. code-block:: toml
+
+               [build-system]
+               requires = ["setuptools >= 80.0", "wheel ~= 0.45", "pyTooling ~= 8.5"]
+               build-backend = "setuptools.build_meta"
+
+               [tool.mypy]
+               packages = ["myPackage"]
+               python_version = "3.13"
+               strict = true
+               pretty = true
+               show_error_context = true
+               show_error_codes = true
+               namespace_packages = true
+               html_report = "report/typing"
+
+               [tool.pytest]
+               junit_xml = "report/unit/UnittestReportSummary.xml"
+
+               [tool.pyedaa-reports]
+               junit_xml = "report/unit/unittest.xml"
+
+               [tool.pytest.ini_options]
+               addopts = "--tb=native"
+               python_files = "*"
+               python_functions = "test_*"
+               filterwarnings = ["error::DeprecationWarning", "error::PendingDeprecationWarning"]
+               junit_logging = "all"
+
+               [tool.interrogate]
+               color = true
+               verbose = 1             # possible values: 0 (minimal output), 1 (-v), 2 (-vv)
+               fail-under = 59
+               ignore-setters = true
+
+               [tool.coverage.run]
+               branch = true
+               relative_files = true
+               omit = ["*site-packages*", "setup.py", "tests/unit/*"]
+
+               [tool.coverage.report]
+               skip_covered = false
+               skip_empty = true
+               exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
+               omit = ["tests/*"]
+
+               [tool.coverage.xml]
+               output = "report/coverage/coverage.xml"
+
+               [tool.coverage.json]
+               output = "report/coverage/coverage.json"
+
+               [tool.coverage.html]
+               directory = "report/coverage/html"
+               title="Code Coverage of myPackage"
+
 
 .. image:: _static/pyTooling-Actions-SimplePackage.png
 

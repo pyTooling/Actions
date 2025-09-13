@@ -77,4 +77,4 @@ output = "report/coverage/coverage.json"
 
 [tool.coverage.html]
 directory = "report/coverage/html"
-title="Code Coverage of pyDummy"
+title="Code Coverage of myPackage"
