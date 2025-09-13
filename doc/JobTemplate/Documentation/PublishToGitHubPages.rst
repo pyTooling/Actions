@@ -3,7 +3,7 @@
 PublishToGitHubPages
 ####################
 
-This job publishes HTML content from artifacts of other jobs to GitHub Pages.
+This job template publishes HTML content from artifacts of other jobs to GitHub Pages.
 
 .. topic:: Features
 

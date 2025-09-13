@@ -10,8 +10,8 @@ build-backend = "setuptools.build_meta"
 line-length = 120
 
 [tool.mypy]
-files = ["pyDummy"]
-python_version = "3.12"
+packages = ["myPackage", "myFramework"]
+python_version = "3.13"
 #ignore_missing_imports = true
 strict = true
 pretty = true

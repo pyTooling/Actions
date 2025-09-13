@@ -3,12 +3,12 @@
 StaticTypeCheck
 ###############
 
-This job runs a static type check using mypy and collects the results. These results can be converted to a HTML report
-and then uploaded as an artifact.
+This job template runs a static type check using `mypy <https://mypy-lang.org/>`__ and collects the results. These
+results can be converted to a HTML report and uploaded as an artifact.
 
 .. topic:: Features
 
-   * tbd
+   * Run static type check using mypy.
 
 .. topic:: Behavior
 
@@ -40,41 +40,67 @@ and then uploaded as an artifact.
 Instantiation
 *************
 
-Simple Example
-==============
+.. grid:: 2
 
-.. code-block:: yaml
+   .. grid-item::
+      :columns: 6
 
-   jobs:
-     StaticTypeCheck:
-       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r5
-       with:
-         commands: |
-           touch pyTooling/__init__.py
-           mypy --html-report htmlmypy -p pyTooling
-         report: 'htmlmypy'
-         artifact: TypeChecking
+      .. card:: Simple Example
 
-Complex Example
-===============
+         This example runs mypy for the Python package ``myPackage``. It renders a report into the job's log. In
+         addition is generates a report in HTML format into the directory ``htmlmypy``.
 
-.. code-block:: yaml
+         .. code-block:: yaml
 
-   jobs:
-     StaticTypeCheck:
-       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r5
-       needs:
-         - Params
-       with:
-         python_version: ${{ needs.Params.outputs.python_version }}
-         commands: |
-           touch pyTooling/__init__.py
-           mypy --html-report htmlmypy -p pyTooling
-         report: 'htmlmypy'
-         artifact: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
+            jobs:
+              StaticTypeCheck:
+                uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r5
+                with:
+                  commands: |
+                    mypy --html-report htmlmypy -p myPackage
+                  report:   'htmlmypy'
+                  artifact: TypeChecking
+
+   .. grid-item::
+      :columns: 6
+
+      .. card:: Complex Example
+
+         .. code-block:: yaml
+
+            jobs:
+              StaticTypeCheck:
+                uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r5
+                needs:
+                  - Params
+                with:
+                  python_version: ${{ needs.Params.outputs.python_version }}
+                  commands: |
+                    touch myFramework/__init__.py
+                    mypy --html-report htmlmypy -p myFramework.Extension
+                  report:   'htmlmypy'
+                  artifact: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
+
+.. card:: Complex Example
+
+   .. code-block:: yaml
+
+      jobs:
+        StaticTypeCheck:
+          uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r5
+          needs:
+            - ConfigParams
+            - Params
+          with:
+            python_version: ${{ needs.Params.outputs.python_version }}
+            commands: |
+              ${{ needs.ConfigParams.outputs.mypy_prepare_command }}
+              mypy --html-report htmlmypy -p ${{ needs.ConfigParams.outputs.package_fullname }}
+            report:   'htmlmypy'
+            artifact: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
 
 Commands
-========
+********
 
 Example ``commands``:
 
