@@ -55,6 +55,7 @@ jobs:
         version=4.2.0
         tool=myTool
         prog=program
+      tag: 4.2.0
       title: "Nightly Test Release"
       description: |
         This *nightly* release contains all latest and important artifacts created by %tool%'s CI pipeline.

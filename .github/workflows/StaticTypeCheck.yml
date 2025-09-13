@@ -40,14 +40,10 @@ on:
         required: false
         default: '-r tests/requirements.txt'
         type: string
-      commands:
-        description: 'Commands to run the static type checks.'
-        required: true
-        type: string
       html_report:
         description: 'Directory to upload as an artifact.'
         required: false
-        default: 'htmlmypy'
+        default: 'report/typing'
         type: string
       junit_report:
         description: 'junit file to upload as an artifact.'

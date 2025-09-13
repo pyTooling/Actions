@@ -255,6 +255,9 @@ jobs:
           version=${version}
           EOF
 
+# TODO: why not is_release_commit?
+# TODO: how to support version branches and hotfix releases on version branches?
+
       - name: 🔁 Find merged PullRequest from second parent of current SHA (${{ github.sha }})
         id: FindPullRequest
         if: steps.Classify.outputs.is_merge_commit == 'true'

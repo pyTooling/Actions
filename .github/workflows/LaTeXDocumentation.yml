@@ -57,7 +57,7 @@ jobs:
   PDFDocumentation:
     name: 📓 Converting LaTeX Documentation to PDF
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
-    continue-on-error: ${{ inputs.can-fail }}
+    continue-on-error: ${{ inputs.can-fail == 'true' }}
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
         uses: pyTooling/download-artifact@v5

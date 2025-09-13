@@ -40,92 +40,69 @@ results can be converted to a HTML report and uploaded as an artifact.
 Instantiation
 *************
 
+Simple Example
+==============
+
+This example runs mypy for the Python package ``myPackage`` according to the configuration stored in
+:file:`pyproject.toml`. It prints a report into the job's log. In addition is generates a report in HTML format into the
+directory ``report/typing``.
+
 .. grid:: 2
 
    .. grid-item::
       :columns: 6
 
-      .. card:: Simple Example
+      .. code-block:: yaml
 
-         This example runs mypy for the Python package ``myPackage``. It renders a report into the job's log. In
-         addition is generates a report in HTML format into the directory ``htmlmypy``.
-
-         .. code-block:: yaml
-
-            jobs:
-              StaticTypeCheck:
-                uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r5
-                with:
-                  commands: |
-                    mypy --html-report htmlmypy -p myPackage
-                  report:   'htmlmypy'
-                  artifact: TypeChecking
+         jobs:
+           StaticTypeCheck:
+             uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r5
+             with:
+               html_report: 'htmlmpyp'
+               artifact:    'TypeChecking'
 
    .. grid-item::
       :columns: 6
 
-      .. card:: Complex Example
+      .. code-block:: toml
 
-         .. code-block:: yaml
+         [tool.mypy]
+         packages = ["myPackage"]
+         strict = true
+         pretty = true
 
-            jobs:
-              StaticTypeCheck:
-                uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r5
-                needs:
-                  - Params
-                with:
-                  python_version: ${{ needs.Params.outputs.python_version }}
-                  commands: |
-                    touch myFramework/__init__.py
-                    mypy --html-report htmlmypy -p myFramework.Extension
-                  report:   'htmlmypy'
-                  artifact: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
-
-.. card:: Complex Example
-
-   .. code-block:: yaml
-
-      jobs:
-        StaticTypeCheck:
-          uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r5
-          needs:
-            - ConfigParams
-            - Params
-          with:
-            python_version: ${{ needs.Params.outputs.python_version }}
-            commands: |
-              ${{ needs.ConfigParams.outputs.mypy_prepare_command }}
-              mypy --html-report htmlmypy -p ${{ needs.ConfigParams.outputs.package_fullname }}
-            report:   'htmlmypy'
-            artifact: ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
-
-Commands
-********
-
-Example ``commands``:
-
-1. Regular package
-
-   .. code-block:: yaml
-
-      commands: mypy --html-report htmlmypy -p ToolName
+         html_report = "htmlmpyp"
 
 
-2. Parent namespace package
+Complex Example
+===============
 
-   .. code-block:: yaml
+To ease the handling of mypy parameters stored in :file:`pyproject.toml`, the :ref:`JOBTMPL/ExtractConfiguration` is
+used to extract the set configuration parameters for later usage. Similarly, :ref:`JOBTMPL/Parameters` is used to
+precompute the artifact's name.
 
-      commands: |
-        touch Parent/__init__.py
-        mypy --html-report htmlmypy -p ToolName
+.. code-block:: yaml
 
-3. Child namespace package
+   jobs:
+     ConfigParams:
+       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
+       with:
+         package_name: myPackage
 
-   .. code-block:: yaml
+     Params:
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
+       with:
+         package_name: myPackage
 
-      commands: |
-        cd Parent
-        mypy --html-report ../htmlmypy -p ToolName
+     StaticTypeCheck:
+       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r5
+       needs:
+         - ConfigParams
+         - Params
+       with:
+         python_version: ${{ needs.Params.outputs.python_version }}
+         report:         ${{ needs.ConfigParams.outputs.typing_report_html_directory }}
+         artifact:       ${{ fromJson(needs.Params.outputs.artifact_names).statictyping_html }}
 
 
 .. _JOBTMPL/StaticTypeCheck/Parameters:
@@ -144,9 +121,7 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`                   | no       | string   | ``'-r tests/requirements.txt'``                                   |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/commands`                       | yes      | string   | — — — —                                                           |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/html_report`                    | no       | string   | ``'htmlmypy'``                                                    |
+| :ref:`JOBTMPL/StaticTypeCheck/Input/html_report`                    | no       | string   | ``'report/typing'``                                               |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/StaticTypeCheck/Input/junit_report`                   | no       | string   | ``'StaticTypingSummary.xml'``                                     |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
@@ -193,18 +168,6 @@ requirements
 :Description:     Python dependencies to be installed through *pip*.
 
 
-.. _JOBTMPL/StaticTypeCheck/Input/commands:
-
-commands
-========
-
-:Type:            string
-:Required:        yes
-:Default Value:   — — — —
-:Possible Values: tbd
-:Description:     tbd
-
-
 .. _JOBTMPL/StaticTypeCheck/Input/html_report:
 
 html_report
@@ -212,7 +175,7 @@ html_report
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'htmlmypy'``
+:Default Value:   ``'report/typing'``
 :Possible Values: Any valid directory or subdirectory path.
 :Description:     The directory containing the generated HTML report.
 

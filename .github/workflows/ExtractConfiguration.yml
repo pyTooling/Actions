@@ -98,6 +98,10 @@ on:
       coverage_report_json:
         description: ""
         value: ${{ jobs.Extract.outputs.coverage_report_json }}
+      typing_report_html_directory:
+        description: ""
+        value: ${{ jobs.Extract.outputs.typing_report_html_directory }}
+
 
 jobs:
   Extract:
@@ -120,6 +124,7 @@ jobs:
       coverage_report_json_directory:       ${{ steps.getVariables.outputs.coverage_report_json_directory }}
       coverage_report_json_filename:        ${{ steps.getVariables.outputs.coverage_report_json_filename }}
       coverage_report_json:                 ${{ steps.getVariables.outputs.coverage_report_json }}
+      typing_report_html_directory:         ${{ steps.getVariables.outputs.typing_report_html_directory }}
 
     steps:
       - name: ⏬ Checkout repository
@@ -194,6 +199,7 @@ jobs:
           coverageXMLFile =       Path("./coverage.xml")
           coverageJSONFile =      Path("./coverage.json")
           coverageRC =            "${{ inputs.coverage_config }}".strip()
+          typingHTMLDirectory =   Path("htmlmypy")
 
           # Read output paths from 'pyproject.toml' file
           if coverageRC == "pyproject.toml":
@@ -207,6 +213,7 @@ jobs:
               coverageHTMLDirectory = Path(pyProjectSettings["tool"]["coverage"]["html"]["directory"])
               coverageXMLFile =       Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
               coverageJSONFile=       Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
+              typingHTMLDirectory =   Path(pyProjectSettings["tool"]["mypy"]["html_report"])
             else:
               print(f"File '{pyProjectFile}' not found.")
               print(f"::error title=FileNotFoundError::File '{pyProjectFile}' not found.")
@@ -245,6 +252,7 @@ jobs:
               coverage_report_json_directory={coverageJSONFile.parent.as_posix()}
               coverage_report_json_filename={coverageJSONFile.name}
               coverage_report_json={coverageJSONFile.as_posix()}
+              typing_report_html_directory={typingHTMLDirectory.as_posix()}
             """))
 
           print(dedent(f"""\
@@ -254,4 +262,5 @@ jobs:
               coverage html:       {coverageHTMLDirectory}
               coverage xml:        {coverageXMLFile}
               coverage json:       {coverageJSONFile}
+              typing html:         {typingHTMLDirectory}
           """))
