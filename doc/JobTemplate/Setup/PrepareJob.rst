@@ -90,7 +90,7 @@ pull-request titles.
 .. seealso::
 
    :ref:`JOBTMPL/TagReleaseCommit`
-     ``PrepareJob`` is usualy used to identify if a pipeline's commit is a merge commit created by a pull-request. If
+     ``PrepareJob`` is usually used to identify if a pipeline's commit is a merge commit created by a pull-request. If
      so, this commit can be tagged automatically to trigger a release pipeline (tag pipeline) for the same commit
      resulting in a full release (PyPI, GitHub Pages, GitHub Release, ...).
    :ref:`JOBTMPL/PublishReleaseNotes`

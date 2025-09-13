@@ -65,7 +65,7 @@ requires a `name` parameter to create the artifact names.
 .. seealso::
 
    :ref:`JOBTMPL/ExtractConfiguration`
-     ``ExtractConfiguration`` is usualy used to compute the path to the package's source code directory.
+     ``ExtractConfiguration`` is usually used to compute the path to the package's source code directory.
 
 
 .. _JOBTMPL/CheckDocumentation/Parameters:

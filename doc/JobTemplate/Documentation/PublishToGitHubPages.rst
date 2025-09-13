@@ -29,7 +29,7 @@ This job template publishes HTML content from artifacts of other jobs to GitHub 
      * :gh:`actions/download-artifact`
 
 
-.. _JOBTMPL/Parameters/Instantiation:
+.. _JOBTMPL/PublishToGitHubPages/Instantiation:
 
 Instantiation
 *************

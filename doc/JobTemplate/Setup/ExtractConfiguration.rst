@@ -85,7 +85,7 @@ test (pytest) and code coverage (Coverage.py) settings.
 .. seealso::
 
    :ref:`JOBTMPL/UnitTesting`
-     ``UnitTesting`` is usualy
+     ``UnitTesting`` is usually
    :ref:`JOBTMPL/StaticTypeCheck`
      xxx
    :ref:`JOBTMPL/CheckDocumentation`

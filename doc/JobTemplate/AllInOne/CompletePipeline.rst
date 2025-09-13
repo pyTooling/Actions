@@ -43,7 +43,7 @@ It can be used for simple Python packages as well as namespace packages.
 
          * GitHub Pipeline Summary
 
-           * Publich unittest results using :gh:`dorny/test-reporter`.
+           * Publish unittest results using :gh:`dorny/test-reporter`.
 
          * GitHub Pages
 
@@ -689,7 +689,7 @@ apptest_exclude_list
 :Default Value:   ``'windows-arm:3.9 windows-arm:3.10'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be excluded from the list of
-                  appliation test variants.
+                  application test variants.
 
                   For more details see :ref:`JOBTMPL/Parameters/Input/exclude_list`.
 

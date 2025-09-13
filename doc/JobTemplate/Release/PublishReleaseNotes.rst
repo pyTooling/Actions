@@ -3,7 +3,7 @@
 PublishReleaseNotes
 ###################
 
-This template create a GitHub Release Page and uploads assets to that page.
+This template creates a GitHub Release Page and uploads assets to that page.
 
 .. topic:: Features
 
@@ -82,12 +82,12 @@ Release Notes
 *************
 
 Providing a release description (a.k.a release page content) can be achieved from various sources. These sources can
-also be compined to a single description. Moreover, the resulting description can contain placeholders which can be
+also be combined to a single description. Moreover, the resulting description can contain placeholders which can be
 replaced by values provided via parameter :ref:`JOBTMPL/PublishReleaseNotes/Input/replacements`.
 
 Description text from file in the repository
   The job template's parameter :ref:`JOBTMPL/PublishReleaseNotes/Input/description_file` provides a way to read a
-  predfined content from a file within the repository. This allows sharing the same text between nightly releases and
+  predefined content from a file within the repository. This allows sharing the same text between nightly releases and
   full releases.
 
   .. note::
@@ -98,16 +98,16 @@ Descriptions text from pipeline parameter
   The job template's parameter :ref:`JOBTMPL/PublishReleaseNotes/Input/description` provides a way to either hard code
   a release description in YAML code, or connect a GitHub Action variable ``${{ ... }}`` to that parameter.
 
-  The content is avilable in replament variable ``%%DESCRIPTION%%``.
+  The content is available in replacement variable ``%%DESCRIPTION%%``.
 Description text from associated PullRequest
   If an associated pull-request can be identified for a merge-commit, the pull-requests description can be used as a
   release description.
 
-  The content is avilable in replament variable ``%%PULLREQUEST%%``.
+  The content is available in replacement variable ``%%PULLREQUEST%%``.
 Additional text from :ref:`JOBTMPL/PublishReleaseNotes/Input/description_footer`
   Additionally, a footer text is provided.
 
-  The content is avilable in replament variable ``%%FOOTER%%``.
+  The content is available in replacement variable ``%%FOOTER%%``.
 
 .. topic:: Order of Processing
 
@@ -329,7 +329,7 @@ title
 :Required:        no
 :Default Value:   ``''``
 :Possible Values: Any valid string suitable for a release title (headline).
-:Description:     If this parameter is not empty, the releases title is set, which overrides the default title infered
+:Description:     If this parameter is not empty, the releases title is set, which overrides the default title inferred
                   from the associated tag name.
 
 
@@ -432,7 +432,7 @@ replacements
 :Description:     The given replacements are used to replace placeholders in :ref:`JOBTMPL/PublishReleaseNotes/Input/description`,
                   :ref:`JOBTMPL/PublishReleaseNotes/Input/description_file`, :ref:`JOBTMPL/PublishReleaseNotes/Input/description_footer`. |br|
                   See :ref:`JOBTMPL/PublishReleaseNotes/ReleaseNotes` for more details.
-:Example:         The following example replaces the placeholder ``%version%`` with the actual version number (infered
+:Example:         The following example replaces the placeholder ``%version%`` with the actual version number (inferred
                   from tag name by :ref:`JOBTMPL/PrepareJob`.
 
                   .. code-block:: yaml

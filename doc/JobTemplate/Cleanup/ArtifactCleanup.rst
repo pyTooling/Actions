@@ -3,7 +3,7 @@
 ArtifactCleanUp
 ###############
 
-This job removes artifacts which were used to exchange data from job to job.
+This job removes artifacts which were used to exchange data between jobs.
 
 .. topic:: Features
 

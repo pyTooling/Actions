@@ -6,7 +6,7 @@ Parameters
 The ``Parameters`` job template is a workaround for the limitations of GitHub Actions to handle global variables in
 GitHub Actions workflows (see `actions/runner#480 <https://github.com/actions/runner/issues/480>`__).
 
-It generates output parameters containing a list of artifact names and a job matrix to be used in later running jobs.
+It generates output parameters containing a list of artifact names and a job matrix to be used in later-running jobs.
 
 .. topic:: Features
 
@@ -239,7 +239,7 @@ name
 :Default Value:   ``''``
 :Possible Values: Any valid artifact name.
 :Description:     Prefix used to generate artifact names. Usually, the name of the Python package. |br|
-                  In case this parameter is n empty string, the artifact prefix is derived from :ref:`JOBTMPL/Parameters/Input/package_name`
+                  In case this parameter is an empty string, the artifact prefix is derived from :ref:`JOBTMPL/Parameters/Input/package_name`
                   if the package is a simple Python package, **or** from :ref:`JOBTMPL/Parameters/Input/package_namespace`
                   and :ref:`JOBTMPL/Parameters/Input/package_name`, if the package is a Python namespace package.
 
@@ -493,7 +493,7 @@ windows_image
 :Required:        no
 :Default Value:   ``'windows-2025'``
 :Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
-:Description:     Name of the Windows Server x86-64 image and version used to run a Widnows jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
+:Description:     Name of the Windows Server x86-64 image and version used to run a Windows jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
 
 
 .. _JOBTMPL/Parameters/Input/windows_arm_image:
@@ -688,7 +688,7 @@ artifact_names
 
 :Type:            string (JSON)
 :Description:     Returns a JSON dictionary of artifact names sharing a common prefix (see :ref:`JOBTMPL/Parameters/Input/name`). |br|
-                  As artifacts are handed from jo to job, a consistent nameing scheme is advised to avoid duplications
+                  As artifacts are handed from jo to job, a consistent naming scheme is advised to avoid duplications
                   and naming artifacts by hand. This technique solves again the problem of global variables in GitHub
                   Action YAMl files and the need for assigning the same value (here artifact name) to multiple jobs
                   templates.
@@ -757,4 +757,4 @@ jobs (parallel VMs) are needed to execute the matrix.
 .. hint::
 
    Some VM images (macOS, Windows) have parallelism limitations and run slower then Ubuntu-based jobs. Additionally,
-   environments like MSYS2 require an additional setup time increasing a jobs runtime segnificantly.
+   environments like MSYS2 require an additional setup time increasing a jobs runtime significantly.

@@ -24,7 +24,7 @@ and a LaTeX documentation. This LaTeX document can be translated using e.g. MikT
    1. Checkout repository.
    2. Install system dependencies.
    3. Setup Python environment and install Python dependencies.
-   4. Download optional artifacts for integration of futher reports into the documentation.
+   4. Download optional artifacts for integration of further reports into the documentation.
    5. Build the HTML documentation using Sphinx.
    6. Build the LaTeX documentation using Sphinx.
 
@@ -281,6 +281,6 @@ The following optimizations can be used to reduce the template's runtime.
 Disable HTML website generation and HTML artifact
   If parameter :ref:`JOBTMPL/SphinxDocumentation/Input/html_artifact` is empty, no HTML website will be generated and
   uploaded.
-Disable LaTeX document generation and laTeX artifact
+Disable LaTeX document generation and LaTeX artifact
   If parameter :ref:`JOBTMPL/SphinxDocumentation/Input/latex_artifact` is empty, no LaTeX document will be generated and
   uploaded.

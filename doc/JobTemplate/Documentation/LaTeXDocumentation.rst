@@ -1,9 +1,9 @@
-.. _JOBTMPL/LatexDocumentation:
+.. _JOBTMPL/LaTeXDocumentation:
 
-LatexDocumentation
+LaTeXDocumentation
 ##################
 
-The ``LatexDocumentation`` job template downloads an artifact containing a LaTeX document and translates to a PDF file
+The ``LaTeXDocumentation`` job template downloads an artifact containing a LaTeX document and translates to a PDF file
 using MikTeX.
 
 The translation process uses ``latexmk`` for handling multiple passes. The default LaTeX processor is ``xelatex``, but
@@ -34,7 +34,7 @@ can be switched by a parameter.
      * :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>`
 
 
-.. _JOBTMPL/LatexDocumentation/Instantiation:
+.. _JOBTMPL/LaTeXDocumentation/Instantiation:
 
 Instantiation
 *************
@@ -73,47 +73,47 @@ Instantiation
          pdf_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
 
 
-.. _JOBTMPL/LatexDocumentation/Parameters:
+.. _JOBTMPL/LaTeXDocumentation/Parameters:
 
 Parameter Summary
 *****************
 
-.. rubric:: Goto :ref:`input parameters <JOBTMPL/LatexDocumentation/Inputs>`
+.. rubric:: Goto :ref:`input parameters <JOBTMPL/LaTeXDocumentation/Inputs>`
 
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | Parameter Name                                                      | Required | Type     | Default                                                           |
 +=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/LatexDocumentation/Input/ubuntu_image_version`        | no       | string   | ``'24.04'``                                                       |
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/ubuntu_image_version`        | no       | string   | ``'24.04'``                                                       |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/LatexDocumentation/Input/latex_artifact`              | yes      | string   | — — — —                                                           |
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/latex_artifact`              | yes      | string   | — — — —                                                           |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/LatexDocumentation/Input/document`                    | yes      | string   | — — — —                                                           |
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/document`                    | yes      | string   | — — — —                                                           |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/LatexDocumentation/Input/processor`                   | no       | string   | ``'xelatex'``                                                     |
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/processor`                   | no       | string   | ``'xelatex'``                                                     |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/LatexDocumentation/Input/pdf_artifact`                | no       | string   | ``''``                                                            |
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/pdf_artifact`                | no       | string   | ``''``                                                            |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 
-.. rubric:: Goto :ref:`secrets <JOBTMPL/LatexDocumentation/Secrets>`
+.. rubric:: Goto :ref:`secrets <JOBTMPL/LaTeXDocumentation/Secrets>`
 
 This job template needs no secrets.
 
-.. rubric:: Goto :ref:`output parameters <JOBTMPL/LatexDocumentation/Outputs>`
+.. rubric:: Goto :ref:`output parameters <JOBTMPL/LaTeXDocumentation/Outputs>`
 
 This job template has no output parameters.
 
 
-.. _JOBTMPL/LatexDocumentation/Inputs:
+.. _JOBTMPL/LaTeXDocumentation/Inputs:
 
 Input Parameters
 ****************
 
-.. _JOBTMPL/LatexDocumentation/Input/ubuntu_image_version:
+.. _JOBTMPL/LaTeXDocumentation/Input/ubuntu_image_version:
 
 .. include:: ../_ubuntu_image_version.rst
 
 
-.. _JOBTMPL/LatexDocumentation/Input/latex_artifact:
+.. _JOBTMPL/LaTeXDocumentation/Input/latex_artifact:
 
 latex_artifact
 ==============
@@ -125,7 +125,7 @@ latex_artifact
 :Description:     Name of the artifact containing the LaTeX document to translate.
 
 
-.. _JOBTMPL/LatexDocumentation/Input/document:
+.. _JOBTMPL/LaTeXDocumentation/Input/document:
 
 document
 ========
@@ -137,7 +137,7 @@ document
 :Description:     Name of the LaTeX document
 
 
-.. _JOBTMPL/LatexDocumentation/Input/processor:
+.. _JOBTMPL/LaTeXDocumentation/Input/processor:
 
 processor
 =========
@@ -149,7 +149,7 @@ processor
 :Description:     Name of the used LaTeX processor.
 
 
-.. _JOBTMPL/LatexDocumentation/Input/pdf_artifact:
+.. _JOBTMPL/LaTeXDocumentation/Input/pdf_artifact:
 
 pdf_artifact
 ============
@@ -164,7 +164,7 @@ pdf_artifact
 
                      If this parameter is empty, no PDF file will be generated and no artifact will be uploaded.
 
-.. _JOBTMPL/LatexDocumentation/Secrets:
+.. _JOBTMPL/LaTeXDocumentation/Secrets:
 
 Secrets
 *******
@@ -172,7 +172,7 @@ Secrets
 This job template needs no secrets.
 
 
-.. _JOBTMPL/LatexDocumentation/Outputs:
+.. _JOBTMPL/LaTeXDocumentation/Outputs:
 
 Outputs
 *******
@@ -180,7 +180,7 @@ Outputs
 This job template has no output parameters.
 
 
-.. _JOBTMPL/LatexDocumentation/Optimizations:
+.. _JOBTMPL/LaTeXDocumentation/Optimizations:
 
 Optimizations
 *************
@@ -188,4 +188,4 @@ Optimizations
 The following optimizations can be used to reduce the template's runtime.
 
 Disable PDF generation and PDF artifact
-  If parameter :ref:`JOBTMPL/LatexDocumentation/Input/pdf_artifact` is empty, no PDF will be generated and uploaded.
+  If parameter :ref:`JOBTMPL/LaTeXDocumentation/Input/pdf_artifact` is empty, no PDF will be generated and uploaded.

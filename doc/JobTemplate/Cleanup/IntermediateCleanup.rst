@@ -35,18 +35,17 @@ requires a `name` parameter to create the artifact names.
 
 .. code-block:: yaml
 
-   name: Pipeline
-
-   on:
-     push:
-     workflow_dispatch:
-
    jobs:
-     Params:
-       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
+     IntermediateCleanUp:
+       uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@r5
+       needs:
+         - UnitTestingParams
+         - PublishCoverageResults
+         - PublishTestResults
+       if: success() || failure()
        with:
-         name: pyTooling
-
+         sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-
+         xml_unittest_artifacts_prefix:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
 
 .. seealso::
 
