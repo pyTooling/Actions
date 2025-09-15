@@ -45,7 +45,7 @@ on:
         default: 'doc'
         type: string
       coverage_report_json_directory:
-        description: ''
+        description: 'report/coverage'
         required: false
         type: string
       coverage_json_artifact:

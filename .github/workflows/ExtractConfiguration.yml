@@ -34,15 +34,6 @@ on:
         required: false
         default: '3.13'
         type: string
-      package_namespace:
-        description: 'Name of the tool''s namespace.'
-        required: false
-        default: ''
-        type: string
-      package_name:
-        description: 'Name of the tool''s package.'
-        required: true
-        type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
         required: false
@@ -50,92 +41,44 @@ on:
         type: string
 
     outputs:
-      package_fullname:
-        description: ""
-        value: ${{ jobs.Extract.outputs.package_fullname }}
-      package_directory:
-        description: ""
-        value: ${{ jobs.Extract.outputs.package_directory }}
-      unittest_report_xml_directory:
-        description: ""
-        value: ${{ jobs.Extract.outputs.unittest_report_xml_directory }}
-      unittest_report_xml_filename:
-        description: ""
-        value: ${{ jobs.Extract.outputs.unittest_report_xml_filename }}
       unittest_report_xml:
         description: ""
         value: ${{ jobs.Extract.outputs.unittest_report_xml }}
-      unittest_merged_report_xml_directory:
-        description: ""
-        value: ${{ jobs.Extract.outputs.unittest_merged_report_xml_directory }}
-      unittest_merged_report_xml_filename:
-        description: ""
-        value: ${{ jobs.Extract.outputs.unittest_merged_report_xml_filename }}
       unittest_merged_report_xml:
         description: ""
         value: ${{ jobs.Extract.outputs.unittest_merged_report_xml }}
-      coverage_report_html_directory:
+      coverage_report_html:
         description: ""
-        value: ${{ jobs.Extract.outputs.coverage_report_html_directory }}
-      coverage_report_xml_directory:
-        description: ""
-        value: ${{ jobs.Extract.outputs.coverage_report_xml_directory }}
-      coverage_report_xml_filename:
-        description: ""
-        value: ${{ jobs.Extract.outputs.coverage_report_xml_filename }}
+        value: ${{ jobs.Extract.outputs.coverage_report_html }}
       coverage_report_xml:
         description: ""
         value: ${{ jobs.Extract.outputs.coverage_report_xml }}
-      coverage_report_json_directory:
-        description: ""
-        value: ${{ jobs.Extract.outputs.coverage_report_json_directory }}
-      coverage_report_json_filename:
-        description: ""
-        value: ${{ jobs.Extract.outputs.coverage_report_json_filename }}
       coverage_report_json:
         description: ""
         value: ${{ jobs.Extract.outputs.coverage_report_json }}
-      typing_report_cobertura_directory:
+      typing_report_cobertura:
         description: ""
-        value: ${{ jobs.Extract.outputs.typing_report_cobertura_directory }}
-      typing_report_cobertura_file:
+        value: ${{ jobs.Extract.outputs.typing_report_cobertura }}
+      typing_report_junit:
         description: ""
-        value: ${{ jobs.Extract.outputs.typing_report_cobertura_file }}
-      typing_report_junit_directory:
+        value: ${{ jobs.Extract.outputs.typing_report_junit }}
+      typing_report_html:
         description: ""
-        value: ${{ jobs.Extract.outputs.typing_report_junit_directory }}
-      typing_report_junit_file:
-        description: ""
-        value: ${{ jobs.Extract.outputs.typing_report_junit_file }}
-      typing_report_html_directory:
-        description: ""
-        value: ${{ jobs.Extract.outputs.typing_report_html_directory }}
+        value: ${{ jobs.Extract.outputs.typing_report_html }}
 
 jobs:
   Extract:
     name: 📓 Extract configurations from pyproject.toml
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     outputs:
-      package_fullname:                     ${{ steps.getPackageName.outputs.package_fullname }}
-      package_directory:                    ${{ steps.getPackageName.outputs.package_directory }}
-      unittest_report_xml_directory:        ${{ steps.getVariables.outputs.unittest_report_xml_directory }}
-      unittest_report_xml_filename:         ${{ steps.getVariables.outputs.unittest_report_xml_filename }}
-      unittest_report_xml:                  ${{ steps.getVariables.outputs.unittest_report_xml }}
-      unittest_merged_report_xml_directory: ${{ steps.getVariables.outputs.unittest_merged_report_xml_directory }}
-      unittest_merged_report_xml_filename:  ${{ steps.getVariables.outputs.unittest_merged_report_xml_filename }}
-      unittest_merged_report_xml:           ${{ steps.getVariables.outputs.unittest_merged_report_xml }}
-      coverage_report_html_directory:       ${{ steps.getVariables.outputs.coverage_report_html_directory }}
-      coverage_report_xml_directory:        ${{ steps.getVariables.outputs.coverage_report_xml_directory }}
-      coverage_report_xml_filename:         ${{ steps.getVariables.outputs.coverage_report_xml_filename }}
-      coverage_report_xml:                  ${{ steps.getVariables.outputs.coverage_report_xml }}
-      coverage_report_json_directory:       ${{ steps.getVariables.outputs.coverage_report_json_directory }}
-      coverage_report_json_filename:        ${{ steps.getVariables.outputs.coverage_report_json_filename }}
-      coverage_report_json:                 ${{ steps.getVariables.outputs.coverage_report_json }}
-      typing_report_cobertura_directory:    ${{ steps.getVariables.outputs.typing_report_cobertura_directory }}
-      typing_report_cobertura_file:         ${{ steps.getVariables.outputs.typing_report_cobertura_file }}
-      typing_report_junit_directory:        ${{ steps.getVariables.outputs.typing_report_junit_directory }}
-      typing_report_junit_file:             ${{ steps.getVariables.outputs.typing_report_junit_file }}
-      typing_report_html_directory:         ${{ steps.getVariables.outputs.typing_report_html_directory }}
+      unittest_report_xml:        ${{ steps.getVariables.outputs.unittest_report_xml }}
+      unittest_merged_report_xml: ${{ steps.getVariables.outputs.unittest_merged_report_xml }}
+      coverage_report_html:       ${{ steps.getVariables.outputs.coverage_report_html }}
+      coverage_report_xml:        ${{ steps.getVariables.outputs.coverage_report_xml }}
+      coverage_report_json:       ${{ steps.getVariables.outputs.coverage_report_json }}
+      typing_report_cobertura:    ${{ steps.getVariables.outputs.typing_report_cobertura }}
+      typing_report_junit:        ${{ steps.getVariables.outputs.typing_report_junit }}
+      typing_report_html:         ${{ steps.getVariables.outputs.typing_report_html }}
 
     steps:
       - name: ⏬ Checkout repository
@@ -150,54 +93,17 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check -U wheel tomli
 
-      - name: 🔁 Full package name and directory
-        id: getPackageName
-        shell: python
-        run: |
-          from os       import getenv
-          from pathlib  import Path
-          from textwrap import dedent
-
-          namespace = "${{ inputs.package_namespace }}".strip()
-          name = "${{ inputs.package_name }}".strip()
-
-          print(dedent(f"""\
-            INPUTS:
-              package_namespace: {namespace}
-              package_name:      {name}
-          """))
-
-          if namespace == "" or namespace == ".":
-            fullname = f"{name}"
-            directory = f"{name}"
-          else:
-            fullname = f"{namespace}.{name}"
-            directory = f"{namespace}/{name}"
-
-          print(dedent(f"""\
-            OUTPUTS:
-              package_fullname:     {fullname}
-              package_directory:    {directory}
-          """))
-
-          github_output = Path(getenv("GITHUB_OUTPUT"))
-          print(f"GITHUB_OUTPUT: {github_output}")
-          with github_output.open("a+", encoding="utf-8") as f:
-            f.write(dedent(f"""\
-              package_fullname={fullname}
-              package_directory={directory}
-            """))
-
       - name: 🔁 Extract configurations from pyproject.toml
         id: getVariables
         shell: python
         run: |
+          from json     import dumps as json_dumps
           from os       import getenv
           from pathlib  import Path
           from sys      import version
           from textwrap import dedent
 
-          print(f"Python: {version}")
+          print(f"Python: {version} (of default installation)")
 
           from tomli import load as tomli_load
 
@@ -247,29 +153,58 @@ jobs:
               print(f"::error title=FileNotFoundError::File '{coverageRCFile}' not found.")
               exit(1)
 
+          unittest_report_xml = {
+            "fullpath":  unittestXMLFile.as_posix(),
+            "directory": unittestXMLFile.parent.as_posix(),
+            "filename":  unittestXMLFile.name
+          }
+          unittest_merged_report_xml = {
+            "fullpath":  mergedUnittestXMLFile.as_posix(),
+            "directory": mergedUnittestXMLFile.parent.as_posix(),
+            "filename":  mergedUnittestXMLFile.name
+          }
+          coverage_report_html = {
+            "fullpath":  coverageHTMLDirectory.as_posix(),
+            "directory": coverageHTMLDirectory.as_posix()
+          }
+          coverage_report_xml = {
+            "fullpath":  coverageXMLFile.as_posix(),
+            "directory": coverageXMLFile.parent.as_posix(),
+            "filename":  coverageXMLFile.name
+          }
+          coverage_report_json = {
+            "fullpath":  coverageJSONFile.as_posix(),
+            "directory": coverageJSONFile.parent.as_posix(),
+            "filename":  coverageJSONFile.name
+          }
+          typing_report_cobertura = {
+            "fullpath":  typingCoberturaFile.as_posix(),
+            "directory": typingCoberturaFile.parent.as_posix(),
+            "filename":  typingCoberturaFile.name
+          }
+          typing_report_junit = {
+            "fullpath":  typingJUnitFile.as_posix(),
+            "directory": typingJUnitFile.parent.as_posix(),
+            "filename":  typingJUnitFile.name
+          }
+          typing_report_html = {
+            "fullpath":  typingHTMLDirectory.as_posix(),
+            "directory": typingHTMLDirectory.as_posix()
+          }
+
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))
           print(f"GITHUB_OUTPUT: {github_output}")
           with github_output.open("a+", encoding="utf-8") as f:
             f.write(dedent(f"""\
-              unittest_report_xml_directory={unittestXMLFile.parent.as_posix()}
-              unittest_report_xml_filename={unittestXMLFile.name}
-              unittest_report_xml={unittestXMLFile.as_posix()}
-              unittest_merged_report_xml_directory={mergedUnittestXMLFile.parent.as_posix()}
-              unittest_merged_report_xml_filename={mergedUnittestXMLFile.name}
-              unittest_merged_report_xml={mergedUnittestXMLFile.as_posix()}
-              coverage_report_html_directory={coverageHTMLDirectory.as_posix()}
-              coverage_report_xml_directory={coverageXMLFile.parent.as_posix()}
-              coverage_report_xml_filename={coverageXMLFile.name}
-              coverage_report_xml={coverageXMLFile.as_posix()}
-              coverage_report_json_directory={coverageJSONFile.parent.as_posix()}
-              coverage_report_json_filename={coverageJSONFile.name}
-              coverage_report_json={coverageJSONFile.as_posix()}
-              typing_report_cobertura_directory={typingCoberturaFile.parent.as_posix()}
-              typing_report_cobertura_file={typingCoberturaFile.name}
-              typing_report_junit_directory={typingJUnitFile.parent.as_posix()}
-              typing_report_junit_file={typingJUnitFile.name}
-              typing_report_html_directory={typingHTMLDirectory.as_posix()}
+              unittest_report_xml={json_dumps(unittest_report_xml)}
+              unittest_merged_report_xml={json_dumps(unittest_merged_report_xml)}
+              coverage_report_html={json_dumps(coverage_report_html)}
+              coverage_report_xml={json_dumps(coverage_report_xml)}
+              coverage_report_json={json_dumps(coverage_report_json)}
+              typing_report_cobertura={json_dumps(typing_report_cobertura)}
+              typing_report_junit={json_dumps(typing_report_junit)}
+              typing_report_html={json_dumps(typing_report_html)}
             """))
 
           print(dedent(f"""\
@@ -283,3 +218,43 @@ jobs:
               typing junit:        {typingJUnitFile}
               typing html:         {typingHTMLDirectory}
           """))
+
+      - name: Debug JSON objects
+        run: |
+          printf "unittest_report_xml: JSON=%s\n" "${{ steps.getVariables.outputs.unittest_report_xml }}"
+          printf "  fullpath:  %s\n" "${{ fromJSON(steps.getVariables.outputs.unittest_report_xml).fullpath }}"
+          printf "  directory: %s\n" "${{ fromJSON(steps.getVariables.outputs.unittest_report_xml).directory }}"
+          printf "  filename:  %s\n" "${{ fromJSON(steps.getVariables.outputs.unittest_report_xml).filename }}"
+
+          printf "unittest_merged_report_xml: JSON=%s\n" "${{ steps.getVariables.outputs.unittest_merged_report_xml }}"
+          printf "  fullpath:  %s\n" "${{ fromJSON(steps.getVariables.outputs.unittest_merged_report_xml).fullpath }}"
+          printf "  directory: %s\n" "${{ fromJSON(steps.getVariables.outputs.unittest_merged_report_xml).directory }}"
+          printf "  filename:  %s\n" "${{ fromJSON(steps.getVariables.outputs.unittest_merged_report_xml).filename }}"
+
+          printf "coverage_report_html: JSON=%s\n" "${{ steps.getVariables.outputs.coverage_report_html }}"
+          printf "  fullpath:  %s\n" "${{ fromJSON(steps.getVariables.outputs.coverage_report_html).fullpath }}"
+          printf "  directory: %s\n" "${{ fromJSON(steps.getVariables.outputs.coverage_report_html).directory }}"
+
+          printf "coverage_report_xml: JSON=%s\n" "${{ steps.getVariables.outputs.coverage_report_xml }}"
+          printf "  fullpath:  %s\n" "${{ fromJSON(steps.getVariables.outputs.coverage_report_xml).fullpath }}"
+          printf "  directory: %s\n" "${{ fromJSON(steps.getVariables.outputs.coverage_report_xml).directory }}"
+          printf "  filename:  %s\n" "${{ fromJSON(steps.getVariables.outputs.coverage_report_xml).filename }}"
+
+          printf "coverage_report_json: JSON=%s\n" "${{ steps.getVariables.outputs.coverage_report_json }}"
+          printf "  fullpath:  %s\n" "${{ fromJSON(steps.getVariables.outputs.coverage_report_json).fullpath }}"
+          printf "  directory: %s\n" "${{ fromJSON(steps.getVariables.outputs.coverage_report_json).directory }}"
+          printf "  filename:  %s\n" "${{ fromJSON(steps.getVariables.outputs.coverage_report_json).filename }}"
+
+          printf "typing_report_cobertura: JSON=%s\n" "${{ steps.getVariables.outputs.typing_report_cobertura }}"
+          printf "  fullpath:  %s\n" "${{ fromJSON(steps.getVariables.outputs.typing_report_cobertura).fullpath }}"
+          printf "  directory: %s\n" "${{ fromJSON(steps.getVariables.outputs.typing_report_cobertura).directory }}"
+          printf "  filename:  %s\n" "${{ fromJSON(steps.getVariables.outputs.typing_report_cobertura).filename }}"
+
+          printf "typing_report_junit: JSON=%s\n" "${{ steps.getVariables.outputs.typing_report_junit }}"
+          printf "  fullpath:  %s\n" "${{ fromJSON(steps.getVariables.outputs.typing_report_junit).fullpath }}"
+          printf "  directory: %s\n" "${{ fromJSON(steps.getVariables.outputs.typing_report_junit).directory }}"
+          printf "  filename:  %s\n" "${{ fromJSON(steps.getVariables.outputs.typing_report_junit).filename }}"
+
+          printf "typing_report_html: JSON=%s\n" "${{ steps.getVariables.outputs.typing_report_html }}"
+          printf "  fullpath:  %s\n" "${{ fromJSON(steps.getVariables.outputs.typing_report_html).fullpath }}"
+          printf "  directory: %s\n" "${{ fromJSON(steps.getVariables.outputs.typing_report_html).directory }}"

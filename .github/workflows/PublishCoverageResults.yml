@@ -48,37 +48,37 @@ on:
         required: false
         default: ''
         type: string
-      coverage_report_xml_directory:
+      coverage_report_xml:
         description: 'Directory containing the XML coverage report file.'
         required: false
         default: 'report/coverage'
         type: string
-      coverage_report_xml_filename:
-        description: 'Filename of the XML coverage report file.'
-        required: false
-        default: 'coverage.xml'
-        type: string
+#      coverage_report_xml_filename:
+#        description: 'Filename of the XML coverage report file.'
+#        required: false
+#        default: 'coverage.xml'
+#        type: string
       coverage_json_artifact:
         description: 'Name of the JSON coverage artifact.'
         required: false
         default: ''
         type: string
-      coverage_report_json_directory:
+      coverage_report_json:
         description: 'Directory containing the JSON coverage report file.'
         required: false
         default: 'report/coverage'
         type: string
-      coverage_report_json_filename:
-        description: 'Filename of the JSON coverage report file.'
-        required: false
-        default: 'coverage.json'
-        type: string
+#      coverage_report_json_filename:
+#        description: 'Filename of the JSON coverage report file.'
+#        required: false
+#        default: 'coverage.json'
+#        type: string
       coverage_html_artifact:
         description: 'Name of the HTML coverage artifact.'
         required: false
         default: ''
         type: string
-      coverage_report_html_directory:
+      coverage_report_html:
         description: 'HTML root directory of the generated coverage report.'
         required: false
         default: 'report/coverage/html'
@@ -152,8 +152,8 @@ jobs:
         if: inputs.coverage_html_artifact != ''
         run: |
           coverage html --rcfile=${{ inputs.coverage_config }} --data-file=.coverage
-          rm ${{ inputs.coverage_report_html_directory }}/.gitignore
-          tree -pash ${{ inputs.coverage_report_html_directory }}
+          rm ${{ fromJson(inputs.coverage_report_html).directory }}/.gitignore
+          tree -pash ${{ fromJson(inputs.coverage_report_html).directory }}
 
       - name: 📤 Upload 'Coverage SQLite Database' artifact
         uses: pyTooling/upload-artifact@v4
@@ -171,8 +171,8 @@ jobs:
         continue-on-error: true
         with:
           name: ${{ inputs.coverage_xml_artifact }}
-          working-directory: ${{ inputs.coverage_report_xml_directory }}
-          path: ${{ inputs.coverage_report_xml_filename }}
+          working-directory: ${{ fromJson(inputs.coverage_report_xml).directory }}
+          path: ${{ fromJson(inputs.coverage_report_xml).filename }}
           if-no-files-found: error
           retention-days: 1
 
@@ -182,8 +182,8 @@ jobs:
         continue-on-error: true
         with:
           name: ${{ inputs.coverage_json_artifact }}
-          working-directory: ${{ inputs.coverage_report_json_directory }}
-          path: ${{ inputs.coverage_report_json_filename }}
+          working-directory: ${{ fromJson(inputs.coverage_report_json).directory }}
+          path: ${{ fromJson(inputs.coverage_report_json).filename }}
           if-no-files-found: error
           retention-days: 1
 
@@ -193,7 +193,7 @@ jobs:
         continue-on-error: true
         with:
           name: ${{ inputs.coverage_html_artifact }}
-          working-directory: ${{ inputs.coverage_report_html_directory }}
+          working-directory: ${{ fromJson(inputs.coverage_report_html).directory }}
           path: '*'
           if-no-files-found: error
           retention-days: 1
@@ -206,7 +206,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           disable_search: true
-          files: ${{ inputs.coverage_report_xml_directory }}/${{ inputs.coverage_report_xml_filename }}
+          files: ${{ fromJson(inputs.coverage_report_xml).fullpath }}
           flags: unittests
           env_vars: PYTHON
           fail_ci_if_error: true
@@ -218,7 +218,7 @@ jobs:
         continue-on-error: true
         with:
           project-token: ${{ secrets.CODACY_TOKEN }}
-          coverage-reports: ${{ inputs.coverage_report_xml_directory }}/${{ inputs.coverage_report_xml_filename }}
+          coverage-reports: ${{ fromJson(inputs.coverage_report_xml).fullpath }}
 
       - name: Generate error messages
         run: |

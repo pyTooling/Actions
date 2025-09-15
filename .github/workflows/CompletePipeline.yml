@@ -130,9 +130,6 @@ jobs:
 
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@dev
-    with:
-      package_namespace: ${{ inputs.package_namespace }}
-      package_name:      ${{ inputs.package_name }}
 
   UnitTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
@@ -177,17 +174,15 @@ jobs:
       - UnitTestingParams
     with:
       jobs: ${{ needs.UnitTestingParams.outputs.python_jobs }}
+# TODO: shouldn't this be configured by a parameter? Same as directories
       requirements: "-r tests/unit/requirements.txt"
 #      pacboy: "msys/git python-lxml:p"
-      unittest_report_xml_directory:  ${{ needs.ConfigParams.outputs.unittest_report_xml_directory }}
-      unittest_report_xml_filename:   ${{ needs.ConfigParams.outputs.unittest_report_xml_filename }}
-      coverage_report_xml_directory:  ${{ needs.ConfigParams.outputs.coverage_report_xml_directory }}
-      coverage_report_xml_filename:   ${{ needs.ConfigParams.outputs.coverage_report_xml_filename }}
-      coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
-      coverage_report_json_filename:  ${{ needs.ConfigParams.outputs.coverage_report_json_filename }}
-      coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
-      unittest_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
-      coverage_sqlite_artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
+      unittest_report_xml:      ${{ needs.ConfigParams.outputs.unittest_report_xml }}
+      coverage_report_xml:      ${{ needs.ConfigParams.outputs.coverage_report_xml }}
+      coverage_report_json:     ${{ needs.ConfigParams.outputs.coverage_report_json }}
+      coverage_report_html:     ${{ needs.ConfigParams.outputs.coverage_report_html }}
+      unittest_xml_artifact:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+      coverage_sqlite_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
 
   StaticTypeCheck:
     uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@dev
@@ -195,24 +190,21 @@ jobs:
       - ConfigParams
       - UnitTestingParams
     with:
-      python_version:             ${{ needs.UnitTestingParams.outputs.python_version }}
-      junit_report_directory:     ${{ needs.ConfigParams.outputs.typing_report_junit_directory }}
-      junit_report_file:          ${{ needs.ConfigParams.outputs.typing_report_junit_file }}
-      junit_artifact:             ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_junit }}
-      cobertura_report_directory: ${{ needs.ConfigParams.outputs.typing_report_cobertura_directory }}
-      cobertura_report_file:      ${{ needs.ConfigParams.outputs.typing_report_cobertura_file }}
-      cobertura_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_cobertura }}
-      html_report:                ${{ needs.ConfigParams.outputs.typing_report_html_directory }}
-      html_artifact:              ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
+      python_version:     ${{ needs.UnitTestingParams.outputs.python_version }}
+      cobertura_report:   ${{ needs.ConfigParams.outputs.typing_report_cobertura }}
+      junit_report:       ${{ needs.ConfigParams.outputs.typing_report_junit }}
+      html_report:        ${{ needs.ConfigParams.outputs.typing_report_html }}
+      cobertura_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_cobertura }}
+      junit_artifact:     ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_junit }}
+      html_artifact:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   DocCoverage:
     uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@dev
     needs:
-      - ConfigParams
       - UnitTestingParams
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
-      directory:      ${{ needs.ConfigParams.outputs.package_directory }}
+      directory:      ${{ needs.UnitTestingParams.outputs.package_directory }}
 
   Package:
     uses: pyTooling/Actions/.github/workflows/Package.yml@dev
@@ -226,14 +218,13 @@ jobs:
   Install:
     uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@dev
     needs:
-      - ConfigParams
       - UnitTestingParams
       - InstallParams
       - Package
     with:
       jobs:         ${{ needs.InstallParams.outputs.python_jobs }}
       wheel:        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
-      package_name: ${{ needs.ConfigParams.outputs.package_fullname }}
+      package_name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
 
 #  AppTesting:
 #    uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@dev
@@ -258,13 +249,12 @@ jobs:
 #      coverage_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
 #      coverage_report_xml_directory:  ${{ needs.ConfigParams.outputs.coverage_report_xml_directory }}
 #      coverage_report_xml_filename:   ${{ needs.ConfigParams.outputs.coverage_report_xml_filename }}
-      coverage_json_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
-      coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
-      coverage_report_json_filename:  ${{ needs.ConfigParams.outputs.coverage_report_json_filename }}
-      coverage_html_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
-      coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
-      codecov:                        ${{ inputs.codecov }}
-      codacy:                         ${{ inputs.codacy }}
+      coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
+      coverage_report_json:   ${{ needs.ConfigParams.outputs.coverage_report_json }}
+      coverage_html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+      coverage_report_html:   ${{ needs.ConfigParams.outputs.coverage_report_html }}
+      codecov:                ${{ inputs.codecov }}
+      codacy:                 ${{ inputs.codacy }}
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
@@ -277,8 +267,8 @@ jobs:
       - UnitTesting
     if: success() || failure()
     with:
-      testsuite-summary-name: ${{ needs.ConfigParams.outputs.package_fullname }}
-      merged_junit_filename:  ${{ needs.ConfigParams.outputs.unittest_merged_report_xml_filename }}
+      testsuite-summary-name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
+      merged_junit_filename:  ${{ fromJson(needs.ConfigParams.outputs.unittest_merged_report_xml).filename }}
       merged_junit_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       dorny:                  ${{ inputs.dorny }}
       codecov:                ${{ inputs.codecov }}
@@ -303,7 +293,7 @@ jobs:
     if: success() || failure()
     with:
       python_version:                 ${{ needs.UnitTestingParams.outputs.python_version }}
-      coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
+      coverage_report_json_directory: ${{ fromJson(needs.ConfigParams.outputs.coverage_report_json).directory }}
       unittest_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       coverage_json_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
       html_artifact:                  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
@@ -326,7 +316,7 @@ jobs:
       - UnitTestingParams
       - Documentation
     with:
-      document:       ${{ needs.ConfigParams.outputs.package_fullname }}
+      document:       ${{ needs.UnitTestingParams.outputs.package_fullname }}
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
       pdf_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
       can-fail:       'true'

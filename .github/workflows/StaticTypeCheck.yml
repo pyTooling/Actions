@@ -45,43 +45,33 @@ on:
         required: false
         default: ''
         type: string
+      cobertura_report:
+        description: 'Cobertura file to upload as an artifact.'
+        required: false
+        default: '{"fullpath": "report/typing/cobertura.xml", "directory": "report/typing", "filename": "cobertura.xml"}'
+        type: string
+      junit_report:
+        description: 'JUnit file to upload as an artifact.'
+        required: false
+        default: '{"fullpath": "report/typing/StaticTypingSummary.xml", "directory": "report/typing", "filename": "StaticTypingSummary.xml"}'
+        type: string
       html_report:
         description: 'Directory to upload as an artifact.'
         required: false
-        default: 'report/typing/html'
+        default: '{"fullpath": "report/typing/html", "directory": "report/typing/html"}'
         type: string
-      junit_report_directory:
-        description: 'JUnit file to upload as an artifact.'
-        required: false
-        default: 'report/typing'
-        type: string
-      junit_report_file:
-        description: 'JUnit file to upload as an artifact.'
-        required: false
-        default: 'StaticTypingSummary.xml'
-        type: string
-      cobertura_report_directory:
-        description: 'Cobertura file to upload as an artifact.'
-        required: false
-        default: 'report/typing'
-        type: string
-      cobertura_report_file:
-        description: 'Cobertura file to upload as an artifact.'
-        required: false
-        default: 'cobertura.xml'
-        type: string
-      html_artifact:
-        description: 'Name of the typing artifact (HTML report).'
+      cobertura_artifact:
+        description: 'Name of the typing cobertura artifact (Cobertura XML).'
         required: false
         default: ''
         type: string
       junit_artifact:
-        description: 'Name of the typing junit artifact (junit XML).'
+        description: 'Name of the typing junit artifact (JUnit XML).'
         required: false
         default: ''
         type: string
-      cobertura_artifact:
-        description: 'Name of the typing cobertura artifact (Cobertura XML).'
+      html_artifact:
+        description: 'Name of the typing artifact (HTML report).'
         required: false
         default: ''
         type: string
@@ -119,56 +109,56 @@ jobs:
           ANSI_LIGHT_BLUE=$'\x1b[94m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
-          if [[ "${{ inputs.html_report }}" != "" ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ inputs.html_report }}' ..."
-            tree ${{ inputs.html_report }}
+          if [[ "${{ fromJson(inputs.html_report).directory }}" != "" ]]; then
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.html_report).directory }}' ..."
+            tree ${{ fromJson(inputs.html_report).directory }}
             printf "::endgroup::\n"
           fi
 
-          if [[ "${{ inputs.junit_report_directory }}" != "" ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ inputs.junit_report_directory }}' ..."
-            tree ${{ inputs.junit_report_directory }}
+          if [[ "${{ fromJson(inputs.junit_report).directory }}" != "" ]]; then
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.junit_report).directory }}' ..."
+            tree ${{ fromJson(inputs.junit_report).directory }}
             printf "::endgroup::\n"
-            if [[ "${{ inputs.cobertura_report_directory }}" != "" && "${{ inputs.junit_report_directory }}" != "${{ inputs.cobertura_report_directory }}" ]]; then
-              printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ inputs.cobertura_report_directory }}' ..."
-              tree ${{ inputs.cobertura_report_directory }}
+            if [[ "${{ fromJson(inputs.cobertura_report).directory }}" != "" && "${{ fromJson(inputs.junit_report).directory }}" != "${{ fromJson(inputs.cobertura_report).directory }}" ]]; then
+              printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.cobertura_report).directory }}' ..."
+              tree ${{ fromJson(inputs.cobertura_report).directory }}
               printf "::endgroup::\n"
             fi
-          elif [[ "${{ inputs.cobertura_report_directory }}" != "" ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ inputs.cobertura_report_directory }}' ..."
-            tree ${{ inputs.cobertura_report_directory }}
+          elif [[ "${{ fromJson(inputs.cobertura_report).directory }}" != "" ]]; then
+            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.cobertura_report).directory }}' ..."
+            tree ${{ fromJson(inputs.cobertura_report).directory }}
             printf "::endgroup::\n"
           fi
 
-      - name: 📤 Upload 'Static Typing Report' HTML artifact
+      - name: 📤 Upload '${{ inputs.html_artifact }}' HTML artifact
         uses: pyTooling/upload-artifact@v4
         if: ${{ inputs.html_artifact != '' }}
         continue-on-error: true
         with:
           name: ${{ inputs.html_artifact }}
-          working-directory: ${{ inputs.html_report }}
+          working-directory: ${{ fromJson(inputs.html_report).directory }}
           path: '*'
           if-no-files-found: error
           retention-days: 1
 
-      - name: 📤 Upload 'Static Typing Report' JUnit artifact
+      - name: 📤 Upload '${{ inputs.junit_artifact }}' JUnit artifact
         uses: pyTooling/upload-artifact@v4
         if: ${{ inputs.junit_artifact != '' }}
         continue-on-error: true
         with:
           name: ${{ inputs.junit_artifact }}
-          working-directory: ${{ inputs.junit_report_directory }}
-          path: ${{ inputs.junit_report_file }}
+          working-directory: ${{ fromJson(inputs.junit_report).directory }}
+          path: ${{ fromJson(inputs.junit_report).filename }}
           if-no-files-found: error
           retention-days: 1
 
-      - name: 📤 Upload 'Static Typing Report' Cobertura artifact
+      - name: 📤 Upload '${{ inputs.cobertura_artifact }}' Cobertura artifact
         uses: pyTooling/upload-artifact@v4
         if: ${{ inputs.cobertura_artifact != '' }}
         continue-on-error: true
         with:
           name: ${{ inputs.cobertura_artifact }}
-          working-directory: ${{ inputs.cobertura_report_directory }}
-          path: ${{ inputs.cobertura_report_file }}
+          working-directory: ${{ fromJson(inputs.cobertura_report).directory }}
+          path: ${{ fromJson(inputs.cobertura_report).filename }}
           if-no-files-found: error
           retention-days: 1
