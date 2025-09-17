@@ -198,6 +198,15 @@ jobs:
       junit_artifact:     ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_junit }}
       html_artifact:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
+  CodeQuality:
+    uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@dev
+    needs:
+      - UnitTestingParams
+    with:
+      python_version:    ${{ needs.UnitTestingParams.outputs.python_version }}
+      package_directory: ${{ needs.UnitTestingParams.outputs.package_directory }}
+      artifact:          CodeQuality
+
   DocCoverage:
     uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@dev
     needs:

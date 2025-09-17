@@ -67,6 +67,14 @@ class Base:
 		"""
 		return self._value
 
+	def Add(self, value) -> None:
+		"""
+		Accumulate value to internal value.
+
+		:param value: Value to accumulate.
+		"""
+		self._value += value
+
 
 @export
 class Application(Base):
@@ -81,6 +89,7 @@ class Application(Base):
 		super().__init__()
 
 		platform = Platform()
+		# pylint: disable=using-constant-test
 		if platform.IsNativeLinux:
 			self._value += 1
 		elif platform.IsNativeMacOS:

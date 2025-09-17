@@ -15,6 +15,9 @@ coverage.xml
 /report/unit
 /tests/*.github
 
+# bandit
+/report/bandit
+
 # setuptools
 /build/**/*.*
 /dist/**/*.*
