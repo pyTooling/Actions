@@ -163,9 +163,12 @@ jobs:
           package_name =      "${{ inputs.package_name }}".strip()
           name =              "${{ inputs.name }}".strip()
 
-          if package_namespace == "" or package_namespace == ".":
-            package_fullname = f"{package_name}"
-            package_directory = f"{package_name}"
+          if package_namespace == "":  # or package_namespace == ".":
+            package_fullname = package_name
+            package_directory = package_name
+          elif package_namespace[-2:] == ".*":
+            package_fullname = package_namespace[:-2]
+            package_directory = package_namespace[:-2]
           else:
             package_fullname = f"{package_namespace}.{package_name}"
             package_directory = f"{package_namespace}/{package_name}"

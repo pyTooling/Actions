@@ -11,25 +11,27 @@ jobs:
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@dev
 
-  InstallParams:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
-    with:
-      package_name:        myPackage
-      python_version_list: ''
-
   UnitTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
-      name: myPackage
-      python_version_list: '3.9 3.10 3.11 3.12 3.13 pypy-3.10 pypy-3.11'
-      disable_list: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
+      package_name:        'myPackage'
+      python_version_list: '3.9 3.10 3.11 3.12 3.13 3.14 pypy-3.10 pypy-3.11'
+      disable_list:        'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
 
   PlatformTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
-      name: Platform
+      package_name:        'myPackage'
+      name:                'Platform'
       python_version_list: ''
-      system_list: 'ubuntu ubuntu-arm windows windows-arm macos mingw64 clang64 ucrt64'
+      system_list:         'ubuntu ubuntu-arm windows windows-arm macos mingw64 clang64 ucrt64'
+
+  InstallParams:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      package_name:        'myPackage'
+      python_version:      ${{ needs.UnitTestingParams.outputs.python_version }}
+      python_version_list: ''
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
