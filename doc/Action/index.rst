@@ -1,4 +1,6 @@
 .. _ACTION:
+.. index::
+   single: GitHub Action
 
 Overview
 ########
@@ -9,6 +11,8 @@ The following 2 actions are provided by **Actions**:
 
 
 .. _ACTION/Instantiation:
+.. index::
+   single: GitHub Action; Instantiation
 
 Instantiation
 *************

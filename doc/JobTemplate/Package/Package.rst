@@ -1,4 +1,7 @@
 .. _JOBTMPL/Package:
+.. index::
+   single: build; Package Template
+   single: GitHub Action Reusable Workflow; Package Template
 
 Package
 #######

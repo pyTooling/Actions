@@ -317,4 +317,6 @@ License
 
    License
    Doc-License
+   Glossary
+   genindex
    TODO

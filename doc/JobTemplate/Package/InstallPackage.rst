@@ -1,4 +1,7 @@
 .. _JOBTMPL/InstallPackage:
+.. index::
+   single: pip; InstallPackage Template
+   single: GitHub Action Reusable Workflow; InstallPackage Template
 
 InstallPackage (beta)
 #####################

@@ -1,4 +1,22 @@
 .. _JOBTMPL/CompletePipeline:
+.. index::
+   single: build; CompletePipeline Template
+   single: Bandit; CompletePipeline Template
+   single: CodeCov; CompletePipeline Template
+   single: Codacy; CompletePipeline Template
+   single: Coverage.py; CompletePipeline Template
+   single: docstr_coverage; CompletePipeline Template
+   single: GitHub Pages; CompletePipeline Template
+   single: interrogate; CompletePipeline Template
+   single: MikTeX; CompletePipeline Template
+   single: mypy; CompletePipeline Template
+   single: PyPI; CompletePipeline Template
+   single: pytest; CompletePipeline Template
+   single: pyEDAA.Reports; CompletePipeline Template
+   single: Sphinx; CompletePipeline Template
+   single: Test Reporter; CompletePipeline Template
+   single: twine; CompletePipeline Template
+   single: GitHub Action Reusable Workflow; CompletePipeline Template
 
 CompletePipeline
 ################
@@ -16,56 +34,57 @@ It can be used for simple Python packages as well as namespace packages.
 
          .. rubric:: Testing
 
-         * Run unit tests.
-         * Run platform tests.
-         * Run application tests on target platform.
+         * Run unit tests before packaging using :term:`pytest`.
+         * Run platform tests before packaging using :term:`pytest`.
+         * Run application tests using packaged code on target platform.
 
          .. rubric:: Code Quality
 
-         * Collect code coverage.
-         * Check documentation coverage.
-         * Check static typing closure.
+         * Collect code coverage using :term:`Coverage.py`.
+         * Check documentation coverage using :term:`docstr_coverage` and :term:`interrogate`.
+         * Check static typing closure using :term:`mypy`.
+         * Static Application Security Testing (SAST) using :term:`bandit`
 
          .. rubric:: Report Handling
 
-         * Merge unit test results into a single summary report.
-         * Merge code coverage results into a single summary report.
+         * Merge unit test results into one report using :term:`pyEDAA.Reports`.
+         * Merge code coverage results into one report using :term:`Coverage.py`.
 
       .. grid-item::
          :columns: 4
 
          .. rubric:: Documentation
 
-         * Compile documentation using Sphinx as HTML and LaTeX.
-         * Translate LaTeX documentation to PDF.
+         * Compile documentation using :term:`Sphinx` as HTML and LaTeX.
+         * Translate LaTeX documentation to PDF using :term:`MikTeX`.
 
          .. rubric:: Publishing Results
 
          * GitHub Pipeline Summary
 
-           * Publish unittest results using :gh:`dorny/test-reporter`.
+           * Publish unittest results using :term:`Test Reporter`.
 
-         * GitHub Pages
+         * :term:`GitHub Pages`
 
            * Publish HTML documentation to GitHub Pages.
 
-         * Codacy
-
-           * Publish code coverage to Codacy.
-
-         * CodeCov
+         * :term:`Codecov`
 
            * Publish code coverage to CodeCov.
            * Publish unittest results to CodeCov.
+
+         * :term:`Codacy`
+
+           * Publish code coverage to Codacy.
 
       .. grid-item::
          :columns: 4
 
          .. rubric:: Packaging
 
-         * Package as wheel.
-         * Install wheel on target platform.
-         * Upload to PyPI.
+         * Package as wheel using :term:`build`.
+         * Install wheel on target platform using pip.
+         * Upload to PyPI using :term:`twine`.
 
          .. rubric:: Releasing
 

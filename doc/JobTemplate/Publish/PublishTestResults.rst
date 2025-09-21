@@ -1,4 +1,9 @@
 .. _JOBTMPL/PublishTestResults:
+.. index::
+   single: CodeCov; PublishTestResults Template
+   single: pyEDAA.Reports; PublishTestResults Template
+   single: Test Reporter; PublishTestResults Template
+   single: GitHub Action Reusable Workflow; PublishTestResults Template
 
 PublishTestResults
 ##################

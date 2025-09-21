@@ -1,4 +1,6 @@
 .. _JOBTMPL/Parameters:
+.. index::
+   single: GitHub Action Reusable Workflow; Parameters Template
 
 Parameters
 ##########

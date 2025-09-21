@@ -1,4 +1,7 @@
 .. _JOBTMPL/SphinxDocumentation:
+.. index::
+   single: Sphinx; SphinxDocumentation Template
+   single: GitHub Action Reusable Workflow; SphinxDocumentation Template
 
 SphinxDocumentation
 ###################

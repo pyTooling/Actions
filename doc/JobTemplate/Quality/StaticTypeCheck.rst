@@ -1,4 +1,7 @@
 .. _JOBTMPL/StaticTypeCheck:
+.. index::
+   single: mypy; StaticTypeCheck Template
+   single: GitHub Action Reusable Workflow; StaticTypeCheck Template
 
 StaticTypeCheck
 ###############

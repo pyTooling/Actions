@@ -35,13 +35,28 @@ on:
         default: '3.13'
         type: string
       package_directory:
-        description: '.'
+        description: 'The package''s directory'
         required: true
         type: string
       requirements:
-        description: ''
+        description: 'Python dependencies to be installed through pip.'
         required: false
         default: '-r requirements.txt'
+        type: string
+      bandit:
+        description: 'Run bandit checks.'
+        required: false
+        default: 'true'
+        type: string
+      radon:
+        description: 'Run radon checks.'
+        required: false
+        default: 'true'
+        type: string
+      pylint:
+        description: 'Run pylint checks.'
+        required: false
+        default: 'true'
         type: string
       artifact:
         description: 'Name of the package artifact.'
@@ -52,6 +67,7 @@ jobs:
   Bandit:
     name: 🚨 Security Scanning (Bandit)
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
+    if: inputs.bandit == 'true'
 
     steps:
       - name: ⏬ Checkout repository
@@ -74,9 +90,18 @@ jobs:
           mkdir -p report/bandit
           bandit -c pyproject.toml -r ${{ inputs.package_directory }} -f xml -o report/bandit/report.xml
 
+      - name: 📊 Publish Bandit Results
+        uses: dorny/test-reporter@v2
+        continue-on-error: true
+        with:
+          name:     'Bandit Results'
+          path:     'report/bandit/report.xml'
+          reporter: java-junit
+
   Radon:
     name: ☢️ Metrics and Complexity
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
+    if: inputs.radon == 'true'
 
     steps:
       - name: ⏬ Checkout repository
@@ -116,6 +141,7 @@ jobs:
   PyLint:
     name: 🩺 Linting
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
+    if: inputs.pylint == 'true'
 
     steps:
       - name: ⏬ Checkout repository

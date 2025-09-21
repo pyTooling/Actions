@@ -1,4 +1,8 @@
 .. _JOBTMPL/CheckDocumentation:
+.. index::
+   single: docstr_coverage; CheckDocumentation Template
+   single: interrogate; CheckDocumentation Template
+   single: GitHub Action Reusable Workflow; CheckDocumentation Template
 
 CheckDocumentation
 ##################

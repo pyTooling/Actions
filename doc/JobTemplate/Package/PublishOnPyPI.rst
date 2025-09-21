@@ -1,4 +1,8 @@
 .. _JOBTMPL/PublishOnPyPI:
+.. index::
+   single: PyPI; PublishOnPyPI Template
+   single: twine; PublishOnPyPI Template
+   single: GitHub Action Reusable Workflow; PublishOnPyPI Template
 
 PublishOnPyPI
 #############

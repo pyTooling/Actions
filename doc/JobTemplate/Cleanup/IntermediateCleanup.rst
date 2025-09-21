@@ -1,4 +1,7 @@
 .. _JOBTMPL/IntermediateCleanUp:
+.. index::
+   single: delete-artifact; IntermediateCleanUp Template
+   single: GitHub Action Reusable Workflow; IntermediateCleanUp Template
 
 IntermediateCleanUp
 ###################

@@ -1,4 +1,7 @@
 .. _JOBTMPL/LaTeXDocumentation:
+.. index::
+   single: MikTeX; LaTeXDocumentation Template
+   single: GitHub Action Reusable Workflow; LaTeXDocumentation Template
 
 LaTeXDocumentation
 ##################

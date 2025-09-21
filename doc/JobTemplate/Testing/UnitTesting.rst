@@ -1,4 +1,8 @@
 .. _JOBTMPL/UnitTesting:
+.. index::
+   single: pytest; UnitTesting Template
+   single: Coverage.py; UnitTesting Template
+   single: GitHub Action Reusable Workflow; UnitTesting Template
 
 UnitTesting
 ###########

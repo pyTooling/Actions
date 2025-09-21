@@ -1,4 +1,9 @@
 .. _JOBTMPL/PublishCoverageResults:
+.. index::
+   single: CodeCov; PublishCoverageResults Template
+   single: Codacy; PublishCoverageResults Template
+   single: Coverage.py; PublishCoverageResults Template
+   single: GitHub Action Reusable Workflow; PublishCoverageResults Template
 
 PublishCoverageResults
 ######################

@@ -14,7 +14,7 @@ Such a all-in-one workflow template covers:
 * pulishing of unit test and code coverage results
 * merging of test reports
 * packaging as wheel
-* publishing wheels tp PyPI
+* publishing wheels to PyPI
 * documentation generation via Sphinx and Miktex
 * automatic tagging of release commits
 * releasing

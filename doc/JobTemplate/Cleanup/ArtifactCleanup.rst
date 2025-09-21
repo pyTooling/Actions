@@ -1,4 +1,7 @@
 .. _JOBTMPL/ArtifactCleanup:
+.. index::
+   single: delete-artifact; ArtifactCleanUp Template
+   single: GitHub Action Reusable Workflow; ArtifactCleanUp Template
 
 ArtifactCleanUp
 ###############

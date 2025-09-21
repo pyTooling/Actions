@@ -1,4 +1,6 @@
 .. _JOBTMPL/ExtractConfiguration:
+.. index::
+   single: GitHub Action Reusable Workflow; ExtractConfiguration Template
 
 ExtractConfiguration
 ####################

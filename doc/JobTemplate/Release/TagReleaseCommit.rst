@@ -1,4 +1,7 @@
 .. _JOBTMPL/TagReleaseCommit:
+.. index::
+   single: gh; TagReleaseCommit Template
+   single: GitHub Action Reusable Workflow; TagReleaseCommit Template
 
 TagReleaseCommit
 ################

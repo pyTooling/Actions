@@ -1,4 +1,6 @@
 .. _JOBTMPL:
+.. index::
+   single: GitHub Action Reusable Workflow
 
 Overview
 ########
@@ -11,6 +13,8 @@ customizable.
 
 
 .. _JOBTMPL/Instantiation:
+.. index::
+   single: GitHub Action Reusable Workflow; Instantiation
 
 Instantiation
 *************
@@ -56,6 +60,8 @@ Some templates might provide output parameters, which can be used in dependent j
 
 
 .. _JOBTMPL/CommonParameters:
+.. index::
+   single: GitHub Action Reusable Workflow; Common Parameters
 
 Common Parameters
 *****************

@@ -1,4 +1,7 @@
 .. _JOBTMPL/PublishReleaseNotes:
+.. index::
+   single: gh; PublishReleaseNotes Template
+   single: GitHub Action Reusable Workflow; PublishReleaseNotes Template
 
 PublishReleaseNotes
 ###################

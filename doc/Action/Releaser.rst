@@ -1,4 +1,6 @@
 .. _ACTION/Releaser:
+.. index::
+   single: GitHub Action; Releaser
 
 Releaser
 ########

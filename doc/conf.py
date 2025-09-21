@@ -220,6 +220,7 @@ extlinks = {
 	"ghsrc":     (f"https://GitHub.com/{githubNamespace}/{githubProject}/blob/main/%s", None),
 	"wiki":      (f"https://en.wikipedia.org/wiki/%s", None),
 	"pypi":      (f"https://pypi.org/project/%s/", "PyPI: %s"),
+	"rtd":       (f"https://%s.readthedocs.io/", "RTD: %s"),
 	"ucrt64":    (f"https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-%s", "UCRT64: %s"),
 	"dockerhub": (f"https://hub.docker.com/r/%s", "Docker Hub: %s"),
 }
