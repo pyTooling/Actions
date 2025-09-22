@@ -300,7 +300,7 @@ License
    :caption: pyDummy Example
    :hidden:
 
-   myPackage/myPackage
+   Python Class Reference <myPackage/myPackage>
    unittests/index
    coverage/index
    CodeCoverage
@@ -319,4 +319,5 @@ License
    Doc-License
    Glossary
    genindex
+   Python Module Index <modindex>
    TODO

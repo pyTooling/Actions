@@ -1,7 +1,7 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-from sys import path as sys_path
+from sys     import path as sys_path
 from os.path import abspath
 from pathlib import Path
 
@@ -35,6 +35,7 @@ sys_path.insert(0, abspath(f"../{directoryName}"))
 packageInformationFile = Path(f"../{directoryName}/__init__.py")
 versionInformation = extractVersionInformation(packageInformationFile)
 
+project =   f"{githubNamespace}/{githubProject}"
 author =    versionInformation.Author
 copyright = versionInformation.Copyright
 version =   ".".join(versionInformation.Version.split(".")[:2])  # e.g. 2.3    The short X.Y version.
@@ -80,6 +81,7 @@ except Exception as ex:
 # ==============================================================================
 # Options for HTML output
 # ==============================================================================
+html_title = f"{githubNamespace}/{githubProject} v{versionInformation.Version}"
 html_theme = "sphinx_rtd_theme"
 html_theme_options = {
 	"logo_only": True,
@@ -190,7 +192,8 @@ extensions = [
 # Sphinx.Ext.InterSphinx
 # ==============================================================================
 intersphinx_mapping = {
-	"python":   ("https://docs.python.org/3", None),
+	"python":    ("https://docs.python.org/3", None),
+	"pyEDAARpt": ("https://edaa-org.github.io/pyEDAA.Reports", None),
 }
 
 
@@ -299,7 +302,7 @@ report_doccov_packages = {
 # ==============================================================================
 autoapi_modules = {
 	f"{pythonProject}":  {
-		"template": "package",
+		"template": "module",
 		"output":   pythonProject,
 		"override": True
 	}

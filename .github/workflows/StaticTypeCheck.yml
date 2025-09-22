@@ -48,17 +48,28 @@ on:
       cobertura_report:
         description: 'Cobertura file to upload as an artifact.'
         required: false
-        default: '{"fullpath": "report/typing/cobertura.xml", "directory": "report/typing", "filename": "cobertura.xml"}'
+        default: >-
+          { "fullpath": "report/typing/cobertura.xml",
+            "directory": "report/typing",
+            "filename": "cobertura.xml"
+          }
         type: string
       junit_report:
         description: 'JUnit file to upload as an artifact.'
         required: false
-        default: '{"fullpath": "report/typing/StaticTypingSummary.xml", "directory": "report/typing", "filename": "StaticTypingSummary.xml"}'
+        default: >-
+          { "fullpath": "report/typing/StaticTypingSummary.xml",
+            "directory": "report/typing",
+            "filename": "StaticTypingSummary.xml"
+          }
         type: string
       html_report:
         description: 'Directory to upload as an artifact.'
         required: false
-        default: '{"fullpath": "report/typing/html", "directory": "report/typing/html"}'
+        default: >-
+          { "directory": "report/typing/html"
+          }
+#          "fullpath": "report/typing/html",
         type: string
       cobertura_artifact:
         description: 'Name of the typing cobertura artifact (Cobertura XML).'

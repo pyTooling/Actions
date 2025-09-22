@@ -90,6 +90,10 @@ jobs:
           mkdir -p report/bandit
           bandit -c pyproject.toml -r ${{ inputs.package_directory }} -f xml -o report/bandit/report.xml
 
+      - name: Debug
+        run: |
+          cat report/bandit/report.xml
+
       - name: 📊 Publish Bandit Results
         uses: dorny/test-reporter@v2
         continue-on-error: true

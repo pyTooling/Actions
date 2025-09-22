@@ -95,44 +95,44 @@ on:
         default: 'unit'
         type: string
       unittest_report_xml:
-        description: 'Path where to save the unittest summary report XML.'
+        description: 'JSON object describing the path where to save the unittest summary report XML.'
         required: false
-        default: 'report/unit'
+        default: >-
+          { "directory": "report/unit",
+            "filename":  "TestReportSummary.xml",
+            "fullpath":  "report/unit/TestReportSummary.xml"
+          }
         type: string
-#      unittest_report_xml_filename:
-#        description: 'Filename of the unittest summary report XML.'
-#        required: false
-#        default: 'TestReportSummary.xml'
-#        type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
         required: false
         default: 'pyproject.toml'
         type: string
       coverage_report_xml:
-        description: 'Directory where the coverage report in XML format will be generated.'
+        description: 'JSON object describing the path where the coverage report in XML format will be generated.'
         required: false
-        default: 'report/coverage'
+        default: >-
+          { "directory": "report/coverage",
+            "filename":  "coverage.xml",
+            "fullpath":  "report/coverage/coverage.xml"
+          }
         type: string
-#      coverage_report_xml_filename:
-#        description: 'Filename how the coverage report in XML format will be named.'
-#        required: false
-#        default: 'coverage.xml'
-#        type: string
       coverage_report_json:
-        description: 'Directory where the coverage report in JSON format will be generated.'
+        description: 'JSON object describing the path where the coverage report in JSON format will be generated.'
         required: false
-        default: 'report/coverage'
+        default: >-
+          { "directory": "report/coverage",
+            "filename":  "coverage.json",
+            "fullpath":  "report/coverage/coverage.json"
+          }
         type: string
-#      coverage_report_json_filename:
-#        description: 'Filename how the coverage report in JSON format will be named.'
-#        required: false
-#        default: 'coverage.json'
-#        type: string
       coverage_report_html:
-        description: 'Directory where the coverage report in HTML format will be generated.'
+        description: 'JSON object describing the path where the coverage report in HTML format will be generated.'
         required: false
-        default: 'report/coverage/html'
+        default: >-
+          { "directory": "report/coverage/html",
+          }
+#            "fullpath":  "report/coverage/html"
         type: string
       unittest_xml_artifact:
         description: "Generate unit test report with junitxml and upload results as an artifact."

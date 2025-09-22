@@ -208,17 +208,21 @@ This job template needs no secrets.
 
 .. rubric:: Goto :ref:`output parameters <JOBTMPL/Parameters/Outputs>`
 
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| Result Name                                                         | Type     | Description                                                       |
-+=====================================================================+==========+===================================================================+
-| :ref:`JOBTMPL/Parameters/Output/python_version`                     | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Output/python_jobs`                        | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Output/artifact_names`                     | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Output/params`                             | string   | **deprecated**                                                    |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
++---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
+| Result Name                                                         | Type           | Description                                                       |
++=====================================================================+================+===================================================================+
+| :ref:`JOBTMPL/Parameters/Output/python_version`                     | string         |                                                                   |
++---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Output/package_fullname`                   | string         |                                                                   |
++---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Output/package_directory`                  | string         |                                                                   |
++---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Output/artifact_basename`                  | string         |                                                                   |
++---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Output/artifact_names`                     | string (JSON)  |                                                                   |
++---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Output/python_jobs`                        | string (JSON)  |                                                                   |
++---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
 
 
 .. _JOBTMPL/Parameters/Inputs:
@@ -591,6 +595,87 @@ python_version
                            python_version: ${{ needs.Params.outputs.python_version }}
 
 
+.. _JOBTMPL/Parameters/Output/package_fullname:
+
+package_fullname
+================
+
+:Type:            string
+:Description:     Returns the full package name composed from :ref:`JOBTMPL/Parameters/Input/package_namespace`
+                  and :ref:`JOBTMPL/Parameters/Input/package_name`.
+:Example:         ``myFramework.Extension``
+
+
+.. _JOBTMPL/Parameters/Output/package_directory:
+
+package_directory
+=================
+
+:Type:            string
+:Description:     Returns the full package path composed from :ref:`JOBTMPL/Parameters/Input/package_namespace`
+                  and :ref:`JOBTMPL/Parameters/Input/package_name`.
+:Example:         ``myFramework/Extension``
+
+
+.. _JOBTMPL/Parameters/Output/artifact_basename:
+
+artifact_basename
+=================
+
+:Type:            string
+:Description:     Returns the basename (prefix) of all :ref:`artifact names <JOBTMPL/Parameters/Output/artifact_names>` |br|.
+                  The basename is either :ref:`JOBTMPL/Parameters/Input/name` if set, otherwise its
+                  :ref:`JOBTMPL/Parameters/Output/package_fullname`.
+:Example:         ``myFramework.Extension``
+
+
+.. _JOBTMPL/Parameters/Output/artifact_names:
+
+artifact_names
+==============
+
+:Type:            string (JSON)
+:Description:     Returns a JSON dictionary of artifact names sharing a common prefix (see :ref:`JOBTMPL/Parameters/Input/name`). |br|
+                  As artifacts are handed from jo to job, a consistent naming scheme is advised to avoid duplications
+                  and naming artifacts by hand. This technique solves again the problem of global variables in GitHub
+                  Action YAMl files and the need for assigning the same value (here artifact name) to multiple jobs
+                  templates.
+
+                  The supported artifacts are:
+
+                  :unittesting_xml:        UnitTesting XML summary report
+                  :unittesting_html:       UnitTesting HTML summary report
+                  :perftesting_xml:        PerformanceTesting XML summary report
+                  :benchtesting_xml:       Benchmarking XML summary report
+                  :apptesting_xml:         ApplicationTesting XML summary report
+                  :codecoverage_sqlite:    Code Coverage internal database (SQLite)
+                  :codecoverage_xml:       Code Coverage Cobertura XML report
+                  :codecoverage_json:      Code Coverage Coverage.py JSON report
+                  :codecoverage_html:      Code Coverage HTML report
+                  :statictyping_cobertura: Static Type Checking Cobertura XML report
+                  :statictyping_junit:     Static Type Checking JUnit XML report
+                  :statictyping_html:      Static Type Checking HTML report
+                  :package_all:            Packaged Python project (multiple formats)
+                  :documentation_html:     Documentation in HTML format
+                  :documentation_latex:    Documentation in LaTeX format
+                  :documentation_pdf:      Documentation in PDF format
+:Example:
+                  .. code-block:: yaml
+
+                     jobs:
+                       Params:
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
+                         with:
+                           name: pyTooling
+
+                       Coverage:
+                         uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r5
+                         needs:
+                           - Params
+                         with:
+                           unittest_xml_artifact: ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}
+
+
 .. _JOBTMPL/Parameters/Output/python_jobs:
 
 python_jobs
@@ -600,14 +685,14 @@ python_jobs
 :Description:     Returns a JSON array of job descriptions, wherein each job description is a dictionary providing the
                   following key-value pairs:
 
-                  * ``sysicon`` - icon to display
-                  * ``system`` -  name of the system
-                  * ``runs-on`` - virtual machine image and base operating system
-                  * ``runtime`` - name of the runtime environment if not running natively on the VM image
-                  * ``shell`` -   name of the shell
-                  * ``pyicon`` -  icon for CPython or pypy
-                  * ``python`` -  Python version
-                  * ``envname`` - full name of the selected environment
+                  :sysicon: icon to display
+                  :system:  name of the system
+                  :runs-on: virtual machine image and base operating system
+                  :runtime: name of the runtime environment if not running natively on the VM image
+                  :shell:   name of the shell
+                  :pyicon:  icon for CPython or pypy
+                  :python:  Python version
+                  :envname: full name of the selected environment
 :Example:
                   .. code-block:: yaml
 
@@ -682,67 +767,6 @@ python_jobs
                        {"sysicon": "🪟🟦", "system": "msys2",    "runs-on": "windows-2025", "runtime": "MINGW64", "shell": "msys2 {0}", "pyicon": "🟢", "python": "3.12", "envname": "Windows+MSYS2 (x86-64) - MinGW64"},
                        {"sysicon": "🪟🟨", "system": "msys2",    "runs-on": "windows-2025", "runtime": "UCRT64",  "shell": "msys2 {0}", "pyicon": "🟢", "python": "3.12", "envname": "Windows+MSYS2 (x86-64) - UCRT64" }
                      ]
-
-.. _JOBTMPL/Parameters/Output/artifact_names:
-
-artifact_names
-==============
-
-:Type:            string (JSON)
-:Description:     Returns a JSON dictionary of artifact names sharing a common prefix (see :ref:`JOBTMPL/Parameters/Input/name`). |br|
-                  As artifacts are handed from jo to job, a consistent naming scheme is advised to avoid duplications
-                  and naming artifacts by hand. This technique solves again the problem of global variables in GitHub
-                  Action YAMl files and the need for assigning the same value (here artifact name) to multiple jobs
-                  templates.
-
-                  The supported artifacts are:
-
-                  * ``unittesting_xml`` - UnitTesting XML summary report
-                  * ``unittesting_html`` - UnitTesting HTML summary report
-                  * ``perftesting_xml`` - PerformanceTesting XML summary report
-                  * ``benchtesting_xml`` - Benchmarking XML summary report
-                  * ``apptesting_xml`` - ApplicationTesting XML summary report
-                  * ``codecoverage_sqlite`` - Code Coverage internal database (SQLite)
-                  * ``codecoverage_xml`` - Code Coverage XML report
-                  * ``codecoverage_json`` - Code Coverage JSON report
-                  * ``codecoverage_html`` - Code Coverage HTML report
-                  * ``statictyping_html`` - Static Type Checking HTML report
-                  * ``package_all`` - Packaged Python project (multiple formats)
-                  * ``documentation_html`` - Documentation in HTML format
-                  * ``documentation_latex`` - Documentation in LaTeX format
-                  * ``documentation_pdf`` - Documentation in PDF format
-:Example:
-                  .. code-block:: yaml
-
-                     jobs:
-                       Params:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
-                         with:
-                           name: pyTooling
-
-                       Coverage:
-                         uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r5
-                         needs:
-                           - Params
-                         with:
-                           unittest_xml_artifact: ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}
-
-
-.. _JOBTMPL/Parameters/Output/params:
-
-params
-======
-
-.. attention:: ``params`` is deprecated.
-
-:Type:            string (JSON)
-:Description:     Returns a JSON dictionary of artifact names. |br|
-                  Use :ref:`JOBTMPL/Parameters/Output/artifact_names` as a more powerful replacement.
-:Replacements:    * ``params['unittesting']`` |rarr| ``artifact_names['unittesting_xml']``
-                  * ``params['coverage']`` |rarr| ``artifact_names['codecoverage_xml']``
-                  * ``params['typing']`` |rarr| ``artifact_names['statictyping_html']``
-                  * ``params['package']`` |rarr| ``artifact_names['package_all']``
-                  * ``params['doc']`` |rarr| ``artifact_names['documentation_html']``
 
 
 .. _JOBTMPL/Parameters/Optimizations:
