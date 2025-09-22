@@ -1,4 +1,4 @@
-.. _JOBTMPL/CodeCoverage:
+.. _JOBTMPL/CoverageCollection:
 
 CoverageCollection
 ##################

@@ -100,6 +100,9 @@ jobs:
 #      attestations: write
 
     steps:
+      - name: ⚠️ Deprecation Warning
+        run: printf "::warning title=%s::%s\n" "NightlyRelease" "'NightlyRelease.yml' template is deprecated. Please switch to 'PublishReleaseNotes.yml'. See https://pytooling.github.io/Actions/JobTemplate/Release/PublishReleaseNotes.html"
+
       - name: ⏬ Checkout repository
         uses: actions/checkout@v5
         with:

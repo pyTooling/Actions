@@ -72,6 +72,6 @@
 
       .. rubric:: :ref:`JOBTMPL/Deprecated`
 
-      * :ref:`JOBTMPL/CodeCoverage`
+      * :ref:`JOBTMPL/CoverageCollection`
       * :ref:`JOBTMPL/NightlyRelease`
       * :ref:`JOBTMPL/BuildTheDocs`
