@@ -88,6 +88,13 @@ jobs:
         id: bandit
         if: inputs.artifact != ''
         run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_BLUE=$'\x1b[94m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
           bandit_directory=report/bandit
           bandit_fullpath=report/bandit/report.xml
 
@@ -97,40 +104,29 @@ jobs:
           EOF
 
           mkdir -p ${bandit_directory}
+          printf "\nRun bandit ...\n"
           bandit -c pyproject.toml -r ${{ inputs.package_directory }} -f xml -o ${bandit_fullpath}
-
-      - name: Check if report is empty (⇒ no issues found)
-        id: check
-        run: |
-          set +e
-
-          ANSI_LIGHT_RED=$'\x1b[91m'
-          ANSI_LIGHT_GREEN=$'\x1b[92m'
-          ANSI_LIGHT_BLUE=$'\x1b[94m'
-          ANSI_NOCOLOR=$'\x1b[0m'
-
-          printf "Checking if bandit found problems ... "
-          if [[ $(grep -P '<testsuite\sname="bandit"\stests="0"\s/>' ${{ steps.bandit.outputs.bandit_fullpath }}) ]]; then
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+          if [[ $? -eq 0 ]]; then
+            printf "Bandit result: ${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
 
             printf "bandit_passed=true\n" >> "${GITHUB_OUTPUT}"
           else
-            faults=$(grep -Poh '(?<=<testsuite\sname="bandit"\stests=")(\d+)(?=">)' ${{ steps.bandit.outputs.bandit_fullpath }})
+            faults=$(grep -Poh '(?<=<testsuite\sname="bandit"\stests=")(\d+)(?=">)' ${bandit_fullpath})
 
-            printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+            printf "Bandit result: ${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
             printf "  ${ANSI_LIGHT_RED}Bandit found %s issues.${ANSI_NOCOLOR}\n" "${faults}"
             printf "::error title=%s::%s\n" "🚨 Security Scanning (Bandit)" "Bandi found ${faults} issues."
 
             printf "bandit_passed=false\n" >> "${GITHUB_OUTPUT}"
 
             printf "::group::${ANSI_LIGHT_BLUE}JUnit XML report created by Bandit ...${ANSI_NOCOLOR}\n"
-            cat ${{ steps.bandit.outputs.bandit_fullpath }}
-            printf "::endgroup::\n"
+            cat ${bandit_fullpath}
+            printf "\n::endgroup::\n"
           fi
 
       - name: 📊 Publish Bandit Results
         uses: dorny/test-reporter@v2
-        if: steps.check.outputs.bandit_passed == 'false'
+        if: steps.bandit.outputs.bandit_passed == 'false'
         continue-on-error: true
         with:
           name:     'Bandit Results'
