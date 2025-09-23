@@ -251,7 +251,7 @@ jobs:
           from typing import Iterable
 
           python_version = "${{ steps.variables.outputs.python_version }}"
-          name =           "${{ steps.artifacts.outputs.artifact_base }}"
+          name =           "${{ steps.variables.outputs.artifact_basename }}"
           systems =        "${{ inputs.system_list }}".strip()
           versions =       "${{ inputs.python_version_list }}".strip()
           include_list =   "${{ inputs.include_list }}".strip()

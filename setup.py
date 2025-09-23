@@ -28,21 +28,22 @@
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
 #
-"""Package installer for 'myPackage'."""
+"""Package installer for 'myPackage' or 'myFramework.Extension'."""
+from os                  import environ
+from pathlib             import Path
 from setuptools          import setup
 
-from pathlib             import Path
 from pyTooling.Packaging import DescribePythonPackageHostedOnGitHub
 
 gitHubNamespace =        "pyTooling"
-packageName =            "myPackage"
-packageDirectory =       packageName
+packageName =            "myPackage" if "." not in environ["artifact"] else "myFramework.Extension"
+packageDirectory =       packageName.replace(".", "/")
 packageInformationFile = Path(f"{packageDirectory}/__init__.py")
 
 setup(
 	**DescribePythonPackageHostedOnGitHub(
 		packageName=packageName,
-		description="myPackage is a test package to verify GitHub actions for Python projects.",
+		description=f"{packageName} is a test package to verify GitHub actions for Python projects.",
 		gitHubNamespace=gitHubNamespace,
 		unittestRequirementsFile=Path("tests/unit/requirements.txt"),
 		sourceFileWithVersion=packageInformationFile,
