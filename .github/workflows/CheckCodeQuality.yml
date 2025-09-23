@@ -111,13 +111,13 @@ jobs:
 
           printf "Checking if bandit found problems ... "
           if [[ $(grep -P '<testsuite\sname="bandit"\stests="0"\s/>' ${{ steps.bandit.outputs.bandit_fullpath }}) ]]; then
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
 
             printf "bandit_passed=true\n" >> "${GITHUB_OUTPUT}"
           else
             faults=$(grep -Poh '(?<=<testsuite\sname="bandit"\stests=")(\d+)(?=">)' ${{ steps.bandit.outputs.bandit_fullpath }})
 
-            printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
             printf "  ${ANSI_LIGHT_RED}Bandit found %s issues.${ANSI_NOCOLOR}\n" "${faults}"
             printf "::error title=%s::%s\n" "🚨 Security Scanning (Bandit)" "Bandi found ${faults} issues."
 
