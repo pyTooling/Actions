@@ -154,8 +154,9 @@ jobs:
         id: variables
         shell: python
         run: |
-          from os import getenv
-          from pathlib import Path
+          from os       import getenv
+          from pathlib  import Path
+          from sys      import exit
           from textwrap import dedent
 
           python_version =    "${{ inputs.python_version }}".strip()
@@ -174,6 +175,9 @@ jobs:
             package_directory = f"{package_namespace}/{package_name}"
 
           artifact_basename = package_fullname if name == "" else name
+          if artifact_basename == "" or artifact_basename == ".":
+            print("::error title=Parameter::artifact_basename is empty.")
+            exit(1)
 
           print("Variables:")
           print(f"  python_version:    {python_version}")
