@@ -9,10 +9,9 @@ PublishCoverageResults
 ######################
 
 The ``PublishCoverageResults`` job template downloads artifacts provided by :ref:`JOBTMPL/UnitTesting` containing code
-coverage databases created by `Coverage.py <https://coverage.readthedocs.io/>`__. These databases are then merged and
-converted into various output formats like Cobertura XML, JSON or HTML. These outputs are either uploaded as a new
-artifact or can be published to cloud services like `CodeCov <https://about.codecov.io//>`__ or
-`Codacy <https://www.codacy.com/>`__.
+coverage databases created by :term:`Coverage.py`. These databases are then merged and converted into various output
+formats like Cobertura XML, JSON or HTML. These outputs are either uploaded as a new artifact or can be published to
+cloud services like :term:`CodeCov` or :term:`Codacy`.
 
 .. topic:: Features
 
@@ -76,12 +75,6 @@ The following
 
 .. code-block:: yaml
 
-   name: Pipeline
-
-   on:
-     push:
-     workflow_dispatch:
-
    jobs:
      ConfigParams:
        uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
@@ -109,13 +102,12 @@ The following
          - UnitTestingParams
          - UnitTesting
        with:
-         coverage_json_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
-         coverage_report_json_directory: ${{ needs.ConfigParams.outputs.coverage_report_json_directory }}
-         coverage_report_json_filename:  ${{ needs.ConfigParams.outputs.coverage_report_json_filename }}
-         coverage_html_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
-         coverage_report_html_directory: ${{ needs.ConfigParams.outputs.coverage_report_html_directory }}
-         codecov:                        'true'
-         codacy:                         'true'
+         coverage_report_json:   ${{ needs.ConfigParams.outputs.coverage_report_json }}
+         coverage_report_html:   ${{ needs.ConfigParams.outputs.coverage_report_html }}
+         coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
+         coverage_html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+         codecov:                'true'
+         codacy:                 'true'
        secrets:
          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
          CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
@@ -128,37 +120,33 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishCoverageResults/Inputs>`
 
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                              | Required | Type     | Default                                                           |
-+=============================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/ubuntu_image_version`            | no       | string   | ``'24.04'``                                                       |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_artifacts_pattern`      | no       | string   | ``'*-CodeCoverage-SQLite-*'``                                     |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_config`                 | no       | string   | ``'pyproject.toml'``                                              |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_sqlite_artifact`        | no       | string   | ``''``                                                            |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_xml_artifact`           | no       | string   | ``''``                                                            |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_xml_directory`   | no       | string   | ``'report/coverage'``                                             |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_xml_filename`    | no       | string   | ``'coverage.xml'``                                                |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_json_artifact`          | no       | string   | ``''``                                                            |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_json_directory`  | no       | string   | ``'report/coverage'``                                             |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_json_filename`   | no       | string   | ``'coverage.json'``                                               |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_html_artifact`          | no       | string   | ``''``                                                            |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_html_directory`  | no       | string   | ``'report/coverage/html'``                                        |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/codecov`                         | no       | string   | ``'false'``                                                       |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishCoverageResults/Input/codacy`                          | no       | string   | ``'false'``                                                       |
-+-----------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| Parameter Name                                                              | Required | Type           | Default                                                                                                                  |
++=============================================================================+==========+================+==========================================================================================================================+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/ubuntu_image_version`            | no       | string         | ``'24.04'``                                                                                                              |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_artifacts_pattern`      | no       | string         | ``'*-CodeCoverage-SQLite-*'``                                                                                            |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_config`                 | no       | string         | ``'pyproject.toml'``                                                                                                     |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_xml`             | no       | string (JSON)  | :jsoncode:`{"directory": "report/coverage", "filename":  "coverage.xml", "fullpath":  "report/coverage/coverage.xml"}`   |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_json`            | no       | string (JSON)  | :jsoncode:`{"directory": "report/coverage", "filename":  "coverage.json", "fullpath":  "report/coverage/coverage.json"}` |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_html`            | no       | string (JSON)  | :jsoncode:`{"directory": "report/coverage/html"}`                                                                        |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_sqlite_artifact`        | no       | string         | ``''``                                                                                                                   |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_xml_artifact`           | no       | string         | ``''``                                                                                                                   |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_json_artifact`          | no       | string         | ``''``                                                                                                                   |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_html_artifact`          | no       | string         | ``''``                                                                                                                   |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/codecov`                         | no       | string         | ``'false'``                                                                                                              |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishCoverageResults/Input/codacy`                          | no       | string         | ``'false'``                                                                                                              |
++-----------------------------------------------------------------------------+----------+----------------+--------------------------------------------------------------------------------------------------------------------------+
 
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishCoverageResults/Secrets>`
@@ -236,6 +224,119 @@ coverage_config
                            title="Code Coverage of pyDummy"
 
 
+.. _JOBTMPL/PublishCoverageResults/Input/coverage_report_xml:
+
+coverage_report_xml
+===================
+
+:Type:            string (JSON)
+:Required:        no
+:Default Value:
+                  .. code-block:: json
+
+                     { "directory": "reports/coverage",
+                       "filename":  "coverage.xml",
+                       "fullpath":  "reports/coverage/coverage.xml"
+                     }
+:Possible Values: Any valid JSON string containing a JSON object with fields:
+
+                  :directory: Directory or sub-directory where the code coverage report in Cobertura XML format will be
+                              saved.
+                  :filename:  Filename of the generated Cobertura XML report. |br|
+                              Any valid XML filename.
+                  :fullpath:  The concatenation of both previous fields using the ``/`` separator.
+:Description:     Directory, filename and fullpath as JSON object where the code coverage report in Cobertura XML format
+                  will be saved. |br|
+                  This path is configured in :file:`pyproject.toml` and can be extracted by
+                  :ref:`JOBTMPL/ExtractConfiguration`.
+:Example:
+                  .. code-block:: yaml
+
+                     ConfigParams:
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
+
+                     PublishCoverageResults:
+                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r5
+                       needs:
+                         - ConfigParams
+                       with:
+                         ...
+                         coverage_report_xml: ${{ needs.ConfigParams.outputs.coverage_report_xml }}
+
+
+.. _JOBTMPL/PublishCoverageResults/Input/coverage_report_json:
+
+coverage_report_json
+====================
+
+:Type:            string (JSON)
+:Required:        no
+:Default Value:
+                  .. code-block:: json
+
+                     { "directory": "reports/coverage",
+                       "filename":  "coverage.json",
+                       "fullpath":  "reports/coverage/coverage.json"
+                     }
+:Possible Values: Any valid JSON string containing a JSON object with fields:
+
+                  :directory: Directory or sub-directory where the code coverage report in Coverage.py's JSON format
+                              will be saved.
+                  :filename:  Filename of the generated Coverage.py JSON report. |br|
+                              Any valid JSON filename.
+                  :fullpath:  The concatenation of both previous fields using the ``/`` separator.
+:Description:     Directory, filename and fullpath as JSON object where the code coverage report in Coverage.py's JSON
+                  format will be saved. |br|
+                  This path is configured in :file:`pyproject.toml` and can be extracted by
+                  :ref:`JOBTMPL/ExtractConfiguration`.
+:Example:
+                  .. code-block:: yaml
+
+                     ConfigParams:
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
+
+                     PublishCoverageResults:
+                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r5
+                       needs:
+                         - ConfigParams
+                       with:
+                         ...
+                         coverage_report_json: ${{ needs.ConfigParams.outputs.coverage_report_json }}
+
+
+.. _JOBTMPL/PublishCoverageResults/Input/coverage_report_html:
+
+coverage_report_html
+====================
+
+:Type:            string (JSON)
+:Required:        no
+:Default Value:
+                  .. code-block:: json
+
+                     { "directory": "reports/coverage/html"
+                     }
+:Possible Values: Any valid JSON string containing a JSON object with fields:
+
+                  :directory: Directory or sub-directory where the code coverage report in HTML format will be saved.
+:Description:     Directory as JSON object where the code coverage report in HTML format will be saved. |br|
+                  This path is configured in :file:`pyproject.toml` and can be extracted by
+                  :ref:`JOBTMPL/ExtractConfiguration`.
+:Example:
+                  .. code-block:: yaml
+
+                     ConfigParams:
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
+
+                     PublishCoverageResults:
+                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r5
+                       needs:
+                         - ConfigParams
+                       with:
+                         ...
+                         coverage_report_html: ${{ needs.ConfigParams.outputs.coverage_report_html }}
+
+
 .. _JOBTMPL/PublishCoverageResults/Input/coverage_sqlite_artifact:
 
 coverage_sqlite_artifact
@@ -260,30 +361,6 @@ coverage_xml_artifact
 :Description:     Name of the artifact containing the merged code coverage report as Cobertura XML file.
 
 
-.. _JOBTMPL/PublishCoverageResults/Input/coverage_report_xml_directory:
-
-coverage_report_xml_directory
-=============================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'report/coverage'``
-:Possible Values: tbd
-:Description:     tbd
-
-
-.. _JOBTMPL/PublishCoverageResults/Input/coverage_report_xml_filename:
-
-coverage_report_xml_filename
-============================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'coverage.xml'``
-:Possible Values: tbd
-:Description:     tbd
-
-
 .. _JOBTMPL/PublishCoverageResults/Input/coverage_json_artifact:
 
 coverage_json_artifact
@@ -296,30 +373,6 @@ coverage_json_artifact
 :Description:     Name of the artifact containing the merged code coverage report as Coverage.py JSON file.
 
 
-.. _JOBTMPL/PublishCoverageResults/Input/coverage_report_json_directory:
-
-coverage_report_json_directory
-==============================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'report/coverage'``
-:Possible Values: tbd
-:Description:     tbd
-
-
-.. _JOBTMPL/PublishCoverageResults/Input/coverage_report_json_filename:
-
-coverage_report_json_filename
-=============================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'coverage.json'``
-:Possible Values: tbd
-:Description:     tbd
-
-
 .. _JOBTMPL/PublishCoverageResults/Input/coverage_html_artifact:
 
 coverage_html_artifact
@@ -330,18 +383,6 @@ coverage_html_artifact
 :Default Value:   ``'report/coverage/html'``
 :Possible Values: Any valid artifact name.
 :Description:     Name of the artifact containing the merged code coverage report as HTML report.
-
-
-.. _JOBTMPL/PublishCoverageResults/Input/coverage_report_html_directory:
-
-coverage_report_html_directory
-==============================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``''``
-:Possible Values: tbd
-:Description:     tbd
 
 
 .. _JOBTMPL/PublishCoverageResults/Input/codecov:
@@ -366,8 +407,6 @@ codacy
 :Default Value:   ``'false'``
 :Possible Values: ``'true'``, ``'false'``
 :Description:     If *true*, publish code coverage results to Codacy.
-
-
 
 
 .. _JOBTMPL/PublishCoverageResults/Secrets:
@@ -405,4 +444,19 @@ CODACY_TOKEN
 Outputs
 *******
 
-This job template has no output parameters.
+The following optimizations can be used to reduce the template's runtime.
+
+Disable code coverage SQLite database artifact upload
+  If parameter :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_sqlite_artifact` is empty, the collected code coverage database
+  (SQLlite format) wont be uploaded as an artifact.
+Disable code coverage report conversion to the Cobertura XML format.
+  If parameter :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_xml_artifact` is empty, no Cobertura XML file will be generated
+  from code coverage report. As no Cobertura XML file exists, no code coverage XML artifact will be uploaded.
+Disable code coverage report conversion to the *Coverage.py* JSON format.
+  If parameter :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_json_artifact` is empty, no *Coverage.py* JSON file will be
+  generated from code coverage report. As no JSON file exists, no code coverage JSON artifact will be uploaded.
+Disable code coverage report conversion to an HTML website.
+  If parameter :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_html_artifact` is empty, no coverage report HTML report will be
+  generated from code coverage report. As no HTML report exists, no code coverage HTML artifact will be uploaded.
+
+.. todo:: PublishCoverageResults:: Disable publishing to codecov and codacy. |br| If upload is enabled, XML will be always generated.
