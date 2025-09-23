@@ -34,6 +34,8 @@ Some templates might provide output parameters, which can be used in dependent j
 
 .. code-block:: yaml
 
+   name: Pipeline
+
    on:
      push:
      workflow_dispatch:

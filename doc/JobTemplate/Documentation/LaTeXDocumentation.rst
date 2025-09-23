@@ -44,12 +44,6 @@ Instantiation
 
 .. code-block:: yaml
 
-   name: Pipeline
-
-   on:
-     push:
-     workflow_dispatch:
-
    jobs:
      UnitTestingParams:
        uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5

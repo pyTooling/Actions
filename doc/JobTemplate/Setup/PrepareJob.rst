@@ -71,12 +71,6 @@ pull-request titles.
 
 .. code-block:: yaml
 
-   name: Pipeline
-
-   on:
-     push:
-     workflow_dispatch:
-
    jobs:
      Prepare:
        uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r5

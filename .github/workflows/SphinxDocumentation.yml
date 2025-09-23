@@ -44,24 +44,29 @@ on:
         required: false
         default: 'doc'
         type: string
-      coverage_report_json_directory:
-        description: 'report/coverage'
-        required: false
-        type: string
       coverage_json_artifact:
         description: 'Name of the coverage JSON artifact.'
         required: false
         default: ''
+        type: string
+      coverage_report_json:
+        description: 'Directory where coverage JSON artifact will be extracted.'
+        required: false
+        default: >-
+          { "directory": "report/coverage"
+          }
         type: string
       unittest_xml_artifact:
         description: 'Name of the unittest XML artifact.'
         required: false
         default: ''
         type: string
-      unittest_xml_directory:
+      unittest_xml:
         description: 'Directory where unittest XML artifact will be extracted.'
         required: false
-        default: 'report/unit'
+        default: >-
+          { "directory": "report/unit"
+          }
         type: string
       html_artifact:
         description: 'Name of the HTML documentation artifact.'
@@ -104,7 +109,7 @@ jobs:
         if: inputs.unittest_xml_artifact != ''
         with:
           name: ${{ inputs.unittest_xml_artifact }}
-          path: ${{ inputs.unittest_xml_directory }}
+          path: ${{ fromJson(inputs.unittest_xml).directory }}
           investigate: true
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
@@ -112,7 +117,7 @@ jobs:
         if: inputs.coverage_json_artifact != ''
         with:
           name: ${{ inputs.coverage_json_artifact }}
-          path: ${{ inputs.coverage_report_json_directory }}
+          path: ${{ fromJson(inputs.coverage_report_json).directory }}
           investigate: true
 
       - name: ☑ Generate HTML documentation
@@ -163,7 +168,7 @@ jobs:
         if: inputs.unittest_xml_artifact != ''
         with:
           name: ${{ inputs.unittest_xml_artifact }}
-          path: ${{ inputs.unittest_xml_directory }}
+          path: ${{ fromJson(inputs.unittest_xml).directory }}
           investigate: true
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
@@ -171,7 +176,7 @@ jobs:
         if: inputs.coverage_json_artifact != ''
         with:
           name: ${{ inputs.coverage_json_artifact }}
-          path: ${{ inputs.coverage_report_json_directory }}
+          path: ${{ fromJson(inputs.coverage_report_json).directory }}
           investigate: true
 
       - name: ☑ Generate LaTeX documentation

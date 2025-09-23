@@ -301,12 +301,12 @@ jobs:
 #      - VerifyDocs
     if: success() || failure()
     with:
-      python_version:                 ${{ needs.UnitTestingParams.outputs.python_version }}
-      coverage_report_json_directory: ${{ fromJson(needs.ConfigParams.outputs.coverage_report_json).directory }}
-      unittest_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
-      coverage_json_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
-      html_artifact:                  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
-      latex_artifact:                 ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
+      python_version:         ${{ needs.UnitTestingParams.outputs.python_version }}
+      coverage_report_json:   ${{ needs.ConfigParams.outputs.coverage_report_json }}
+      unittest_xml_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+      coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
+      html_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
+      latex_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
   IntermediateCleanUp:
     uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@dev

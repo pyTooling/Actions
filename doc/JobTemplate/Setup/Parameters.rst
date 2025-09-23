@@ -60,12 +60,6 @@ Simple Example
 
       .. code-block:: yaml
 
-         name: Pipeline
-
-         on:
-           push:
-           workflow_dispatch:
-
          jobs:
            Params:
              uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5

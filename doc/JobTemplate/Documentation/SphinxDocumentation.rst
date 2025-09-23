@@ -6,8 +6,8 @@
 SphinxDocumentation
 ###################
 
-The ``SphinxDocumentation`` job template compiles the ReStructured Text documentation using Sphinx to an HTML website
-and a LaTeX documentation. This LaTeX document can be translated using e.g. MikTeX to a PDF file.
+The ``SphinxDocumentation`` job template compiles the ReStructured Text documentation using :term:`Sphinx` to an HTML
+website and a LaTeX documentation. This LaTeX document can be translated using e.g. :term:`MikTeX` to a PDF file.
 
 .. topic:: Features
 
@@ -70,12 +70,6 @@ Instantiation
 
 .. code-block:: yaml
 
-   name: Pipeline
-
-   on:
-     push:
-     workflow_dispatch:
-
    jobs:
      UnitTestingParams:
        uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
@@ -99,29 +93,29 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/SphinxDocumentation/Inputs>`
 
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                          | Required | Type     | Default                                                           |
-+=========================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/ubuntu_image_version`           | no       | string   | ``'24.04'``                                                       |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/python_version`                 | no       | string   | ``'3.13'``                                                        |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/requirements`                   | no       | string   | ``'-r doc/requirements.txt'``                                     |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/doc_directory`                  | no       | string   | ``'doc'``                                                         |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/coverage_report_json_directory` | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/coverage_json_artifact`         | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact`          | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/unittest_xml_directory`         | no       | string   | ``'report/unit'``                                                 |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/html_artifact`                  | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/latex_artifact`                 | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
+| Parameter Name                                                          | Required | Type           | Default                                                           |
++=========================================================================+==========+================+===================================================================+
+| :ref:`JOBTMPL/SphinxDocumentation/Input/ubuntu_image_version`           | no       | string         | ``'24.04'``                                                       |
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/SphinxDocumentation/Input/python_version`                 | no       | string         | ``'3.13'``                                                        |
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/SphinxDocumentation/Input/requirements`                   | no       | string         | ``'-r doc/requirements.txt'``                                     |
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/SphinxDocumentation/Input/doc_directory`                  | no       | string         | ``'doc'``                                                         |
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/SphinxDocumentation/Input/coverage_json_artifact`         | no       | string         | ``''``                                                            |
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/SphinxDocumentation/Input/coverage_report_json`           | no       | string (JSON)  | :jsoncode:`{"directory": "report/coverage"}`                      |
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact`          | no       | string         | ``''``                                                            |
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/SphinxDocumentation/Input/unittest_xml`                   | no       | string (JSON)  | :jsoncode:`{"directory": "report/unit"}`                          |
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/SphinxDocumentation/Input/html_artifact`                  | no       | string         | ``''``                                                            |
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/SphinxDocumentation/Input/latex_artifact`                 | no       | string         | ``''``                                                            |
++-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/SphinxDocumentation/Secrets>`
 
@@ -178,18 +172,6 @@ doc_directory
                      adjusted as well.
 
 
-.. _JOBTMPL/SphinxDocumentation/Input/coverage_report_json_directory:
-
-coverage_report_json_directory
-==============================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``''``
-:Possible Values: Any valid directory or sub-directory.
-:Description:     tbd
-
-
 .. _JOBTMPL/SphinxDocumentation/Input/coverage_json_artifact:
 
 coverage_json_artifact
@@ -200,6 +182,40 @@ coverage_json_artifact
 :Default Value:   ``''``
 :Possible Values: Any valid artifact name.
 :Description:     Name of the artifact containing the code coverage report in JSON format.
+
+
+.. _JOBTMPL/SphinxDocumentation/Input/coverage_report_json:
+
+coverage_report_json
+====================
+
+:Type:            string (JSON)
+:Required:        no
+:Default Value:
+                  .. code-block:: json
+
+                     { "directory": "reports/coverage",
+                     }
+:Possible Values: Any valid JSON string containing a JSON object with fields:
+
+                  :directory: Directory or sub-directory where the code coverage JSON report will be extracted from
+                  :ref:`artifact <JOBTMPL/SphinxDocumentation/Input/coverage_json_artifact>`.
+:Description:     Directory as JSON object where the code coverage JSON report will be extracted. |br|
+                  This path is configured in :file:`pyproject.toml` and can be extracted by
+                  :ref:`JOBTMPL/ExtractConfiguration`.
+:Example:
+                  .. code-block:: yaml
+
+                     ConfigParams:
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
+
+                     Documentation:
+                       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r5
+                       needs:
+                         - ConfigParams
+                       with:
+                         ...
+                         coverage_report_json: ${{ needs.ConfigParams.outputs.coverage_report_json }}
 
 
 .. _JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact:
@@ -214,16 +230,38 @@ unittest_xml_artifact
 :Description:     Name of the artifact containing the unittest XML report summary in XML format.
 
 
-.. _JOBTMPL/SphinxDocumentation/Input/unittest_xml_directory:
+.. _JOBTMPL/SphinxDocumentation/Input/unittest_xml:
 
-unittest_xml_directory
-======================
+unittest_xml
+============
 
-:Type:            string
+:Type:            string (JSON)
 :Required:        no
-:Default Value:   ``'report/unit'``
-:Possible Values: Any valid directory or sub-directory.
-:Description:     Directory where unittest XML artifact will be extracted.
+:Default Value:
+                  .. code-block:: json
+
+                     { "directory": "reports/unit",
+                     }
+:Possible Values: Any valid JSON string containing a JSON object with fields:
+
+                  :directory: Directory or sub-directory where the unittest JUnit XML report will be extracted from
+                  :ref:`artifact <JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact>`.
+:Description:     Directory as JSON object where the unittest JUnit XML report will be extracted. |br|
+                  This path is configured in :file:`pyproject.toml` and can be extracted by
+                  :ref:`JOBTMPL/ExtractConfiguration`.
+:Example:
+                  .. code-block:: yaml
+
+                     ConfigParams:
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
+
+                     Documentation:
+                       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r5
+                       needs:
+                         - ConfigParams
+                       with:
+                         ...
+                         unittest_xml: ${{ needs.ConfigParams.outputs.unittest_xml }}
 
 
 .. _JOBTMPL/SphinxDocumentation/Input/html_artifact:

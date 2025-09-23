@@ -171,13 +171,13 @@ jobs:
       - PublishCoverageResults
 #      - VerifyDocs
     with:
-      python_version:                 ${{ needs.UnitTestingParams.outputs.python_version }}
-      unittest_xml_directory:         ${{ fromJson(needs.ConfigParams.outputs.unittest_report_xml).directory }}
-      coverage_report_json_directory: ${{ fromJson(needs.ConfigParams.outputs.coverage_report_json).directory }}
-      unittest_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
-      coverage_json_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
-      html_artifact:                  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
-      latex_artifact:                 ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
+      python_version:         ${{ needs.UnitTestingParams.outputs.python_version }}
+      unittest_xml:           ${{ needs.ConfigParams.outputs.unittest_report_xml }}
+      coverage_report_json:   ${{ needs.ConfigParams.outputs.coverage_report_json }}
+      unittest_xml_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
+      coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
+      html_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
+      latex_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
   IntermediateCleanUp:
     uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@dev

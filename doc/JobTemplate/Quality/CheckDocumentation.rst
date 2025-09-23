@@ -46,12 +46,6 @@ requires a `name` parameter to create the artifact names.
 
 .. code-block:: yaml
 
-   name: Pipeline
-
-   on:
-     push:
-     workflow_dispatch:
-
    jobs:
      ConfigParams:
        uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
