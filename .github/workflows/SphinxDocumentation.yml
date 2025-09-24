@@ -44,24 +44,29 @@ on:
         required: false
         default: 'doc'
         type: string
-      coverage_report_json_directory:
-        description: ''
-        required: false
-        type: string
       coverage_json_artifact:
         description: 'Name of the coverage JSON artifact.'
         required: false
         default: ''
+        type: string
+      coverage_report_json:
+        description: 'Directory where coverage JSON artifact will be extracted.'
+        required: false
+        default: >-
+          { "directory": "report/coverage"
+          }
         type: string
       unittest_xml_artifact:
         description: 'Name of the unittest XML artifact.'
         required: false
         default: ''
         type: string
-      unittest_xml_directory:
-        description: 'Directory where unittest XML artifact is extracted.'
+      unittest_xml:
+        description: 'Directory where unittest XML artifact will be extracted.'
         required: false
-        default: 'report/unit'
+        default: >-
+          { "directory": "report/unit"
+          }
         type: string
       html_artifact:
         description: 'Name of the HTML documentation artifact.'
@@ -90,7 +95,7 @@ jobs:
         run: sudo apt-get install -y --no-install-recommends graphviz
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ inputs.python_version }}
 
@@ -104,7 +109,7 @@ jobs:
         if: inputs.unittest_xml_artifact != ''
         with:
           name: ${{ inputs.unittest_xml_artifact }}
-          path: ${{ inputs.unittest_xml_directory }}
+          path: ${{ fromJson(inputs.unittest_xml).directory }}
           investigate: true
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
@@ -112,7 +117,7 @@ jobs:
         if: inputs.coverage_json_artifact != ''
         with:
           name: ${{ inputs.coverage_json_artifact }}
-          path: ${{ inputs.coverage_report_json_directory }}
+          path: ${{ fromJson(inputs.coverage_report_json).directory }}
           investigate: true
 
       - name: ☑ Generate HTML documentation
@@ -149,7 +154,7 @@ jobs:
         run: sudo apt-get install -y --no-install-recommends graphviz
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ inputs.python_version }}
 
@@ -163,7 +168,7 @@ jobs:
         if: inputs.unittest_xml_artifact != ''
         with:
           name: ${{ inputs.unittest_xml_artifact }}
-          path: ${{ inputs.unittest_xml_directory }}
+          path: ${{ fromJson(inputs.unittest_xml).directory }}
           investigate: true
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
@@ -171,7 +176,7 @@ jobs:
         if: inputs.coverage_json_artifact != ''
         with:
           name: ${{ inputs.coverage_json_artifact }}
-          path: ${{ inputs.coverage_report_json_directory }}
+          path: ${{ fromJson(inputs.coverage_report_json).directory }}
           investigate: true
 
       - name: ☑ Generate LaTeX documentation

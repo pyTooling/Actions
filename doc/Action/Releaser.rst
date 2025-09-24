@@ -1,7 +1,16 @@
 .. _ACTION/Releaser:
+.. index::
+   single: GitHub Action; Releaser
 
 Releaser
 ########
+
+.. attention::
+
+   The **Releaser** action is deprecated.
+
+   Use the new GitHub Action workflow template :ref:`JOBTMPL/PublishReleaseNotes` as a replacement with lots of
+   additional features.
 
 **Releaser** is a Docker GitHub Action written in Python.
 

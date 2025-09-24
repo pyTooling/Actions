@@ -15,6 +15,9 @@ coverage.xml
 /report/unit
 /tests/*.github
 
+# bandit
+/report/bandit
+
 # setuptools
 /build/**/*.*
 /dist/**/*.*
@@ -25,8 +28,8 @@ coverage.xml
 
 # Sphinx
 doc/_build/
-doc/pyDummy/**/*.*
-!doc/pyDummy/index.rst
+doc/myPackage/**/*.*
+!doc/myPackage/index.rst
 
 # BuildTheDocs
 doc/_theme/**/*.*

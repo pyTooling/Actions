@@ -54,6 +54,14 @@
 .. role:: addition
    :class: colorgreen
 
+.. role:: bashcode(code)
+   :language: bash
+   :class: highlight
+
 .. role:: pycode(code)
    :language: python
+   :class: highlight
+
+.. role:: jsoncode(code)
+   :language: json
    :class: highlight

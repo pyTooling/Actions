@@ -35,65 +35,191 @@ However, Python being equally popular and capable, usage of JS/TS might be bypas
 This repository gathers reusable CI tooling for testing, packaging and distributing Python projects and documentation.
 
 
+GitHub Actions
+**************
+
+.. include:: Action/Actions.rst
+
+
 GitHub Action Job Templates
 ***************************
 
 The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
 Workflow):
 
-.. hlist::
-   :columns: 2
-
-   * **Global Templates**
-
-     * :ref:`JOBTMPL/Parameters`
-
-   * **Unit Tests, Code Coverage, Code Quality, ...**
-
-     * :ref:`JOBTMPL/UnitTesting`
-     * :ref:`JOBTMPL/CodeCoverage`
-     * :ref:`JOBTMPL/StaticTypeChecking`
-     * *code formatting (planned)*
-     * *coding style (planned)*
-     * *code linting (planned)*
-
-   * **Build and Packaging**
-
-     * :ref:`JOBTMPL/Package`
-
-   * **Documentation**
-
-     * :ref:`JOBTMPL/VerifyDocumentation`
-     * :ref:`JOBTMPL/BuildTheDocs`
-
-   * **Releasing, Publishing**
-
-     * :ref:`JOBTMPL/GitHubReleasePage`
-     * :ref:`JOBTMPL/PyPI`
-     * :ref:`JOBTMPL/PublishTestResults`
-     * :ref:`JOBTMPL/PublishToGitHubPages`
-
-   * **Cleanups**
-
-     * :ref:`JOBTMPL/ArtifactCleanup`
+.. include:: JobTemplate/Templates.rst
 
 
 Example Pipelines
 =================
 
-``ExamplePipeline.yml`` is an example Workflow which uses all of the Reusable Workflows.
-Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
-Minimal required modifications are the following:
+.. grid:: 2
 
-- Set the ``name`` input of job ``Parameters``.
-- Specify the ``commands`` input of job ``StaticTypeCheck``.
+   .. grid-item::
+      :columns: 6
+
+      ``ExamplePipeline.yml`` is an example Workflow which uses all of the Reusable Workflows.
+      Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
+      Minimal required modifications are the following:
+
+      * Set the ``name`` input of job ``Parameters``.
+      * Specify the ``commands`` input of job ``StaticTypeCheck``.
+
+      .. rubric:: Behavior
+
+      .. include:: JobTemplate/AllInOne/_Behavior.rst
+
+   .. grid-item::
+      :columns: 6
+
+      .. tab-set::
+
+         .. tab-item:: Directory Structure
+
+            .. code-block::
+
+               <RepositoryRoot>/
+                 .github/
+                   workflows/
+                     Pipeline.yml
+                 dist/
+                   requirements.txt
+                 docs/
+                   conf.py
+                   index.rst
+                   requirements.txt
+                 myPackage/
+                   ModuleA.py
+                   __init__.py
+                   py.typed
+                 tests/
+                   unit/
+                     TestA.py
+                     requirements.txt
+                   requirements.txt
+                 .editorconfig
+                 .gitignore
+                 LICENSE.md
+                 pyproject.toml
+                 README.md
+                 requirements.txt
+                 setup.py
+
+         .. tab-item:: Simple Package
+            :selected:
+
+            .. code-block:: yaml
+
+               name: Pipeline
+
+               on:
+                 push:
+                 workflow_dispatch:
+                 schedule:
+               # Every Friday at 22:00 - rerun pipeline to check for dependency-based issues
+                   - cron: '0 22 * * 5'
+
+               jobs:
+                 SimplePackage:
+                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
+                   with:
+                     package_name: myPackage
+                     codecov:      true
+                     codacy:       true
+                     dorny:        true
+                   secrets:
+                     PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
+                     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+                     CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
+
+         .. tab-item:: Namespace Package
+
+            .. code-block:: yaml
+
+               name: Pipeline
+
+               on:
+                 push:
+                 workflow_dispatch:
+                 schedule:
+               # Every Friday at 22:00 - rerun pipeline to check for dependency-based issues
+                   - cron: '0 22 * * 5'
+
+               jobs:
+                 NamespacePackage:
+                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
+                   with:
+                     package_namespace: myFramework
+                     package_name:      Extension
+                     codecov:           true
+                     codacy:            true
+                     dorny:             true
+                   secrets:
+                     PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
+                     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+                     CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
+
+         .. tab-item:: :file:`pyproject.toml`
+
+            .. code-block:: toml
+
+               [build-system]
+               requires = ["setuptools >= 80.0", "wheel ~= 0.45", "pyTooling ~= 8.5"]
+               build-backend = "setuptools.build_meta"
+
+               [tool.mypy]
+               packages = ["myPackage"]
+               python_version = "3.13"
+               strict = true
+               pretty = true
+               show_error_context = true
+               show_error_codes = true
+               namespace_packages = true
+               html_report = "report/typing"
+
+               [tool.pytest]
+               junit_xml = "report/unit/UnittestReportSummary.xml"
+
+               [tool.pyedaa-reports]
+               junit_xml = "report/unit/unittest.xml"
+
+               [tool.pytest.ini_options]
+               addopts = "--tb=native"
+               python_files = "*"
+               python_functions = "test_*"
+               filterwarnings = ["error::DeprecationWarning", "error::PendingDeprecationWarning"]
+               junit_logging = "all"
+
+               [tool.interrogate]
+               color = true
+               verbose = 1             # possible values: 0 (minimal output), 1 (-v), 2 (-vv)
+               fail-under = 59
+               ignore-setters = true
+
+               [tool.coverage.run]
+               branch = true
+               relative_files = true
+               omit = ["*site-packages*", "setup.py", "tests/unit/*"]
+
+               [tool.coverage.report]
+               skip_covered = false
+               skip_empty = true
+               exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
+               omit = ["tests/*"]
+
+               [tool.coverage.xml]
+               output = "report/coverage/coverage.xml"
+
+               [tool.coverage.json]
+               output = "report/coverage/coverage.json"
+
+               [tool.coverage.html]
+               directory = "report/coverage/html"
+               title="Code Coverage of myPackage"
 
 
-GitHub Actions
-**************
+.. image:: _static/pyTooling-Actions-SimplePackage.png
 
-* :ref:`ACTION/Releaser`
-* :ref:`ACTION/WithPostStep`
 
 References
 **********
@@ -155,18 +281,16 @@ License
    :hidden:
 
    JobTemplate/index
-   JobTemplate/Parameters
-   JobTemplate/CoverageCollection
-   JobTemplate/UnitTesting
-   JobTemplate/StaticTypeCheck
-   JobTemplate/PublishTestResults
-   JobTemplate/Package
-   JobTemplate/PublishOnPyPI
-   JobTemplate/VerifyDocs
-   JobTemplate/BuildTheDocs
-   JobTemplate/PublishToGitHubPages
-   JobTemplate/Release
-   JobTemplate/ArtifactCleanUp
+   JobTemplate/AllInOne/index
+   JobTemplate/Setup/index
+   JobTemplate/Testing/index
+   JobTemplate/Quality/index
+   JobTemplate/Documentation/index
+   JobTemplate/Package/index
+   JobTemplate/Publish/index
+   JobTemplate/Release/index
+   JobTemplate/Cleanup/index
+   JobTemplate/Deprecated/index
 
 .. raw:: latex
 
@@ -176,9 +300,10 @@ License
    :caption: pyDummy Example
    :hidden:
 
-   pyDummy/pyDummy
+   Python Class Reference <myPackage/myPackage>
    unittests/index
    coverage/index
+   CodeCoverage
    Doc. Coverage Report <DocCoverage>
    Static Type Check Report ➚ <typing/index>
 
@@ -192,4 +317,7 @@ License
 
    License
    Doc-License
+   Glossary
+   genindex
+   Python Module Index <modindex>
    TODO

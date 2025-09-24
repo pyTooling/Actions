@@ -94,6 +94,7 @@ jobs:
           name: ${{ inputs.wheel }}
           path: install
 
+      # TODO: extract step to an Action so package lists are shared with UnitTesting (and GHDL?)
       - name: Compute pacman/pacboy packages
         id: pacboy
         if: matrix.system == 'msys2'
@@ -199,7 +200,7 @@ jobs:
             ${{ inputs.pacboy }}
 
       - name: 🐍 Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         if: matrix.system != 'msys2'
         with:
           python-version: ${{ matrix.python }}
@@ -225,7 +226,7 @@ jobs:
           python -m pip install --disable-pip-version-check -U install/*.whl
 
       - name: ✅ Run application tests (Ubuntu/macOS)
-        if: matrix.system != 'windows'
+        if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
 
@@ -240,7 +241,7 @@ jobs:
           fi
 
       - name: ✅ Run application tests (Windows)
-        if: matrix.system == 'windows'
+        if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
 

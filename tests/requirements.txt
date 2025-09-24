@@ -5,9 +5,9 @@ Coverage ~= 7.10
 
 # Test Runner
 pytest ~= 8.4
-pytest-cov ~= 6.2
+pytest-cov ~= 7.0
 
 # Static Type Checking
-mypy ~= 1.17
-typing_extensions ~= 4.14
+mypy[reports] ~= 1.18
+typing_extensions ~= 4.15
 lxml ~= 6.0
