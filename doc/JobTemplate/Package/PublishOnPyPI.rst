@@ -7,11 +7,11 @@
 PublishOnPyPI
 #############
 
-Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to `PyPI <https://pypi.org/>`__.
+Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :term:`PyPI`.
 
 .. topic:: Features
 
-   * Publish a Python package to `PyPI <https://pypi.org/>`__.
+   * Publish a Python package to :term:`PyPI`.
 
 .. topic:: Behavior
 
@@ -191,7 +191,7 @@ PYPI_TOKEN
 :Type:            string
 :Required:        no
 :Default Value:   — — — —
-:Description:     The token to publish and upload packages on `PyPI <https://pypi.org/>`__.
+:Description:     The token to publish and upload packages on :term:`PyPI`.
 
 
 .. _JOBTMPL/PublishOnPyPI/Outputs:

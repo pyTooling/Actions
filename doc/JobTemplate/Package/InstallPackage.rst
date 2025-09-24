@@ -12,12 +12,13 @@ the installation is verified. This aims for packaging and dependency mistakes in
 .. topic:: Features
 
    * Install generated Python package on the target platform.
+   * Verify the installed package's version.
 
 .. topic:: Behavior
 
    * Download Python package as artifact.
    * Prepare the Python environment.
-   * Install the Python package using ``pip``.
+   * Install the Python package using :term:`pip`.
    * Read out and verify the package version.
 
 .. topic:: Job Execution

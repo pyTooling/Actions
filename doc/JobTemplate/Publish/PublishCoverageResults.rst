@@ -424,7 +424,7 @@ CODECOV_TOKEN
 :Type:            string
 :Required:        no
 :Default Value:   — — — —
-:Description:     The token to publish code coverage and unit test results to `CodeCov <https://about.codecov.io//>`__.
+:Description:     The token to publish code coverage and unit test results to :term:`CodeCov`.
 
 
 .. _JOBTMPL/PublishCoverageResults/Secret/CODACY_TOKEN:
@@ -435,7 +435,7 @@ CODACY_TOKEN
 :Type:            string
 :Required:        no
 :Default Value:   — — — —
-:Description:     The token to publish code coverage results to `Codacy <https://www.codacy.com/>`__.
+:Description:     The token to publish code coverage results to :term:`Codacy`.
 
 
 

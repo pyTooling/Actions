@@ -13,8 +13,8 @@ JUnit test summary reports to multiple services for visualization and longterm s
 
 Supported services are:
 
-* GitHub Actions job results using :gh:`dorny/test-reporter`
-* `Codecov <https://about.codecov.io/>`__
+* GitHub Actions job results using :term:`Test Reporter`
+* :term:`Codecov`
 
 .. topic:: Features
 
@@ -29,10 +29,10 @@ Supported services are:
       pattern (see :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern`) for limiting the number of
       downloaded artifacts and the hereby generated traffic.
    3. Rename the found JUnit XML files.
-   4. Merge all found JUnit XML files using :pypi:`pyEDAA.Reports` into a new JUnit XML file. |br|
+   4. Merge all found JUnit XML files using :term:`pyEDAA.Reports` into a new JUnit XML file. |br|
       Optionally, apply certain transformation and cleanup operations to the JUnit report structure.
-   5. Publish test results as a markdown report page to GitHub Actions using :gh:`dorny/test-reporter`.
-   6. Publish test results to `Codecov <https://about.codecov.io/>`__ using :gh:`codecov/test-results-action`.
+   5. Publish test results as a markdown report page to GitHub Actions using :term:`Test Reporter`.
+   6. Publish test results to :term:`Codecov` using :gh:`codecov/test-results-action`.
 
 .. topic:: Job Execution
 
@@ -325,7 +325,7 @@ CODECOV_TOKEN
 :Type:            string
 :Required:        no
 :Default Value:   — — — —
-:Description:     The token to publish unit test results on  `Codecov <https://about.codecov.io/>`__.
+:Description:     The token to publish unit test results on  :term:`CodeCov`.
 
 
 .. _JOBTMPL/PublishTestResults/Outputs:

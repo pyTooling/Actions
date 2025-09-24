@@ -10,16 +10,16 @@ UnitTesting
 This template runs multiple jobs from a matrix as a cross of Python versions and systems. The summary report in junit
 XML format is optionally uploaded as an artifact.
 
-Configuration options to ``pytest`` should be given via section ``[tool.pytest.ini_options]`` in a ``pyproject.toml``
-file.
+Configuration options to :term:`pytest` should be given via section ``[tool.pytest.ini_options]`` in a
+``pyproject.toml`` file.
 
 .. topic:: Features
 
-   * Execute unit tests using `pytest <https://docs.pytest.org/en/stable/>`__.
+   * Execute unit tests using :term:`pytest`.
 
      * Provide unit test results as JUnit XML file (pyTest XML dialect).
 
-   * Collect code coverage using `Coverage.py <https://coverage.readthedocs.io/>`__.
+   * Collect code coverage using :term:`Coverage.py`.
 
      * Provide code coverage results as pytest SQLite database.
      * Provide code coverage results as Cobertura XML file.
@@ -30,7 +30,7 @@ file.
 
    1. Checkout repository.
    2. Setup environment and install dependencies (``apt``, ``homebrew``, ``pacman``, ...).
-   3. Setup Python and install dependencies (``pip``).
+   3. Setup Python and install dependencies (:term:`pip`).
    4. Run instructions from ``*_before_script`` parameter.
    5. Run unit tests using *pytest* and if enabled in combination with *Coverage.py*.
    6. Convert gathered results to other formats.
