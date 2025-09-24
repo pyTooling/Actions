@@ -289,7 +289,7 @@ Instantiation
 *************
 
 The following instantiation example creates a ``SimplePackage`` job derived from job template ``CompletePipeline``
-version ``@r5``. It only requires the `package_name` parameter to run a full pipeline suitable for a Python project.
+version ``@r6``. It only requires the `package_name` parameter to run a full pipeline suitable for a Python project.
 
    .. grid:: 2
 
@@ -307,7 +307,7 @@ version ``@r5``. It only requires the `package_name` parameter to run a full pip
 
                   jobs:
                     SimplePackage:
-                      uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                      uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
                       with:
 
                         package_name: myPackage
@@ -321,7 +321,7 @@ version ``@r5``. It only requires the `package_name` parameter to run a full pip
 
                   jobs:
                     NamespacePackage:
-                      uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                      uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
                       with:
                         package_namespace: myFramework
                         package_name:      Extension
@@ -457,7 +457,7 @@ package_namespace
 
                            jobs:
                              NamespacePackage:
-                               uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                               uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
                                with:
                                  package_namespace: myFramework
                                  package_name:      Extension
@@ -505,7 +505,7 @@ package_name
 
                            jobs:
                              SimplePackage:
-                               uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                               uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
                                with:
                                  package_name: myPackage
 

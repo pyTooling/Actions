@@ -121,7 +121,7 @@ Example Pipelines
 
                jobs:
                  SimplePackage:
-                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
                    with:
                      package_name: myPackage
                      codecov:      true
@@ -147,7 +147,7 @@ Example Pipelines
 
                jobs:
                  NamespacePackage:
-                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r5
+                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
                    with:
                      package_namespace: myFramework
                      package_name:      Extension

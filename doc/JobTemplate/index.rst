@@ -45,7 +45,7 @@ Some templates might provide output parameters, which can be used in dependent j
 
    jobs:
      <InstanceName>:
-       uses: <GitHubOrganization>/<Repository>/.github/workflows/<Template>.yml@r5
+       uses: <GitHubOrganization>/<Repository>/.github/workflows/<Template>.yml@r6
        with:
          <Param1>: <Value1>
          <Param2>: <Value2>

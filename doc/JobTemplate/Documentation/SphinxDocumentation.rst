@@ -72,12 +72,12 @@ Instantiation
 
    jobs:
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r5
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
        with:
          package_name: myPackage
 
      Documentation:
-       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r5
+       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r6
        needs:
          - UnitTestingParams
        with:
@@ -199,7 +199,7 @@ coverage_report_json
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 
                   :directory: Directory or sub-directory where the code coverage JSON report will be extracted from
-                  :ref:`artifact <JOBTMPL/SphinxDocumentation/Input/coverage_json_artifact>`.
+                              :ref:`artifact <JOBTMPL/SphinxDocumentation/Input/coverage_json_artifact>`.
 :Description:     Directory as JSON object where the code coverage JSON report will be extracted. |br|
                   This path is configured in :file:`pyproject.toml` and can be extracted by
                   :ref:`JOBTMPL/ExtractConfiguration`.
@@ -207,10 +207,10 @@ coverage_report_json
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
 
                      Documentation:
-                       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r5
+                       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r6
                        needs:
                          - ConfigParams
                        with:
@@ -245,7 +245,7 @@ unittest_xml
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 
                   :directory: Directory or sub-directory where the unittest JUnit XML report will be extracted from
-                  :ref:`artifact <JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact>`.
+                              :ref:`artifact <JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact>`.
 :Description:     Directory as JSON object where the unittest JUnit XML report will be extracted. |br|
                   This path is configured in :file:`pyproject.toml` and can be extracted by
                   :ref:`JOBTMPL/ExtractConfiguration`.
@@ -253,10 +253,10 @@ unittest_xml
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r5
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
 
                      Documentation:
-                       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r5
+                       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r6
                        needs:
                          - ConfigParams
                        with:
