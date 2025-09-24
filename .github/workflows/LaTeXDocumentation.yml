@@ -29,25 +29,35 @@ on:
         required: false
         default: '24.04'
         type: string
+      latex_artifact:
+        description: 'Name of the LaTeX documentation artifact.'
+        required: true
+        type: string
       document:
         description: 'LaTeX root document without *.tex extension.'
         required: true
         type: string
-      latex_artifact:
-        description: 'Name of the LaTeX documentation artifact.'
+      processor:
+        description: 'Name of the used LaTeX processor.'
         required: false
-        default: ''
+        default: 'xelatex'
         type: string
       pdf_artifact:
         description: 'Name of the PDF documentation artifact.'
         required: false
         default: ''
         type: string
+      can-fail:
+        description: 'Translation from LaTeX to PDF may fail.'
+        required: false
+        default: 'false'
+        type: string
 
 jobs:
   PDFDocumentation:
     name: 📓 Converting LaTeX Documentation to PDF
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
+    continue-on-error: ${{ inputs.can-fail == 'true' }}
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
         uses: pyTooling/download-artifact@v5
@@ -55,21 +65,22 @@ jobs:
           name: ${{ inputs.latex_artifact }}
           path: latex
 
-      - name: Debug
-        run: |
-          tree -pash .
+#      - name: Debug
+#        run: |
+#          tree -pash .
 
       - name: Build LaTeX document using 'pytooling/miktex:sphinx'
         uses: addnab/docker-run-action@v3
+        if: inputs.pdf_artifact != ''
         with:
           image: pytooling/miktex:sphinx
           options: -v ${{ github.workspace }}/latex:/latex --workdir /latex
           run: |
-            which pdflatex
-            pwd
-            ls -lAh
+            # which ${{ inputs.processor }}
+            # pwd
+            # ls -lAh
 
-            latexmk -xelatex ${{ inputs.document }}.tex
+            latexmk -${{ inputs.processor }} "${{ inputs.document }}.tex"
 
       - name: 📤 Upload 'PDF Documentation' artifact
         uses: pyTooling/upload-artifact@v4

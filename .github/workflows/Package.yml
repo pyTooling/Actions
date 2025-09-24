@@ -46,11 +46,11 @@ on:
         type: string
 
 jobs:
-
   Package:
     name: 📦 Package in Source and Wheel Format
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
-
+    env:
+      artifact: ${{ inputs.artifact }}
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v5
@@ -59,7 +59,7 @@ jobs:
           submodules: true
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ inputs.python_version }}
 
@@ -79,15 +79,15 @@ jobs:
 
       # build (not isolated)
 
-      - name: 🔧 [build] Install dependencies for packaging and release
+      - name: 🔧 [build - no-isolation] Install dependencies for packaging and release
         if: inputs.requirements == 'no-isolation'
         run: python -m pip install --disable-pip-version-check build
 
-      - name: 🔨 [build] Build Python package (source distribution)
+      - name: 🔨 [build - no-isolation] Build Python package (source distribution)
         if: inputs.requirements == 'no-isolation'
         run: python -m build --no-isolation --sdist
 
-      - name: 🔨 [build] Build Python package (binary distribution - wheel)
+      - name: 🔨 [build - no-isolation] Build Python package (binary distribution - wheel)
         if: inputs.requirements == 'no-isolation'
         run: python -m build --no-isolation --wheel
 

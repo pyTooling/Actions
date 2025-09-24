@@ -73,7 +73,7 @@ jobs:
             python-tomli:p
 
       - name: 🐍 Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         if: matrix.system != 'msys2'
         with:
           python-version: ${{ matrix.python }}
@@ -84,17 +84,17 @@ jobs:
           python -m pip install --disable-pip-version-check -U wheel
 
       - name: 🔧 Install wheel from artifact (Ubuntu/macOS)
-        if: matrix.system != 'windows'
+        if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
         run: |
           python -m pip install --disable-pip-version-check -U install/*.whl
 
       - name: 🔧 Install wheel from artifact (Windows)
-        if: matrix.system == 'windows'
+        if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
         run: |
           python -m pip install -v --disable-pip-version-check (Get-Item .\install\*.whl).FullName
 
-      - name: 📦 Run application tests (Ubuntu/macOS)
-        if: matrix.system != 'windows'
+      - name: 📦 Run Package Version Check (Ubuntu/macOS)
+        if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
         run: |
           set +e
 
@@ -116,8 +116,8 @@ jobs:
             exit 1
           fi
 
-      - name: 📦 Run application tests (Windows)
-        if: matrix.system == 'windows'
+      - name: 📦 Run Package Version Check (Windows)
+        if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
         run: |
           $result=$(python -c "from ${{ inputs.package_name }} import __version__; print(f""Package version: {__version__}"")")
           Write-Host $result

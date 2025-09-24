@@ -41,8 +41,7 @@ on:
         type: string
       tag:
         description: 'Name of the release (tag).'
-        required: false
-        default: ''
+        required: true
         type: string
       title:
         description: 'Title of the release.'
@@ -82,7 +81,7 @@ on:
       latest:
         description: 'Specify if this is the latest release.'
         required: false
-        default: false
+        default: true
         type: boolean
       replacements:
         description: 'Multi-line string containing search=replace patterns.'
@@ -344,7 +343,7 @@ jobs:
           NOTES="${NOTES//%%gh_workflow_name%%/${{ github.workflow }}}"
           NOTES="${NOTES//%%gh_owner%%/${{ github.repository_owner }}}"
           NOTES="${NOTES//%%gh_repo%%/${repo}}"
-          NOTES="${NOTES//%%gh_owner_repo%%/${{ github.repository_owner }}}"
+          NOTES="${NOTES//%%gh_owner_repo%%/${{ github.repository }}}"
           #NOTES="${NOTES//%%gh_pages%%/https://${{ github.repository_owner }}.github.io/${repo}/}"
           NOTES="${NOTES//%%gh_runid%%/${{ github.run_id }}}"
           NOTES="${NOTES//%%gh_actor%%/${{ github.actor }}}"

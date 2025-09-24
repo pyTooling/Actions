@@ -58,7 +58,7 @@ on:
       system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu windows macos macos-arm mingw64 ucrt64'
+        default: 'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'
         type: string
       include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'
@@ -68,22 +68,32 @@ on:
       exclude_list:
         description: 'Space separated list of system:python items to be excluded from the list of test.'
         required: false
-        default: ''
+        default: 'windows-arm:3.9 windows-arm:3.10'
         type: string
       disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
         required: false
-        default: ''
+        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
         type: string
       ubuntu_image:
-        description: 'The used GitHub Action image for Ubuntu based jobs.'
+        description: 'The used GitHub Action image for Ubuntu (x86-64) based jobs.'
         required: false
         default: 'ubuntu-24.04'
         type: string
-      windows_image:
-        description: 'The used GitHub Action image for Windows based jobs.'
+      ubuntu_arm_image:
+        description: 'The used GitHub Action image for Ubuntu (aarch64) based jobs.'
         required: false
-        default: 'windows-2022'
+        default: 'ubuntu-24.04-arm'
+        type: string
+      windows_image:
+        description: 'The used GitHub Action image for Windows Server (x86-64) based jobs.'
+        required: false
+        default: 'windows-2025'
+        type: string
+      windows_arm_image:
+        description: 'The used GitHub Action image for Windows (aarch64) based jobs.'
+        required: false
+        default: 'windows-11-arm'
         type: string
       macos_intel_image:
         description: 'The used GitHub Action image for macOS (Intel x86-64) based jobs.'
@@ -93,7 +103,7 @@ on:
       macos_arm_image:
         description: 'The used GitHub Action image for macOS (ARM aarch64) based jobs.'
         required: false
-        default: 'macos-14'
+        default: 'macos-15'
         type: string
       pipeline-delay:
         description: 'Slow down this job, to delay the startup of the GitHub Action pipline.'
@@ -105,25 +115,33 @@ on:
       python_version:
         description: "Default Python version for other jobs."
         value: ${{ jobs.Parameters.outputs.python_version }}
-      python_jobs:
-        description: "List of Python versions (and system combinations) to be used in the matrix of other jobs."
-        value: ${{ jobs.Parameters.outputs.python_jobs }}
+      package_fullname:
+        description: "The package's full name."
+        value: ${{ jobs.Parameters.outputs.package_fullname }}
+      package_directory:
+        description: "The package's directory."
+        value: ${{ jobs.Parameters.outputs.package_directory }}
+      artifact_basename:
+        description: "Artifact base name."
+        value: ${{ jobs.Parameters.outputs.artifact_basename }}
       artifact_names:
         description: "Pre-defined artifact names for other jobs."
         value: ${{ jobs.Parameters.outputs.artifact_names }}
-      params:
-        description: "Parameters to be used in other jobs."
-        value: ${{ jobs.Parameters.outputs.params }}
+      python_jobs:
+        description: "List of Python versions (and system combinations) to be used in the matrix of other jobs."
+        value: ${{ jobs.Parameters.outputs.python_jobs }}
 
 jobs:
   Parameters:
     name: ✎ Generate pipeline parameters
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     outputs:
-      python_version:   ${{ steps.params.outputs.python_version }}
-      python_jobs:      ${{ steps.params.outputs.python_jobs }}
-      artifact_names:   ${{ steps.params.outputs.artifact_names }}
-      params:           ${{ steps.params.outputs.params }}
+      python_version:    ${{ steps.variables.outputs.python_version }}
+      package_fullname:  ${{ steps.variables.outputs.package_fullname }}
+      package_directory: ${{ steps.variables.outputs.package_directory }}
+      artifact_basename: ${{ steps.variables.outputs.artifact_basename }}
+      artifact_names:    ${{ steps.artifacts.outputs.artifact_names }}
+      python_jobs:       ${{ steps.jobs.outputs.python_jobs }}
 
     steps:
       - name: Generate a startup delay of ${{ inputs.pipeline-delay }} seconds
@@ -132,8 +150,98 @@ jobs:
         run: |
           sleep ${{ inputs.pipeline-delay }}
 
-      - name: Generate 'params' and 'python_jobs'
-        id: params
+      - name: Generate 'python_version'
+        id: variables
+        shell: python
+        run: |
+          from os       import getenv
+          from pathlib  import Path
+          from sys      import exit
+          from textwrap import dedent
+
+          python_version =    "${{ inputs.python_version }}".strip()
+          package_namespace = "${{ inputs.package_namespace }}".strip()
+          package_name =      "${{ inputs.package_name }}".strip()
+          name =              "${{ inputs.name }}".strip()
+
+          if package_namespace == "":  # or package_namespace == ".":
+            package_fullname = package_name
+            package_directory = package_name
+          elif package_namespace[-2:] == ".*":
+            package_fullname = package_namespace[:-2]
+            package_directory = package_namespace[:-2]
+          else:
+            package_fullname = f"{package_namespace}.{package_name}"
+            package_directory = f"{package_namespace}/{package_name}"
+
+          artifact_basename = package_fullname if name == "" else name
+          if artifact_basename == "" or artifact_basename == ".":
+            print("::error title=Parameter::artifact_basename is empty.")
+            exit(1)
+
+          print("Variables:")
+          print(f"  python_version:    {python_version}")
+          print(f"  package_fullname:  {package_fullname}")
+          print(f"  package_directory: {package_directory}")
+          print(f"  artifact_basename: {artifact_basename}")
+
+          # Write jobs to special file
+          github_output = Path(getenv("GITHUB_OUTPUT"))
+          print(f"GITHUB_OUTPUT: {github_output}")
+          with github_output.open("a+", encoding="utf-8") as f:
+            f.write(dedent(f"""\
+              python_version={python_version}
+              package_fullname={package_fullname}
+              package_directory={package_directory}
+              artifact_basename={artifact_basename}
+          """))
+
+      - name: Generate 'artifact_names'
+        id: artifacts
+        shell: python
+        run: |
+          from json import dumps as json_dumps
+          from os import getenv
+          from pathlib import Path
+          from textwrap import dedent
+
+          package_namespace = "${{ inputs.package_namespace }}".strip()
+          package_name =      "${{ inputs.package_name }}".strip()
+          artifact_basename = "${{ steps.variables.outputs.artifact_basename }}"
+
+          artifact_names = {
+            "unittesting_xml":        f"{artifact_basename}-UnitTestReportSummary-XML",
+            "unittesting_html":       f"{artifact_basename}-UnitTestReportSummary-HTML",
+            "perftesting_xml":        f"{artifact_basename}-PerformanceTestReportSummary-XML",
+            "benchtesting_xml":       f"{artifact_basename}-BenchmarkTestReportSummary-XML",
+            "apptesting_xml":         f"{artifact_basename}-ApplicationTestReportSummary-XML",
+            "codecoverage_sqlite":    f"{artifact_basename}-CodeCoverage-SQLite",
+            "codecoverage_xml":       f"{artifact_basename}-CodeCoverage-XML",
+            "codecoverage_json":      f"{artifact_basename}-CodeCoverage-JSON",
+            "codecoverage_html":      f"{artifact_basename}-CodeCoverage-HTML",
+            "statictyping_cobertura": f"{artifact_basename}-StaticTyping-Cobertura-XML",
+            "statictyping_junit":     f"{artifact_basename}-StaticTyping-JUnit-XML",
+            "statictyping_html":      f"{artifact_basename}-StaticTyping-HTML",
+            "package_all":            f"{artifact_basename}-Packages",
+            "documentation_html":     f"{artifact_basename}-Documentation-HTML",
+            "documentation_latex":    f"{artifact_basename}-Documentation-LaTeX",
+            "documentation_pdf":      f"{artifact_basename}-Documentation-PDF",
+          }
+
+          print("Artifacts Names ({len(artifact_names)}):")
+          for id, artifactName in artifact_names.items():
+            print(f"  {id:>24}: {artifactName}")
+
+          # Write jobs to special file
+          github_output = Path(getenv("GITHUB_OUTPUT"))
+          print(f"GITHUB_OUTPUT: {github_output}")
+          with github_output.open("a+", encoding="utf-8") as f:
+            f.write(dedent(f"""\
+              artifact_names={json_dumps(artifact_names)}
+          """))
+
+      - name: Generate 'python_jobs'
+        id: jobs
         shell: python
         run: |
           from json import dumps as json_dumps
@@ -142,25 +250,17 @@ jobs:
           from textwrap import dedent
           from typing import Iterable
 
-          package_namespace = "${{ inputs.package_namespace }}".strip()
-          package_name =      "${{ inputs.package_name }}".strip()
-          name =              "${{ inputs.name }}".strip()
-          python_version = "${{ inputs.python_version }}".strip()
+          python_version = "${{ steps.variables.outputs.python_version }}"
+          name =           "${{ steps.variables.outputs.artifact_basename }}"
           systems =        "${{ inputs.system_list }}".strip()
           versions =       "${{ inputs.python_version_list }}".strip()
           include_list =   "${{ inputs.include_list }}".strip()
           exclude_list =   "${{ inputs.exclude_list }}".strip()
           disable_list =   "${{ inputs.disable_list }}".strip()
 
-          if name == "":
-            if package_namespace == "" or package_namespace == ".":
-              name = f"{package_name}"
-            else:
-              name = f"{package_namespace}.{package_name}"
-
           currentMSYS2Version = "3.12"
           currentAlphaVersion = "3.14"
-          currentAlphaRelease = "3.14.0-alpha.1"
+          currentAlphaRelease = "3.14.0-rc.2"
 
           if systems == "":
             print("::error title=Parameter::system_list is empty.")
@@ -194,7 +294,7 @@ jobs:
           if currentAlphaVersion in versions:
             print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
           for disable in disabled:
-            print(f"::warning title=Disabled Python Job::System '{disable}' temporarily disabled.")
+            print(f"::warning title=Disabled Python Job::{name}: Job combination '{disable}' temporarily disabled.")
 
           # see https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
           data = {
@@ -215,10 +315,12 @@ jobs:
             },
             # Runner systems (runner images) supported by GitHub Actions
             "sys": {
-              "ubuntu":    { "icon": "🐧", "runs-on": "${{ inputs.ubuntu_image }}",      "shell": "bash", "name": "Linux (x86-64)"   },
-              "windows":   { "icon": "🪟", "runs-on": "${{ inputs.windows_image }}",     "shell": "pwsh", "name": "Windows (x86-64)" },
-              "macos":     { "icon": "🍎", "runs-on": "${{ inputs.macos_intel_image }}", "shell": "bash", "name": "macOS (x86-64)"   },
-              "macos-arm": { "icon": "🍏", "runs-on": "${{ inputs.macos_arm_image }}",   "shell": "bash", "name": "macOS (aarch64)"  },
+              "ubuntu":      { "icon": "🐧", "runs-on": "${{ inputs.ubuntu_image }}",      "shell": "bash", "name": "Linux (x86-64)"   },
+              "ubuntu-arm":  { "icon": "⛄", "runs-on": "${{ inputs.ubuntu_arm_image }}",  "shell": "bash", "name": "Linux (aarch64)"   },
+              "windows":     { "icon": "🪟", "runs-on": "${{ inputs.windows_image }}",     "shell": "pwsh", "name": "Windows (x86-64)" },
+              "windows-arm": { "icon": "🏢", "runs-on": "${{ inputs.windows_arm_image }}", "shell": "pwsh", "name": "Windows (aarch64)" },
+              "macos":       { "icon": "🍎", "runs-on": "${{ inputs.macos_intel_image }}", "shell": "bash", "name": "macOS (x86-64)"   },
+              "macos-arm":   { "icon": "🍏", "runs-on": "${{ inputs.macos_arm_image }}",   "shell": "bash", "name": "macOS (aarch64)"  },
             },
             # Runtimes provided by MSYS2
             "runtime": {
@@ -300,7 +402,7 @@ jobs:
             {
               "sysicon": data["runtime"][runtime]["icon"],
               "system":  "msys2",
-              "runs-on": "windows-latest",
+              "runs-on": "${{ inputs.windows_image }}",
               "runtime": runtime.upper(),
               "shell":   "msys2 {0}",
               "pyicon":  data["python"][currentMSYS2Version]["icon"],
@@ -310,31 +412,11 @@ jobs:
             for runtime, version in combinations if runtime not in data["sys"]
           ]
 
-          artifact_names = {
-            "unittesting_xml":     f"{name}-UnitTestReportSummary-XML",
-            "unittesting_html":    f"{name}-UnitTestReportSummary-HTML",
-            "perftesting_xml":     f"{name}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":    f"{name}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":      f"{name}-ApplicationTestReportSummary-XML",
-            "codecoverage_sqlite": f"{name}-CodeCoverage-SQLite",
-            "codecoverage_xml":    f"{name}-CodeCoverage-XML",
-            "codecoverage_json":   f"{name}-CodeCoverage-JSON",
-            "codecoverage_html":   f"{name}-CodeCoverage-HTML",
-            "statictyping_html":   f"{name}-StaticTyping-HTML",
-            "package_all":         f"{name}-Packages",
-            "documentation_html":  f"{name}-Documentation-HTML",
-            "documentation_latex": f"{name}-Documentation-LaTeX",
-            "documentation_pdf":   f"{name}-Documentation-PDF",
-          }
-
           print("Parameters:")
           print(f"  python_version: {python_version}")
           print(f"  python_jobs ({len(jobs)}):\n" +
             "".join([f"    {{ " + ", ".join([f"\"{key}\": \"{value}\"" for key, value in job.items()]) + f" }},\n" for job in jobs])
           )
-          print(f"  artifact_names ({len(artifact_names)}):")
-          for id, name in artifact_names.items():
-            print(f"    {id:>20}: {name}")
 
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))
@@ -343,13 +425,17 @@ jobs:
             f.write(dedent(f"""\
               python_version={python_version}
               python_jobs={json_dumps(jobs)}
-              artifact_names={json_dumps(artifact_names)}
           """))
 
       - name: Verify out parameters
         id: verify
         run: |
-          printf "python_version: %s\n" '${{ steps.params.outputs.python_version }}'
-          printf "python_jobs:    %s\n" '${{ steps.params.outputs.python_jobs }}'
-          printf "artifact_names: %s\n" '${{ steps.params.outputs.artifact_names }}'
-          printf "params:         %s\n" '${{ steps.params.outputs.params }}'
+          printf "python_version:     %s\n" '${{ steps.variables.outputs.python_version }}'
+          printf "package_fullname:   %s\n" '${{ steps.variables.outputs.package_fullname }}'
+          printf "package_directory:  %s\n" '${{ steps.variables.outputs.package_directory }}'
+          printf "artifact_basename:  %s\n" '${{ steps.variables.outputs.artifact_basename }}'
+          printf "====================\n"
+          printf "artifact_names:     %s\n" '${{ steps.artifacts.outputs.artifact_names }}'
+          printf "====================\n"
+          printf "python_jobs:        %s\n" '${{ steps.jobs.outputs.python_jobs }}'
+          printf "====================\n"

@@ -1,0 +1,201 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2025-2025 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Code Quality Checking
+
+on:
+  workflow_call:
+    inputs:
+      ubuntu_image_version:
+        description: 'Ubuntu image version.'
+        required: false
+        default: '24.04'
+        type: string
+      python_version:
+        description: 'Python version.'
+        required: false
+        default: '3.13'
+        type: string
+      package_directory:
+        description: 'The package''s directory'
+        required: true
+        type: string
+      requirements:
+        description: 'Python dependencies to be installed through pip.'
+        required: false
+        default: '-r requirements.txt'
+        type: string
+      bandit:
+        description: 'Run bandit checks.'
+        required: false
+        default: 'true'
+        type: string
+      radon:
+        description: 'Run radon checks.'
+        required: false
+        default: 'true'
+        type: string
+      pylint:
+        description: 'Run pylint checks.'
+        required: false
+        default: 'true'
+        type: string
+      artifact:
+        description: 'Name of the package artifact.'
+        required: true
+        type: string
+
+jobs:
+  Bandit:
+    name: 🚨 Security Scanning (Bandit)
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
+    if: inputs.bandit == 'true'
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v5
+        with:
+          lfs: true
+          submodules: true
+
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: ⚙ Install dependencies for running bandit
+        run: python -m pip install --disable-pip-version-check bandit
+
+      - name: 👮 Bandit
+        id: bandit
+        if: inputs.artifact != ''
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_BLUE=$'\x1b[94m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          bandit_directory=report/bandit
+          bandit_fullpath=report/bandit/report.xml
+
+          tee "${GITHUB_OUTPUT}" <<EOF
+          bandit_directory=${bandit_directory}
+          bandit_fullpath=${bandit_fullpath}
+          EOF
+
+          mkdir -p ${bandit_directory}
+          printf "\nRun bandit ...\n"
+          bandit -c pyproject.toml -r ${{ inputs.package_directory }} -f xml -o ${bandit_fullpath}
+          if [[ $? -eq 0 ]]; then
+            printf "Bandit result: ${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
+
+            printf "bandit_passed=true\n" >> "${GITHUB_OUTPUT}"
+          else
+            faults=$(grep -Poh '(?<=<testsuite\sname="bandit"\stests=")(\d+)(?=">)' ${bandit_fullpath})
+
+            printf "Bandit result: ${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf "  ${ANSI_LIGHT_RED}Bandit found %s issues.${ANSI_NOCOLOR}\n" "${faults}"
+            printf "::error title=%s::%s\n" "🚨 Security Scanning (Bandit)" "Bandi found ${faults} issues."
+
+            printf "bandit_passed=false\n" >> "${GITHUB_OUTPUT}"
+
+            printf "::group::${ANSI_LIGHT_BLUE}JUnit XML report created by Bandit ...${ANSI_NOCOLOR}\n"
+            cat ${bandit_fullpath}
+            printf "\n::endgroup::\n"
+          fi
+
+      - name: 📊 Publish Bandit Results
+        uses: dorny/test-reporter@v2
+        if: steps.bandit.outputs.bandit_passed == 'false'
+        continue-on-error: true
+        with:
+          name:     'Bandit Results'
+          path:     ${{ steps.bandit.outputs.bandit_fullpath }}
+          reporter: java-junit
+
+  Radon:
+    name: ☢️ Metrics and Complexity
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
+    if: inputs.radon == 'true'
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v5
+        with:
+          lfs: true
+          submodules: true
+
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: ⚙ Install dependencies for running radon
+        run: python -m pip install --disable-pip-version-check radon
+
+      - name: Code Metrics
+#        if: inputs.artifact != ''
+        run: |
+          radon raw ${{ inputs.package_directory }} -s
+
+      - name: Code Complexity
+#        if: inputs.artifact != ''
+        run: |
+          radon cc ${{ inputs.package_directory }} --total-average
+
+      - name: Halstead Complexity Metrics
+#        if: inputs.artifact != ''
+        run: |
+          radon hal ${{ inputs.package_directory }}
+
+      - name: Maintainability Index
+#        if: inputs.artifact != ''
+        run: |
+          radon mi ${{ inputs.package_directory }} -s
+
+  PyLint:
+    name: 🩺 Linting
+    runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
+    if: inputs.pylint == 'true'
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v5
+        with:
+          lfs: true
+          submodules: true
+
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: ⚙ Install dependencies for running PyLint
+        run: |
+          python -m pip install --disable-pip-version-check pylint
+          python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
+
+      - name: 🩺 PyLint
+#        if: inputs.artifact != ''
+        run: |
+          pylint ${{ inputs.package_directory }}

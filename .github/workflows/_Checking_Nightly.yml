@@ -42,7 +42,7 @@ jobs:
           retention-days: 1
 
   NightlyPage:
-    uses: pyTooling/Actions/.github/workflows/NightlyRelease.yml@r5
+    uses: ./.github/workflows/PublishReleaseNotes.yml
     needs:
       - Build
     permissions:
@@ -55,8 +55,9 @@ jobs:
         version=4.2.0
         tool=myTool
         prog=program
-      nightly_title: "Nightly Test Release"
-      nightly_description: |
+      tag: 4.2.0
+      title: "Nightly Test Release"
+      description: |
         This *nightly* release contains all latest and important artifacts created by %tool%'s CI pipeline.
 
         # %tool% %version%
@@ -79,7 +80,7 @@ jobs:
     secrets: inherit
 
   NightlyPageWithInventory:
-    uses: ./.github/workflows/NightlyRelease.yml
+    uses: ./.github/workflows/PublishReleaseNotes.yml
     needs:
       - Build
     permissions:
@@ -91,15 +92,15 @@ jobs:
         version=4.2.0
         tool=myTool
         prog=program
-      nightly_name: inventory
-      nightly_title: "Nightly Test Release with Inventory"
-      nightly_description: |
+      tag: inventory
+      title: "Nightly Test Release with Inventory"
+      description: |
         This *nightly* release contains all latest and important artifacts created by %tool%'s CI pipeline.
 
         # %tool% %version%
 
         * %prog%
-        * iventory.json
+        * inventory.json
       inventory-json: "inventory.json"
       inventory-version: 4.2.5
       inventory-categories: "kind1,kind2"

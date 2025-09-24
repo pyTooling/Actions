@@ -1,4 +1,6 @@
 .. _ACTION/WithPostStep:
+.. index::
+   single: GitHub Action; WithPostStep
 
 with-post-step
 ##############

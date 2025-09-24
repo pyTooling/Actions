@@ -36,10 +36,13 @@ to handover input parameters to the template.
    on:
      push:
      workflow_dispatch:
+     schedule:
+   # Every Friday at 22:00 - rerun pipeline to check for dependency-based issues
+       - cron: '0 22 * * 5'
 
    jobs:
      <InstanceName>:
-       uses: <GitHubOrganization>/<Repository>/.github/workflows/<Template>.yml@v0
+       uses: <GitHubOrganization>/<Repository>/.github/workflows/<Template>.yml@r6
        with:
          <Param1>: <Value>
 
@@ -57,15 +60,18 @@ Documentation Only (Sphinx)
    on:
      push:
      workflow_dispatch:
+     schedule:
+   # Every Friday at 22:00 - rerun pipeline to check for dependency-based issues
+       - cron: '0 22 * * 5'
 
    jobs:
      BuildTheDocs:
-       uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@r4
+       uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@r6
        with:
          artifact: Documentation
 
      PublishToGitHubPages:
-       uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r4
+       uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r6
        needs:
          - BuildTheDocs
        with:

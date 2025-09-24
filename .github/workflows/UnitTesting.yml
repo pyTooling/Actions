@@ -85,34 +85,54 @@ on:
         default: ''
         type: string
       tests_directory:
-        description: 'Path to the directory containing tests (relative to root_directory).'
+        description: 'Path to the directory containing tests (relative from root_directory).'
         required: false
         default: 'tests'
         type: string
       unittest_directory:
-        description: 'Path to the directory containing unit tests (relative to tests_directory).'
+        description: 'Path to the directory containing unit tests (relative from tests_directory).'
         required: false
         default: 'unit'
         type: string
-      unittest_report_xml_directory:
-        description: 'Path where to save the unittest summary report XML.'
+      unittest_report_xml:
+        description: 'JSON object describing the path where to save the unittest summary report XML.'
         required: false
-        default: 'report/unit'
-        type: string
-      unittest_report_xml_filename:
-        description: 'Filename of the unittest summary report XML.'
-        required: false
-        default: 'TestReportSummary.xml'
+        default: >-
+          { "directory": "report/unit",
+            "filename":  "TestReportSummary.xml",
+            "fullpath":  "report/unit/TestReportSummary.xml"
+          }
         type: string
       coverage_config:
         description: 'Path to the .coveragerc file. Use pyproject.toml by default.'
         required: false
         default: 'pyproject.toml'
         type: string
-      coverage_report_html_directory:
-        description: ''
+      coverage_report_xml:
+        description: 'JSON object describing the path where the coverage report in XML format will be generated.'
         required: false
-        default: 'report/coverage/html'
+        default: >-
+          { "directory": "report/coverage",
+            "filename":  "coverage.xml",
+            "fullpath":  "report/coverage/coverage.xml"
+          }
+        type: string
+      coverage_report_json:
+        description: 'JSON object describing the path where the coverage report in JSON format will be generated.'
+        required: false
+        default: >-
+          { "directory": "report/coverage",
+            "filename":  "coverage.json",
+            "fullpath":  "report/coverage/coverage.json"
+          }
+        type: string
+      coverage_report_html:
+        description: 'JSON object describing the path where the coverage report in HTML format will be generated.'
+        required: false
+        default: >-
+          { "directory": "report/coverage/html",
+          }
+#            "fullpath":  "report/coverage/html"
         type: string
       unittest_xml_artifact:
         description: "Generate unit test report with junitxml and upload results as an artifact."
@@ -172,7 +192,7 @@ jobs:
         run: brew install ${{ inputs.brew }}
 
       - name: 🔧 Install apt dependencies on Ubuntu
-        if: matrix.system == 'ubuntu' && inputs.apt != ''
+        if: ( matrix.system == 'ubuntu' || matrix.system == 'ubuntu-arm' ) && inputs.apt != ''
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ${{ inputs.apt }}
@@ -293,7 +313,7 @@ jobs:
             ${{ inputs.pacboy }}
 
       - name: 🐍 Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         if: matrix.system != 'msys2'
         with:
           python-version: ${{ matrix.python }}
@@ -326,10 +346,10 @@ jobs:
         run: ${{ inputs.macos_arm_before_script }}
 
       - name: 🐧 Ubuntu before scripts
-        if: matrix.system == 'ubuntu' && inputs.ubuntu_before_script != ''
+        if: ( matrix.system == 'ubuntu' || matrix.system == 'ubuntu-arm' ) && inputs.ubuntu_before_script != ''
         run: ${{ inputs.ubuntu_before_script }}
 
-      # Windows before script
+      # TODO: Windows before script
 
       - name: 🪟🟦 MinGW64 before scripts
         if: matrix.system == 'msys2' && matrix.runtime == 'MINGW64' && inputs.mingw64_before_script != ''
@@ -341,16 +361,17 @@ jobs:
 
 # Run pytests
 
+      # TODO: allow configuration of pytest_args
       - name: ✅ Run unit tests (Ubuntu/macOS)
         id: pytest_bash
-        if: matrix.system != 'windows'
+        if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
         continue-on-error: true
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
           export PYTHONPATH=$(pwd)
 
           cd "${{ inputs.root_directory || '.' }}"
-          [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ inputs.unittest_report_xml_directory }}/${{ inputs.unittest_report_xml_filename }}' || unset PYTEST_ARGS
+          [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}' || unset PYTEST_ARGS
           if [ -n '${{ inputs.coverage_config }}' ]; then
             printf "%s\n" "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
@@ -361,14 +382,14 @@ jobs:
 
       - name: ✅ Run unit tests (Windows)
         id: pytest_posh
-        if: matrix.system == 'windows'
+        if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
         continue-on-error: true
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
           $env:PYTHONPATH = (Get-Location).ToString()
 
           cd "${{ inputs.root_directory || '.' }}"
-          $PYTEST_ARGS = if ("${{ inputs.unittest_xml_artifact }}") { "--junitxml=${{ inputs.unittest_report_xml_directory }}/${{ inputs.unittest_report_xml_filename }}" } else { "" }
+          $PYTEST_ARGS = if ("${{ inputs.unittest_xml_artifact }}") { "--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}" } else { "" }
           if ("${{ inputs.coverage_config }}") {
             Write-Host "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
@@ -394,19 +415,19 @@ jobs:
         if: inputs.coverage_html_artifact != ''
         continue-on-error: true
         run: |
-          coverage html --data-file=.coverage -d ${{ inputs.coverage_report_html_directory }}
-          rm ${{ inputs.coverage_report_html_directory }}/.gitignore
+          coverage html --data-file=.coverage -d ${{ fromJson(inputs.coverage_report_html).directory }}
+          rm ${{ fromJson(inputs.coverage_report_html).directory }}/.gitignore
 
 # Upload artifacts
 
-      - name: 📤 Upload '${{ inputs.unittest_report_xml_filename }}' artifact
+      - name: 📤 Upload '${{ fromJson(inputs.unittest_report_xml).filename }}' artifact
         uses: pyTooling/upload-artifact@v4
         if: inputs.unittest_xml_artifact != ''
         continue-on-error: true
         with:
           name: ${{ inputs.unittest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          working-directory: ${{ inputs.unittest_report_xml_directory }}
-          path: ${{ inputs.unittest_report_xml_filename }}
+          working-directory: ${{ fromJson(inputs.unittest_report_xml).directory }}
+          path: ${{ fromJson(inputs.unittest_report_xml).filename }}
           if-no-files-found: error
           retention-days: 1
 
@@ -416,7 +437,7 @@ jobs:
 #        uses: pyTooling/upload-artifact@v4
 #        with:
 #          name: ${{ inputs.unittest_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-#          path: ${{ steps.getVariables.outputs.unittest_report_html_directory }}
+#          path: ${{ inputs.unittest_report_html_directory }}
 #          if-no-files-found: error
 #          retention-days: 1
 
@@ -437,7 +458,8 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          path: ${{ steps.getVariables.outputs.coverage_report_xml }}
+          working-directory: ${{ fromJson(inputs.coverage_report_xml).directory }}
+          path: ${{ fromJson(inputs.coverage_report_xml).filename }}
           if-no-files-found: error
           retention-days: 1
 
@@ -447,7 +469,8 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_json_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          path: ${{ steps.getVariables.outputs.coverage_report_json }}
+          working-directory: ${{ fromJson(inputs.coverage_report_json).directory }}
+          path: ${{ fromJson(inputs.coverage_report_json).filename }}
           if-no-files-found: error
           retention-days: 1
 
@@ -457,7 +480,7 @@ jobs:
         uses: pyTooling/upload-artifact@v4
         with:
           name: ${{ inputs.coverage_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          working-directory: ${{ steps.getVariables.outputs.coverage_report_html_directory }}
+          working-directory: ${{ fromJson(inputs.coverage_report_html).directory }}
           path: '*'
           if-no-files-found: error
           retention-days: 1

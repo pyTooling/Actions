@@ -30,12 +30,14 @@ on:
         default: '24.04'
         type: string
       sqlite_coverage_artifacts_prefix:
-        description: 'Prefix for SQLite coverage artifacts'
+        description: 'Prefix for SQLite coverage artifacts to be removed.'
         required: false
+        default: ''
         type: string
       xml_unittest_artifacts_prefix:
-        description: 'Prefix for XML unittest artifacts'
+        description: 'Prefix for XML unittest artifacts to be removed.'
         required: false
+        default: ''
         type: string
 
 jobs:

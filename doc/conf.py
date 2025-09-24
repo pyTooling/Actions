@@ -1,7 +1,7 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-from sys import path as sys_path
+from sys     import path as sys_path
 from os.path import abspath
 from pathlib import Path
 
@@ -12,7 +12,7 @@ from pyTooling.Packaging import extractVersionInformation
 # ==============================================================================
 githubNamespace = "pyTooling"
 githubProject = "Actions"
-pythonProject = "pyDummy"
+pythonProject = "myPackage"
 directoryName = pythonProject.replace('.', '/')
 
 
@@ -35,6 +35,7 @@ sys_path.insert(0, abspath(f"../{directoryName}"))
 packageInformationFile = Path(f"../{directoryName}/__init__.py")
 versionInformation = extractVersionInformation(packageInformationFile)
 
+project =   f"{githubNamespace}/{githubProject}"
 author =    versionInformation.Author
 copyright = versionInformation.Copyright
 version =   ".".join(versionInformation.Version.split(".")[:2])  # e.g. 2.3    The short X.Y version.
@@ -80,6 +81,7 @@ except Exception as ex:
 # ==============================================================================
 # Options for HTML output
 # ==============================================================================
+html_title = f"{githubNamespace}/{githubProject} v{versionInformation.Version}"
 html_theme = "sphinx_rtd_theme"
 html_theme_options = {
 	"logo_only": True,
@@ -190,7 +192,8 @@ extensions = [
 # Sphinx.Ext.InterSphinx
 # ==============================================================================
 intersphinx_mapping = {
-	"python":   ("https://docs.python.org/3", None),
+	"python":    ("https://docs.python.org/3", None),
+	"pyEDAARpt": ("https://edaa-org.github.io/pyEDAA.Reports", None),
 }
 
 
@@ -214,11 +217,15 @@ autodoc_typehints = "both"
 # Sphinx.Ext.ExtLinks
 # ==============================================================================
 extlinks = {
-	"gh":      (f"https://GitHub.com/%s", "gh:%s"),
-	"ghissue": (f"https://GitHub.com/{githubNamespace}/{githubProject}/issues/%s", "issue #%s"),
-	"ghpull":  (f"https://GitHub.com/{githubNamespace}/{githubProject}/pull/%s", "pull request #%s"),
-	"ghsrc":   (f"https://GitHub.com/{githubNamespace}/{githubProject}/blob/main/%s", None),
-	"wiki":    (f"https://en.wikipedia.org/wiki/%s", None),
+	"gh":        (f"https://GitHub.com/%s", "GitHub: %s"),
+	"ghissue":   (f"https://GitHub.com/{githubNamespace}/{githubProject}/issues/%s", "issue #%s"),
+	"ghpull":    (f"https://GitHub.com/{githubNamespace}/{githubProject}/pull/%s", "pull request #%s"),
+	"ghsrc":     (f"https://GitHub.com/{githubNamespace}/{githubProject}/blob/main/%s", None),
+	"wiki":      (f"https://en.wikipedia.org/wiki/%s", None),
+	"pypi":      (f"https://pypi.org/project/%s/", "PyPI: %s"),
+	"rtd":       (f"https://%s.readthedocs.io/", "RTD: %s"),
+	"ucrt64":    (f"https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-%s", "UCRT64: %s"),
+	"dockerhub": (f"https://hub.docker.com/r/%s", "Docker Hub: %s"),
 }
 
 
@@ -260,28 +267,28 @@ todo_link_only = True
 # ==============================================================================
 # sphinx-reports
 # ==============================================================================
-# report_unittest_testsuites = {
-# 	"src": {
-# 		"name":        f"{pythonProject}",
-# 		"xml_report":  "../report/unit/unittest.xml",
-# 	}
-# }
-# report_codecov_packages = {
-# 	"src": {
-# 		"name":        f"{pythonProject}",
-# 		"json_report": "../report/coverage/coverage.json",
-# 		"fail_below":  80,
-# 		"levels":      "default"
-# 	}
-# }
-# report_doccov_packages = {
-# 	"src": {
-# 		"name":       f"{pythonProject}",
-# 		"directory":  f"../{directoryName}",
-# 		"fail_below": 80,
-# 		"levels":     "default"
-# 	}
-# }
+report_unittest_testsuites = {
+	"src": {
+		"name":        f"{pythonProject}",
+		"xml_report":  "../report/unit/unittest.xml",
+	}
+}
+report_codecov_packages = {
+	"src": {
+		"name":        f"{pythonProject}",
+		"json_report": "../report/coverage/coverage.json",
+		"fail_below":  80,
+		"levels":      "default"
+	}
+}
+report_doccov_packages = {
+	"src": {
+		"name":       f"{pythonProject}",
+		"directory":  f"../{directoryName}",
+		"fail_below": 80,
+		"levels":     "default"
+	}
+}
 
 
 # ==============================================================================
@@ -295,7 +302,7 @@ todo_link_only = True
 # ==============================================================================
 autoapi_modules = {
 	f"{pythonProject}":  {
-		"template": "package",
+		"template": "module",
 		"output":   pythonProject,
 		"override": True
 	}

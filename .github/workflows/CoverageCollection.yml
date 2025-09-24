@@ -71,8 +71,8 @@ jobs:
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
 
     steps:
-      - name: '❗ Deprecation message'
-        run: printf "::warning title=%s::%s\n" "Deprecated" "'CoverageCollection.yml' is not maintained anymore. Please switch to 'UnitTesting.yml', 'PublishCoverageResults.yml' and 'PublishTestResults.yml'."
+      - name: ⚠️ Deprecation Warning
+        run: printf "::warning title=%s::%s\n" "Deprecated" "'CoverageCollection.yml' template is deprecated. Please switch to 'PublishReleaseNotes.yml'. See https://pytooling.github.io/Actions/JobTemplate/Testing/UnitTesting.html"
 
       - name: ⏬ Checkout repository
         uses: actions/checkout@v5
@@ -81,7 +81,7 @@ jobs:
           submodules: true
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ inputs.python_version }}
 

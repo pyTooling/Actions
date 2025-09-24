@@ -6,19 +6,35 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.black]
-line-length = 120
+[tool.pylint.format]
+indent-string="\t"
+max-line-length = 120
+
+[tool.pylint.basic]
+argument-naming-style = "camelCase"
+attr-naming-style = "camelCase"
+class-attribute-naming-style = "camelCase"
+class-const-naming-style = "UPPER_CASE"
+class-naming-style = "PascalCase"
+const-naming-style = "UPPER_CASE"
+function-naming-style = "camelCase"
+inlinevar-naming-style = "camelCase"
+method-naming-style = "PascalCase"
+module-naming-style = "any"
+variable-naming-style = "camelCase"
 
 [tool.mypy]
-files = ["pyDummy"]
-python_version = "3.12"
-#ignore_missing_imports = true
+packages = ["myPackage", "myFramework.Extension"]
+python_version = "3.13"
 strict = true
 pretty = true
 show_error_context = true
 show_error_codes = true
 namespace_packages = true
-html_report = "report/typing"
+follow_untyped_imports = true
+html_report = "report/typing/html"
+junit_xml = "report/typing/StaticTypingSummary.xml"
+cobertura_xml_report = "report/typing"
 
 [tool.pytest]
 junit_xml = "report/unit/UnittestReportSummary.xml"
@@ -77,4 +93,4 @@ output = "report/coverage/coverage.json"
 
 [tool.coverage.html]
 directory = "report/coverage/html"
-title="Code Coverage of pyDummy"
+title="Code Coverage of myPackage"
