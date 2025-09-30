@@ -153,7 +153,9 @@ jobs:
           pr_number=""
           version=""
 
+          printf "Classify Git reference '%s' " "${ref}"
           if [[ "${ref:0:11}" == "refs/heads/" ]]; then
+            printf "${ANSI_LIGHT_GREEN}[BRANCH]\n"
             ref_kind="branch"
             branch="${ref:11}"
 
@@ -219,6 +221,7 @@ jobs:
               printf "commit${ANSI_NOCOLOR} on development branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.development_branch }}"
             fi
           elif [[ "${ref:0:10}" == "refs/tags/" ]]; then
+            printf "${ANSI_LIGHT_GREEN}[TAG]\n"
             ref_kind="tag"
             tag="${ref:10}"
 
@@ -254,6 +257,7 @@ jobs:
               exit 1
             fi
           elif [[ "${ref:0:10}" == "refs/pull/" ]]; then
+            printf "${ANSI_LIGHT_YELLOW}[PULL REQUEST]\n"
             ref_kind="pullrequest"
             pr_number=${ref:11}
             pr_number=${pr_number%%/*}
@@ -261,6 +265,7 @@ jobs:
             printf "Pull Request check:\n"
             printf "  Number: %s\n" "${pr_number}"
           else
+            printf "${ANSI_LIGHT_RED}[UNKNOWN]\n"
             printf "${ANSI_LIGHT_RED}Unknown Git reference '%s'.${ANSI_NOCOLOR}\n" "${{ github.ref }}"
             printf "::error title=Classify Commit::Unknown Git reference '%s'.\n" "${{ github.ref }}"
             exit 1
