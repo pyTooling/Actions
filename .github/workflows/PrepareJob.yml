@@ -165,56 +165,52 @@ jobs:
             ref_kind="branch"
             branch="${ref:11}"
 
-            printf "  Get default branch name ... "
+            printf "Get default branch name ... "
             defaultBranch=$(gh repo view "${{ github.repository }}" --json defaultBranchRef --jq '.defaultBranchRef.name' 2>&1)
             if [[ $? -eq 0 ]]; then
               printf "${ANSI_LIGHT_GREEN} [OK]\n"
 
               default_branch="${defaultBranch}"
-              printf "    default_branch=%s\n" "${default_branch}"
+              printf "  default_branch=%s\n" "${default_branch}"
             else
               printf "${ANSI_LIGHT_RED} [FAILED]\n"
-              printf "    %s\n" "${default_branch}"
+              printf "  %s\n" "${default_branch}"
             fi
 
             printf "Commit checks:\n"
+            printf "  Commit kind "
+            if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
+              is_regular_commit="true"
+              printf "${ANSI_LIGHT_YELLOW}[REGULAR]${ANSI_NOCOLOR}\n"
+            else
+              is_merge_commit="true"
+              printf "${ANSI_LIGHT_GREEN}[MERGE]${ANSI_NOCOLOR}\n"
+            fi
 
+            printf "Branch checks:\n"
             if [[ "${branch}" == "${defaultBranch}" ]]; then
               on_default_branch="true"
-
-              printMessage="default branch"
-              printBranch="${defaultBranch}"
+              printf "  Commit on default branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${defaultBranch}"
             fi
 
             if [[ "${branch}" == "${{ inputs.main_branch }}" ]]; then
               on_main_branch="true"
-
-              printMessage="main branch"
-              printBranch="${{ inputs.main_branch }}"
+              printf "  Commit on main branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.main_branch }}"
             fi
 
             if [[ "${branch}" == "${{ inputs.release_branch }}" ]]; then
               on_release_branch="true"
-
-              printMessage="release branch"
-              printBranch="${{ inputs.release_branch }}"
+              printf "  Commit on release branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}"
             fi
 
             if [[ "${branch}" == "${{ inputs.development_branch }}" ]]; then
               on_dev_branch="true"
-
-              printMessage="development branch"
-              printBranch="${{ inputs.development_branch }}"
+              printf "  Commit on development branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.development_branch }}"
             fi
 
-            if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
-              is_regular_commit="true"
-              printf "  ${ANSI_LIGHT_YELLOW}regular commit${ANSI_NOCOLOR} on ${printMessage} ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${printBranch}"
-            else
-              is_merge_commit="true"
-              printf "  ${ANSI_LIGHT_GREEN}merge commit${ANSI_NOCOLOR} on ${printMessage} ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${printBranch}"
-
-              printf "  Merge kind "
+            if [[ "${is_merge_commit}" == "true" ]]; then
+              printf "Release checks:\n"
+              printf "  Release kind "
               if [[ "${on_main_branch}" == "true" ]]; then
                 is_release_commit="true"
                 printf "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
