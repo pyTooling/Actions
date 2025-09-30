@@ -496,14 +496,14 @@ jobs:
 
           # Create JSON inventory
           if [[ "${{ inputs.inventory-json }}" != "" ]]; then
-            VERSION="1.0"
+            STRUCT_VERSION="1.1"
 
             # Use GitHub API to ask for latest version
             printf "Get latest released version via GitHub API ...\n"
             printf "  gh release list --json tagName,isLatest --jq '.[] | select(.isLatest == true) | .tagName' "
             latestVersion=$(gh release list --json tagName,isLatest --jq '.[] | select(.isLatest == true) | .tagName')
             if [[ $? -eq 0 ]]; then
-              if [[ -n "${latestVersion}" ]]; then
+              if [[ -z "${latestVersion}" ]]; then
                 printf "${ANSI_LIGHT_RED}[UNKNOWN]${ANSI_NOCOLOR}\n"
                 latestVersion="unknown"
               else
@@ -528,7 +528,7 @@ jobs:
             fi
 
             jsonInventory=$(jq -c -n \
-              --arg version "${VERSION}" \
+              --arg structVersion "${STRUCT_VERSION}" \
               --arg date "$(date +"%Y-%m-%dT%H-%M-%S%:z")" \
               --argjson jsonMeta "$(jq -c -n \
                 --arg tag "${{ inputs.tag }}" \
@@ -538,7 +538,8 @@ jobs:
                 --arg release "${{ github.server_url }}/${{ github.repository }}/releases/download/${{ inputs.tag }}" \
                 --argjson jsonLatest "$(jq -c -n \
                   --arg version "${latestVersion}" \
-                  '{"version": $version}' \
+                  --arg release "${{ github.server_url }}/${{ github.repository }}/releases/download/${latestVersion}" \
+                  '{"version": $version, "release-url": $release}' \
                 )" \
                 --argjson categories "$(jq -c -n \
                   '$ARGS.positional' \
@@ -546,7 +547,7 @@ jobs:
                 )" \
                 '{"tag": $tag, "version": $version, "git-hash": $hash, "repository-url": $repo, "release-url": $release, "categories": $categories, "latest": $jsonLatest}' \
               )" \
-              '{"version": 1.0, "timestamp": $date, "meta": $jsonMeta, "files": {}}'
+              '{"version": $structVersion, "timestamp": $date, "meta": $jsonMeta, "files": {}}'
             )
           fi
 

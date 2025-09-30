@@ -35,15 +35,18 @@ on:
         type: string
 
     outputs:
+      on_default_branch:
+        description: ""
+        value: ${{ jobs.Prepare.outputs.on_default_branch }}
       on_main_branch:
         description: ""
         value: ${{ jobs.Prepare.outputs.on_main_branch }}
-      on_dev_branch:
-        description: ""
-        value: ${{ jobs.Prepare.outputs.on_dev_branch }}
       on_release_branch:
         description: ""
         value: ${{ jobs.Prepare.outputs.on_release_branch }}
+      on_dev_branch:
+        description: ""
+        value: ${{ jobs.Prepare.outputs.on_dev_branch }}
       is_regular_commit:
         description: ""
         value: ${{ jobs.Prepare.outputs.is_regular_commit }}
@@ -89,9 +92,10 @@ jobs:
     name: Extract Information
     runs-on: ubuntu-24.04
     outputs:
+      on_default_branch: ${{ steps.Classify.outputs.on_default_branch }}
       on_main_branch:    ${{ steps.Classify.outputs.on_main_branch }}
-      on_dev_branch:     ${{ steps.Classify.outputs.on_dev_branch }}
       on_release_branch: ${{ steps.Classify.outputs.on_release_branch }}
+      on_dev_branch:     ${{ steps.Classify.outputs.on_dev_branch }}
       is_regular_commit: ${{ steps.Classify.outputs.is_regular_commit }}
       is_merge_commit:   ${{ steps.Classify.outputs.is_merge_commit }}
       is_release_commit: ${{ steps.Classify.outputs.is_release_commit }}
@@ -133,15 +137,17 @@ jobs:
           ANSI_NOCOLOR=$'\x1b[0m'
 
           ref="${{ github.ref }}"
+          on_default_branch="false"
           on_main_branch="false"
-          on_dev_branch="false"
           on_release_branch="false"
+          on_dev_branch="false"
           is_regular_commit="false"
           is_merge_commit="false"
           is_release_commit="false"
           is_nightly_tag="false"
           is_release_tag="false"
           ref_kind="unknown"
+          default_branch=""
           branch=""
           tag=""
           pr_number=""
@@ -151,7 +157,28 @@ jobs:
             ref_kind="branch"
             branch="${ref:11}"
 
+            printf "Get default branch name ... "
+            defaultBranch=$(gh repo view "${{ github.repository }}" --json defaultBranchRef --jq '.defaultBranchRef.name')
+            if [[ $? -eq 0 ]]; then
+              printf "  ${ANSI_LIGHT_GREEN} [OK]\n"
+            else
+              printf "  ${ANSI_LIGHT_RED} [FAILED]\n"
+            fi
+
             printf "Commit check:\n"
+
+            if [[ "${branch}" == "${defaultBranch}" ]]; then
+              on_default_branch="true"
+
+              if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
+                is_regular_commit="true"
+                printf "  ${ANSI_LIGHT_YELLOW}regular "
+              else
+                is_merge_commit="true"
+                printf "  ${ANSI_LIGHT_GREEN}merge "
+              fi
+              printf "commit${ANSI_NOCOLOR} on default branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${defaultBranch}"
+            fi
 
             if [[ "${branch}" == "${{ inputs.main_branch }}" ]]; then
               on_main_branch="true"
@@ -166,19 +193,6 @@ jobs:
               printf "commit${ANSI_NOCOLOR} on main branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.main_branch }}"
             fi
 
-            if [[ "${branch}" == "${{ inputs.development_branch }}" ]]; then
-              on_dev_branch="true"
-
-              if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
-                is_regular_commit="true"
-                printf "  ${ANSI_LIGHT_YELLOW}regular "
-              else
-                is_merge_commit="true"
-                printf "  ${ANSI_LIGHT_GREEN}merge "
-              fi
-              printf "commit${ANSI_NOCOLOR} on development branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.development_branch }}"
-            fi
-
             if [[ "${branch}" == "${{ inputs.release_branch }}" ]]; then
               on_release_branch="true"
 
@@ -191,20 +205,33 @@ jobs:
               fi
               printf "commit${ANSI_NOCOLOR} on release branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}"
             fi
+
+            if [[ "${branch}" == "${{ inputs.development_branch }}" ]]; then
+              on_dev_branch="true"
+
+              if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
+                is_regular_commit="true"
+                printf "  ${ANSI_LIGHT_YELLOW}regular "
+              else
+                is_merge_commit="true"
+                printf "  ${ANSI_LIGHT_GREEN}merge "
+              fi
+              printf "commit${ANSI_NOCOLOR} on development branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.development_branch }}"
+            fi
           elif [[ "${ref:0:10}" == "refs/tags/" ]]; then
             ref_kind="tag"
             tag="${ref:10}"
 
             printf "Tag check:\n"
 
-            printf "  Check if tag is on release branch '%s' ... " "${{ inputs.release_branch }}"
-            git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.release_branch }}" > /dev/null
+            printf "  Check if tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
+            git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
             if [[ $? -eq 0 ]]; then
               printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
             else
               printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-              printf "${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.release_branch }}"
-              printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.release_branch }}"
+              printf "${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
+              printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
               exit 1
             fi
 
@@ -240,9 +267,10 @@ jobs:
           fi
 
           tee --append "${GITHUB_OUTPUT}" <<EOF
+          on_default_branch=${on_default_branch}
           on_main_branch=${on_main_branch}
-          on_dev_branch=${on_dev_branch}
           on_release_branch=${on_release_branch}
+          on_dev_branch=${on_dev_branch}
           is_regular_commit=${is_regular_commit}
           is_merge_commit=${is_merge_commit}
           is_release_commit=${is_release_commit}
