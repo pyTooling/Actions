@@ -260,7 +260,7 @@ jobs:
 
           currentMSYS2Version = "3.12"
           currentAlphaVersion = "3.14"
-          currentAlphaRelease = "3.14.0-rc.2"
+          currentAlphaRelease = "3.14.0-rc.3"
 
           if systems == "":
             print("::error title=Parameter::system_list is empty.")
