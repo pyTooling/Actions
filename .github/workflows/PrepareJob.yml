@@ -65,6 +65,9 @@ on:
       ref_kind:
         description: ""
         value: ${{ jobs.Prepare.outputs.ref_kind }}
+      default_branch:
+        description: ""
+        value: ${{ jobs.Prepare.outputs.default_branch }}
       branch:
         description: ""
         value: ${{ jobs.Prepare.outputs.branch }}
@@ -102,6 +105,7 @@ jobs:
       is_nightly_tag:    ${{ steps.Classify.outputs.is_nightly_tag }}
       is_release_tag:    ${{ steps.Classify.outputs.is_release_tag }}
       ref_kind:          ${{ steps.Classify.outputs.ref_kind }}
+      default_branch:    ${{ steps.Classify.outputs.default_branch }}
       branch:            ${{ steps.Classify.outputs.branch }}
       tag:               ${{ steps.Classify.outputs.tag }}
       version:           ${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}
@@ -136,6 +140,8 @@ jobs:
           ANSI_LIGHT_BLUE=$'\x1b[94m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
+          export GH_TOKEN=${{ github.token }}
+
           ref="${{ github.ref }}"
           on_default_branch="false"
           on_main_branch="false"
@@ -159,74 +165,73 @@ jobs:
             ref_kind="branch"
             branch="${ref:11}"
 
-            printf "Get default branch name ... "
-            defaultBranch=$(gh repo view "${{ github.repository }}" --json defaultBranchRef --jq '.defaultBranchRef.name')
+            printf "  Get default branch name ... "
+            defaultBranch=$(gh repo view "${{ github.repository }}" --json defaultBranchRef --jq '.defaultBranchRef.name' 2>&1)
             if [[ $? -eq 0 ]]; then
-              printf "  ${ANSI_LIGHT_GREEN} [OK]\n"
+              printf "${ANSI_LIGHT_GREEN} [OK]\n"
+
+              default_branch="${defaultBranch}"
+              printf "    default_branch=%s\n" "${default_branch}"
             else
-              printf "  ${ANSI_LIGHT_RED} [FAILED]\n"
+              printf "${ANSI_LIGHT_RED} [FAILED]\n"
+              printf "    %s\n" "${default_branch}"
             fi
 
-            printf "Commit check:\n"
+            printf "Commit checks:\n"
 
             if [[ "${branch}" == "${defaultBranch}" ]]; then
               on_default_branch="true"
 
-              if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
-                is_regular_commit="true"
-                printf "  ${ANSI_LIGHT_YELLOW}regular "
-              else
-                is_merge_commit="true"
-                printf "  ${ANSI_LIGHT_GREEN}merge "
-              fi
-              printf "commit${ANSI_NOCOLOR} on default branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${defaultBranch}"
+              printMessage="default branch"
+              printBranch="${defaultBranch}"
             fi
 
             if [[ "${branch}" == "${{ inputs.main_branch }}" ]]; then
               on_main_branch="true"
 
-              if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
-                is_regular_commit="true"
-                printf "  ${ANSI_LIGHT_YELLOW}regular "
-              else
-                is_merge_commit="true"
-                printf "  ${ANSI_LIGHT_GREEN}merge "
-              fi
-              printf "commit${ANSI_NOCOLOR} on main branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.main_branch }}"
+              printMessage="main branch"
+              printBranch="${{ inputs.main_branch }}"
             fi
 
             if [[ "${branch}" == "${{ inputs.release_branch }}" ]]; then
               on_release_branch="true"
 
-              if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
-                is_regular_commit="true"
-                printf "  ${ANSI_LIGHT_YELLOW}regular "
-              else
-                is_release_commit="true"
-                printf "  ${ANSI_LIGHT_GREEN}release "
-              fi
-              printf "commit${ANSI_NOCOLOR} on release branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}"
+              printMessage="release branch"
+              printBranch="${{ inputs.release_branch }}"
             fi
 
             if [[ "${branch}" == "${{ inputs.development_branch }}" ]]; then
               on_dev_branch="true"
 
-              if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
-                is_regular_commit="true"
-                printf "  ${ANSI_LIGHT_YELLOW}regular "
-              else
-                is_merge_commit="true"
-                printf "  ${ANSI_LIGHT_GREEN}merge "
+              printMessage="development branch"
+              printBranch="${{ inputs.development_branch }}"
+            fi
+
+            if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
+              is_regular_commit="true"
+              printf "  ${ANSI_LIGHT_YELLOW}regular commit${ANSI_NOCOLOR} on ${printMessage} ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${printBranch}"
+            else
+              is_merge_commit="true"
+              printf "  ${ANSI_LIGHT_GREEN}merge commit${ANSI_NOCOLOR} on ${printMessage} ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${printBranch}"
+
+              printf "  Merge kind "
+              if [[ "${on_main_branch}" == "true" ]]; then
+                is_release_commit="true"
+                printf "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
+              elif [[ "${on_version_branch}" == "true" ]]; then
+                is_release_commit="true"
+                printf "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
+              elif [[ "${on_release_branch}" == "true" ]]; then
+                is_prerelease_commit="true"
+                printf "${ANSI_LIGHT_YELLOW}[PRERELEASE]${ANSI_NOCOLOR}\n"
               fi
-              printf "commit${ANSI_NOCOLOR} on development branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.development_branch }}"
             fi
           elif [[ "${ref:0:10}" == "refs/tags/" ]]; then
             printf "${ANSI_LIGHT_GREEN}[TAG]\n"
             ref_kind="tag"
             tag="${ref:10}"
 
-            printf "Tag check:\n"
-
+            printf "Tag checks:\n"
             printf "  Check if tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
             git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
             if [[ $? -eq 0 ]]; then
@@ -262,7 +267,7 @@ jobs:
             pr_number=${ref:11}
             pr_number=${pr_number%%/*}
 
-            printf "Pull Request check:\n"
+            printf "Pull Request checks:\n"
             printf "  Number: %s\n" "${pr_number}"
           else
             printf "${ANSI_LIGHT_RED}[UNKNOWN]\n"
@@ -271,6 +276,7 @@ jobs:
             exit 1
           fi
 
+          printf "\nWriting output variables ...\n"
           tee --append "${GITHUB_OUTPUT}" <<EOF
           on_default_branch=${on_default_branch}
           on_main_branch=${on_main_branch}
@@ -282,6 +288,7 @@ jobs:
           is_nightly_tag=${is_nightly_tag}
           is_release_tag=${is_release_tag}
           ref_kind=${ref_kind}
+          default_branch=${default_branch}
           branch=${branch}
           tag=${tag}
           pr_number=${pr_number}
@@ -361,21 +368,23 @@ jobs:
 
       - name: Debug
         run: |
-          printf "on_main_branch:    %s\n" "${{ steps.Classify.outputs.on_main_branch }}"
-          printf "on_dev_branch:     %s\n" "${{ steps.Classify.outputs.on_dev_branch }}"
-          printf "on_release_branch: %s\n" "${{ steps.Classify.outputs.on_release_branch }}"
-          printf "is_regular_commit: %s\n" "${{ steps.Classify.outputs.is_regular_commit }}"
-          printf "is_merge_commit:   %s\n" "${{ steps.Classify.outputs.is_merge_commit }}"
-          printf "is_release_commit: %s\n" "${{ steps.Classify.outputs.is_release_commit }}"
-          printf "is_nightly_tag:    %s\n" "${{ steps.Classify.outputs.is_nightly_tag }}"
-          printf "is_release_tag:    %s\n" "${{ steps.Classify.outputs.is_release_tag }}"
-          printf "ref_kind:          %s\n" "${{ steps.Classify.outputs.ref_kind }}"
-          printf "branch:            %s\n" "${{ steps.Classify.outputs.branch }}"
-          printf "tag:               %s\n" "${{ steps.Classify.outputs.tag }}"
-          printf "version:           %s\n" "${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}"
-          printf "  from tag:        %s\n" "${{ steps.Classify.outputs.version }}"
-          printf "  from pr:         %s\n" "${{ steps.FindPullRequest.outputs.pr_version }}"
-          printf "pr title:          %s\n" "${{ steps.FindPullRequest.outputs.pr_title }}"
-          printf "pr number:         %s\n" "${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}"
-          printf "  from merge:      %s\n" "${{ steps.Classify.outputs.pr_number }}"
-          printf "  from pr:         %s\n" "${{ steps.FindPullRequest.outputs.pr_number }}"
+          printf "on_default_branch:    %s\n" "${{ steps.Classify.outputs.on_default_branch }}"
+          printf "on_main_branch:       %s\n" "${{ steps.Classify.outputs.on_main_branch }}"
+          printf "on_release_branch:    %s\n" "${{ steps.Classify.outputs.on_release_branch }}"
+          printf "on_dev_branch:        %s\n" "${{ steps.Classify.outputs.on_dev_branch }}"
+          printf "is_regular_commit:    %s\n" "${{ steps.Classify.outputs.is_regular_commit }}"
+          printf "is_merge_commit:      %s\n" "${{ steps.Classify.outputs.is_merge_commit }}"
+          printf "is_release_commit:    %s\n" "${{ steps.Classify.outputs.is_release_commit }}"
+          printf "is_nightly_tag:       %s\n" "${{ steps.Classify.outputs.is_nightly_tag }}"
+          printf "is_release_tag:       %s\n" "${{ steps.Classify.outputs.is_release_tag }}"
+          printf "ref_kind:             %s\n" "${{ steps.Classify.outputs.ref_kind }}"
+          printf "default_branch:       %s\n" "${{ steps.Classify.outputs.default_branch }}"
+          printf "branch:               %s\n" "${{ steps.Classify.outputs.branch }}"
+          printf "tag:                  %s\n" "${{ steps.Classify.outputs.tag }}"
+          printf "version:              %s\n" "${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}"
+          printf "  from tag:           %s\n" "${{ steps.Classify.outputs.version }}"
+          printf "  from pr:            %s\n" "${{ steps.FindPullRequest.outputs.pr_version }}"
+          printf "pr title:             %s\n" "${{ steps.FindPullRequest.outputs.pr_title }}"
+          printf "pr number:            %s\n" "${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}"
+          printf "  from merge:         %s\n" "${{ steps.Classify.outputs.pr_number }}"
+          printf "  from pr:            %s\n" "${{ steps.FindPullRequest.outputs.pr_number }}"
