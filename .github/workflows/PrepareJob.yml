@@ -62,6 +62,9 @@ on:
       is_release_tag:
         description: ""
         value: ${{ jobs.Prepare.outputs.is_release_tag }}
+      has_submodules:
+        description: ""
+        value: ${{ jobs.Prepare.outputs.has_submodules }}
       ref_kind:
         description: ""
         value: ${{ jobs.Prepare.outputs.ref_kind }}
@@ -89,29 +92,42 @@ on:
 #      pr_mergedat:
 #        description: ""
 #        value: ${{ jobs.Prepare.outputs.pr_mergedat }}
+      git_submodule_count:
+        description: ""
+        value: ${{ jobs.Prepare.outputs.git_submodule_count }}
+      git_submodule_names:
+        description: ""
+        value: ${{ jobs.Prepare.outputs.git_submodule_names }}
+      git_submodule_paths:
+        description: ""
+        value: ${{ jobs.Prepare.outputs.git_submodule_paths }}
 
 jobs:
   Prepare:
     name: Extract Information
     runs-on: ubuntu-24.04
     outputs:
-      on_default_branch: ${{ steps.Classify.outputs.on_default_branch }}
-      on_main_branch:    ${{ steps.Classify.outputs.on_main_branch }}
-      on_release_branch: ${{ steps.Classify.outputs.on_release_branch }}
-      on_dev_branch:     ${{ steps.Classify.outputs.on_dev_branch }}
-      is_regular_commit: ${{ steps.Classify.outputs.is_regular_commit }}
-      is_merge_commit:   ${{ steps.Classify.outputs.is_merge_commit }}
-      is_release_commit: ${{ steps.Classify.outputs.is_release_commit }}
-      is_nightly_tag:    ${{ steps.Classify.outputs.is_nightly_tag }}
-      is_release_tag:    ${{ steps.Classify.outputs.is_release_tag }}
-      ref_kind:          ${{ steps.Classify.outputs.ref_kind }}
-      default_branch:    ${{ steps.Classify.outputs.default_branch }}
-      branch:            ${{ steps.Classify.outputs.branch }}
-      tag:               ${{ steps.Classify.outputs.tag }}
-      version:           ${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}
-#      release_version:   ${{ steps.FindPullRequest.outputs.release_version }}
-      pr_title:          ${{ steps.FindPullRequest.outputs.pr_title }}
-      pr_number:         ${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}
+      on_default_branch:   ${{ steps.Classify.outputs.on_default_branch }}
+      on_main_branch:      ${{ steps.Classify.outputs.on_main_branch }}
+      on_release_branch:   ${{ steps.Classify.outputs.on_release_branch }}
+      on_dev_branch:       ${{ steps.Classify.outputs.on_dev_branch }}
+      is_regular_commit:   ${{ steps.Classify.outputs.is_regular_commit }}
+      is_merge_commit:     ${{ steps.Classify.outputs.is_merge_commit }}
+      is_release_commit:   ${{ steps.Classify.outputs.is_release_commit }}
+      is_nightly_tag:      ${{ steps.Classify.outputs.is_nightly_tag }}
+      is_release_tag:      ${{ steps.Classify.outputs.is_release_tag }}
+      has_submodules:      ${{ steps.Classify.outputs.has_submodules }}
+      ref_kind:            ${{ steps.Classify.outputs.ref_kind }}
+      default_branch:      ${{ steps.Classify.outputs.default_branch }}
+      branch:              ${{ steps.Classify.outputs.branch }}
+      tag:                 ${{ steps.Classify.outputs.tag }}
+      version:             ${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}
+#      release_version:     ${{ steps.FindPullRequest.outputs.release_version }}
+      pr_title:            ${{ steps.FindPullRequest.outputs.pr_title }}
+      pr_number:           ${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}
+      git_submodule_count: ${{ steps.Classify.outputs.git_submodule_count }}
+      git_submodule_names: ${{ steps.Classify.outputs.git_submodule_names }}
+      git_submodule_paths: ${{ steps.Classify.outputs.git_submodule_paths }}
 
     steps:
       - name: ⏬ Checkout repository
@@ -152,12 +168,16 @@ jobs:
           is_release_commit="false"
           is_nightly_tag="false"
           is_release_tag="false"
+          has_submodules="false"
           ref_kind="unknown"
           default_branch=""
           branch=""
           tag=""
           pr_number=""
           version=""
+          git_submodule_count="0"
+          git_submodule_names=""
+          git_submodule_paths=""
 
           printf "Classify Git reference '%s' " "${ref}"
           if [[ "${ref:0:11}" == "refs/heads/" ]]; then
@@ -272,6 +292,15 @@ jobs:
             exit 1
           fi
 
+          # Submodules
+          if [[ -f .gitsubmodules ]]; then
+            has_submodules="true"
+            git_modules_file=.gitmodules   # $(git rev-parse --show-toplevel)/.gitmodules
+            git_submodule_count="$(grep -Po '(?<=\[submodule \")(.*)(?=\"\])' "${git_modules_file}" | wc -l)"
+            git_submodule_names="$(grep -Po '(?<=\[submodule \")(.*)(?=\"\])' "${git_modules_file}" | paste -sd ':' -)"
+            git_submodule_paths="$(git config --file "${git_modules_file}" --null --name-only --get-regexp '\.path$' | xargs -0 -n1 git config --file "${git_modules_file}" --get | paste -sd ':' -)"
+          fi
+
           printf "\nWriting output variables ...\n"
           tee --append "${GITHUB_OUTPUT}" <<EOF
           on_default_branch=${on_default_branch}
@@ -283,12 +312,16 @@ jobs:
           is_release_commit=${is_release_commit}
           is_nightly_tag=${is_nightly_tag}
           is_release_tag=${is_release_tag}
+          has_submodules=${has_submodules}
           ref_kind=${ref_kind}
           default_branch=${default_branch}
           branch=${branch}
           tag=${tag}
           pr_number=${pr_number}
           version=${version}
+          git_submodule_count=${git_submodule_count}
+          git_submodule_names=${git_submodule_names}
+          git_submodule_paths=${git_submodule_paths}
           EOF
 
 # TODO: why not is_release_commit?
@@ -373,6 +406,7 @@ jobs:
           printf "is_release_commit:    %s\n" "${{ steps.Classify.outputs.is_release_commit }}"
           printf "is_nightly_tag:       %s\n" "${{ steps.Classify.outputs.is_nightly_tag }}"
           printf "is_release_tag:       %s\n" "${{ steps.Classify.outputs.is_release_tag }}"
+          printf "has_submodules:       %s\n" "${{ steps.Classify.outputs.has_submodules }}"
           printf "ref_kind:             %s\n" "${{ steps.Classify.outputs.ref_kind }}"
           printf "default_branch:       %s\n" "${{ steps.Classify.outputs.default_branch }}"
           printf "branch:               %s\n" "${{ steps.Classify.outputs.branch }}"
@@ -384,3 +418,7 @@ jobs:
           printf "pr number:            %s\n" "${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}"
           printf "  from merge:         %s\n" "${{ steps.Classify.outputs.pr_number }}"
           printf "  from pr:            %s\n" "${{ steps.FindPullRequest.outputs.pr_number }}"
+          printf "git_submodule_*:\n"
+          printf "  *_count_:           %s\n" "${{ steps.FindPullRequest.outputs.git_submodule_count }}"
+          printf "  *_names:            %s\n" "${{ steps.FindPullRequest.outputs.git_submodule_names }}"
+          printf "  *_paths:            %s\n" "${{ steps.FindPullRequest.outputs.git_submodule_paths }}"
