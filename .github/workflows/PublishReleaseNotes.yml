@@ -505,9 +505,11 @@ jobs:
             if [[ $? -eq 0 ]]; then
               if [[ -z "${latestVersion}" ]]; then
                 printf "${ANSI_LIGHT_RED}[UNKNOWN]${ANSI_NOCOLOR}\n"
+                printf "    latest=unknown\n"
                 latestVersion="unknown"
               else
                 printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                printf "    latest=%s\n" "${latestVersion}"
               fi
             else
               printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
@@ -529,7 +531,7 @@ jobs:
 
             jsonInventory=$(jq -c -n \
               --arg structVersion "${STRUCT_VERSION}" \
-              --arg date "$(date +"%Y-%m-%dT%H-%M-%S%:z")" \
+              --arg date "$(date +"%Y-%m-%dT%H:%M:%S%:z")" \
               --argjson jsonMeta "$(jq -c -n \
                 --arg tag "${{ inputs.tag }}" \
                 --arg version "${{ inputs.inventory-version }}" \
@@ -547,7 +549,7 @@ jobs:
                 )" \
                 '{"tag": $tag, "version": $version, "git-hash": $hash, "repository-url": $repo, "release-url": $release, "categories": $categories, "latest": $jsonLatest}' \
               )" \
-              '{"version": $structVersion, "timestamp": $date, "meta": $jsonMeta, "files": {}}'
+              '{"version": "$structVersion", "timestamp": $date, "meta": $jsonMeta, "files": {}}'
             )
           fi
 
