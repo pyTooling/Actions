@@ -549,7 +549,7 @@ jobs:
                 )" \
                 '{"tag": $tag, "version": $version, "git-hash": $hash, "repository-url": $repo, "release-url": $release, "categories": $categories, "latest": $jsonLatest}' \
               )" \
-              '{"version": $structVersion, "timestamp": $date, "meta": $jsonMeta, "files": {}}'
+              '{"version": "$structVersion", "timestamp": $date, "meta": $jsonMeta, "files": {}}'
             )
           fi
 
