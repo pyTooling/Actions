@@ -114,7 +114,7 @@ jobs:
           coverageRC =            "${{ inputs.coverage_config }}".strip()
           typingCoberturaFile =   Path("report/typing/cobertura.xml")
           typingJUnitFile =       Path("report/typing/StaticTypingSummary.xml")
-          typingHTMLDirectory =   Path("htmlmypy")
+          typingHTMLDirectory =   Path("report/typing/html")
 
           # Read output paths from 'pyproject.toml' file
           if coverageRC == "pyproject.toml":
@@ -123,14 +123,34 @@ jobs:
               with pyProjectFile.open("rb") as file:
                 pyProjectSettings = tomli_load(file)
 
-              unittestXMLFile =       Path(pyProjectSettings["tool"]["pytest"]["junit_xml"])
-              mergedUnittestXMLFile = Path(pyProjectSettings["tool"]["pyedaa-reports"]["junit_xml"])
-              coverageHTMLDirectory = Path(pyProjectSettings["tool"]["coverage"]["html"]["directory"])
-              coverageXMLFile =       Path(pyProjectSettings["tool"]["coverage"]["xml"]["output"])
-              coverageJSONFile=       Path(pyProjectSettings["tool"]["coverage"]["json"]["output"])
-              typingCoberturaFile =   Path(pyProjectSettings["tool"]["mypy"]["cobertura_xml_report"]) / "cobertura.xml"
-              typingJUnitFile =       Path(pyProjectSettings["tool"]["mypy"]["junit_xml"])
-              typingHTMLDirectory =   Path(pyProjectSettings["tool"]["mypy"]["html_report"])
+              toolSection = pyProjectSettings["tool"]
+              if "pytest" in toolSection:
+                section = toolSection["pytest"]
+                if "junit_xml" in section:
+                  unittestXMLFile = Path(section["junit_xml"])
+
+              if "pyedaa-reports" in toolSection:
+                section = toolSection["pyedaa-reports"]
+                if "junit_xml" in section:
+                  mergedUnittestXMLFile = Path(section["junit_xml"])
+
+              if "coverage" in toolSection:
+                section = toolSection["coverage"]
+                if "html" in section:
+                  coverageHTMLDirectory = Path(section["html"]["directory"])
+                if "xml" in section:
+                  coverageXMLFile =       Path(section["xml"]["output"])
+                if "json" in section:
+                  coverageJSONFile=       Path(section["json"]["output"])
+
+              if "mypy" in toolSection:
+                section = toolSection["mypy"]
+                if "cobertura_xml_report" in section:
+                  typingCoberturaFile =   Path(section["cobertura_xml_report"]) / "cobertura.xml"
+                if "junit_xml" in section:
+                  typingJUnitFile =       Path(section["junit_xml"])
+                if "html_report" in section:
+                  typingHTMLDirectory =   Path(section["html_report"])
             else:
               print(f"File '{pyProjectFile}' not found.")
               print(f"::error title=FileNotFoundError::File '{pyProjectFile}' not found.")
