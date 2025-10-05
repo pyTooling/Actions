@@ -93,6 +93,16 @@ on:
         required: false
         default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
         type: string
+      bandit:
+        description: 'Run Static Application Security Testing (SAST) using Bandit.'
+        required: false
+        default: 'false'
+        type: string
+      pylint:
+        description: 'Run Python linting using pylint.'
+        required: false
+        default: 'false'
+        type: string
       codecov:
         description: 'Publish merged coverage and unittest reports to Codecov.'
         required: false
@@ -205,6 +215,8 @@ jobs:
     with:
       python_version:    ${{ needs.UnitTestingParams.outputs.python_version }}
       package_directory: ${{ needs.UnitTestingParams.outputs.package_directory }}
+      bandit:            ${{ inputs.bandit }}
+      pylint:            ${{ inputs.pylint }}
       artifact:          CodeQuality
 
   DocCoverage:
@@ -219,7 +231,6 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Package.yml@dev
     needs:
       - UnitTestingParams
-#      - UnitTesting
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
