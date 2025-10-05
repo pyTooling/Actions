@@ -88,7 +88,9 @@ jobs:
     with:
       python_version:    ${{ needs.UnitTestingParams.outputs.python_version }}
       package_directory: ${{ needs.UnitTestingParams.outputs.package_directory }}
-      artifact:          CodeQuality
+      bandit:            'true'
+      pylint:            'true'
+      artifact:          'CodeQuality'
 
   DocCoverage:
     uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@dev

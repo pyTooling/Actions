@@ -8,11 +8,13 @@ jobs:
   SimplePackage:
     uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@dev
     with:
-      package_name: myPackage
-      codecov:      true
-      codacy:       true
-      dorny:        true
-      cleanup:      false
+      package_name: 'myPackage'
+      bandit:       'true'
+      pylint:       'true'
+      codecov:      'true'
+      codacy:       'true'
+      dorny:        'true'
+      cleanup:      'false'
     secrets:
       PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
