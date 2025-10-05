@@ -191,13 +191,14 @@ jobs:
               printf "${ANSI_LIGHT_GREEN} [OK]\n"
 
               default_branch="${defaultBranch}"
-              printf "  default_branch=%s\n" "${default_branch}"
+              printf "  Default branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${default_branch}"
             else
               printf "${ANSI_LIGHT_RED} [FAILED]\n"
-              printf "  %s\n" "${default_branch}"
+              printf "  ${ANSI_LIGHT_RED}%s${ANSI_NOCOLOR}\n" "${default_branch}"
             fi
 
             printf "Commit checks:\n"
+            printf "  Commit: %s\n" "${{ github.sha }}"
             printf "  Commit kind "
             if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
               is_regular_commit="true"
@@ -208,24 +209,37 @@ jobs:
             fi
 
             printf "Branch checks:\n"
+            printf "  Branch: %s\n" "${branch}"
+            printf "  Commit on default branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${defaultBranch}"
             if [[ "${branch}" == "${defaultBranch}" ]]; then
               on_default_branch="true"
-              printf "  Commit on default branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${defaultBranch}"
+              printf "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
+            else
+              printf "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
             fi
 
+            printf "  Commit on main branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${{ inputs.main_branch }}"
             if [[ "${branch}" == "${{ inputs.main_branch }}" ]]; then
               on_main_branch="true"
-              printf "  Commit on main branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.main_branch }}"
+              printf "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
+            else
+              printf "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
             fi
 
+            printf "  Commit on release branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${{ inputs.release_branch }}"
             if [[ "${branch}" == "${{ inputs.release_branch }}" ]]; then
               on_release_branch="true"
-              printf "  Commit on release branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}"
+              printf "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
+            else
+              printf "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
             fi
 
+            printf "  Commit on development branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${{ inputs.development_branch }}"
             if [[ "${branch}" == "${{ inputs.development_branch }}" ]]; then
               on_dev_branch="true"
-              printf "  Commit on development branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${{ inputs.development_branch }}"
+              printf "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
+            else
+              printf "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
             fi
 
             if [[ "${is_merge_commit}" == "true" ]]; then
@@ -261,11 +275,14 @@ jobs:
 
             NIGHTLY_TAG_PATTERN='^${{ inputs.nightly_tag_pattern }}$'
             RELEASE_TAG_PATTERN='^${{ inputs.release_tag_pattern }}$'
-            printf "  Check tag name against regexp '%s' ... " "${RELEASE_TAG_PATTERN}"
-            if [[ "${tag}" =~ NIGHTLY_TAG_PATTERN ]]; then
+
+            printf "Tag checks:\n"
+            printf "  Tag: %s\n" "${tag}"
+            printf "  Check tag '%s' against regexp ... " "${tag}"
+            if [[ "${tag}" =~ ${NIGHTLY_TAG_PATTERN} ]]; then
               printf "${ANSI_LIGHT_GREEN}[NIGHTLY]${ANSI_NOCOLOR}\n"
               is_nightly_tag="true"
-            elif [[ "${tag}" =~ $RELEASE_TAG_PATTERN ]]; then
+            elif [[ "${tag}" =~ ${RELEASE_TAG_PATTERN} ]]; then
               printf "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
               version="${tag}"
               is_release_tag="true"
@@ -276,6 +293,30 @@ jobs:
               printf "  ${ANSI_LIGHT_RED}release tag: %s${ANSI_NOCOLOR}\n" "${RELEASE_TAG_PATTERN}"
               printf "::error title=RexExpCheck::Tag name '%s' doesn't conform to regexp '%s' nor '%s'.\n" "${tag}" "${NIGHTLY_TAG_PATTERN}" "${RELEASE_TAG_PATTERN}"
               exit 1
+            fi
+
+            if [[ "${is_nightly_tag}" == "true" ]]; then
+              printf "  Check if nightly tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
+              git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
+              if [[ $? -eq 0 ]]; then
+                printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              else
+                printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                printf "    ${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
+                printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
+                exit 1
+              fi
+            elif [[ "${is_release_tag}" == "true" ]]; then
+              printf "  Check if release tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
+              git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
+              if [[ $? -eq 0 ]]; then
+                printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              else
+                printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                printf "    ${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
+                printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
+                exit 1
+              fi
             fi
           elif [[ "${ref:0:10}" == "refs/pull/" ]]; then
             printf "${ANSI_LIGHT_YELLOW}[PULL REQUEST]\n"

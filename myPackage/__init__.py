@@ -40,6 +40,7 @@ __version__ =       "0.4.5"
 __keywords__ =      ["GitHub Actions"]
 __issue_tracker__ = "https://GitHub.com/pyTooling/Actions/issues"
 
+from pickle               import dumps
 from subprocess           import check_call
 
 from pyTooling.Decorators import export, readonly

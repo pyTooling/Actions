@@ -220,10 +220,15 @@ jobs:
             python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
           fi
 
-      - name: 🔧 Install wheel from artifact
+      - name: 🔧 Install wheel from artifact (Ubuntu/macOS)
+        if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
         run: |
-          ls -l install
           python -m pip install --disable-pip-version-check -U install/*.whl
+
+      - name: 🔧 Install wheel from artifact (Windows)
+        if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
+        run: |
+          python -m pip install -v --disable-pip-version-check (Get-Item .\install\*.whl).FullName
 
       - name: ✅ Run application tests (Ubuntu/macOS)
         if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
