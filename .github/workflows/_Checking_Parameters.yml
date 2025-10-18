@@ -97,7 +97,7 @@ jobs:
       - name: Checking job matrix from 'Params_PythonVersions'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.13'
+          expected-default-version: '3.14'
           expected-python-versions: '["3.12", "3.13", "pypy-3.10", "pypy-3.11"]'
           expected-systems:         '["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]'
           expected-exclude-jobs:    '["windows-arm:pypy-3.10", "windows-arm:pypy-3.11"]'
@@ -119,7 +119,7 @@ jobs:
       - name: Checking job matrix from 'Params_Systems'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.13'
+          expected-default-version: '3.14'
           expected-python-versions: '["3.9", "3.10", "3.11", "3.12", "3.13"]'
           expected-systems:         '["windows"]'
           expected-exclude-jobs:    '[]'
@@ -141,7 +141,7 @@ jobs:
       - name: Checking job matrix from 'Params_Include'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.13'
+          expected-default-version: '3.14'
           expected-python-versions: '["3.12"]'
           expected-systems:         '["ubuntu", "windows", "macos", "macos-arm"]'
           expected-exclude-jobs:    '[]'
@@ -163,7 +163,7 @@ jobs:
       - name: Checking job matrix from 'Params_Exclude'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.13'
+          expected-default-version: '3.14'
           expected-python-versions: '["3.13"]'
           expected-systems:         '["ubuntu", "macos", "macos-arm"]'
           expected-exclude-jobs:    '[]'
@@ -185,7 +185,7 @@ jobs:
       - name: Checking job matrix from 'Params_Disable'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.13'
+          expected-default-version: '3.14'
           expected-python-versions: '["3.13"]'
           expected-systems:         '["ubuntu", "windows", "macos", "macos-arm"]'
           expected-exclude-jobs:    '["windows:3.13"]'
@@ -203,11 +203,11 @@ jobs:
     steps:
       - name: Checkout repository to access local Action
         uses: actions/checkout@v5
-        
+
       - name: Checking job matrix from 'Params_All'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.13'
+          expected-default-version: '3.14'
           expected-python-versions: '["3.12", "3.13"]'
           expected-systems:         '["ubuntu", "windows", "macos-arm"]'
           expected-exclude-jobs:    '[]'

@@ -25,11 +25,12 @@ runs:
     - name: Check artifact names
       id: check
       shell: python
-      working-directory: ${{ inputs.path }}
       run: |
         from pyTooling.Common import zipdicts
 
-        expectedName =    "Example"
+        actualArtifactNames = json_loads("""${{ inputs.generated-names }}""".replace("'", '"'))
+
+        expectedName = "${{ inputs.prefix }}"
         expectedArtifacts = {
           "unittesting_xml":        f"{expectedName}-UnitTestReportSummary-XML",
           "unittesting_html":       f"{expectedName}-UnitTestReportSummary-HTML",
@@ -49,9 +50,7 @@ runs:
           "documentation_pdf":      f"{expectedName}-Documentation-PDF",
         }
 
-        actualArtifactNames = json_loads("""${{ inputs }}""".replace("'", '"'))
         errors = 0
-
         if len(actualArtifactNames) != len(expectedArtifacts):
           print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
           errors += 1
