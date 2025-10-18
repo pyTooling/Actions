@@ -120,10 +120,10 @@ jobs:
         uses: ./.github/actions/CheckJobMatrix
         with:
           expected-default-version: '3.14'
-          expected-python-versions: '["3.9", "3.10", "3.11", "3.12", "3.13"]'
+          expected-python-versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
           expected-systems:         '["windows"]'
           expected-exclude-jobs:    '[]'
-          expected-include-jobs:    '["mingw64:3.12", "ucrt64:3.12"]'
+          expected-include-jobs:    '["mingw32:3.12", "mingw64:3.12"]'
           generated-default-version: ${{ needs.Params_Systems.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_Systems.outputs.python_jobs }}
 

@@ -26,6 +26,9 @@ runs:
       id: check
       shell: python
       run: |
+        from json import loads as json_loads
+        from sys  import exit
+
         from pyTooling.Common import zipdicts
 
         actualArtifactNames = json_loads("""${{ inputs.generated-names }}""".replace("'", '"'))
@@ -52,15 +55,21 @@ runs:
 
         errors = 0
         if len(actualArtifactNames) != len(expectedArtifacts):
-          print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
+          print(f"❌ Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
           errors += 1
         else:
+          print("✅ Number of 'artifact_names' as expected.")
+          print("Checking artifact names ...")
+
           for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
             if actual != expected:
-              print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
+              print(f"  ❌ Artifact name '{key}' does not match: {actual} != {expected}.")
               errors += 1
+            else:
+              print(f"  ☑ Artifact name as expected: {key} ⇢ {actual}.")
 
         if errors == 0:
-          print(f"All checks PASSED.")
-
-        exit(errors)
+          print("✅ All checks PASSED.")
+        else:
+          print(f"❌ Counted {errors} errors.")
+          exit(errors)
