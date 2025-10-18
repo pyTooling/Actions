@@ -375,9 +375,9 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/package_name`                  | yes      | string   | — — — —                                           |
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`       | no       | string   | ``'3.13'``                                        |
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`       | no       | string   | ``'3.14'``                                        |
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list`  | no       | string   | ``'3.9 3.10 3.11 3.12 3.13'``                     |
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list`  | no       | string   | ``'3.10 3.11 3.12 3.13 3.14'``                    |
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`          | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``       |
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
@@ -387,7 +387,7 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`         | no       | string   | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'`` |
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`        | no       | string   | ``'3.13'``                                        |
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`        | no       | string   | ``'3.14'``                                        |
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`   | no       | string   | ``''``                                            |
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
@@ -532,7 +532,7 @@ unittest_python_version
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.13'``
+:Default Value:   ``'3.14'``
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
                   and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
@@ -550,7 +550,7 @@ unittest_python_version_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.9 3.10 3.11 3.12 3.13'``
+:Default Value:   ``'3.10 3.11 3.12 3.13 3.14'``
 :Possible Values: A space separated list of valid Python versions conforming to the pattern ``<major>.<minor>`` or
                   ``pypy-<major>.<minor>``.
 :Description:     The list of space-separated Python versions used for unit testing.
@@ -625,7 +625,7 @@ apptest_python_version
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.13'``
+:Default Value:   ``'3.14'``
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
                   and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
