@@ -1,0 +1,92 @@
+name: Check job matrix
+branding:
+  icon: check-square
+  color: green
+description: Check generated job matrix.
+author: Patrick Lehmann (@Paebbels)
+
+inputs:
+  expected-default-version:
+    description:
+    type: string
+    required: true
+  expected-python-versions:
+    description:
+    type: string
+    required: true
+  expected-systems:
+    description:
+    type: string
+    required: true
+  expected-exclude-jobs:
+    description:
+    type: string
+    required: true
+  expected-include-jobs:
+    description:
+    type: string
+    required: true
+  generated-default-version:
+    description:
+    type: string
+    required: true
+  generated-jobmatrix:
+    description:
+    type: string
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Check parameters
+      id: check
+      shell: python
+      run: |
+        from json import loads as json_loads
+        from sys  import exit
+
+        actualPythonVersion =         """${{ inputs.generated-default-version }}"""
+        actualPythonJobs = json_loads("""${{ inputs.generated-jobmatrix }}""".replace("'", '"'))
+
+        expectedPythonVersion =       """${{ inputs.expected-default-version }}"""
+        expectedPythons =  json_loads("""${{ inputs.expected-python-versions }}""".replace("'", '"'))
+        expectedSystems =  json_loads("""${{ inputs.expected-systems }}""".replace("'", '"'))
+        excludedJobs =     json_loads("""${{ inputs.expected-exclude-jobs }}""".replace("'", '"'))
+        includeJobs =      json_loads("""${{ inputs.expected-include-jobs }}""".replace("'", '"'))
+        expectedJobs = sorted([f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs)
+
+        errors = 0
+        if actualPythonVersion != expectedPythonVersion:
+          print(f"'python_version' does not match: '{actualPythonVersion}' != '{expectedPythonVersion}'.")
+          errors += 1
+
+        if len(actualPythonJobs) != len(expectedJobs):
+          print(f"❌ Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
+          print("Actual jobs:")
+          for job in actualPythonJobs:
+            if job['system'] == "msys2":
+              print(f"  {job['runtime'].lower()}:{job['python']}")
+            else:
+              print(f"  {job['system']}:{job['python']}")
+
+          print("Expected jobs:")
+          for job in expectedJobs:
+            print(f"  {job}")
+          errors += 1
+        else:
+          print("✅ Number of 'python_jobs' as expected.")
+          print("Checking job combinations ...")
+
+          actualJobs = sorted([f"{job['system'] if job['system'] != 'msys2' else job['runtime'].lower()}:{job['python']}" for job in actualPythonJobs])
+          for actual, expected in zip(actualJobs, expectedJobs):
+            if actual != expected:
+              print(f"  ❌ Job does not match: {actual} != {expected}.")
+              errors += 1
+            else:
+              print(f"  ☑ Job as expected: {actual}.")
+
+        if errors == 0:
+          print("✅ All checks PASSED.")
+        else:
+          print(f"❌ Counted {errors} errors.")
+          exit(errors)
