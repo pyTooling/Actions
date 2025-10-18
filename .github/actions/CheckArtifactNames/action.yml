@@ -1,0 +1,67 @@
+name: Check artifact names
+branding:
+  icon: check-square
+  color: green
+description: Check generated artifact names.
+author: Patrick Lehmann (@Paebbels)
+
+inputs:
+  prefix:
+    description:
+    type: string
+    required: true
+  generated-names:
+    description:
+    type: string
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install dependencies
+      shell: bash
+      run: pip install --disable-pip-version-check --break-system-packages pyTooling
+
+    - name: Check artifact names
+      id: check
+      shell: python
+      working-directory: ${{ inputs.path }}
+      run: |
+        from pyTooling.Common import zipdicts
+
+        expectedName =    "Example"
+        expectedArtifacts = {
+          "unittesting_xml":        f"{expectedName}-UnitTestReportSummary-XML",
+          "unittesting_html":       f"{expectedName}-UnitTestReportSummary-HTML",
+          "perftesting_xml":        f"{expectedName}-PerformanceTestReportSummary-XML",
+          "benchtesting_xml":       f"{expectedName}-BenchmarkTestReportSummary-XML",
+          "apptesting_xml":         f"{expectedName}-ApplicationTestReportSummary-XML",
+          "codecoverage_sqlite":    f"{expectedName}-CodeCoverage-SQLite",
+          "codecoverage_xml":       f"{expectedName}-CodeCoverage-XML",
+          "codecoverage_json":      f"{expectedName}-CodeCoverage-JSON",
+          "codecoverage_html":      f"{expectedName}-CodeCoverage-HTML",
+          "statictyping_cobertura": f"{expectedName}-StaticTyping-Cobertura-XML",
+          "statictyping_junit":     f"{expectedName}-StaticTyping-JUnit-XML",
+          "statictyping_html":      f"{expectedName}-StaticTyping-HTML",
+          "package_all":            f"{expectedName}-Packages",
+          "documentation_html":     f"{expectedName}-Documentation-HTML",
+          "documentation_latex":    f"{expectedName}-Documentation-LaTeX",
+          "documentation_pdf":      f"{expectedName}-Documentation-PDF",
+        }
+
+        actualArtifactNames = json_loads("""${{ inputs }}""".replace("'", '"'))
+        errors = 0
+
+        if len(actualArtifactNames) != len(expectedArtifacts):
+          print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
+          errors += 1
+        else:
+          for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
+            if actual != expected:
+              print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
+              errors += 1
+
+        if errors == 0:
+          print(f"All checks PASSED.")
+
+        exit(errors)

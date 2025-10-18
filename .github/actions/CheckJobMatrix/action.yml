@@ -1,0 +1,82 @@
+name: Check job matrix
+branding:
+  icon: check-square
+  color: green
+description: Check generated job matrix.
+author: Patrick Lehmann (@Paebbels)
+
+inputs:
+  expected-default-version:
+    description:
+    type: string
+    required: true
+  expected-python-versions:
+    description:
+    type: string
+    required: true
+  expected-systems:
+    description:
+    type: string
+    required: true
+  expected-exclude-jobs:
+    description:
+    type: string
+    required: true
+  expected-include-jobs:
+    description:
+    type: string
+    required: true
+  generated-default-version:
+    description:
+    type: string
+    required: true
+  generated-jobmatrix:
+    description:
+    type: string
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Check parameters
+      id: check
+      shell: python
+      run: |
+        from json import loads as json_loads
+        from sys  import exit
+
+        expectedPythonVersion =      """${{ inputs.expected-default-version }}"""
+        expectedPythons = json_loads("""${{ inputs.expected-python-versions }}""".replace("'", '"'))
+        expectedSystems = json_loads("""${{ inputs.expected-systems }}""".replace("'", '"'))
+        excludedJobs =    json_loads("""${{ inputs.expected-exclude-jobs }}""".replace("'", '"'))
+        includeJobs =     json_loads("""${{ inputs.expected-include-jobs }}""".replace("'", '"'))
+        expectedJobs = [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
+
+        actualPythonVersion =         """${{ inputs.generated-default-version }}"""
+        actualPythonJobs = json_loads("""${{ inputs.generated-jobmatrix }}""".replace("'", '"'))
+        errors = 0
+
+        if actualPythonVersion != expectedPythonVersion:
+          print(f"'python_version' does not match: '{actualPythonVersion}' != '{expectedPythonVersion}'.")
+          errors += 1
+
+        if len(actualPythonJobs) != len(expectedJobs):
+          print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
+          print("Actual jobs:")
+          for job in actualPythonJobs:
+            if job['system'] == "msys2":
+              print(f"  {job['runtime'].lower()}:{job['python']}")
+            else:
+              print(f"  {job['system']}:{job['python']}")
+
+          print("Expected jobs:")
+          for job in expectedJobs:
+            print(f"  {job}")
+          errors += 1
+        else:
+          print("❌ Checking job matrix is not implemented")
+
+        if errors == 0:
+          print(f"All checks PASSED.")
+
+        exit(errors)
