@@ -14,7 +14,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
     with:
       name: Example
-      python_version_list: "3.12 3.13 pypy-3.10 pypy-3.11"
+      python_version_list: "3.12 3.13 pypy-3.10 pypy-3.11"       # py-2, py-1, pypy-1, pypy-0
 
   Params_Systems:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
@@ -26,7 +26,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
     with:
       name: Example
-      python_version_list: "3.12"
+      python_version_list: "3.12"                                # py-2
       system_list: "ubuntu windows macos macos-arm"
       include_list: "ubuntu:3.13 ubuntu:3.14 ubuntu-arm:3.12"
 
@@ -34,7 +34,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
     with:
       name: Example
-      python_version_list: "3.13"
+      python_version_list: "3.13"                                # py-1
       system_list: "ubuntu windows macos macos-arm"
       exclude_list: "windows:3.13 windows:3.14"
 
@@ -42,7 +42,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
     with:
       name: Example
-      python_version_list: "3.13"
+      python_version_list: "3.13"                                # py-1
       system_list: "ubuntu windows macos macos-arm"
       disable_list: "windows:3.13 windows:3.14"
 
@@ -50,7 +50,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
     with:
       name: Example
-      python_version_list: "3.12 3.13"
+      python_version_list: "3.12 3.13"                           # py-2, py-1
       system_list: "ubuntu windows macos macos-arm"
       include_list: "windows:3.10 windows:3.11 windows:3.13"
       exclude_list: "macos:3.12 macos:3.13"
@@ -63,75 +63,25 @@ jobs:
       run:
         shell: python
     steps:
-      - name: Install dependencies
-        shell: bash
-        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+      - name: Checkout repository to access local Action
+        uses: actions/checkout@v5
 
-      - name: Checking results from 'Params_Default'
-        run: |
-          from json import loads as json_loads
-          from sys  import exit
+      - name: Checking job matrix from 'Params_Default'
+        uses: ./.github/actions/CheckJobMatrix
+        with:
+          expected-default-version: '3.14'
+          expected-python-versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
+          expected-systems:         '["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]'
+          expected-exclude-jobs:    '["windows-arm:3.10"]'
+          expected-include-jobs:    '["mingw64:3.12", "ucrt64:3.12"]'
+          generated-default-version: ${{ needs.Params_Default.outputs.python_version }}
+          generated-jobmatrix:       ${{ needs.Params_Default.outputs.python_jobs }}
 
-          from pyTooling.Common import zipdicts
-
-          expectedPythonVersion = "3.13"
-          expectedPythons = ["3.9", "3.10", "3.11", "3.12", "3.13"]
-          expectedSystems = ["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]
-          excludedJobs =    ["windows-arm:3.9", "windows-arm:3.10"]
-          includeJobs =     ["mingw64:3.12", "ucrt64:3.12"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
-          expectedName =    "Example"
-          expectedArtifacts = {
-            "unittesting_xml":        f"{expectedName}-UnitTestReportSummary-XML",
-            "unittesting_html":       f"{expectedName}-UnitTestReportSummary-HTML",
-            "perftesting_xml":        f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":       f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":         f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_sqlite":    f"{expectedName}-CodeCoverage-SQLite",
-            "codecoverage_xml":       f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_json":      f"{expectedName}-CodeCoverage-JSON",
-            "codecoverage_html":      f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_cobertura": f"{expectedName}-StaticTyping-Cobertura-XML",
-            "statictyping_junit":     f"{expectedName}-StaticTyping-JUnit-XML",
-            "statictyping_html":      f"{expectedName}-StaticTyping-HTML",
-            "package_all":            f"{expectedName}-Packages",
-            "documentation_html":     f"{expectedName}-Documentation-HTML",
-            "documentation_latex":    f"{expectedName}-Documentation-LaTeX",
-            "documentation_pdf":      f"{expectedName}-Documentation-PDF",
-          }
-
-          actualPythonVersion =            """${{ needs.Params_Default.outputs.python_version }}"""
-          actualPythonJobs =    json_loads("""${{ needs.Params_Default.outputs.python_jobs }}""".replace("'", '"'))
-          actualArtifactNames = json_loads("""${{ needs.Params_Default.outputs.artifact_names }}""".replace("'", '"'))
-          errors = 0
-
-          if actualPythonVersion != expectedPythonVersion:
-            print(f"'python_version' does not match: '{actualPythonVersion}' != '{expectedPythonVersion}'.")
-            errors += 1
-          if len(actualPythonJobs) != len(expectedJobs):
-            print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
-            print("Actual jobs:")
-            for job in actualPythonJobs:
-              if job['system'] == "msys2":
-                print(f"  {job['runtime'].lower()}:{job['python']}")
-              else:
-                print(f"  {job['system']}:{job['python']}")
-            print("Expected jobs:")
-            for job in expectedJobs:
-              print(f"  {job}")
-            errors += 1
-          if len(actualArtifactNames) != len(expectedArtifacts):
-            print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            errors += 1
-          else:
-            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
-              if actual != expected:
-                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
-                errors += 1
-
-          if errors == 0:
-            print(f"All checks PASSED.")
-          exit(errors)
+      - name: Checking artifact names from 'Params_Default'
+        uses: ./.github/actions/CheckArtifactNames
+        with:
+          prefix: 'Example'
+          generated-names: ${{ needs.Params_Default.outputs.artifact_names }}
 
   Params_Check_PythonVersions:
     needs:
@@ -141,75 +91,19 @@ jobs:
       run:
         shell: python
     steps:
-      - name: Install dependencies
-        shell: bash
-        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+      - name: Checkout repository to access local Action
+        uses: actions/checkout@v5
 
-      - name: Checking results from 'Params_PythonVersions'
-        run: |
-          from json import loads as json_loads
-          from sys  import exit
-
-          from pyTooling.Common import zipdicts
-
-          expectedPythonVersion = "3.13"
-          expectedPythons = ["3.12", "3.13", "pypy-3.10", "pypy-3.11"]
-          expectedSystems = ["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]
-          excludedJobs =    ["windows-arm:pypy-3.10", "windows-arm:pypy-3.11"]
-          includeJobs =     ["mingw64:3.12", "ucrt64:3.12"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
-          expectedName =    "Example"
-          expectedArtifacts = {
-            "unittesting_xml":        f"{expectedName}-UnitTestReportSummary-XML",
-            "unittesting_html":       f"{expectedName}-UnitTestReportSummary-HTML",
-            "perftesting_xml":        f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":       f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":         f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_sqlite":    f"{expectedName}-CodeCoverage-SQLite",
-            "codecoverage_xml":       f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_json":      f"{expectedName}-CodeCoverage-JSON",
-            "codecoverage_html":      f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_cobertura": f"{expectedName}-StaticTyping-Cobertura-XML",
-            "statictyping_junit":     f"{expectedName}-StaticTyping-JUnit-XML",
-            "statictyping_html":      f"{expectedName}-StaticTyping-HTML",
-            "package_all":            f"{expectedName}-Packages",
-            "documentation_html":     f"{expectedName}-Documentation-HTML",
-            "documentation_latex":    f"{expectedName}-Documentation-LaTeX",
-            "documentation_pdf":      f"{expectedName}-Documentation-PDF",
-          }
-
-          actualPythonVersion =            """${{ needs.Params_PythonVersions.outputs.python_version }}"""
-          actualPythonJobs =    json_loads("""${{ needs.Params_PythonVersions.outputs.python_jobs }}""".replace("'", '"'))
-          actualArtifactNames = json_loads("""${{ needs.Params_PythonVersions.outputs.artifact_names }}""".replace("'", '"'))
-          errors = 0
-
-          if actualPythonVersion != expectedPythonVersion:
-            print(f"'python_version' does not match: '{actualPythonVersion}' != '{expectedPythonVersion}'.")
-            errors += 1
-          if len(actualPythonJobs) != len(expectedJobs):
-            print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
-            print("Actual jobs:")
-            for job in actualPythonJobs:
-              if job['system'] == "msys2":
-                print(f"  {job['runtime'].lower()}:{job['python']}")
-              else:
-                print(f"  {job['system']}:{job['python']}")
-            print("Expected jobs:")
-            for job in expectedJobs:
-              print(f"  {job}")
-            errors += 1
-          if len(actualArtifactNames) != len(expectedArtifacts):
-            print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            errors += 1
-          else:
-            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
-              if actual != expected:
-                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
-                errors += 1
-
-          if errors == 0:
-            print(f"All checks PASSED.")
-          exit(errors)
+      - name: Checking job matrix from 'Params_PythonVersions'
+        uses: ./.github/actions/CheckJobMatrix
+        with:
+          expected-default-version: '3.14'
+          expected-python-versions: '["3.12", "3.13", "pypy-3.10", "pypy-3.11"]'
+          expected-systems:         '["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]'
+          expected-exclude-jobs:    '["windows-arm:pypy-3.10", "windows-arm:pypy-3.11"]'
+          expected-include-jobs:    '["mingw64:3.12", "ucrt64:3.12"]'
+          generated-default-version: ${{ needs.Params_PythonVersions.outputs.python_version }}
+          generated-jobmatrix:       ${{ needs.Params_PythonVersions.outputs.python_jobs }}
 
   Params_Check_Systems:
     needs:
@@ -219,75 +113,19 @@ jobs:
       run:
         shell: python
     steps:
-      - name: Install dependencies
-        shell: bash
-        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+      - name: Checkout repository to access local Action
+        uses: actions/checkout@v5
 
-      - name: Checking results from 'Params_Systems'
-        run: |
-          from json import loads as json_loads
-          from sys  import exit
-
-          from pyTooling.Common import zipdicts
-
-          expectedPythonVersion = "3.13"
-          expectedPythons = ["3.9", "3.10", "3.11", "3.12", "3.13"]
-          expectedSystems = ["windows"]
-          excludedJobs =    []
-          includeJobs =     ["mingw64:3.12", "ucrt64:3.12"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
-          expectedName =    "Example"
-          expectedArtifacts = {
-            "unittesting_xml":        f"{expectedName}-UnitTestReportSummary-XML",
-            "unittesting_html":       f"{expectedName}-UnitTestReportSummary-HTML",
-            "perftesting_xml":        f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":       f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":         f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_sqlite":    f"{expectedName}-CodeCoverage-SQLite",
-            "codecoverage_xml":       f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_json":      f"{expectedName}-CodeCoverage-JSON",
-            "codecoverage_html":      f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_cobertura": f"{expectedName}-StaticTyping-Cobertura-XML",
-            "statictyping_junit":     f"{expectedName}-StaticTyping-JUnit-XML",
-            "statictyping_html":      f"{expectedName}-StaticTyping-HTML",
-            "package_all":            f"{expectedName}-Packages",
-            "documentation_html":     f"{expectedName}-Documentation-HTML",
-            "documentation_latex":    f"{expectedName}-Documentation-LaTeX",
-            "documentation_pdf":      f"{expectedName}-Documentation-PDF",
-          }
-
-          actualPythonVersion =            """${{ needs.Params_Systems.outputs.python_version }}"""
-          actualPythonJobs =    json_loads("""${{ needs.Params_Systems.outputs.python_jobs }}""".replace("'", '"'))
-          actualArtifactNames = json_loads("""${{ needs.Params_Systems.outputs.artifact_names }}""".replace("'", '"'))
-          errors = 0
-
-          if actualPythonVersion != expectedPythonVersion:
-            print(f"'python_version' does not match: '{actualPythonVersion}' != '{expectedPythonVersion}'.")
-            errors += 1
-          if len(actualPythonJobs) != len(expectedJobs):
-            print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
-            print("Actual jobs:")
-            for job in actualPythonJobs:
-              if job['system'] == "msys2":
-                print(f"  {job['runtime'].lower()}:{job['python']}")
-              else:
-                print(f"  {job['system']}:{job['python']}")
-            print("Expected jobs:")
-            for job in expectedJobs:
-              print(f"  {job}")
-            errors += 1
-          if len(actualArtifactNames) != len(expectedArtifacts):
-            print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            errors += 1
-          else:
-            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
-              if actual != expected:
-                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
-                errors += 1
-
-          if errors == 0:
-            print(f"All checks PASSED.")
-          exit(errors)
+      - name: Checking job matrix from 'Params_Systems'
+        uses: ./.github/actions/CheckJobMatrix
+        with:
+          expected-default-version: '3.14'
+          expected-python-versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
+          expected-systems:         '["windows"]'
+          expected-exclude-jobs:    '[]'
+          expected-include-jobs:    '["mingw32:3.12", "mingw64:3.12"]'
+          generated-default-version: ${{ needs.Params_Systems.outputs.python_version }}
+          generated-jobmatrix:       ${{ needs.Params_Systems.outputs.python_jobs }}
 
   Params_Check_Include:
     needs:
@@ -297,75 +135,19 @@ jobs:
       run:
         shell: python
     steps:
-      - name: Install dependencies
-        shell: bash
-        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+      - name: Checkout repository to access local Action
+        uses: actions/checkout@v5
 
-      - name: Checking results from 'Params_Include'
-        run: |
-          from json import loads as json_loads
-          from sys  import exit
-
-          from pyTooling.Common import zipdicts
-
-          expectedPythonVersion = "3.13"
-          expectedPythons = ["3.12"]
-          expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
-          excludedJobs =    []
-          includeJobs =     ["ubuntu:3.13", "ubuntu:3.14", "ubuntu-arm:3.12"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
-          expectedName =    "Example"
-          expectedArtifacts = {
-            "unittesting_xml":        f"{expectedName}-UnitTestReportSummary-XML",
-            "unittesting_html":       f"{expectedName}-UnitTestReportSummary-HTML",
-            "perftesting_xml":        f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":       f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":         f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_sqlite":    f"{expectedName}-CodeCoverage-SQLite",
-            "codecoverage_xml":       f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_json":      f"{expectedName}-CodeCoverage-JSON",
-            "codecoverage_html":      f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_cobertura": f"{expectedName}-StaticTyping-Cobertura-XML",
-            "statictyping_junit":     f"{expectedName}-StaticTyping-JUnit-XML",
-            "statictyping_html":      f"{expectedName}-StaticTyping-HTML",
-            "package_all":            f"{expectedName}-Packages",
-            "documentation_html":     f"{expectedName}-Documentation-HTML",
-            "documentation_latex":    f"{expectedName}-Documentation-LaTeX",
-            "documentation_pdf":      f"{expectedName}-Documentation-PDF",
-          }
-
-          actualPythonVersion =            """${{ needs.Params_Include.outputs.python_version }}"""
-          actualPythonJobs =    json_loads("""${{ needs.Params_Include.outputs.python_jobs }}""".replace("'", '"'))
-          actualArtifactNames = json_loads("""${{ needs.Params_Include.outputs.artifact_names }}""".replace("'", '"'))
-          errors = 0
-
-          if actualPythonVersion != expectedPythonVersion:
-            print(f"'python_version' does not match: '{actualPythonVersion}' != '{expectedPythonVersion}'.")
-            errors += 1
-          if len(actualPythonJobs) != len(expectedJobs):
-            print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
-            print("Actual jobs:")
-            for job in actualPythonJobs:
-              if job['system'] == "msys2":
-                print(f"  {job['runtime'].lower()}:{job['python']}")
-              else:
-                print(f"  {job['system']}:{job['python']}")
-            print("Expected jobs:")
-            for job in expectedJobs:
-              print(f"  {job}")
-            errors += 1
-          if len(actualArtifactNames) != len(expectedArtifacts):
-            print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            errors += 1
-          else:
-            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
-              if actual != expected:
-                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
-                errors += 1
-
-          if errors == 0:
-            print(f"All checks PASSED.")
-          exit(errors)
+      - name: Checking job matrix from 'Params_Include'
+        uses: ./.github/actions/CheckJobMatrix
+        with:
+          expected-default-version: '3.14'
+          expected-python-versions: '["3.12"]'
+          expected-systems:         '["ubuntu", "windows", "macos", "macos-arm"]'
+          expected-exclude-jobs:    '[]'
+          expected-include-jobs:    '["ubuntu:3.13", "ubuntu:3.14", "ubuntu-arm:3.12"]'
+          generated-default-version: ${{ needs.Params_Include.outputs.python_version }}
+          generated-jobmatrix:       ${{ needs.Params_Include.outputs.python_jobs }}
 
   Params_Check_Exclude:
     needs:
@@ -375,75 +157,19 @@ jobs:
       run:
         shell: python
     steps:
-      - name: Install dependencies
-        shell: bash
-        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+      - name: Checkout repository to access local Action
+        uses: actions/checkout@v5
 
-      - name: Checking results from 'Params_Exclude'
-        run: |
-          from json import loads as json_loads
-          from sys  import exit
-
-          from pyTooling.Common import zipdicts
-
-          expectedPythonVersion = "3.13"
-          expectedPythons = ["3.13"]
-          expectedSystems = ["ubuntu", "macos", "macos-arm"]
-          excludedJobs =    []
-          includeJobs =     []
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
-          expectedName =    "Example"
-          expectedArtifacts = {
-            "unittesting_xml":        f"{expectedName}-UnitTestReportSummary-XML",
-            "unittesting_html":       f"{expectedName}-UnitTestReportSummary-HTML",
-            "perftesting_xml":        f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":       f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":         f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_sqlite":    f"{expectedName}-CodeCoverage-SQLite",
-            "codecoverage_xml":       f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_json":      f"{expectedName}-CodeCoverage-JSON",
-            "codecoverage_html":      f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_cobertura": f"{expectedName}-StaticTyping-Cobertura-XML",
-            "statictyping_junit":     f"{expectedName}-StaticTyping-JUnit-XML",
-            "statictyping_html":      f"{expectedName}-StaticTyping-HTML",
-            "package_all":            f"{expectedName}-Packages",
-            "documentation_html":     f"{expectedName}-Documentation-HTML",
-            "documentation_latex":    f"{expectedName}-Documentation-LaTeX",
-            "documentation_pdf":      f"{expectedName}-Documentation-PDF",
-          }
-
-          actualPythonVersion =            """${{ needs.Params_Exclude.outputs.python_version }}"""
-          actualPythonJobs =    json_loads("""${{ needs.Params_Exclude.outputs.python_jobs }}""".replace("'", '"'))
-          actualArtifactNames = json_loads("""${{ needs.Params_Exclude.outputs.artifact_names }}""".replace("'", '"'))
-          errors = 0
-
-          if actualPythonVersion != expectedPythonVersion:
-            print(f"'python_version' does not match: '{actualPythonVersion}' != '{expectedPythonVersion}'.")
-            errors += 1
-          if len(actualPythonJobs) != len(expectedJobs):
-            print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
-            print("Actual jobs:")
-            for job in actualPythonJobs:
-              if job['system'] == "msys2":
-                print(f"  {job['runtime'].lower()}:{job['python']}")
-              else:
-                print(f"  {job['system']}:{job['python']}")
-            print("Expected jobs:")
-            for job in expectedJobs:
-              print(f"  {job}")
-            errors += 1
-          if len(actualArtifactNames) != len(expectedArtifacts):
-            print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            errors += 1
-          else:
-            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
-              if actual != expected:
-                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
-                errors += 1
-
-          if errors == 0:
-            print(f"All checks PASSED.")
-          exit(errors)
+      - name: Checking job matrix from 'Params_Exclude'
+        uses: ./.github/actions/CheckJobMatrix
+        with:
+          expected-default-version: '3.14'
+          expected-python-versions: '["3.13"]'
+          expected-systems:         '["ubuntu", "macos", "macos-arm"]'
+          expected-exclude-jobs:    '[]'
+          expected-include-jobs:    '[]'
+          generated-default-version: ${{ needs.Params_Exclude.outputs.python_version }}
+          generated-jobmatrix:       ${{ needs.Params_Exclude.outputs.python_jobs }}
 
   Params_Check_Disable:
     needs:
@@ -453,75 +179,19 @@ jobs:
       run:
         shell: python
     steps:
-      - name: Install dependencies
-        shell: bash
-        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+      - name: Checkout repository to access local Action
+        uses: actions/checkout@v5
 
-      - name: Checking results from 'Params_Disable'
-        run: |
-          from json import loads as json_loads
-          from sys  import exit
-
-          from pyTooling.Common import zipdicts
-
-          expectedPythonVersion = "3.13"
-          expectedPythons = ["3.13"]
-          expectedSystems = ["ubuntu", "windows", "macos", "macos-arm"]
-          excludedJobs =    ["windows:3.13"]
-          includeJobs =     []
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
-          expectedName =    "Example"
-          expectedArtifacts = {
-            "unittesting_xml":        f"{expectedName}-UnitTestReportSummary-XML",
-            "unittesting_html":       f"{expectedName}-UnitTestReportSummary-HTML",
-            "perftesting_xml":        f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":       f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":         f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_sqlite":    f"{expectedName}-CodeCoverage-SQLite",
-            "codecoverage_xml":       f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_json":      f"{expectedName}-CodeCoverage-JSON",
-            "codecoverage_html":      f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_cobertura": f"{expectedName}-StaticTyping-Cobertura-XML",
-            "statictyping_junit":     f"{expectedName}-StaticTyping-JUnit-XML",
-            "statictyping_html":      f"{expectedName}-StaticTyping-HTML",
-            "package_all":            f"{expectedName}-Packages",
-            "documentation_html":     f"{expectedName}-Documentation-HTML",
-            "documentation_latex":    f"{expectedName}-Documentation-LaTeX",
-            "documentation_pdf":      f"{expectedName}-Documentation-PDF",
-          }
-
-          actualPythonVersion =            """${{ needs.Params_Disable.outputs.python_version }}"""
-          actualPythonJobs =    json_loads("""${{ needs.Params_Disable.outputs.python_jobs }}""".replace("'", '"'))
-          actualArtifactNames = json_loads("""${{ needs.Params_Disable.outputs.artifact_names }}""".replace("'", '"'))
-          errors = 0
-
-          if actualPythonVersion != expectedPythonVersion:
-            print(f"'python_version' does not match: '{actualPythonVersion}' != '{expectedPythonVersion}'.")
-            errors += 1
-          if len(actualPythonJobs) != len(expectedJobs):
-            print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
-            print("Actual jobs:")
-            for job in actualPythonJobs:
-              if job['system'] == "msys2":
-                print(f"  {job['runtime'].lower()}:{job['python']}")
-              else:
-                print(f"  {job['system']}:{job['python']}")
-            print("Expected jobs:")
-            for job in expectedJobs:
-              print(f"  {job}")
-            errors += 1
-          if len(actualArtifactNames) != len(expectedArtifacts):
-            print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            errors += 1
-          else:
-            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
-              if actual != expected:
-                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
-                errors += 1
-
-          if errors == 0:
-            print(f"All checks PASSED.")
-          exit(errors)
+      - name: Checking job matrix from 'Params_Disable'
+        uses: ./.github/actions/CheckJobMatrix
+        with:
+          expected-default-version: '3.14'
+          expected-python-versions: '["3.13"]'
+          expected-systems:         '["ubuntu", "windows", "macos", "macos-arm"]'
+          expected-exclude-jobs:    '["windows:3.13"]'
+          expected-include-jobs:    '[]'
+          generated-default-version: ${{ needs.Params_Disable.outputs.python_version }}
+          generated-jobmatrix:       ${{ needs.Params_Disable.outputs.python_jobs }}
 
   Params_Check_All:
     needs:
@@ -531,72 +201,16 @@ jobs:
       run:
         shell: python
     steps:
-      - name: Install dependencies
-        shell: bash
-        run: pip install --disable-pip-version-check --break-system-packages pyTooling
+      - name: Checkout repository to access local Action
+        uses: actions/checkout@v5
 
-      - name: Checking results from 'Params_All'
-        run: |
-          from json import loads as json_loads
-          from sys  import exit
-
-          from pyTooling.Common import zipdicts
-
-          expectedPythonVersion = "3.13"
-          expectedPythons = ["3.12", "3.13"]
-          expectedSystems = ["ubuntu", "macos-arm", "windows"]
-          excludedJobs =    []
-          includeJobs =     ["windows:3.10", "windows:3.11", "windows:3.13"]
-          expectedJobs =    [f"{system}:{python}" for system in expectedSystems for python in expectedPythons if f"{system}:{python}" not in excludedJobs] + includeJobs
-          expectedName =    "Example"
-          expectedArtifacts = {
-            "unittesting_xml":        f"{expectedName}-UnitTestReportSummary-XML",
-            "unittesting_html":       f"{expectedName}-UnitTestReportSummary-HTML",
-            "perftesting_xml":        f"{expectedName}-PerformanceTestReportSummary-XML",
-            "benchtesting_xml":       f"{expectedName}-BenchmarkTestReportSummary-XML",
-            "apptesting_xml":         f"{expectedName}-ApplicationTestReportSummary-XML",
-            "codecoverage_sqlite":    f"{expectedName}-CodeCoverage-SQLite",
-            "codecoverage_xml":       f"{expectedName}-CodeCoverage-XML",
-            "codecoverage_json":      f"{expectedName}-CodeCoverage-JSON",
-            "codecoverage_html":      f"{expectedName}-CodeCoverage-HTML",
-            "statictyping_cobertura": f"{expectedName}-StaticTyping-Cobertura-XML",
-            "statictyping_junit":     f"{expectedName}-StaticTyping-JUnit-XML",
-            "statictyping_html":      f"{expectedName}-StaticTyping-HTML",
-            "package_all":            f"{expectedName}-Packages",
-            "documentation_html":     f"{expectedName}-Documentation-HTML",
-            "documentation_latex":    f"{expectedName}-Documentation-LaTeX",
-            "documentation_pdf":      f"{expectedName}-Documentation-PDF",
-          }
-
-          actualPythonVersion =            """${{ needs.Params_All.outputs.python_version }}"""
-          actualPythonJobs =    json_loads("""${{ needs.Params_All.outputs.python_jobs }}""".replace("'", '"'))
-          actualArtifactNames = json_loads("""${{ needs.Params_All.outputs.artifact_names }}""".replace("'", '"'))
-          errors = 0
-
-          if actualPythonVersion != expectedPythonVersion:
-            print(f"'python_version' does not match: '{actualPythonVersion}' != '{expectedPythonVersion}'.")
-            errors += 1
-          if len(actualPythonJobs) != len(expectedJobs):
-            print(f"Number of 'python_jobs' does not match: {len(actualPythonJobs)} != {len(expectedJobs)}.")
-            print("Actual jobs:")
-            for job in actualPythonJobs:
-              if job['system'] == "msys2":
-                print(f"  {job['runtime'].lower()}:{job['python']}")
-              else:
-                print(f"  {job['system']}:{job['python']}")
-            print("Expected jobs:")
-            for job in expectedJobs:
-              print(f"  {job}")
-            errors += 1
-          if len(actualArtifactNames) != len(expectedArtifacts):
-            print(f"Number of 'artifact_names' does not match: {len(actualArtifactNames)} != {len(expectedArtifacts)}.")
-            errors += 1
-          else:
-            for key, actual, expected in zipdicts(actualArtifactNames, expectedArtifacts):
-              if actual != expected:
-                print(f"Artifact name '{key}' does not match: {actual} != {expected}.")
-                errors += 1
-
-          if errors == 0:
-            print(f"All checks PASSED.")
-          exit(errors)
+      - name: Checking job matrix from 'Params_All'
+        uses: ./.github/actions/CheckJobMatrix
+        with:
+          expected-default-version: '3.14'
+          expected-python-versions: '["3.12", "3.13"]'
+          expected-systems:         '["ubuntu", "windows", "macos-arm"]'
+          expected-exclude-jobs:    '[]'
+          expected-include-jobs:    '["windows:3.10", "windows:3.11", "windows:3.13"]'
+          generated-default-version: ${{ needs.Params_All.outputs.python_version }}
+          generated-jobmatrix:       ${{ needs.Params_All.outputs.python_jobs }}

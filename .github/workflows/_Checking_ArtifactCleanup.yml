@@ -9,7 +9,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
     with:
       name: Example
-      python_version_list: "3.12 3.13"
+      python_version_list: "3.13 3.14"  # py-1, py-0
       system_list: "ubuntu windows"
 
   Testing:

@@ -32,7 +32,7 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.13'
+        default: '3.14'
         type: string
       package_directory:
         description: 'The package''s directory'
