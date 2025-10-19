@@ -359,10 +359,10 @@ jobs:
     needs:
       - Prepare
       - UnitTesting
-      - Install
 #      - AppTesting
 #      - StaticTypeCheck
       - Package
+      - Install
       - PublishToGitHubPages
     if: needs.Prepare.outputs.is_release_commit == 'true' && github.event_name != 'schedule'
     permissions:
@@ -378,10 +378,10 @@ jobs:
     needs:
       - Prepare
       - UnitTesting
-      - Install
 #      - AppTesting
 #      - StaticTypeCheck
       - Package
+      - Install
       - PublishToGitHubPages
     if: needs.Prepare.outputs.is_release_tag == 'true'
     permissions:
@@ -418,6 +418,7 @@ jobs:
       - PublishCoverageResults
       - PublishToGitHubPages
 #      - PublishOnPyPI
+      - Install
       - IntermediateCleanUp
     if: inputs.cleanup  == 'true'
     with:

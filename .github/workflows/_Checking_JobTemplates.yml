@@ -221,9 +221,9 @@ jobs:
       - Prepare
       - UnitTesting
       - PlatformTesting
-      - Install
 #      - StaticTypeCheck
       - Package
+      - Install
       - PublishToGitHubPages
     permissions:
       contents: write  # required for create tag
@@ -239,9 +239,9 @@ jobs:
       - Prepare
       - UnitTesting
       - PlatformTesting
-      - Install
 #      - StaticTypeCheck
       - Package
+      - Install
       - PublishToGitHubPages
     if: needs.Prepare.outputs.is_release_tag == 'true'
     permissions:
@@ -277,6 +277,7 @@ jobs:
       - PublishTestResults
       - PublishCoverageResults
       - PublishToGitHubPages
+      - Install
       - IntermediateCleanUp
     with:
       package: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
