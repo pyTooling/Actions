@@ -1,0 +1,1262 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UnitTesting &mdash; pyTooling/Actions v0.4.5</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-reports.089ed2e62f89368aa21ac7591d90c12a.css?v=83177741" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/override.css?v=3386ca6d" />
+
+  
+    <link rel="shortcut icon" href="../../_static/icon.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=340bb9e5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ApplicationTesting (idea)" href="ApplicationTesting.html" />
+    <link rel="prev" title="Testing" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../AllInOne/index.html">All-In-One</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Setup/index.html">Pipeline Setup</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Testing</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">UnitTesting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#instantiation">Instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameter-summary">Parameter Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-parameters">Input Parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jobs">jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apt">apt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#brew">brew</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pacboy">pacboy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#requirements">requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mingw-requirements">mingw_requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#macos-before-script">macos_before_script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#macos-arm-before-script">macos_arm_before_script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ubuntu-before-script">ubuntu_before_script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mingw64-before-script">mingw64_before_script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucrt64-before-script">ucrt64_before_script</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#root-directory">root_directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tests-directory">tests_directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-directory">unittest_directory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-report-xml">unittest_report_xml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-config">coverage_config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-report-xml">coverage_report_xml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-report-json">coverage_report_json</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-report-html">coverage_report_html</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-xml-artifact">unittest_xml_artifact</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unittest-html-artifact">unittest_html_artifact</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-sqlite-artifact">coverage_sqlite_artifact</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-xml-artifact">coverage_xml_artifact</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-json-artifact">coverage_json_artifact</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-html-artifact">coverage_html_artifact</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#secrets">Secrets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#outputs">Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimizations">Optimizations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ApplicationTesting.html">ApplicationTesting (idea)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../Quality/index.html">Quality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Documentation/index.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Package/index.html">Packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Publish/index.html">Publish</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Release/index.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Cleanup/index.html">Cleanup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Deprecated/index.html">Deprecated</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../myPackage/myPackage.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CodeCoverage.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../DocCoverage.html">Doc. Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../py-modindex.html">Python Module Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pyTooling/Actions</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Testing</a></li>
+      <li class="breadcrumb-item active">UnitTesting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/JobTemplate/Testing/UnitTesting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><section id="unittesting">
+<span id="index-0"></span><span id="jobtmpl-unittesting"></span><h1>UnitTesting<a class="headerlink" href="#unittesting" title="Link to this heading"></a></h1>
+<p>This template runs multiple jobs from a matrix as a cross of Python versions and systems. The summary report in junit
+XML format is optionally uploaded as an artifact.</p>
+<p>Configuration options to <a class="reference internal" href="../../Glossary.html#term-pytest"><span class="xref std std-term">pytest</span></a> should be given via section <code class="docutils literal notranslate"><span class="pre">[tool.pytest.ini_options]</span></code> in a
+<code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file.</p>
+<aside class="topic">
+<p class="topic-title">Features</p>
+<ul class="simple">
+<li><p>Execute unit tests using <a class="reference internal" href="../../Glossary.html#term-pytest"><span class="xref std std-term">pytest</span></a>.</p>
+<ul>
+<li><p>Provide unit test results as JUnit XML file (pyTest XML dialect).</p></li>
+</ul>
+</li>
+<li><p>Collect code coverage using <a class="reference internal" href="../../Glossary.html#term-Coverage.py"><span class="xref std std-term">Coverage.py</span></a>.</p>
+<ul>
+<li><p>Provide code coverage results as pytest SQLite database.</p></li>
+<li><p>Provide code coverage results as Cobertura XML file.</p></li>
+<li><p>Provide code coverage results as pytest JSON file.</p></li>
+<li><p>Provide code coverage results as HTML report.</p></li>
+</ul>
+</li>
+</ul>
+</aside>
+<aside class="topic">
+<p class="topic-title">Behavior</p>
+<ol class="arabic simple">
+<li><p>Checkout repository.</p></li>
+<li><p>Setup environment and install dependencies (<code class="docutils literal notranslate"><span class="pre">apt</span></code>, <code class="docutils literal notranslate"><span class="pre">homebrew</span></code>, <code class="docutils literal notranslate"><span class="pre">pacman</span></code>, …).</p></li>
+<li><p>Setup Python and install dependencies (<a class="reference internal" href="../../Glossary.html#term-pip"><span class="xref std std-term">pip</span></a>).</p></li>
+<li><p>Run instructions from <code class="docutils literal notranslate"><span class="pre">*_before_script</span></code> parameter.</p></li>
+<li><p>Run unit tests using <em>pytest</em> and if enabled in combination with <em>Coverage.py</em>.</p></li>
+<li><p>Convert gathered results to other formats.</p></li>
+<li><p>Upload results (test reports, code coverage reports, …) as an artifacts.</p></li>
+</ol>
+</aside>
+<aside class="topic">
+<p class="topic-title">Job Execution</p>
+<a class="reference internal image-reference" href="../../_images/pyTooling-Actions-UnitTesting.png"><img alt="../../_images/pyTooling-Actions-UnitTesting.png" src="../../_images/pyTooling-Actions-UnitTesting.png" style="width: 600px;" />
+</a>
+</aside>
+<aside class="topic">
+<p class="topic-title">Dependencies</p>
+<ul class="simple">
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/checkout">GitHub: actions/checkout</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/msys2/setup-msys2">GitHub: msys2/setup-msys2</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/setup-python">GitHub: actions/setup-python</a></p></li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/pyTooling/download-artifact">GitHub: pyTooling/download-artifact</a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/download-artifact">GitHub: actions/download-artifact</a></p></li>
+</ul>
+</li>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/pyTooling/upload-artifact">GitHub: pyTooling/upload-artifact</a></p>
+<ul>
+<li><p><a class="extlink-gh reference external" href="https://GitHub.com/actions/upload-artifact">GitHub: actions/upload-artifact</a></p></li>
+</ul>
+</li>
+<li><p>apt: Packages specified via <a class="reference internal" href="#jobtmpl-unittesting-input-apt"><span class="std std-ref">apt</span></a> parameter.</p></li>
+<li><p>homebrew: Packages specified via <a class="reference internal" href="#jobtmpl-unittesting-input-brew"><span class="std std-ref">brew</span></a> parameter.</p></li>
+<li><p>MSYS2: Packages specified via <a class="reference internal" href="#jobtmpl-unittesting-input-pacboy"><span class="std std-ref">pacboy</span></a> parameter.</p></li>
+<li><p>pip</p>
+<ul>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/wheel/">PyPI: wheel</a></p></li>
+<li><p><a class="extlink-pypi reference external" href="https://pypi.org/project/tomli/">PyPI: tomli</a></p></li>
+<li><p>Python packages specified via <a class="reference internal" href="#jobtmpl-unittesting-input-requirements"><span class="std std-ref">requirements</span></a> or
+<a class="reference internal" href="#jobtmpl-unittesting-input-mingw-requirements"><span class="std std-ref">mingw_requirements</span></a> parameter.</p></li>
+</ul>
+</li>
+</ul>
+</aside>
+<section id="instantiation">
+<span id="jobtmpl-unittesting-instantiation"></span><h2>Instantiation<a class="headerlink" href="#instantiation" title="Link to this heading"></a></h2>
+<p>The following instantiation example creates a <code class="docutils literal notranslate"><span class="pre">UnitTesting</span></code> job derived from job template <code class="docutils literal notranslate"><span class="pre">UnitTesting</span></code> version
+<cite>&#64;r6</cite>. For providing the job matrix as a JSON string, the <a class="reference internal" href="../Setup/Parameters.html#jobtmpl-parameters"><span class="std std-ref">Parameters</span></a> job template is used. Additionally,
+the job needs configuration settings, which are stored in <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>. Instead of duplicating these settings,
+the <a class="reference internal" href="../Setup/ExtractConfiguration.html#jobtmpl-extractconfiguration"><span class="std std-ref">ExtractConfiguration</span></a> job template is used to extract these settings.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ConfigParams</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6</span>
+
+<span class="w">  </span><span class="nt">UnitTestingParams</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/Parameters.yml@r6</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myPackage</span>
+
+<span class="w">  </span><span class="nt">UnitTesting</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/UnitTesting.yml@r6</span>
+<span class="w">    </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigParams</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UnitTestingParams</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">jobs</span><span class="p">:</span><span class="w">                     </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.UnitTestingParams.outputs.python_jobs }}</span>
+<span class="w">      </span><span class="nt">requirements</span><span class="p">:</span><span class="w">             </span><span class="s">&#39;-r</span><span class="nv"> </span><span class="s">tests/unit/requirements.txt&#39;</span>
+<span class="w">      </span><span class="nt">unittest_report_xml</span><span class="p">:</span><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.unittest_report_xml }}</span>
+<span class="w">      </span><span class="nt">unittest_xml_artifact</span><span class="p">:</span><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}</span>
+<span class="w">      </span><span class="nt">coverage_sqlite_artifact</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../Setup/Parameters.html#jobtmpl-parameters"><span class="std std-ref">Parameters</span></a></dt><dd><p><code class="docutils literal notranslate"><span class="pre">Parameters</span></code> is usually used to pre-compute the job matrix as a JSON string with all system × environment
+× Python version combinations.</p>
+</dd>
+<dt><a class="reference internal" href="../Publish/PublishTestResults.html#jobtmpl-publishtestresults"><span class="std std-ref">PublishTestResults</span></a></dt><dd><p><code class="docutils literal notranslate"><span class="pre">PublishTestResults</span></code> can be used to merge all JUnit test reports into one file.</p>
+</dd>
+<dt><a class="reference internal" href="../Publish/PublishCoverageResults.html#jobtmpl-publishcoverageresults"><span class="std std-ref">PublishCoverageResults</span></a></dt><dd><p><code class="docutils literal notranslate"><span class="pre">PublishCoverageResults</span></code> can be used to merge all code coverage reports into one file.</p>
+</dd>
+</dl>
+</div>
+</section>
+<section id="parameter-summary">
+<span id="jobtmpl-unittesting-parameters"></span><h2>Parameter Summary<a class="headerlink" href="#parameter-summary" title="Link to this heading"></a></h2>
+<p class="rubric">Goto <a class="reference internal" href="#jobtmpl-unittesting-inputs"><span class="std std-ref">input parameters</span></a></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter Name</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-jobs"><span class="std std-ref">jobs</span></a></p></td>
+<td><p>yes</p></td>
+<td><p>string</p></td>
+<td><p>— — — —</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-apt"><span class="std std-ref">apt</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-brew"><span class="std std-ref">brew</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-pacboy"><span class="std std-ref">pacboy</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-requirements"><span class="std std-ref">requirements</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'-r</span> <span class="pre">tests/requirements.txt'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-mingw-requirements"><span class="std std-ref">mingw_requirements</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-macos-before-script"><span class="std std-ref">macos_before_script</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-macos-arm-before-script"><span class="std std-ref">macos_arm_before_script</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-ubuntu-before-script"><span class="std std-ref">ubuntu_before_script</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-mingw64-before-script"><span class="std std-ref">mingw64_before_script</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-ucrt64-before-script"><span class="std std-ref">ucrt64_before_script</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-root-directory"><span class="std std-ref">root_directory</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-tests-directory"><span class="std std-ref">tests_directory</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'tests'</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-unittest-directory"><span class="std std-ref">unittest_directory</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'unit'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-unittest-report-xml"><span class="std std-ref">unittest_report_xml</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="code highlight json docutils literal highlight-json"><span class="p">{</span><span class="nt">&quot;directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;report/unit&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;TestReportSummary.xml&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;fullpath&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;report/unit/TestReportSummary.xml&quot;</span><span class="p">}</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-coverage-config"><span class="std std-ref">coverage_config</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">'pyproject.toml'</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-coverage-report-xml"><span class="std std-ref">coverage_report_xml</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="code highlight json docutils literal highlight-json"><span class="p">{</span><span class="nt">&quot;directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;report/coverage&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;coverage.xml&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;fullpath&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;report/coverage/coverage.xml&quot;</span><span class="p">}</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-coverage-report-json"><span class="std std-ref">coverage_report_json</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="code highlight json docutils literal highlight-json"><span class="p">{</span><span class="nt">&quot;directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;report/coverage&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;coverage.json&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;fullpath&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;report/coverage/coverage.json&quot;</span><span class="p">}</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-coverage-report-html"><span class="std std-ref">coverage_report_html</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="code highlight json docutils literal highlight-json"><span class="p">{</span><span class="nt">&quot;directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;report/coverage&quot;</span><span class="p">}</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-unittest-xml-artifact"><span class="std std-ref">unittest_xml_artifact</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-unittest-html-artifact"><span class="std std-ref">unittest_html_artifact</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-coverage-sqlite-artifact"><span class="std std-ref">coverage_sqlite_artifact</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-coverage-xml-artifact"><span class="std std-ref">coverage_xml_artifact</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-coverage-json-artifact"><span class="std std-ref">coverage_json_artifact</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#jobtmpl-unittesting-input-coverage-html-artifact"><span class="std std-ref">coverage_html_artifact</span></a></p></td>
+<td><p>no</p></td>
+<td><p>string</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Goto <a class="reference internal" href="#jobtmpl-unittesting-secrets"><span class="std std-ref">secrets</span></a></p>
+<p>This job template needs no secrets.</p>
+<p class="rubric">Goto <a class="reference internal" href="#jobtmpl-unittesting-outputs"><span class="std std-ref">output parameters</span></a></p>
+<p>This job template has no output parameters.</p>
+</section>
+<section id="input-parameters">
+<span id="jobtmpl-unittesting-inputs"></span><h2>Input Parameters<a class="headerlink" href="#input-parameters" title="Link to this heading"></a></h2>
+<section id="jobs">
+<span id="jobtmpl-unittesting-input-jobs"></span><h3>jobs<a class="headerlink" href="#jobs" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>yes</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p>— — — —</p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>A JSON string with an array of dictionaries with the following key-value pairs:</p>
+<dl class="field-list simple">
+<dt class="field-odd">sysicon<span class="colon">:</span></dt>
+<dd class="field-odd"><p>icon to display</p>
+</dd>
+<dt class="field-even">system<span class="colon">:</span></dt>
+<dd class="field-even"><p>name of the system</p>
+</dd>
+<dt class="field-odd">runs-on<span class="colon">:</span></dt>
+<dd class="field-odd"><p>virtual machine image and base operating system</p>
+</dd>
+<dt class="field-even">runtime<span class="colon">:</span></dt>
+<dd class="field-even"><p>name of the runtime environment if not running natively on the VM image</p>
+</dd>
+<dt class="field-odd">shell<span class="colon">:</span></dt>
+<dd class="field-odd"><p>name of the shell</p>
+</dd>
+<dt class="field-even">pyicon<span class="colon">:</span></dt>
+<dd class="field-even"><p>icon for CPython or pypy</p>
+</dd>
+<dt class="field-odd">python<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Python version</p>
+</dd>
+<dt class="field-even">envname<span class="colon">:</span></dt>
+<dd class="field-even"><p>full name of the selected environment</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A JSON encoded job matrix to run multiple Python job variations.</p>
+</dd>
+</dl>
+</section>
+<section id="apt">
+<span id="jobtmpl-unittesting-input-apt"></span><h3>apt<a class="headerlink" href="#apt" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid list of parameters for <code class="docutils literal notranslate"><span class="pre">apt</span> <span class="pre">install</span></code>. <br />
+Packages are specified as a space separated list like <code class="docutils literal notranslate"><span class="pre">'graphviz</span> <span class="pre">curl</span> <span class="pre">gzip'</span></code>.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Additional Ubuntu system dependencies to be installed through <em>apt</em>.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">UnitTests</span><span class="p">:</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">with</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="nt">apt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<span class="w">      </span><span class="no">graphviz</span>
+<span class="w">      </span><span class="no">curl</span>
+<span class="w">      </span><span class="no">gzip</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="brew">
+<span id="jobtmpl-unittesting-input-brew"></span><h3>brew<a class="headerlink" href="#brew" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid list of parameters for <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span></code>. <br />
+Packages are specified as a space separated list.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Additional macOS system dependencies to be installed through <em>brew</em>.</p>
+</dd>
+</dl>
+</section>
+<section id="pacboy">
+<span id="jobtmpl-unittesting-input-pacboy"></span><h3>pacboy<a class="headerlink" href="#pacboy" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid list of parameters for <code class="docutils literal notranslate"><span class="pre">pacboy</span></code>. <br />
+Packages are specified as a space separated list like <code class="docutils literal notranslate"><span class="pre">'python-lxml:p</span> <span class="pre">python-numpy:p'</span></code>.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Additional MSYS2 system dependencies to be installed through <em>pacboy</em> (<em>pacman</em>). <br />
+Usually, Python packages start with <code class="docutils literal notranslate"><span class="pre">python-</span></code>. The suffix <code class="docutils literal notranslate"><span class="pre">:p</span></code> ensures pacboy figures out the
+correct package repository prefix for MinGW64, UCRT64, …</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Internally, a dedicated workflow step reads the <a class="reference internal" href="#jobtmpl-unittesting-input-requirements"><span class="std std-ref">requirements</span></a> file
+for Python and compares requested packages with a list of packages that should be installed through
+<em>pacman</em>/<em>pacboy</em> compared to installation via <em>pip</em>. These are mainly core packages or packages
+with embedded C code. <br />
+The list of identified packages is handed over to <em>pacboy</em> for preinstallation. Otherwise <em>pip</em>
+will later raise an error. <br />
+The packages listed by this parameter will be installed in addition to the identified packages.</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Ensure your Python requirements match the available version from MSYS2 packages list, otherwise
+if your <code class="file docutils literal notranslate"><span class="pre">requirements.txt</span></code> requests a newer version then provided by MSYS2, such a dependency
+will fail.</p>
+</div>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">UnitTests</span><span class="p">:</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">with</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="nt">pacboy</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<span class="w">      </span><span class="no">python-lxml:p</span>
+</pre></div>
+</div>
+</dd>
+<dt class="field-odd">Packages<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The following list of Python packages is identified to be installed via <em>pacboy</em>:</p>
+<ul class="simple">
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-python-coverage">UCRT64: python-coverage</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/coverage/">PyPI: coverage</a></p></li>
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-igraph">UCRT64: igraph</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/igraph/">PyPI: igraph</a></p></li>
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-python-lxml">UCRT64: python-lxml</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/lxml/">PyPI: lxml</a></p></li>
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-python-markupsafe">UCRT64: python-markupsafe</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/markupsafe/">PyPI: markupsafe</a></p></li>
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-python-numpy">UCRT64: python-numpy</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/numpy/">PyPI: numpy</a></p></li>
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-python-pip">UCRT64: python-pip</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/pip/">PyPI: pip</a></p></li>
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-python-pyaml">UCRT64: python-pyaml</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/pyaml/">PyPI: pyaml</a></p></li>
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-python-ruamel-yaml">UCRT64: python-ruamel-yaml</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/ruamel-yaml/">PyPI: ruamel-yaml</a></p></li>
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-python-wheel">UCRT64: python-wheel</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/wheel/">PyPI: wheel</a></p></li>
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-python-tomli">UCRT64: python-tomli</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/tomli/">PyPI: tomli</a></p></li>
+<li><p><a class="extlink-ucrt64 reference external" href="https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-python-types-pyyaml">UCRT64: python-types-pyyaml</a> → <a class="extlink-pypi reference external" href="https://pypi.org/project/types.pyyaml/">PyPI: types.pyyaml</a></p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="requirements">
+<span id="jobtmpl-unittesting-input-requirements"></span><h3>requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'-r</span> <span class="pre">tests/requirements.txt'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid list of parameters for <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>. <br />
+Either a requirements file can be referenced using <code class="docutils literal notranslate"><span class="pre">'-r</span> <span class="pre">path/to/requirements.txt'</span></code>, or a list of
+packages can be specified using a space separated list like <code class="docutils literal notranslate"><span class="pre">'coverage</span> <span class="pre">pytest'</span></code>.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Python dependencies to be installed through <em>pip</em>.</p>
+</dd>
+</dl>
+</section>
+<section id="mingw-requirements">
+<span id="jobtmpl-unittesting-input-mingw-requirements"></span><h3>mingw_requirements<a class="headerlink" href="#mingw-requirements" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid list of parameters for <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>. <br />
+Either a requirements file can be referenced using <code class="docutils literal notranslate"><span class="pre">'-r</span> <span class="pre">path/to/requirements.txt'</span></code>, or a list of
+packages can be specified using a space separated list like <code class="docutils literal notranslate"><span class="pre">'coverage</span> <span class="pre">pytest'</span></code>.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Override Python dependencies to be installed through <em>pip</em> in MSYS2 (MinGW64/UCRT64) only.</p>
+</dd>
+</dl>
+</section>
+<section id="macos-before-script">
+<span id="jobtmpl-unittesting-input-macos-before-script"></span><h3>macos_before_script<a class="headerlink" href="#macos-before-script" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid <em>Bash</em> instructions as single-line or multi-line string suitable for macOS (Intel platform).</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>These optional <em>Bash</em> instructions for macOS are executed after setting up the environment and
+installing the platform specific dependencies and before running the unit test.</p>
+</dd>
+</dl>
+</section>
+<section id="macos-arm-before-script">
+<span id="jobtmpl-unittesting-input-macos-arm-before-script"></span><h3>macos_arm_before_script<a class="headerlink" href="#macos-arm-before-script" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid <em>Bash</em> instructions as single-line or multi-line string suitable for macOS (ARM platform).</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>These optional <em>Bash</em> instructions for macOS are executed after setting up the environment and
+installing the platform specific dependencies and before running the unit test.</p>
+</dd>
+</dl>
+</section>
+<section id="ubuntu-before-script">
+<span id="jobtmpl-unittesting-input-ubuntu-before-script"></span><h3>ubuntu_before_script<a class="headerlink" href="#ubuntu-before-script" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid <em>Bash</em> instructions as single-line or multi-line string suitable for Ubuntu.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>These optional <em>Bash</em> instructions for Ubuntu are executed after setting up the environment and
+installing the platform specific dependencies and before running the unit test.</p>
+</dd>
+</dl>
+</section>
+<section id="mingw64-before-script">
+<span id="jobtmpl-unittesting-input-mingw64-before-script"></span><h3>mingw64_before_script<a class="headerlink" href="#mingw64-before-script" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid <em>Bash</em> instructions as single-line or multi-line string suitable for MinGW64 on Windows.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>These optional <em>Bash</em> instructions for MinGW64 on Windows are executed after setting up the
+environment and installing the platform specific dependencies and before running the unit test.</p>
+</dd>
+</dl>
+</section>
+<section id="ucrt64-before-script">
+<span id="jobtmpl-unittesting-input-ucrt64-before-script"></span><h3>ucrt64_before_script<a class="headerlink" href="#ucrt64-before-script" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid <em>Bash</em> instructions as single-line or multi-line string suitable for UCRT64 on Windows.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>These optional <em>Bash</em> instructions for UCRT64 on Windows are executed after setting up the
+environment and installing the platform specific dependencies and before running the unit test.</p>
+</dd>
+</dl>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>The next parameters allow running different test kinds (unit tests, performance tests, platform tests, …) with the
+same job template, but isolated in sub-directories, thus pytest only discovers a subset of tests. The following code
+blocks showcase how the job template uses these parameters and how it relates to a proposed directory structure.</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-3 sd-row-cols-xs-3 sd-row-cols-sm-3 sd-row-cols-md-3 sd-row-cols-lg-3 docutils">
+<div class="sd-col sd-d-flex-column sd-col-5 sd-col-xs-5 sd-col-sm-5 sd-col-md-5 sd-col-lg-5 docutils">
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+Relation between <a class="reference internal" href="#jobtmpl-unittesting-input-root-directory"><span class="std std-ref">root_directory</span></a>, <a class="reference internal" href="#jobtmpl-unittesting-input-tests-directory"><span class="std std-ref">tests_directory</span></a> and <a class="reference internal" href="#jobtmpl-unittesting-input-unittest-directory"><span class="std std-ref">unittest_directory</span></a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>&lt;RepositoryRoot&gt;
+<span class="nb">cd</span><span class="w"> </span><span class="si">${</span><span class="nv">root_directory</span><span class="si">}</span>
+
+python<span class="w"> </span>-m<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pytest<span class="w"> </span>-raP<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--color<span class="o">=</span>yes<span class="w"> </span>.....<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">tests_directory</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">unittest_directory</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-3 sd-col-xs-3 sd-col-sm-3 sd-col-md-3 sd-col-lg-3 docutils">
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+Directory Structure</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">RepositoryRoot</span><span class="o">&gt;/</span>
+  <span class="n">doc</span><span class="o">/</span>
+  <span class="n">myPackage</span><span class="o">/</span>
+    <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+  <span class="n">tests</span><span class="o">/</span>
+    <span class="n">unit</span><span class="o">/</span>
+      <span class="n">myTests</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-3 sd-col-xs-3 sd-col-sm-3 sd-col-md-3 sd-col-lg-3 docutils">
+<div class="sd-card sd-sphinx-override sd-mb-3 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+Example for Default Values</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>&lt;RepositoryRoot&gt;
+<span class="nb">cd</span><span class="w"> </span>.
+
+python<span class="w"> </span>-m<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>pytest<span class="w"> </span>-raP<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--color<span class="o">=</span>yes<span class="w"> </span>.....<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;tests/unit&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="root-directory">
+<span id="jobtmpl-unittesting-input-root-directory"></span><h3>root_directory<a class="headerlink" href="#root-directory" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid directory or sub-directory.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Working directory for running tests. <br />
+Usually, this is the repository’s root directory. Tests are called relatively from here. See
+<a class="reference internal" href="#jobtmpl-unittesting-input-tests-directory"><span class="std std-ref">tests_directory</span></a> and <a class="reference internal" href="#jobtmpl-unittesting-input-unittest-directory"><span class="std std-ref">unittest_directory</span></a>.</p>
+</dd>
+</dl>
+</section>
+<section id="tests-directory">
+<span id="jobtmpl-unittesting-input-tests-directory"></span><h3>tests_directory<a class="headerlink" href="#tests-directory" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'tests'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid directory or sub-directory.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to the directory containing tests (relative from <a class="reference internal" href="#jobtmpl-unittesting-input-root-directory"><span class="std std-ref">root_directory</span></a>).</p>
+</dd>
+</dl>
+</section>
+<section id="unittest-directory">
+<span id="jobtmpl-unittesting-input-unittest-directory"></span><h3>unittest_directory<a class="headerlink" href="#unittest-directory" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'unit'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid directory or sub-directory.</p>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to the directory containing unit tests (relative from <a class="reference internal" href="#jobtmpl-unittesting-input-tests-directory"><span class="std std-ref">tests_directory</span></a>).</p>
+</dd>
+</dl>
+</section>
+<section id="unittest-report-xml">
+<span id="jobtmpl-unittesting-input-unittest-report-xml"></span><h3>unittest_report_xml<a class="headerlink" href="#unittest-report-xml" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string (JSON)</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;reports/unit&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;UnittestReportSummary.xml&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fullpath&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;reports/unit/UnittestReportSummary.xml&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid JSON string containing a JSON object with fields:</p>
+<dl class="field-list simple">
+<dt class="field-odd">directory<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory or sub-directory where the unittest summary report in XML format will be saved.</p>
+</dd>
+<dt class="field-even">filename<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filename of the generated JUnit XML report. <br />
+Any valid filename accepted by <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">...</span> <span class="pre">--junitxml=${unittest_report_xml}</span></code>.</p>
+</dd>
+<dt class="field-odd">fullpath<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The concatenation of both previous fields using the <code class="docutils literal notranslate"><span class="pre">/</span></code> separator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory, filename and fullpath as JSON object where the unittest summary report in XML format will
+be saved. <br />
+This path is configured in <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and can be extracted by
+<a class="reference internal" href="../Setup/ExtractConfiguration.html#jobtmpl-extractconfiguration"><span class="std std-ref">ExtractConfiguration</span></a>.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ConfigParams</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6</span>
+
+<span class="nt">UnitTesting</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/UnitTesting.yml@r6</span>
+<span class="w">  </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigParams</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">unittest_report_xml</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.unittest_report_xml }}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-config">
+<span id="jobtmpl-unittesting-input-coverage-config"></span><h3>coverage_config<a class="headerlink" href="#coverage-config" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">'pyproject.toml'</span></code></p>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>TBD</p>
+</dd>
+</dl>
+</section>
+<section id="coverage-report-xml">
+<span id="jobtmpl-unittesting-input-coverage-report-xml"></span><h3>coverage_report_xml<a class="headerlink" href="#coverage-report-xml" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string (JSON)</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;reports/coverage&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;coverage.xml&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fullpath&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;reports/coverage/coverage.xml&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid JSON string containing a JSON object with fields:</p>
+<dl class="field-list simple">
+<dt class="field-odd">directory<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory or sub-directory where the code coverage report in Cobertura XML format will be
+saved.</p>
+</dd>
+<dt class="field-even">filename<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filename of the generated Cobertura XML report. <br />
+Any valid XML filename.</p>
+</dd>
+<dt class="field-odd">fullpath<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The concatenation of both previous fields using the <code class="docutils literal notranslate"><span class="pre">/</span></code> separator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory, filename and fullpath as JSON object where the code coverage report in Cobertura XML format
+will be saved. <br />
+This path is configured in <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and can be extracted by
+<a class="reference internal" href="../Setup/ExtractConfiguration.html#jobtmpl-extractconfiguration"><span class="std std-ref">ExtractConfiguration</span></a>.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ConfigParams</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6</span>
+
+<span class="nt">UnitTesting</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/UnitTesting.yml@r6</span>
+<span class="w">  </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigParams</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">coverage_report_xml</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.coverage_report_xml }}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-report-json">
+<span id="jobtmpl-unittesting-input-coverage-report-json"></span><h3>coverage_report_json<a class="headerlink" href="#coverage-report-json" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string (JSON)</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;reports/coverage&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;coverage.json&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fullpath&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;reports/coverage/coverage.json&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid JSON string containing a JSON object with fields:</p>
+<dl class="field-list simple">
+<dt class="field-odd">directory<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory or sub-directory where the code coverage report in Coverage.py’s JSON format
+will be saved.</p>
+</dd>
+<dt class="field-even">filename<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filename of the generated Coverage.py JSON report. <br />
+Any valid JSON filename.</p>
+</dd>
+<dt class="field-odd">fullpath<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The concatenation of both previous fields using the <code class="docutils literal notranslate"><span class="pre">/</span></code> separator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory, filename and fullpath as JSON object where the code coverage report in Coverage.py’s JSON
+format will be saved. <br />
+This path is configured in <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and can be extracted by
+<a class="reference internal" href="../Setup/ExtractConfiguration.html#jobtmpl-extractconfiguration"><span class="std std-ref">ExtractConfiguration</span></a>.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ConfigParams</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6</span>
+
+<span class="nt">UnitTesting</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/UnitTesting.yml@r6</span>
+<span class="w">  </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigParams</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">coverage_report_json</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.coverage_report_json }}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="coverage-report-html">
+<span id="jobtmpl-unittesting-input-coverage-report-html"></span><h3>coverage_report_html<a class="headerlink" href="#coverage-report-html" title="Link to this heading"></a></h3>
+<dl class="field-list">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string (JSON)</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Default Value<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;reports/coverage/html&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt class="field-even">Possible Values<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any valid JSON string containing a JSON object with fields:</p>
+<dl class="field-list simple">
+<dt class="field-odd">directory<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory or sub-directory where the code coverage report in HTML format will be saved.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Description<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directory as JSON object where the code coverage report in HTML format will be saved. <br />
+This path is configured in <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code> and can be extracted by
+<a class="reference internal" href="../Setup/ExtractConfiguration.html#jobtmpl-extractconfiguration"><span class="std std-ref">ExtractConfiguration</span></a>.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ConfigParams</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6</span>
+
+<span class="nt">UnitTesting</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/UnitTesting.yml@r6</span>
+<span class="w">  </span><span class="nt">needs</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigParams</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">coverage_report_html</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ needs.ConfigParams.outputs.coverage_report_html }}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</section>
+<section id="unittest-xml-artifact">
+<span id="jobtmpl-unittesting-input-unittest-xml-artifact"></span><h3>unittest_xml_artifact<a class="headerlink" href="#unittest-xml-artifact" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any valid artifact name.</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Name of the artifact containing the unittest report summary in XML format.</p>
+</dd>
+</dl>
+</section>
+<section id="unittest-html-artifact">
+<span id="jobtmpl-unittesting-input-unittest-html-artifact"></span><h3>unittest_html_artifact<a class="headerlink" href="#unittest-html-artifact" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any valid artifact name.</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Name of the artifact containing the unittest report in HTML format.</p>
+</dd>
+</dl>
+</section>
+<section id="coverage-sqlite-artifact">
+<span id="jobtmpl-unittesting-input-coverage-sqlite-artifact"></span><h3>coverage_sqlite_artifact<a class="headerlink" href="#coverage-sqlite-artifact" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any valid artifact name.</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Name of the artifact containing the code coverage report as SQLite database.</p>
+</dd>
+</dl>
+</section>
+<section id="coverage-xml-artifact">
+<span id="jobtmpl-unittesting-input-coverage-xml-artifact"></span><h3>coverage_xml_artifact<a class="headerlink" href="#coverage-xml-artifact" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any valid artifact name.</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Name of the artifact containing the code coverage report in XML format.</p>
+</dd>
+</dl>
+</section>
+<section id="coverage-json-artifact">
+<span id="jobtmpl-unittesting-input-coverage-json-artifact"></span><h3>coverage_json_artifact<a class="headerlink" href="#coverage-json-artifact" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any valid artifact name.</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Name of the artifact containing the code coverage report in JSON format.</p>
+</dd>
+</dl>
+</section>
+<section id="coverage-html-artifact">
+<span id="jobtmpl-unittesting-input-coverage-html-artifact"></span><h3>coverage_html_artifact<a class="headerlink" href="#coverage-html-artifact" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+<dt class="field-even">Required<span class="colon">:</span></dt>
+<dd class="field-even"><p>no</p>
+</dd>
+<dt class="field-odd">Possible Values<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any valid artifact name.</p>
+</dd>
+<dt class="field-even">Description<span class="colon">:</span></dt>
+<dd class="field-even"><p>Name of the artifact containing the code coverage report in HTML format.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="secrets">
+<span id="jobtmpl-unittesting-secrets"></span><h2>Secrets<a class="headerlink" href="#secrets" title="Link to this heading"></a></h2>
+<p>This job template needs no secrets.</p>
+</section>
+<section id="outputs">
+<span id="jobtmpl-unittesting-outputs"></span><h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h2>
+<p>This job template has no output parameters.</p>
+</section>
+<section id="optimizations">
+<span id="jobtmpl-unittesting-optimizations"></span><h2>Optimizations<a class="headerlink" href="#optimizations" title="Link to this heading"></a></h2>
+<p>The following optimizations can be used to reduce the template’s runtime.</p>
+<dl class="simple">
+<dt>Disable unit test XML generation</dt><dd><p>If parameter <a class="reference internal" href="#jobtmpl-unittesting-input-unittest-xml-artifact"><span class="std std-ref">unittest_xml_artifact</span></a> is empty, no unit test summary report will be
+generated and no JUnit XML artifact will be uploaded.</p>
+</dd>
+<dt>Disabled code coverage collection</dt><dd><p>If parameter <a class="reference internal" href="#jobtmpl-unittesting-input-coverage-config"><span class="std std-ref">coverage_config</span></a> is empty, no code coverage will be collected.</p>
+</dd>
+<dt>Disable code coverage SQLite database artifact upload</dt><dd><p>If parameter <a class="reference internal" href="#jobtmpl-unittesting-input-coverage-sqlite-artifact"><span class="std std-ref">coverage_sqlite_artifact</span></a> is empty, the collected code coverage database
+(SQLlite format) wont be uploaded as an artifact.</p>
+</dd>
+<dt>Disable code coverage report conversion to the Cobertura XML format.</dt><dd><p>If parameter <a class="reference internal" href="#jobtmpl-unittesting-input-coverage-xml-artifact"><span class="std std-ref">coverage_xml_artifact</span></a> is empty, no Cobertura XML file will be generated
+from code coverage report. As no Cobertura XML file exists, no code coverage XML artifact will be uploaded.</p>
+</dd>
+<dt>Disable code coverage report conversion to the <em>Coverage.py</em> JSON format.</dt><dd><p>If parameter <a class="reference internal" href="#jobtmpl-unittesting-input-coverage-json-artifact"><span class="std std-ref">coverage_json_artifact</span></a> is empty, no <em>Coverage.py</em> JSON file will be
+generated from code coverage report. As no JSON file exists, no code coverage JSON artifact will be uploaded.</p>
+</dd>
+<dt>Disable code coverage report conversion to an HTML website.</dt><dd><p>If parameter <a class="reference internal" href="#jobtmpl-unittesting-input-coverage-html-artifact"><span class="std std-ref">coverage_html_artifact</span></a> is empty, no coverage report HTML report will be
+generated from code coverage report. As no HTML report exists, no code coverage HTML artifact will be uploaded.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Testing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ApplicationTesting.html" class="btn btn-neutral float-right" title="ApplicationTesting (idea)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2025, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 19.10.2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
