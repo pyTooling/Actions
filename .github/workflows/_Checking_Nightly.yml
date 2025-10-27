@@ -17,7 +17,7 @@ jobs:
           printf "%s\n" "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
 
       - name: 📤 Upload artifact
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         with:
           name: document
           path: |

@@ -156,7 +156,7 @@ jobs:
           fail_ci_if_error: true
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         if: inputs.merged_junit_artifact != ''
         with:
           name: ${{ inputs.merged_junit_artifact }}

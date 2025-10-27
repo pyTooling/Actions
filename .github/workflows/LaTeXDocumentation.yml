@@ -83,7 +83,7 @@ jobs:
             latexmk -${{ inputs.processor }} "${{ inputs.document }}.tex"
 
       - name: 📤 Upload 'PDF Documentation' artifact
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         if: inputs.pdf_artifact != ''
         with:
           name: ${{ inputs.pdf_artifact }}

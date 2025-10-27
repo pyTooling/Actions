@@ -49,7 +49,7 @@ jobs:
           skip-deploy: true
 
       - name: 📤 Upload 'documentation' artifacts
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         if: inputs.artifact != ''
         with:
           name: ${{ inputs.artifact }}

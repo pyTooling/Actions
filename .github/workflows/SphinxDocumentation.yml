@@ -129,7 +129,7 @@ jobs:
           sphinx-build -v -n -b html -d _build/doctrees -j $(nproc) -w _build/html.log . _build/html
 
       - name: 📤 Upload 'HTML Documentation' artifact
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         if: inputs.html_artifact != ''
         continue-on-error: true
         with:
@@ -272,7 +272,7 @@ jobs:
           done
 
       - name: 📤 Upload 'LaTeX Documentation' artifact
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         if: inputs.latex_artifact != ''
         continue-on-error: true
         with:
