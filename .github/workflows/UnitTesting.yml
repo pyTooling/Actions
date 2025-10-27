@@ -203,7 +203,7 @@ jobs:
         if: matrix.system == 'msys2'
         shell: pwsh
         run: |
-          py -3.9 -m pip install --disable-pip-version-check -U tomli
+          py -3.9 -m pip install --disable-pip-version-check --break-system-packages -U tomli
 
       - name: Compute pacman/pacboy packages
         id: pacboy
@@ -330,9 +330,9 @@ jobs:
         if: matrix.system == 'msys2'
         run: |
           if [ -n '${{ inputs.mingw_requirements }}' ]; then
-            python -m pip install --disable-pip-version-check ${{ inputs.mingw_requirements }}
+            python -m pip install --disable-pip-version-check --break-system-packages ${{ inputs.mingw_requirements }}
           else
-            python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
+            python -m pip install --disable-pip-version-check --break-system-packages ${{ inputs.requirements }}
           fi
 
 # Before scripts
