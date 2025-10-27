@@ -60,7 +60,7 @@ jobs:
     continue-on-error: ${{ inputs.can-fail == 'true' }}
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
-        uses: pyTooling/download-artifact@v5
+        uses: pyTooling/download-artifact@v6
         with:
           name: ${{ inputs.latex_artifact }}
           path: latex
