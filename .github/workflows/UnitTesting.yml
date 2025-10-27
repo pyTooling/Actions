@@ -203,7 +203,7 @@ jobs:
         if: matrix.system == 'msys2'
         shell: pwsh
         run: |
-          py -3.9 -m pip install --disable-pip-version-check -U tomli
+          py -3.9 -m pip install --disable-pip-version-check --break-system-packages -U tomli
 
       - name: Compute pacman/pacboy packages
         id: pacboy
@@ -330,9 +330,9 @@ jobs:
         if: matrix.system == 'msys2'
         run: |
           if [ -n '${{ inputs.mingw_requirements }}' ]; then
-            python -m pip install --disable-pip-version-check ${{ inputs.mingw_requirements }}
+            python -m pip install --disable-pip-version-check --break-system-packages ${{ inputs.mingw_requirements }}
           else
-            python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
+            python -m pip install --disable-pip-version-check --break-system-packages ${{ inputs.requirements }}
           fi
 
 # Before scripts
@@ -421,7 +421,7 @@ jobs:
 # Upload artifacts
 
       - name: 📤 Upload '${{ fromJson(inputs.unittest_report_xml).filename }}' artifact
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         if: inputs.unittest_xml_artifact != ''
         continue-on-error: true
         with:
@@ -434,7 +434,7 @@ jobs:
 #      - name: 📤 Upload 'Unit Tests HTML Report' artifact
 #        if: inputs.unittest_html_artifact != ''
 #        continue-on-error: true
-#        uses: pyTooling/upload-artifact@v4
+#        uses: pyTooling/upload-artifact@v5
 #        with:
 #          name: ${{ inputs.unittest_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
 #          path: ${{ inputs.unittest_report_html_directory }}
@@ -444,7 +444,7 @@ jobs:
       - name: 📤 Upload 'Coverage SQLite Database' artifact
         if: inputs.coverage_sqlite_artifact != ''
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         with:
           name: ${{ inputs.coverage_sqlite_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           path: .coverage
@@ -455,7 +455,7 @@ jobs:
       - name: 📤 Upload 'Coverage XML Report' artifact
         if: inputs.coverage_xml_artifact != '' && steps.convert_xml.outcome == 'success'
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         with:
           name: ${{ inputs.coverage_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           working-directory: ${{ fromJson(inputs.coverage_report_xml).directory }}
@@ -466,7 +466,7 @@ jobs:
       - name: 📤 Upload 'Coverage JSON Report' artifact
         if: inputs.coverage_json_artifact != '' && steps.convert_json.outcome == 'success'
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         with:
           name: ${{ inputs.coverage_json_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           working-directory: ${{ fromJson(inputs.coverage_report_json).directory }}
@@ -477,7 +477,7 @@ jobs:
       - name: 📤 Upload 'Coverage HTML Report' artifact
         if: inputs.coverage_html_artifact != '' && steps.convert_html.outcome == 'success'
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         with:
           name: ${{ inputs.coverage_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           working-directory: ${{ fromJson(inputs.coverage_report_html).directory }}
