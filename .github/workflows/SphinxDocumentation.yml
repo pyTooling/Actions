@@ -105,7 +105,7 @@ jobs:
           python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
-        uses: pyTooling/download-artifact@v5
+        uses: pyTooling/download-artifact@v6
         if: inputs.unittest_xml_artifact != ''
         with:
           name: ${{ inputs.unittest_xml_artifact }}
@@ -113,7 +113,7 @@ jobs:
           investigate: true
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
-        uses: pyTooling/download-artifact@v5
+        uses: pyTooling/download-artifact@v6
         if: inputs.coverage_json_artifact != ''
         with:
           name: ${{ inputs.coverage_json_artifact }}
@@ -129,7 +129,7 @@ jobs:
           sphinx-build -v -n -b html -d _build/doctrees -j $(nproc) -w _build/html.log . _build/html
 
       - name: 📤 Upload 'HTML Documentation' artifact
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         if: inputs.html_artifact != ''
         continue-on-error: true
         with:
@@ -164,7 +164,7 @@ jobs:
           python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
       - name: 📥 Download artifacts '${{ inputs.unittest_xml_artifact }}' from 'Unittesting' job
-        uses: pyTooling/download-artifact@v5
+        uses: pyTooling/download-artifact@v6
         if: inputs.unittest_xml_artifact != ''
         with:
           name: ${{ inputs.unittest_xml_artifact }}
@@ -172,7 +172,7 @@ jobs:
           investigate: true
 
       - name: 📥 Download artifacts '${{ inputs.coverage_json_artifact }}' from 'PublishCoverageResults' job
-        uses: pyTooling/download-artifact@v5
+        uses: pyTooling/download-artifact@v6
         if: inputs.coverage_json_artifact != ''
         with:
           name: ${{ inputs.coverage_json_artifact }}
@@ -272,7 +272,7 @@ jobs:
           done
 
       - name: 📤 Upload 'LaTeX Documentation' artifact
-        uses: pyTooling/upload-artifact@v4
+        uses: pyTooling/upload-artifact@v5
         if: inputs.latex_artifact != ''
         continue-on-error: true
         with:
