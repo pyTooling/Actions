@@ -45,6 +45,11 @@ on:
         required: false
         default: ''
         type: string
+      version_file:
+        description: "Path to module containing the version ('__version__' variable)."
+        required: false
+        default: '__init__.py'
+        type: string
       python_version:
         description: 'Python version.'
         required: false
@@ -121,6 +126,9 @@ on:
       package_directory:
         description: "The package's directory."
         value: ${{ jobs.Parameters.outputs.package_directory }}
+      package_version_file:
+        description: "Path to the package's module containing the version ('__version__' variable)."
+        value: ${{ jobs.Parameters.outputs.package_version_file }}
       artifact_basename:
         description: "Artifact base name."
         value: ${{ jobs.Parameters.outputs.artifact_basename }}
@@ -136,14 +144,21 @@ jobs:
     name: ✎ Generate pipeline parameters
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     outputs:
-      python_version:    ${{ steps.variables.outputs.python_version }}
-      package_fullname:  ${{ steps.variables.outputs.package_fullname }}
-      package_directory: ${{ steps.variables.outputs.package_directory }}
-      artifact_basename: ${{ steps.variables.outputs.artifact_basename }}
-      artifact_names:    ${{ steps.artifacts.outputs.artifact_names }}
-      python_jobs:       ${{ steps.jobs.outputs.python_jobs }}
+      python_version:       ${{ steps.variables.outputs.python_version }}
+      package_fullname:     ${{ steps.variables.outputs.package_fullname }}
+      package_directory:    ${{ steps.variables.outputs.package_directory }}
+      package_version_file: ${{ steps.variables.outputs.package_version_file }}
+      artifact_basename:    ${{ steps.variables.outputs.artifact_basename }}
+      artifact_names:       ${{ steps.artifacts.outputs.artifact_names }}
+      python_jobs:          ${{ steps.jobs.outputs.python_jobs }}
 
     steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v5
+        with:
+          # The command 'git describe' (used for version) needs the history.
+          fetch-depth: 0
+
       - name: Generate a startup delay of ${{ inputs.pipeline-delay }} seconds
         id: delay
         if: inputs.pipeline-delay >= 0
@@ -162,6 +177,7 @@ jobs:
           python_version =    "${{ inputs.python_version }}".strip()
           package_namespace = "${{ inputs.package_namespace }}".strip()
           package_name =      "${{ inputs.package_name }}".strip()
+          version_file =      "${{ inputs.version_file }}".strip()
           name =              "${{ inputs.name }}".strip()
 
           if package_namespace == "":
@@ -174,16 +190,28 @@ jobs:
             package_fullname = f"{package_namespace}.{package_name}"
             package_directory = f"{package_namespace}/{package_name}"
 
+          packageDirectory = Path(package_directory)
+          packageVersionFile = packageDirectory / version_file
+          print(f"Check if package version file '{packageVersionFile}' exists ... ", end="")
+          if packageVersionFile.exists():
+            print("✅")
+            package_version_file = packageVersionFile.as_posix()
+          else:
+            print("❌")
+            package_version_file = ""
+            print(f"::warning title=Parameters::Version file '{packageVersionFile}' not found.")
+
           artifact_basename = package_fullname if name == "" else name
           if artifact_basename == "" or artifact_basename == ".":
-            print("::error title=Parameter::artifact_basename is empty.")
+            print("::error title=Parameters::artifact_basename is empty.")
             exit(1)
 
           print("Variables:")
-          print(f"  python_version:    {python_version}")
-          print(f"  package_fullname:  {package_fullname}")
-          print(f"  package_directory: {package_directory}")
-          print(f"  artifact_basename: {artifact_basename}")
+          print(f"  python_version:       {python_version}")
+          print(f"  package_fullname:     {package_fullname}")
+          print(f"  package_directory:    {package_directory}")
+          print(f"  package_version_file: {package_directory}")
+          print(f"  artifact_basename:    {artifact_basename}")
 
           # Write jobs to special file
           github_output = Path(getenv("GITHUB_OUTPUT"))
@@ -193,6 +221,7 @@ jobs:
               python_version={python_version}
               package_fullname={package_fullname}
               package_directory={package_directory}
+              package_version_file={package_version_file}
               artifact_basename={artifact_basename}
           """))
 
@@ -263,7 +292,7 @@ jobs:
           currentAlphaRelease = "3.15.0-a.1"
 
           if systems == "":
-            print("::error title=Parameter::system_list is empty.")
+            print("::error title=Parameters::system_list is empty.")
           else:
             systems = [sys.strip() for sys in systems.split(" ")]
 
@@ -428,12 +457,13 @@ jobs:
       - name: Verify out parameters
         id: verify
         run: |
-          printf "python_version:     %s\n" '${{ steps.variables.outputs.python_version }}'
-          printf "package_fullname:   %s\n" '${{ steps.variables.outputs.package_fullname }}'
-          printf "package_directory:  %s\n" '${{ steps.variables.outputs.package_directory }}'
-          printf "artifact_basename:  %s\n" '${{ steps.variables.outputs.artifact_basename }}'
-          printf "====================\n"
-          printf "artifact_names:     %s\n" '${{ steps.artifacts.outputs.artifact_names }}'
-          printf "====================\n"
-          printf "python_jobs:        %s\n" '${{ steps.jobs.outputs.python_jobs }}'
-          printf "====================\n"
+          printf "python_version:        %s\n" '${{ steps.variables.outputs.python_version }}'
+          printf "package_fullname:      %s\n" '${{ steps.variables.outputs.package_fullname }}'
+          printf "package_directory:     %s\n" '${{ steps.variables.outputs.package_directory }}'
+          printf "package_version_file:  %s\n" '${{ steps.variables.outputs.package_version_file }}'
+          printf "artifact_basename:     %s\n" '${{ steps.variables.outputs.artifact_basename }}'
+          printf "================================================================================\n"
+          printf "artifact_names:        %s\n" '${{ steps.artifacts.outputs.artifact_names }}'
+          printf "================================================================================\n"
+          printf "python_jobs:           %s\n" '${{ steps.jobs.outputs.python_jobs }}'
+          printf "================================================================================\n"
