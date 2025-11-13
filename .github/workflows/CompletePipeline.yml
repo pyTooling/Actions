@@ -177,6 +177,58 @@ jobs:
       exclude_list:        ${{ inputs.unittest_exclude_list }}
       disable_list:        ${{ inputs.unittest_disable_list }}
 
+  VersionCheck:
+    name: ''
+    runs-on: 'ubuntu-24.04'
+    needs:
+      - Prepare
+      - UnitTestingParams
+    if: needs.Prepare.outputs.version != '' && needs.UnitTestingParams.outputs.package_version_file != ''
+    outputs:
+      code_version: ${{ steps.extract.outputs.code_version }}
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v5
+        with:
+          # The command 'git describe' (used for version) needs the history.
+          fetch-depth: 0
+
+      - name: 🔧 Install pyTooling dependencies (native)
+        run: |
+          python -m pip install --disable-pip-version-check -U pyTooling
+
+      - name: Extract version from Python source file
+        id: extract
+        if: endsWith(needs.UnitTestingParams.outputs.package_version_file, '.py')
+        shell: python
+        run: |
+          from pathlib             import Path
+          from sys                 import exit
+          from pyTooling.Packaging import extractVersionInformation
+
+          expectedVersion = "${{ needs.Prepare.outputs.version }}".strip()
+
+          versionFile = Path("${{ needs.UnitTestingParams.outputs.package_version_file }}")
+          if not versionFile.exists():
+            print(f"::error title=CompletePipeline::Version file '{versionFile}' not found.")
+            exit(1)
+
+          versionInformation = extractVersionInformation(versionFile)
+          print(f"expected:  {expectedVersion}")
+          print(f"from code: {versionInformation.Version}")
+
+          if expectedVersion != versionInformation.Version:
+            print(f"::error title=CompletePipeline::Expected version does not version in Python code.")
+            exit(2)
+
+          # Write jobs to special file
+          github_output = Path(getenv("GITHUB_OUTPUT"))
+          print(f"GITHUB_OUTPUT: {github_output}")
+          with github_output.open("a+", encoding="utf-8") as f:
+            f.write(dedent(f"""\
+              code_version={versionInformation.Version}
+          """))
+
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@main
     needs:

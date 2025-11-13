@@ -9,7 +9,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@main
     with:
       package_name: 'myPackage'
-      unittest_python_version: '3.13'    # workaround to use Sphinx in Python 3.13 for sphinx_reports not yet supporting lxml 6.0
+      unittest_python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11'
       bandit:       'true'
       pylint:       'true'
       codecov:      'true'
