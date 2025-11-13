@@ -1,0 +1,496 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyTooling Actions Documentation &mdash; pyTooling/Actions v0.4.5</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-reports.089ed2e62f89368aa21ac7591d90c12a.css?v=83177741" />
+      <link rel="stylesheet" type="text/css" href="_static/css/override.css?v=3386ca6d" />
+
+  
+    <link rel="shortcut icon" href="_static/icon.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=340bb9e5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Background" href="Background.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#">
+            
+              <img src="_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RepositoryStructure.html">Repository Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Instantiation.html">Instantiantion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Deveopment.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Dependency.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Releases.html">Releases Management</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Actions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Action/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Action/Releaser.html">Releaser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Action/With-post-step.html">with-post-step</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Job Templates</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/index.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/AllInOne/index.html">All-In-One</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Setup/index.html">Pipeline Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Testing/index.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Quality/index.html">Quality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Documentation/index.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Package/index.html">Packaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Publish/index.html">Publish</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Release/index.html">Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Cleanup/index.html">Cleanup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="JobTemplate/Deprecated/index.html">Deprecated</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">pyDummy Example</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="myPackage/myPackage.html">Python Class Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unittests/index.html">Unittest Summary Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coverage/index.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CodeCoverage.html">Code Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DocCoverage.html">Doc. Coverage Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typing/index.html">Static Type Check Report ➚</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="License.html">Apache License 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Doc-License.html">Creative Commons Attribution 4.0 International</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="py-modindex.html">Python Module Index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="TODO.html">TODOs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">pyTooling/Actions</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pyTooling Actions Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style type="text/css">
+  span.bolditalic {font-weight: bold; font-style: italic; }
+  span.underline {text-decoration: underline; }
+  span.strike {text-decoration: line-through; }
+  span.xlarge {font-size: x-large; }
+  span.colorred {color: #CC0000; }
+  span.colorgreen {color: #009933; }
+  span.colorblue {color: #0066FF; }
+  span.colorpurple {color: #9900CC; }
+</style><div class="line-block">
+<div class="line"><a class="reference external" href="https://GitHub.com/pyTooling/Actions"><img alt="Sourcecode on GitHub" src="https://img.shields.io/badge/pyTooling-Actions-63bf7f?longCache=true&amp;style=flat-square&amp;longCache=true&amp;logo=GitHub" style="height: 22px;" /></a> <a class="reference external" href="Code-License.html"><img alt="Code license" src="https://img.shields.io/pypi/l/pyTooling?longCache=true&amp;style=flat-square&amp;logo=Apache&amp;label=code" style="height: 22px;" /></a> <a class="reference external" href="https://pyTooling.github.io/pyTooling/"><img alt="Documentation - Read Now!" src="https://img.shields.io/website?longCache=true&amp;style=flat-square&amp;label=pyTooling.github.io%2FpyTooling&amp;logo=GitHub&amp;logoColor=fff&amp;up_color=blueviolet&amp;up_message=Read%20now%20%E2%9E%9A&amp;url=https%3A%2F%2FpyTooling.github.io%2FpyTooling%2Findex.html" style="height: 22px;" /></a> <a class="reference external" href="License.html"><img alt="Documentation License" src="https://img.shields.io/badge/doc-CC--BY%204.0-green?longCache=true&amp;style=flat-square&amp;logo=CreativeCommons&amp;logoColor=fff" style="height: 22px;" /></a></div>
+<div class="line"><a class="reference external" href="https://GitHub.com/pyTooling/Actions/tags"><img alt="GitHub tag (latest SemVer incl. pre-release" src="https://img.shields.io/github/v/tag/pyTooling/Actions?longCache=true&amp;style=flat-square&amp;logo=GitHub&amp;include_prereleases" style="height: 22px;" /></a> <a class="reference external" href="https://GitHub.com/pyTooling/Actions/releases"><img alt="GitHub release date" src="https://img.shields.io/github/release-date/pyTooling/Actions?longCache=true&amp;style=flat-square&amp;logo=GitHub" style="height: 22px;" /></a></div>
+</div>
+<hr class="docutils" />
+<section id="pytooling-actions-documentation">
+<h1>pyTooling Actions Documentation<a class="headerlink" href="#pytooling-actions-documentation" title="Link to this heading"></a></h1>
+<p><strong>pyTooling Actions</strong> are reusable steps and workflows for GitHub Actions easing the creation and maintenance of
+workflows for Python projects on GitHub.</p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>GitHub Actions workflows, actions and documentation are mostly focused on JavaScript/TypeScript as the scripting
+language for writing reusable CI code.
+However, Python being equally popular and capable, usage of JS/TS might be bypassed, with some caveats.
+This repository gathers reusable CI tooling for testing, packaging and distributing Python projects and documentation.</p>
+</section>
+<section id="github-actions">
+<h2>GitHub Actions<a class="headerlink" href="#github-actions" title="Link to this heading"></a></h2>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">Post-Processing</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Action/With-post-step.html#action-withpoststep"><span class="std std-ref">with-post-step</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">Deprecated</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="Action/Releaser.html#action-releaser"><span class="std std-ref">Releaser</span></a></p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="github-action-job-templates">
+<h2>GitHub Action Job Templates<a class="headerlink" href="#github-action-job-templates" title="Link to this heading"></a></h2>
+<p>The following list categorizes all pre-defined job templates, which can be instantiated in a pipeline (GitHub Action
+Workflow):</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-5 sd-row-cols-xs-5 sd-row-cols-sm-5 sd-row-cols-md-5 sd-row-cols-lg-5 docutils">
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">All-In-One</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="JobTemplate/AllInOne/CompletePipeline.html#jobtmpl-completepipeline"><span class="std std-ref">CompletePipeline</span></a> <br /> <br /> <br /> <br /></p></li>
+</ul>
+<p class="rubric">Pipeline Setup</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="JobTemplate/Setup/Parameters.html#jobtmpl-parameters"><span class="std std-ref">Parameters</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Setup/PrepareJob.html#jobtmpl-preparejob"><span class="std std-ref">PrepareJob</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Setup/ExtractConfiguration.html#jobtmpl-extractconfiguration"><span class="std std-ref">ExtractConfiguration</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">Documentation</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="JobTemplate/Quality/CheckDocumentation.html#jobtmpl-checkdocumentation"><span class="std std-ref">CheckDocumentation</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Documentation/SphinxDocumentation.html#jobtmpl-sphinxdocumentation"><span class="std std-ref">SphinxDocumentation</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Documentation/LaTeXDocumentation.html#jobtmpl-latexdocumentation"><span class="std std-ref">LaTeXDocumentation</span></a></p></li>
+</ul>
+<p class="rubric">Unit Tests, Code Coverage</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="JobTemplate/Testing/ApplicationTesting.html#jobtmpl-applicationtesting"><span class="std std-ref">ApplicationTesting (idea)</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Testing/UnitTesting.html#jobtmpl-unittesting"><span class="std std-ref">UnitTesting</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">Code Quality</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="JobTemplate/Quality/StaticTypeCheck.html#jobtmpl-statictypecheck"><span class="std std-ref">StaticTypeCheck</span></a></p></li>
+<li><p><em>code formatting (planned)</em></p></li>
+<li><p><em>coding style (planned)</em></p></li>
+<li><p><em>code linting (planned)</em></p></li>
+</ul>
+<p class="rubric">Build and Packaging</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="JobTemplate/Package/Package.html#jobtmpl-package"><span class="std std-ref">Package</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Package/InstallPackage.html#jobtmpl-installpackage"><span class="std std-ref">InstallPackage (beta)</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">Publishing</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="JobTemplate/Package/PublishOnPyPI.html#jobtmpl-publishonpypi"><span class="std std-ref">PublishOnPyPI</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Publish/PublishTestResults.html#jobtmpl-publishtestresults"><span class="std std-ref">PublishTestResults</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Publish/PublishCoverageResults.html#jobtmpl-publishcoverageresults"><span class="std std-ref">PublishCoverageResults</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Documentation/PublishToGitHubPages.html#jobtmpl-publishtogithubpages"><span class="std std-ref">PublishToGitHubPages</span></a></p></li>
+</ul>
+<p class="rubric">Releasing</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="JobTemplate/Release/PublishReleaseNotes.html#jobtmpl-publishreleasenotes"><span class="std std-ref">PublishReleaseNotes</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Release/TagReleaseCommit.html#jobtmpl-tagreleasecommit"><span class="std std-ref">TagReleaseCommit</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric">Cleanup</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="JobTemplate/Cleanup/IntermediateCleanup.html#jobtmpl-intermediatecleanup"><span class="std std-ref">IntermediateCleanUp</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Cleanup/ArtifactCleanup.html#jobtmpl-artifactcleanup"><span class="std std-ref">ArtifactCleanUp</span></a></p></li>
+</ul>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-2 sd-col-xs-2 sd-col-sm-2 sd-col-md-2 sd-col-lg-2 docutils">
+<p class="rubric"><a class="reference internal" href="JobTemplate/Deprecated/index.html#jobtmpl-deprecated"><span class="std std-ref">Deprecated</span></a></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="JobTemplate/Deprecated/CoverageCollection.html#jobtmpl-coveragecollection"><span class="std std-ref">CoverageCollection</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Deprecated/NightlyRelease.html#jobtmpl-nightlyrelease"><span class="std std-ref">NightlyRelease</span></a></p></li>
+<li><p><a class="reference internal" href="JobTemplate/Deprecated/BuildTheDocs.html#jobtmpl-buildthedocs"><span class="std std-ref">BuildTheDocs</span></a></p></li>
+</ul>
+</div>
+</div>
+</div>
+<section id="example-pipelines">
+<h3>Example Pipelines<a class="headerlink" href="#example-pipelines" title="Link to this heading"></a></h3>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-column sd-col-6 sd-col-xs-6 sd-col-sm-6 sd-col-md-6 sd-col-lg-6 docutils">
+<p><code class="docutils literal notranslate"><span class="pre">ExamplePipeline.yml</span></code> is an example Workflow which uses all of the Reusable Workflows.
+Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
+Minimal required modifications are the following:</p>
+<ul class="simple">
+<li><p>Set the <code class="docutils literal notranslate"><span class="pre">name</span></code> input of job <code class="docutils literal notranslate"><span class="pre">Parameters</span></code>.</p></li>
+<li><p>Specify the <code class="docutils literal notranslate"><span class="pre">commands</span></code> input of job <code class="docutils literal notranslate"><span class="pre">StaticTypeCheck</span></code>.</p></li>
+</ul>
+<p class="rubric">Behavior</p>
+<ol class="arabic simple">
+<li><p>Infer information from <code class="docutils literal notranslate"><span class="pre">${{</span> <span class="pre">github.ref</span> <span class="pre">}}</span></code> variable.</p></li>
+<li><p>Extract Python project settings from <code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
+<li><p>Compute job matrix based on system, Python version, environment, … for job variants.</p></li>
+<li><p>Run unit tests using pytest and collect code coverage.</p></li>
+<li><p>Run platform tests using pytest and collect code coverage.</p></li>
+<li><p>Run application tests using pytest.</p></li>
+<li><p>Package code as wheel.</p></li>
+<li><p>Check documentation coverage using docstr_coverage and interrogate.</p></li>
+<li><p>Verify type annotation using static typing analysis using mypy.</p></li>
+<li><p>Merge unit test results and code coverage results.</p></li>
+<li><p>Generate HTML and LaTeX documentations using Sphinx.</p></li>
+<li><p>Translate LaTeX documentation to PDF using MikTeX.</p></li>
+<li><p>Publish unit test and code coverage results to cloud services.</p></li>
+<li><p>Publish documentation to GitHub Pages.</p></li>
+<li><p>Publish wheel to PyPI.</p></li>
+<li><p>Create a GitHub release page and upload release assets.</p></li>
+</ol>
+</div>
+<div class="sd-col sd-d-flex-column sd-col-6 sd-col-xs-6 sd-col-sm-6 sd-col-md-6 sd-col-lg-6 docutils">
+<div class="sd-tab-set docutils">
+<input id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Directory Structure</label><div class="sd-tab-content docutils">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">RepositoryRoot</span><span class="o">&gt;/</span>
+  <span class="o">.</span><span class="n">github</span><span class="o">/</span>
+    <span class="n">workflows</span><span class="o">/</span>
+      <span class="n">Pipeline</span><span class="o">.</span><span class="n">yml</span>
+  <span class="n">dist</span><span class="o">/</span>
+    <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="n">docs</span><span class="o">/</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">index</span><span class="o">.</span><span class="n">rst</span>
+    <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="n">myPackage</span><span class="o">/</span>
+    <span class="n">ModuleA</span><span class="o">.</span><span class="n">py</span>
+    <span class="fm">__init__</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">py</span><span class="o">.</span><span class="n">typed</span>
+  <span class="n">tests</span><span class="o">/</span>
+    <span class="n">unit</span><span class="o">/</span>
+      <span class="n">TestA</span><span class="o">.</span><span class="n">py</span>
+      <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+    <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="o">.</span><span class="n">editorconfig</span>
+  <span class="o">.</span><span class="n">gitignore</span>
+  <span class="n">LICENSE</span><span class="o">.</span><span class="n">md</span>
+  <span class="n">pyproject</span><span class="o">.</span><span class="n">toml</span>
+  <span class="n">README</span><span class="o">.</span><span class="n">md</span>
+  <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+  <span class="n">setup</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div>
+<input checked="checked" id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Simple Package</label><div class="sd-tab-content docutils">
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
+<span class="c1"># Every Friday at 22:00 - rerun pipeline to check for dependency-based issues</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0</span><span class="nv"> </span><span class="s">22</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">5&#39;</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">SimplePackage</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myPackage</span>
+<span class="w">      </span><span class="nt">codecov</span><span class="p">:</span><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">codacy</span><span class="p">:</span><span class="w">       </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">dorny</span><span class="p">:</span><span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">secrets</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">PYPI_TOKEN</span><span class="p">:</span><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_TOKEN }}</span>
+<span class="w">      </span><span class="nt">CODECOV_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CODECOV_TOKEN }}</span>
+<span class="w">      </span><span class="nt">CODACY_TOKEN</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CODACY_TOKEN }}</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
+Namespace Package</label><div class="sd-tab-content docutils">
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Pipeline</span>
+
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">schedule</span><span class="p">:</span>
+<span class="c1"># Every Friday at 22:00 - rerun pipeline to check for dependency-based issues</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">cron</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;0</span><span class="nv"> </span><span class="s">22</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">5&#39;</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">NamespacePackage</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6</span>
+<span class="w">    </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">package_namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">myFramework</span>
+<span class="w">      </span><span class="nt">package_name</span><span class="p">:</span><span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">Extension</span>
+<span class="w">      </span><span class="nt">codecov</span><span class="p">:</span><span class="w">           </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">codacy</span><span class="p">:</span><span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">      </span><span class="nt">dorny</span><span class="p">:</span><span class="w">             </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">secrets</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">PYPI_TOKEN</span><span class="p">:</span><span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.PYPI_TOKEN }}</span>
+<span class="w">      </span><span class="nt">CODECOV_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CODECOV_TOKEN }}</span>
+<span class="w">      </span><span class="nt">CODACY_TOKEN</span><span class="p">:</span><span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CODACY_TOKEN }}</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
+<code class="file docutils literal notranslate"><span class="pre">pyproject.toml</span></code></label><div class="sd-tab-content docutils">
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[build-system]</span>
+<span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;setuptools &gt;= 80.0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;wheel ~= 0.45&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pyTooling ~= 8.8&quot;</span><span class="p">]</span>
+<span class="n">build-backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;setuptools.build_meta&quot;</span>
+
+<span class="k">[tool.mypy]</span>
+<span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;myPackage&quot;</span><span class="p">]</span>
+<span class="n">python_version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;3.13&quot;</span>
+<span class="n">strict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">pretty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">show_error_context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">show_error_codes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">namespace_packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">html_report</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/typing&quot;</span>
+
+<span class="k">[tool.pytest]</span>
+<span class="n">junit_xml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/unit/UnittestReportSummary.xml&quot;</span>
+
+<span class="k">[tool.pyedaa-reports]</span>
+<span class="n">junit_xml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/unit/unittest.xml&quot;</span>
+
+<span class="k">[tool.pytest.ini_options]</span>
+<span class="n">addopts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;--tb=native&quot;</span>
+<span class="n">python_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;*&quot;</span>
+<span class="n">python_functions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;test_*&quot;</span>
+<span class="n">filterwarnings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;error::DeprecationWarning&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;error::PendingDeprecationWarning&quot;</span><span class="p">]</span>
+<span class="n">junit_logging</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;all&quot;</span>
+
+<span class="k">[tool.interrogate]</span>
+<span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">             </span><span class="c1"># possible values: 0 (minimal output), 1 (-v), 2 (-vv)</span>
+<span class="n">fail-under</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">59</span>
+<span class="n">ignore-setters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+
+<span class="k">[tool.coverage.run]</span>
+<span class="n">branch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">relative_files</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">omit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;*site-packages*&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;setup.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;tests/unit/*&quot;</span><span class="p">]</span>
+
+<span class="k">[tool.coverage.report]</span>
+<span class="n">skip_covered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="n">skip_empty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">exclude_lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;pragma: no cover&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;raise NotImplementedError&quot;</span><span class="p">]</span>
+<span class="n">omit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;tests/*&quot;</span><span class="p">]</span>
+
+<span class="k">[tool.coverage.xml]</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/coverage.xml&quot;</span>
+
+<span class="k">[tool.coverage.json]</span>
+<span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/coverage.json&quot;</span>
+
+<span class="k">[tool.coverage.html]</span>
+<span class="n">directory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;report/coverage/html&quot;</span>
+<span class="n">title</span><span class="o">=</span><span class="s2">&quot;Code Coverage of myPackage&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<img alt="_images/pyTooling-Actions-SimplePackage.png" src="_images/pyTooling-Actions-SimplePackage.png" />
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/hdl/containers/issues/48">hdl/containers#48</a></p></li>
+</ul>
+</section>
+<section id="contributors">
+<span id="id1"></span><h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://GitHub.com/Paebbels">Patrick Lehmann</a></p></li>
+<li><p><a class="reference external" href="https://GitHub.com/umarcor">Unai Martinez-Corral</a> (Maintainer)</p></li>
+<li><p><a class="reference external" href="https://GitHub.com/pyTooling/Actions/graphs/contributors">and more…</a></p></li>
+</ul>
+</section>
+<section id="license">
+<span id="id2"></span><h2>License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
+<p>This Python package (source code) is licensed under <a class="reference external" href="Code-License.html">Apache License 2.0</a>. <br />
+The accompanying documentation is licensed under <a class="reference external" href="Doc-License.html">Creative Commons - Attribution 4.0 (CC-BY 4.0)</a>.</p>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Background.html" class="btn btn-neutral float-right" title="Background" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017-2025, Patrick Lehmann.
+      <span class="lastupdated">Last updated on 13.11.2025.
+      </span></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
