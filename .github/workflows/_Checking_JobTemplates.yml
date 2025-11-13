@@ -15,9 +15,8 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       package_name:        'myPackage'
-      python_version:      '3.13'    # workaround to use Sphinx in Python 3.13 for sphinx_reports not yet supporting lxml 6.0
-      python_version_list: '3.10 3.11 3.12 3.13 3.14 pypy-3.10 pypy-3.11'
-      disable_list:        'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
+      python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11'
+      disable_list:        'windows-arm:pypy-3.11'
 
   PlatformTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
