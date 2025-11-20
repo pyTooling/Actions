@@ -53,7 +53,7 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 📥 Download artifacts '${{ inputs.doc }}' from 'SphinxDocumentation' job
         uses: pyTooling/download-artifact@v6

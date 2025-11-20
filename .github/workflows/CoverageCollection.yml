@@ -75,7 +75,7 @@ jobs:
         run: printf "::warning title=%s::%s\n" "Deprecated" "'CoverageCollection.yml' template is deprecated. Please switch to 'PublishReleaseNotes.yml'. See https://pytooling.github.io/Actions/JobTemplate/Testing/UnitTesting.html"
 
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           lfs: true
           submodules: true

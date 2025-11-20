@@ -188,7 +188,7 @@ jobs:
       code_version: ${{ steps.extract.outputs.code_version }}
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # The command 'git describe' (used for version) needs the history.
           fetch-depth: 0
