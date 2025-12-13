@@ -262,7 +262,7 @@ jobs:
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.apptest_xml_artifact != ''
-        uses: pyTooling/upload-artifact@v5
+        uses: pyTooling/upload-artifact@v6
         with:
           name: ${{ inputs.apptest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           working-directory: report/unit

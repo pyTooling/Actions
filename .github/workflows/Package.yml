@@ -106,7 +106,7 @@ jobs:
         run: python setup.py bdist_wheel
 
       - name: 📤 Upload wheel artifact
-        uses: pyTooling/upload-artifact@v5
+        uses: pyTooling/upload-artifact@v6
         with:
           name: ${{ inputs.artifact }}
           working-directory: dist
