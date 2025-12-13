@@ -115,7 +115,7 @@ jobs:
           submodules: true
 
       - name: 📥 Download Artifacts
-        uses: pyTooling/download-artifact@v6
+        uses: pyTooling/download-artifact@v7
         with:
           pattern: ${{ inputs.coverage_artifacts_pattern }}
           path: artifacts

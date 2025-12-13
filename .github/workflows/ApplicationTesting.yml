@@ -89,7 +89,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: 📥 Download artifacts '${{ inputs.wheel }}' from 'Package' job
-        uses: pyTooling/download-artifact@v6
+        uses: pyTooling/download-artifact@v7
         with:
           name: ${{ inputs.wheel }}
           path: install

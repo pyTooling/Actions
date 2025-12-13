@@ -105,7 +105,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: 📥 Download Artifacts
-        uses: pyTooling/download-artifact@v6
+        uses: pyTooling/download-artifact@v7
         with:
           pattern: ${{ inputs.unittest_artifacts_pattern }}
           path:    artifacts
