@@ -1,4 +1,4 @@
--r ../requirements.txt
+-r ../../requirements.txt
 
 # Coverage collection
 Coverage ~= 7.13
