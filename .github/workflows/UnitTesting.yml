@@ -205,6 +205,38 @@ jobs:
         run: |
           py -3.9 -m pip install --disable-pip-version-check --break-system-packages -U tomli
 
+      - name: Compute path to requirements file
+        id: requirements
+        shell: python
+        run: |
+          from os      import getenv
+          from pathlib import Path
+          from sys     import version
+
+          print(f"Python: {version}")
+
+          requirements = "${{ inputs.requirements }}"
+          if requirements.startswith("-r"):
+            requirements = requirements[2:].lstrip()
+            if requirements.startswith("./"):
+              requirementsFile = Path("${{ inputs.root_directory || '.' }}") / Path("${{ inputs.tests_directory || '.' }}") / Path("${{ inputs.unittest_directory || '.' }}") / Path(requirements[2:])
+            else:
+              requirementsFile = Path(requirements)
+
+            if not requirementsFile.exists():
+              print(f"::error title=FileNotFoundError::{ex}")
+              exit(1)
+
+            print(f"requirements file: {requirementsFile.as_posix()}")
+
+            # Write requirements path to special file
+            github_output = Path(getenv("GITHUB_OUTPUT"))
+            print(f"GITHUB_OUTPUT: {github_output}")
+            with github_output.open("a+") as f:
+              f.write(f"requirements=-r {requirementsFile.as_posix()}\n")
+          else:
+            print(f"requirements list: {requirements}")
+
       - name: Compute pacman/pacboy packages
         id: pacboy
         if: matrix.system == 'msys2'
@@ -214,8 +246,6 @@ jobs:
           from pathlib import Path
           from re      import compile
           from sys     import version
-
-          print(f"Python: {version}")
 
           def loadRequirementsFile(requirementsFile: Path):
             requirements = []
@@ -232,16 +262,10 @@ jobs:
 
             return requirements
 
-          requirements = "${{ inputs.requirements }}"
+          requirements = "${{ steps.requirements.outputs.requirements }}"
           if requirements.startswith("-r"):
-            requirements = requirements[2:].lstrip()
-            if requirements.startswith("./"):
-              requirementsFile = Path("${{ inputs.root_directory || '.' }}") / Path("${{ inputs.tests_directory || '.' }}") / Path("${{ inputs.unittest_directory || '.' }}") / Path(requirements[2:])
-            else:
-              requirementsFile = Path(requirements)
-
             try:
-              dependencies = loadRequirementsFile(requirementsFile)
+              dependencies = loadRequirementsFile(Path(requirements[2:].lstrip()))
             except FileNotFoundError as ex:
               print(f"::error title=FileNotFoundError::{ex}")
               exit(1)
@@ -329,7 +353,7 @@ jobs:
         if: matrix.system != 'msys2'
         run: |
           python -m pip install --disable-pip-version-check -U wheel tomli
-          python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
+          python -m pip install --disable-pip-version-check ${{ steps.requirements.outputs.requirements }}
 
       - name: 🔧 Install pip dependencies (MSYS2)
         if: matrix.system == 'msys2'
@@ -337,7 +361,7 @@ jobs:
           if [ -n '${{ inputs.mingw_requirements }}' ]; then
             python -m pip install --disable-pip-version-check --break-system-packages ${{ inputs.mingw_requirements }}
           else
-            python -m pip install --disable-pip-version-check --break-system-packages ${{ inputs.requirements }}
+            python -m pip install --disable-pip-version-check --break-system-packages ${{ steps.requirements.outputs.requirements }}
           fi
 
 # Before scripts
