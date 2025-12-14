@@ -237,7 +237,6 @@ jobs:
     with:
       jobs: ${{ needs.UnitTestingParams.outputs.python_jobs }}
 # TODO: shouldn't this be configured by a parameter? Same as directories
-      requirements: "-r tests/unit/requirements.txt"
       pacboy: "gcc:p"
       unittest_report_xml:      ${{ needs.ConfigParams.outputs.unittest_report_xml }}
       coverage_report_xml:      ${{ needs.ConfigParams.outputs.coverage_report_xml }}

@@ -47,7 +47,7 @@ on:
       requirements:
         description: 'Python dependencies to be installed through pip.'
         required: false
-        default: '-r tests/requirements.txt'
+        default: '-r ./requirements.txt'
         type: string
       mingw_requirements:
         description: 'Override Python dependencies to be installed through pip on MSYS2 (MINGW64) only.'
@@ -82,7 +82,7 @@ on:
       root_directory:
         description: 'Working directory for running tests.'
         required: false
-        default: ''
+        default: '.'
         type: string
       tests_directory:
         description: 'Path to the directory containing tests (relative from root_directory).'
@@ -234,7 +234,12 @@ jobs:
 
           requirements = "${{ inputs.requirements }}"
           if requirements.startswith("-r"):
-            requirementsFile = Path(requirements[2:].lstrip())
+            requirements = requirements[2:].lstrip()
+            if requirements.startswith("./"):
+              requirementsFile = Path("${{ inputs.root_directory || '.' }}") / Path("${{ inputs.tests_directory || '.' }}") / Path("${{ inputs.unittest_directory || '.' }}") / Path(requirements[2:])
+            else:
+              requirementsFile = Path(requirements)
+
             try:
               dependencies = loadRequirementsFile(requirementsFile)
             except FileNotFoundError as ex:
