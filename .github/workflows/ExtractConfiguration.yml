@@ -68,7 +68,7 @@ on:
 
 jobs:
   Extract:
-    name: 📓 Extract configurations from pyproject.toml
+    name: 🔬 Extract configurations from pyproject.toml
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     outputs:
       unittest_report_xml:        ${{ steps.getVariables.outputs.unittest_report_xml }}
