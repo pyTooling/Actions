@@ -775,7 +775,7 @@ jobs:
             if [[ $? -eq 0 ]]; then
               printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
-              printf "  checking assets SHA256 checksum ... \n"
+              printf "  checking assets SHA256 checksum ... "
               ghSHA256=$(gh release view --json assets --jq ".assets[] | select(.name == \"${asset}\") | .digest" ${{ inputs.tag }})
               if [[ "${ghSHA256}" == "${sha256Checksums[$asset]}" ]]; then
                 printf "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
