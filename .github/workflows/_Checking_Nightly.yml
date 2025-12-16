@@ -29,6 +29,7 @@ jobs:
       - name: 🖉 Program
         run: |
           printf "%s\n" "Document other $(date --utc '+%d.%m.%Y - %H:%M:%S')" > document1.txt
+          printf "%s\n" "Document other $(date --utc '+%d.%m.%Y - %H:%M:%S')" > document2.txt
           printf "%s\n" "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"        > program.py
 
       - name: 📤 Upload artifact
@@ -55,7 +56,7 @@ jobs:
         version=4.2.0
         tool=myTool
         prog=program
-      tag: 4.2.0
+      tag: v4.2.0
       title: "Nightly Test Release"
       description: |
         This *nightly* release contains all latest and important artifacts created by %tool%'s CI pipeline.
@@ -63,10 +64,14 @@ jobs:
         # %tool% %version%
 
         * %prog%
+
+        # Attached files:
+
+        %%ASSETS%%
       assets: |
         document: document1.txt:   Documentation
         document: build.log:       Logfile - %tool% - %tool%
-        other:    document1.txt:   SBOM - %version%
+        other:    document2.txt:   SBOM - %version%
         other:    %prog%.py:       Application - %tool% - %version%
         document:!archive1.zip:    Archive 1 - zip
         document:!archive2.tgz:    Archive 2 - tgz
@@ -108,7 +113,7 @@ jobs:
         # artifact: file:          labels:    asset title
         document: document1.txt:   doc,html:  Documentation
         document: build.log:       build,log: Logfile - %tool% - %tool%
-        other:    document1.txt:   build,SBOM:SBOM - %version%
+        other:    document2.txt:   build,SBOM:SBOM - %version%
         other:    %prog%.py:       app,binary:Application - %tool% - %version%
         document:!archive1.zip:               Archive 1 - zip
         document:!archive2.tgz:               Archive 2 - tgz
