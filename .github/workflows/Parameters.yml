@@ -103,7 +103,7 @@ on:
       macos_intel_image:
         description: 'The used GitHub Action image for macOS (Intel x86-64) based jobs.'
         required: false
-        default: 'macos-13'
+        default: 'macos-15-intel'
         type: string
       macos_arm_image:
         description: 'The used GitHub Action image for macOS (ARM aarch64) based jobs.'
@@ -154,7 +154,7 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # The command 'git describe' (used for version) needs the history.
           fetch-depth: 0

@@ -38,7 +38,7 @@ on:
       requirements:
         description: 'Python dependencies to be installed through pip.'
         required: false
-        default: '-r tests/requirements.txt'
+        default: '-r tests/typing/requirements.txt'
         type: string
       mypy_options:
         description: 'Additional mypy options.'
@@ -49,18 +49,18 @@ on:
         description: 'Cobertura file to upload as an artifact.'
         required: false
         default: >-
-          { "fullpath": "report/typing/cobertura.xml",
+          { "fullpath":  "report/typing/cobertura.xml",
             "directory": "report/typing",
-            "filename": "cobertura.xml"
+            "filename":  "cobertura.xml"
           }
         type: string
       junit_report:
         description: 'JUnit file to upload as an artifact.'
         required: false
         default: >-
-          { "fullpath": "report/typing/StaticTypingSummary.xml",
+          { "fullpath":  "report/typing/StaticTypingSummary.xml",
             "directory": "report/typing",
-            "filename": "StaticTypingSummary.xml"
+            "filename":  "StaticTypingSummary.xml"
           }
         type: string
       html_report:
@@ -94,7 +94,7 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v6
@@ -142,7 +142,7 @@ jobs:
           fi
 
       - name: 📤 Upload '${{ inputs.html_artifact }}' HTML artifact
-        uses: pyTooling/upload-artifact@v5
+        uses: pyTooling/upload-artifact@v6
         if: ${{ inputs.html_artifact != '' }}
         continue-on-error: true
         with:
@@ -153,7 +153,7 @@ jobs:
           retention-days: 1
 
       - name: 📤 Upload '${{ inputs.junit_artifact }}' JUnit artifact
-        uses: pyTooling/upload-artifact@v5
+        uses: pyTooling/upload-artifact@v6
         if: ${{ inputs.junit_artifact != '' }}
         continue-on-error: true
         with:
@@ -164,7 +164,7 @@ jobs:
           retention-days: 1
 
       - name: 📤 Upload '${{ inputs.cobertura_artifact }}' Cobertura artifact
-        uses: pyTooling/upload-artifact@v5
+        uses: pyTooling/upload-artifact@v6
         if: ${{ inputs.cobertura_artifact != '' }}
         continue-on-error: true
         with:

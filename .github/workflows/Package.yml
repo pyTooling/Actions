@@ -53,7 +53,7 @@ jobs:
       artifact: ${{ inputs.artifact }}
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           lfs: true
           submodules: true
@@ -106,7 +106,7 @@ jobs:
         run: python setup.py bdist_wheel
 
       - name: 📤 Upload wheel artifact
-        uses: pyTooling/upload-artifact@v5
+        uses: pyTooling/upload-artifact@v6
         with:
           name: ${{ inputs.artifact }}
           working-directory: dist

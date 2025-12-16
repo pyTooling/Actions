@@ -188,7 +188,7 @@ jobs:
       code_version: ${{ steps.extract.outputs.code_version }}
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # The command 'git describe' (used for version) needs the history.
           fetch-depth: 0
@@ -237,8 +237,6 @@ jobs:
     with:
       jobs: ${{ needs.UnitTestingParams.outputs.python_jobs }}
 # TODO: shouldn't this be configured by a parameter? Same as directories
-      requirements: "-r tests/unit/requirements.txt"
-#      pacboy: "msys/git python-lxml:p"
       unittest_report_xml:      ${{ needs.ConfigParams.outputs.unittest_report_xml }}
       coverage_report_xml:      ${{ needs.ConfigParams.outputs.coverage_report_xml }}
       coverage_report_json:     ${{ needs.ConfigParams.outputs.coverage_report_json }}

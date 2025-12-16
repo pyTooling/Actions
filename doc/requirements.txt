@@ -11,9 +11,9 @@ docutils_stubs ~= 0.0.22
 sphinx_rtd_theme ~= 3.0
 
 # Sphinx Extenstions
-sphinxcontrib-mermaid ~= 1.0
+sphinxcontrib-mermaid ~= 1.2
 autoapi >= 2.0.1
 sphinx_design ~= 0.6
 sphinx-copybutton >= 0.5
-sphinx_autodoc_typehints ~= 3.5
+sphinx_autodoc_typehints ~= 3.5   # 3.6 is conflicting with old sphinx_design and rtd theme due to sphinx<9 and docutils<0.22
 sphinx_reports ~= 0.9
