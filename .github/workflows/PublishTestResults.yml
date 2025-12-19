@@ -102,10 +102,10 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 📥 Download Artifacts
-        uses: pyTooling/download-artifact@v6
+        uses: pyTooling/download-artifact@v7
         with:
           pattern: ${{ inputs.unittest_artifacts_pattern }}
           path:    artifacts
@@ -156,7 +156,7 @@ jobs:
           fail_ci_if_error: true
 
       - name: 📤 Upload merged 'JUnit Test Summary' artifact
-        uses: pyTooling/upload-artifact@v5
+        uses: pyTooling/upload-artifact@v6
         if: inputs.merged_junit_artifact != ''
         with:
           name: ${{ inputs.merged_junit_artifact }}

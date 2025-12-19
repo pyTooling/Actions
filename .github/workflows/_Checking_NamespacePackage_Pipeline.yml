@@ -6,7 +6,7 @@ on:
 
 jobs:
   NamespacePackage:
-    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
+    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r7
     with:
       package_namespace: 'myFramework'
       package_name:      'Extension'

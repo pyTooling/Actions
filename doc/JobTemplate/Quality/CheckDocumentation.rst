@@ -41,19 +41,19 @@ The ``CheckDocumentation`` job checks the level of documentation coverage for Py
 Instantiation
 *************
 
-The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r6``. It only
+The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r7``. It only
 requires a `name` parameter to create the artifact names.
 
 .. code-block:: yaml
 
    jobs:
      ConfigParams:
-       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
        with:
          package_name: myPackage
 
      DocCoverage:
-       uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@r6
+       uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@r7
        needs:
          - ConfigParams
        with:

@@ -51,7 +51,7 @@ Instantiation
              # ...
 
            PublishToGitHubPages:
-             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r6
+             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r7
              needs:
                - BuildTheDocs
              with:
@@ -66,7 +66,7 @@ Instantiation
 
          jobs:
            PublishToGitHubPages:
-             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r6
+             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r7
              needs:
                - Params
                - BuildTheDocs

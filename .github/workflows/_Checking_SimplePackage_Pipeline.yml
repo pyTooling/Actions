@@ -6,7 +6,7 @@ on:
 
 jobs:
   SimplePackage:
-    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
+    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r7
     with:
       package_name: 'myPackage'
       unittest_python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11'

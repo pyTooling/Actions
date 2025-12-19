@@ -64,10 +64,10 @@ Instantiation
 
    jobs:
      Prepare:
-       uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r7
 
      Release:
-       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r7
        needs:
          - Prepare
        if: needs.Prepare.outputs.is_release_tag == 'true'
@@ -441,7 +441,7 @@ replacements
                   .. code-block:: yaml
 
                      ReleasePage:
-                       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r7
                        needs:
                          - Prepare
                        if: needs.Prepare.outputs.is_release_tag == 'true'

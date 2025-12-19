@@ -64,7 +64,7 @@ The job template generates various output parameters derived from
 Instantiation
 *************
 
-The following instantiation example creates a ``Prepare`` job derived from job template ``PrepareJob`` version ``@r6``.
+The following instantiation example creates a ``Prepare`` job derived from job template ``PrepareJob`` version ``@r7``.
 In a default usecase, no input parameters need to be specified for the job template assuming a main-branch and
 release-branch called ``main``, a development-branch called ``dev``, as well as semantic versioning for tags and
 pull-request titles.
@@ -73,7 +73,7 @@ pull-request titles.
 
    jobs:
      Prepare:
-       uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r7
 
      <ReleaseJob>:
        needs:

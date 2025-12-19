@@ -136,13 +136,13 @@ on:
 
 jobs:
   Prepare:
-    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r6
+    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r7
 
   ConfigParams:
-    uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+    uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
   UnitTestingParams:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
     with:
       package_namespace:   ${{ inputs.package_namespace }}
       package_name:        ${{ inputs.package_name }}
@@ -154,7 +154,7 @@ jobs:
       disable_list:        ${{ inputs.unittest_disable_list }}
 
 #  AppTestingParams:
-#    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+#    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
 #    with:
 #      package_namespace:   ${{ inputs.package_namespace }}
 #      package_name:        ${{ inputs.package_name }}
@@ -166,7 +166,7 @@ jobs:
 #      disable_list:        ${{ inputs.apptest_disable_list }}
 
   InstallParams:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
     with:
       package_namespace:   ${{ inputs.package_namespace }}
       package_name:        ${{ inputs.package_name }}
@@ -188,7 +188,7 @@ jobs:
       code_version: ${{ steps.extract.outputs.code_version }}
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # The command 'git describe' (used for version) needs the history.
           fetch-depth: 0
@@ -230,15 +230,13 @@ jobs:
           """))
 
   UnitTesting:
-    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
     needs:
       - ConfigParams
       - UnitTestingParams
     with:
       jobs: ${{ needs.UnitTestingParams.outputs.python_jobs }}
 # TODO: shouldn't this be configured by a parameter? Same as directories
-      requirements: "-r tests/unit/requirements.txt"
-#      pacboy: "msys/git python-lxml:p"
       unittest_report_xml:      ${{ needs.ConfigParams.outputs.unittest_report_xml }}
       coverage_report_xml:      ${{ needs.ConfigParams.outputs.coverage_report_xml }}
       coverage_report_json:     ${{ needs.ConfigParams.outputs.coverage_report_json }}
@@ -247,7 +245,7 @@ jobs:
       coverage_sqlite_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
 
   StaticTypeCheck:
-    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r6
+    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -261,7 +259,7 @@ jobs:
       html_artifact:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   CodeQuality:
-    uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@r6
+    uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@r7
     needs:
       - UnitTestingParams
     with:
@@ -272,7 +270,7 @@ jobs:
       artifact:          CodeQuality
 
   DocCoverage:
-    uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@r6
+    uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@r7
     needs:
       - UnitTestingParams
     with:
@@ -280,7 +278,7 @@ jobs:
       directory:      ${{ needs.UnitTestingParams.outputs.package_directory }}
 
   Package:
-    uses: pyTooling/Actions/.github/workflows/Package.yml@r6
+    uses: pyTooling/Actions/.github/workflows/Package.yml@r7
     needs:
       - UnitTestingParams
     with:
@@ -288,7 +286,7 @@ jobs:
       artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
 
   Install:
-    uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@r6
+    uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@r7
     needs:
       - UnitTestingParams
       - InstallParams
@@ -299,7 +297,7 @@ jobs:
       package_name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
 
 #  AppTesting:
-#    uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@r6
+#    uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@r7
 #    needs:
 #      - AppTestingParams
 #      - UnitTestingParams
@@ -310,7 +308,7 @@ jobs:
 #      apptest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).apptesting_xml }}
 
   PublishCoverageResults:
-    uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r6
+    uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r7
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -332,7 +330,7 @@ jobs:
       CODACY_TOKEN:  ${{ secrets.CODACY_TOKEN }}
 
   PublishTestResults:
-    uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r6
+    uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r7
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -348,14 +346,14 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 #  VerifyDocs:
-#    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@r6
+#    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@r7
 #    needs:
 #      - UnitTestingParams
 #    with:
 #      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
 
   Documentation:
-    uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r6
+    uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r7
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -372,7 +370,7 @@ jobs:
       latex_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
   IntermediateCleanUp:
-    uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@r6
+    uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@r7
     needs:
       - UnitTestingParams
       - PublishCoverageResults
@@ -383,7 +381,7 @@ jobs:
       xml_unittest_artifacts_prefix:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
 
   PDFDocumentation:
-    uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@r6
+    uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@r7
     needs:
       - UnitTestingParams
       - Documentation
@@ -394,7 +392,7 @@ jobs:
       can-fail:       'true'
 
   PublishToGitHubPages:
-    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r6
+    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r7
     needs:
       - UnitTestingParams
       - Documentation
@@ -407,7 +405,7 @@ jobs:
       typing:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   TriggerTaggedRelease:
-    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@r6
+    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@r7
     needs:
       - Prepare
       - UnitTesting
@@ -426,7 +424,7 @@ jobs:
     secrets: inherit
 
   ReleasePage:
-    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r6
+    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r7
     needs:
       - Prepare
       - UnitTesting
@@ -444,7 +442,7 @@ jobs:
     secrets: inherit
 
   PublishOnPyPI:
-    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r6
+    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r7
     needs:
       - Prepare
       - UnitTestingParams
@@ -459,7 +457,7 @@ jobs:
       PYPI_TOKEN:     ${{ secrets.PYPI_TOKEN }}
 
   ArtifactCleanUp:
-    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r6
+    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r7
     needs:
       - UnitTestingParams
       - UnitTesting

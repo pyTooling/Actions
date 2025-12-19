@@ -33,14 +33,14 @@ variant after test results have been merged into a single file.
 Instantiation
 *************
 
-The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r6``. It only
+The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version ``@r7``. It only
 requires a `name` parameter to create the artifact names.
 
 .. code-block:: yaml
 
    jobs:
      IntermediateCleanUp:
-       uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@r6
+       uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@r7
        needs:
          - UnitTestingParams
          - PublishCoverageResults

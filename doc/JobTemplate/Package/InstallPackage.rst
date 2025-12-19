@@ -47,7 +47,7 @@ Instantiation
 *************
 
 The following instantiation example creates a ``Install`` job derived from job template ``InstallPackage`` version
-`@r6`. It installs the Python package on various platforms using a precomputed job-matrix created by job
+`@r7`. It installs the Python package on various platforms using a precomputed job-matrix created by job
 ``InstallParams``. This job uses the same ``Parameters`` job template as job ``UnitTestingParams``, which was used to
 define parameters for the packaging job ``Package``.
 
@@ -55,25 +55,25 @@ define parameters for the packaging job ``Package``.
 
    jobs:
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
        with:
          package_name: myPackage
 
      InstallParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
        with:
          package_name:        myPackage
          python_version_list: ''
 
      Package:
-       uses: pyTooling/Actions/.github/workflows/Package.yml@r6
+       uses: pyTooling/Actions/.github/workflows/Package.yml@r7
        needs:
          - UnitTestingParams
        with:
          artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
 
      Install:
-       uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@r6
+       uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@r7
        needs:
          - UnitTestingParams
          - InstallParams
