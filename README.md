@@ -113,8 +113,8 @@ Find further usage cases in the following list of projects:
 
 ## Contributors
 
-* [Patrick Lehmann](https://GitHub.com/Paebbels)
-* [Unai Martinez-Corral](https://GitHub.com/umarcor) (Maintainer)
+* [Patrick Lehmann](https://GitHub.com/Paebbels) (Maintainer)
+* [Unai Martinez-Corral](https://GitHub.com/umarcor)
 * [and more...](https://GitHub.com/pyTooling/Actions/graphs/contributors)
 
 
