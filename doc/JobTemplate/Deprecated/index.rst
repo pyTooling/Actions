@@ -5,16 +5,14 @@ Deprecated
 
 The category *deprecated* collects outdated job templates:
 
-:ref:`JOBTMPL/CoverageCollection`
+CoverageCollection
   replaced by :ref:`JOBTMPL/UnitTesting`
-:ref:`JOBTMPL/NightlyRelease`
+NightlyRelease
   replaced by :ref:`JOBTMPL/PublishReleaseNotes`
-:ref:`JOBTMPL/BuildTheDocs`
+BuildTheDocs
   replaced by :ref:`JOBTMPL/SphinxDocumentation` and :ref:`JOBTMPL/LaTeXDocumentation`
 
-.. toctree::
+.. #toctree::
    :hidden:
 
-   CoverageCollection
    NightlyRelease
-   BuildTheDocs

@@ -75,8 +75,6 @@ As shown in the screenshots above, the expected order is:
 
   [**PublishCoverageResults**](.github/workflows/PublishCoverageResults.yml): publish ucode coverage results.
 
-  [**NightlyRelease**](.github/workflows/NightlyRelease.yml): publish GitHub Release.
-
   [**PublishReleaseNotes**](.github/workflows/PublishReleaseNotes.yml): publish GitHub Release.
 - **Documentation:**  
   [**SphinxDocumentation**](.github/workflows/PublishCoverageResults.yml): create HTML and LaTeX documentation using
@@ -90,12 +88,11 @@ As shown in the screenshots above, the expected order is:
   [**IntermediateCleanUp**](.github/workflows/IntermediateCleanUp.yml): delete intermediate artifacts.
   
   [**ArtifactCleanUp**](.github/workflows/ArtifactCleanUp.yml): delete artifacts.
-- **⚠ Deprecated ⚠:**  
-  [**CoverageCollection**](.github/workflows/CoverageCollection.yml): Use `UnitTesting`, because is can collect code
-  coverage too. This avoids code duplication in job templates.
+- **Removed:**  
+  ❌ **NightlyRelease**: Use `PublishReleaseNotes`, because it's more advanced and not limited to nightly releases.
+  ❌ **CoverageCollection**: Use `UnitTesting`, because is can collect code coverage too.
   
-  [**BuildTheDocs**](.github/workflows/BuildTheDocs.yml): Use `SphinxDocumentation`, `LaTeXDocumentation` and
-  `PublishToGitHubPages`. BuildTheDocs isn't maintained anymore.
+  ❌ **BuildTheDocs**: Use `SphinxDocumentation`, `LaTeXDocumentation` and `PublishToGitHubPages`.
 
 
 ### Example pipeline
@@ -116,8 +113,8 @@ Find further usage cases in the following list of projects:
 
 ## Contributors
 
-* [Patrick Lehmann](https://GitHub.com/Paebbels)
-* [Unai Martinez-Corral](https://GitHub.com/umarcor) (Maintainer)
+* [Patrick Lehmann](https://GitHub.com/Paebbels) (Maintainer)
+* [Unai Martinez-Corral](https://GitHub.com/umarcor)
 * [and more...](https://GitHub.com/pyTooling/Actions/graphs/contributors)
 
 

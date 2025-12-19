@@ -67,7 +67,7 @@
       * :ref:`JOBTMPL/IntermediateCleanup`
       * :ref:`JOBTMPL/ArtifactCleanup`
 
-   .. grid-item::
+   .. #grid-item::
       :columns: 2
 
       .. rubric:: :ref:`JOBTMPL/Deprecated`
