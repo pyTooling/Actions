@@ -144,12 +144,13 @@ jobs:
           reporter: java-junit
 
       - name: 📊 Publish unittest results at CodeCov
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v5
         id: codecov
         if: inputs.codecov == 'true'
         continue-on-error: true
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          report_type: "test_results"
           disable_search: true
           files: ${{ inputs.merged_junit_filename }}
           flags: ${{ inputs.codecov_flags }}
