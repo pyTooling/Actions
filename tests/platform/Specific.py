@@ -44,55 +44,55 @@ if __name__ == "__main__":  # pragma: no cover
 
 class PlatformTesting(TestCase):
 	@mark.skipif(not CurrentPlatform.IsNativeLinux, reason="Skipped, if current platform isn't native Linux.")
-	def test_ApplicationOnNativeLinux(self):
+	def test_ApplicationOnNativeLinux(self) -> None:
 		app = Application()
 
 		self.assertEqual(1, app.Value)
 
 	@mark.skipif(not CurrentPlatform.IsNativeMacOS, reason="Skipped, if current platform isn't native macOS.")
-	def test_ApplicationOnNativeMacOS(self):
+	def test_ApplicationOnNativeMacOS(self) -> None:
 		app = Application()
 
 		self.assertEqual(2, app.Value)
 
 	@mark.skipif(not CurrentPlatform.IsNativeWindows, reason="Skipped, if current platform isn't native Windows.")
-	def test_ApplicationOnNativeWindows(self):
+	def test_ApplicationOnNativeWindows(self) -> None:
 		app = Application()
 
 		self.assertEqual(3, app.Value)
 
 	@mark.skipif(not CurrentPlatform.IsMSYSOnWindows, reason="Skipped, if current platform isn't MSYS on Windows.")
-	def test_ApplicationOnMSYS2OnWindows(self):
+	def test_ApplicationOnMSYS2OnWindows(self) -> None:
 		app = Application()
 
 		self.assertEqual(11, app.Value)
 
 	@mark.skipif(not CurrentPlatform.IsMinGW32OnWindows, reason="Skipped, if current platform isn't MinGW32 on Windows.")
-	def test_ApplicationOnMinGW32OnWindows(self):
+	def test_ApplicationOnMinGW32OnWindows(self) -> None:
 		app = Application()
 
 		self.assertEqual(12, app.Value)
 
 	@mark.skipif(not CurrentPlatform.IsMinGW64OnWindows, reason="Skipped, if current platform isn't MinGW64 on Windows.")
-	def test_ApplicationOnMinGW64OnWindows(self):
+	def test_ApplicationOnMinGW64OnWindows(self) -> None:
 		app = Application()
 
 		self.assertEqual(13, app.Value)
 
 	@mark.skipif(not CurrentPlatform.IsUCRT64OnWindows, reason="Skipped, if current platform isn't UCRT64 on Windows.")
-	def test_ApplicationOnURTC64OnWindows(self):
+	def test_ApplicationOnURTC64OnWindows(self) -> None:
 		app = Application()
 
 		self.assertEqual(14, app.Value)
 
 	@mark.skipif(not CurrentPlatform.IsClang32OnWindows, reason="Skipped, if current platform isn't Clang32 on Windows.")
-	def test_ApplicationOnClang32OnWindows(self):
+	def test_ApplicationOnClang32OnWindows(self) -> None:
 		app = Application()
 
 		self.assertEqual(15, app.Value)
 
 	@mark.skipif(not CurrentPlatform.IsClang64OnWindows, reason="Skipped, if current platform isn't Clang64 on Windows.")
-	def test_ApplicationOnClang64OnWindows(self):
+	def test_ApplicationOnClang64OnWindows(self) -> None:
 		app = Application()
 
 		self.assertEqual(16, app.Value)
