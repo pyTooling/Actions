@@ -34,7 +34,7 @@ from myPackage import Application
 
 
 class Instantiation(TestCase):
-	def test_Application(self):
+	def test_Application(self) -> None:
 		app = Application()
 
 		self.assertGreater(app.Value, 0)

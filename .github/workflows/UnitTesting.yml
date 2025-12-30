@@ -224,7 +224,7 @@ jobs:
               requirementsFile = Path(requirements)
 
             if not requirementsFile.exists():
-              print(f"::error title=FileNotFoundError::{ex}")
+              print(f"::error title=FileNotFoundError::{requirementsFile}")
               exit(1)
 
             print(f"requirements file: {requirementsFile.as_posix()}")
@@ -273,6 +273,7 @@ jobs:
             dependencies = [req.strip() for req in requirements.split(" ")]
 
           packages = {
+            "aiohttp":             "python-aiohttp:p",
             "coverage":            "python-coverage:p",
             "docstr_coverage":     "python-pyaml:p python-types-pyyaml:p",
             "igraph":              "igraph:p",
@@ -294,6 +295,7 @@ jobs:
           subPackages = {
             "pytooling": {
               "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+              "pypi":              "python-aiohttp:p",
             },
           }
 
