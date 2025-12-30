@@ -224,7 +224,7 @@ jobs:
               requirementsFile = Path(requirements)
 
             if not requirementsFile.exists():
-              print(f"::error title=FileNotFoundError::{ex}")
+              print(f"::error title=FileNotFoundError::{requirementsFile}")
               exit(1)
 
             print(f"requirements file: {requirementsFile.as_posix()}")
