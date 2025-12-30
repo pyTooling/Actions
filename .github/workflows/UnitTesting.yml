@@ -273,6 +273,7 @@ jobs:
             dependencies = [req.strip() for req in requirements.split(" ")]
 
           packages = {
+            "aiohttp":             "python-aiohttp:p",
             "coverage":            "python-coverage:p",
             "docstr_coverage":     "python-pyaml:p python-types-pyyaml:p",
             "igraph":              "igraph:p",
@@ -294,6 +295,7 @@ jobs:
           subPackages = {
             "pytooling": {
               "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+              "pypi":              "python-aiohttp:p",
             },
           }
 
