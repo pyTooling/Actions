@@ -11,7 +11,7 @@
 #                                                                                                                      #
 # License:                                                                                                             #
 # ==================================================================================================================== #
-# Copyright 2017-2025 Patrick Lehmann - Bötzingen, Germany                                                             #
+# Copyright 2017-2026 Patrick Lehmann - Bötzingen, Germany                                                             #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -34,9 +34,9 @@ A module for a set of dummy classes.
 
 __author__ =        "Patrick Lehmann"
 __email__ =         "Paebbels@gmail.com"
-__copyright__ =     "2017-2025, Patrick Lehmann"
+__copyright__ =     "2017-2026, Patrick Lehmann"
 __license__ =       "Apache License, Version 2.0"
-__version__ =       "7.2.0"
+__version__ =       "7.2.1"
 __keywords__ =      ["GitHub Actions"]
 __issue_tracker__ = "https://GitHub.com/pyTooling/Actions/issues"
 
