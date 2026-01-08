@@ -3,7 +3,7 @@
 #   Patrick Lehmann                                                                                                    #
 #                                                                                                                      #
 # ==================================================================================================================== #
-# Copyright 2020-2025 The pyTooling Authors                                                                            #
+# Copyright 2020-2026 The pyTooling Authors                                                                            #
 #                                                                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");                                                      #
 # you may not use this file except in compliance with the License.                                                     #
@@ -880,11 +880,11 @@ jobs:
 
           export GH_TOKEN=${{ github.token }}
 
-          if [[ -s __ASSETS__.md ]]; then
-            addNotes=("--notes-file" "__ASSETS__.md")
+          if [[ -s __NOTES__.md ]]; then
+            addNotes=("--notes-file" "__NOTES__.md")
           else
-            printf "  ${ANSI_LIGHT_RED}File '%s' not found.${ANSI_NOCOLOR}\n" "__ASSETS__.md"
-            printf "::error title=%s::%s\n" "InternalError" "File '__ASSETS__.md' not found."
+            printf "  ${ANSI_LIGHT_RED}File '%s' not found.${ANSI_NOCOLOR}\n" "__NOTES__.md"
+            printf "::error title=%s::%s\n" "InternalError" "File '__NOTES__.md' not found."
             exit 1
           fi
 
