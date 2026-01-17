@@ -116,7 +116,9 @@ $jobs = @()
 if ($livedoc)
 { Write-Host -ForegroundColor DarkYellow    "[live][DOC]       Building documentation using Sphinx ..."
 
-  .\doc\make.bat html --verbose
+  cd doc
+  py -3.14 -m sphinx.cmd.build -b html . _build/html --doctree-dir _build/doctrees --jobs auto --warning-file _build/sphinx-warnings.log --verbose
+  cd ..
 
   Write-Host -ForegroundColor DarkYellow    "[live][DOC]       Documentation finished"
 }
@@ -126,7 +128,8 @@ elseif ($doc)
 
   # Compile documentation
   $compileDocFunc = {
-    .\doc\make.bat html --verbose
+    cd doc
+    py -3.14 -m sphinx.cmd.build -b html . _build/html --doctree-dir _build/doctrees --jobs auto --warning-file _build/sphinx-warnings.log --verbose
   }
   $docJob = Start-Job -Name "Documentation" -ScriptBlock $compileDocFunc
 #  $jobs += $docJob

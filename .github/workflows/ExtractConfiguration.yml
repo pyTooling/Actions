@@ -105,7 +105,7 @@ jobs:
 
           print(f"Python: {version} (of default installation)")
 
-          from tomli import load as tomli_load
+          from tomllib import load as tomllib_load
 
           unittestXMLFile =       Path("./unittest.xml")
           coverageHTMLDirectory = Path("htmlcov")
@@ -121,7 +121,7 @@ jobs:
             pyProjectFile =  Path("pyproject.toml")
             if pyProjectFile.exists():
               with pyProjectFile.open("rb") as file:
-                pyProjectSettings = tomli_load(file)
+                pyProjectSettings = tomllib_load(file)
 
               toolSection = pyProjectSettings["tool"]
               if "pytest" in toolSection:
