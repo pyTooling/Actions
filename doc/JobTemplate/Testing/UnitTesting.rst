@@ -60,7 +60,6 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
    * pip
 
      * :pypi:`wheel`
-     * :pypi:`tomli`
      * Python packages specified via :ref:`JOBTMPL/UnitTesting/Input/requirements` or
        :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
 

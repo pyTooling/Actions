@@ -89,9 +89,9 @@ jobs:
         with:
           python-version: ${{ inputs.python_version }}
 
-      - name: 🔧 Install wheel,tomli and pip dependencies (native)
+      - name: 🔧 Install wheel and pip dependencies (native)
         run: |
-          python -m pip install --disable-pip-version-check -U wheel tomli
+          python -m pip install --disable-pip-version-check -U wheel
 
       - name: 🔁 Extract configurations from pyproject.toml
         id: getVariables
@@ -105,7 +105,7 @@ jobs:
 
           print(f"Python: {version} (of default installation)")
 
-          from tomllib import load as tomllib_load
+          from tomllib import load as toml_load
 
           unittestXMLFile =       Path("./unittest.xml")
           coverageHTMLDirectory = Path("htmlcov")
@@ -121,7 +121,7 @@ jobs:
             pyProjectFile =  Path("pyproject.toml")
             if pyProjectFile.exists():
               with pyProjectFile.open("rb") as file:
-                pyProjectSettings = tomllib_load(file)
+                pyProjectSettings = toml_load(file)
 
               toolSection = pyProjectSettings["tool"]
               if "pytest" in toolSection:
@@ -163,7 +163,7 @@ jobs:
             coverageRCFile = Path(coverageRC)
             if coverageRCFile.exists():
               with coverageRCFile.open("rb") as file:
-                coverageRCSettings = tomli_load(file)
+                coverageRCSettings = toml_load(file)
 
               coverageHTMLDirectory = Path(coverageRCSettings["html"]["directory"])
               coverageXMLFile =       Path(coverageRCSettings["xml"]["output"])

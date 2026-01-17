@@ -146,7 +146,7 @@ jobs:
             "pyyaml":              "python-pyyaml:p python-types-pyyaml:p",
             "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             "sphinx":              "python-markupsafe:p",
-            "tomli":               "python-tomli:p",
+            "tomli":               "python-tomli:p",        # outdated, now part of Python as tomllib
             "wheel":               "python-wheel:p",
             "pyEDAA.ProjectModel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
             "pyEDAA.Reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
