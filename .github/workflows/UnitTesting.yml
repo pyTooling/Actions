@@ -69,13 +69,23 @@ on:
         required: false
         default: ''
         type: string
+      windows_before_script:
+        description: 'Scripts to execute before pytest on Windows (x64-64).'
+        required: false
+        default: ''
+        type: string
+      windows_arm_before_script:
+        description: 'Scripts to execute before pytest on Windows (aarch64).'
+        required: false
+        default: ''
+        type: string
       mingw64_before_script:
-        description: 'Scripts to execute before pytest on Windows within MSYS2 MinGW64.'
+        description: 'Scripts to execute before pytest on Windows (x64-64) within MSYS2 MinGW64.'
         required: false
         default: ''
         type: string
       ucrt64_before_script:
-        description: 'Scripts to execute before pytest on Windows within MSYS2 UCRT64.'
+        description: 'Scripts to execute before pytest on Windows (x64-64) within MSYS2 UCRT64.'
         required: false
         default: ''
         type: string
@@ -380,13 +390,19 @@ jobs:
         if: ( matrix.system == 'ubuntu' || matrix.system == 'ubuntu-arm' ) && inputs.ubuntu_before_script != ''
         run: ${{ inputs.ubuntu_before_script }}
 
-      # TODO: Windows before script
+      - name: 🪟 Windows (x86-64) before scripts
+        if: matrix.system == 'windows' && inputs.windows_before_script != ''
+        run: ${{ inputs.windows_before_script }}
 
-      - name: 🪟🟦 MinGW64 before scripts
+      - name: 🏢 Windows (aarch64) before scripts
+        if: matrix.system == 'windows-arm' && inputs.windows_arm_before_script != ''
+        run: ${{ inputs.windows_arm_before_script }}
+
+      - name: 🪟🟦 Windows (x86-64) + MinGW64 before scripts
         if: matrix.system == 'msys2' && matrix.runtime == 'MINGW64' && inputs.mingw64_before_script != ''
         run: ${{ inputs.mingw64_before_script }}
 
-      - name: 🪟🟨 UCRT64 before scripts
+      - name: 🪟🟨 Windows (x86-64) + UCRT64 before scripts
         if: matrix.system == 'msys2' && matrix.runtime == 'UCRT64' && inputs.ucrt64_before_script != ''
         run: ${{ inputs.ucrt64_before_script }}
 
