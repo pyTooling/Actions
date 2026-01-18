@@ -124,7 +124,6 @@ It can be used for simple Python packages as well as namespace packages.
               * :gh:`actions/setup-python`
 
                 * :pypi:`wheel`
-                * :pypi:`tomli`
 
             * :ref:`pyTooling/Actions/.github/workflows/UnitTesting.yml <JOBTMPL/UnitTesting>`
 
@@ -145,7 +144,6 @@ It can be used for simple Python packages as well as namespace packages.
               * pip
 
                 * :pypi:`wheel`
-                * :pypi:`tomli`
                 * Python packages specified via :ref:`JOBTMPL/UnitTesting/Input/requirements` or
                   :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
 
@@ -203,7 +201,6 @@ It can be used for simple Python packages as well as namespace packages.
               * pip
 
                 * :pypi:`coverage`
-                * :pypi:`tomli`
 
               * :gh:`pyTooling/upload-artifact`
 
