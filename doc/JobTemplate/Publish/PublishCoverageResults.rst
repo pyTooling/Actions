@@ -56,7 +56,6 @@ cloud services like :term:`CodeCov` or :term:`Codacy`.
    * pip
 
      * :pypi:`coverage`
-     * :pypi:`tomli`
 
    * :gh:`pyTooling/upload-artifact`
 

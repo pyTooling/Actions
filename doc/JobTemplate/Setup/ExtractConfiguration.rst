@@ -49,7 +49,6 @@ duplications within jobs.
    * :gh:`actions/setup-python`
 
      * :pypi:`wheel`
-     * :pypi:`tomli`
 
 
 .. _JOBTMPL/ExtractConfiguration/Instantiation:

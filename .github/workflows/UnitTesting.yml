@@ -199,11 +199,11 @@ jobs:
 
 # Compute Dependencies for MSYS2 steps
 
-      - name: 🔧 Install dependencies (system Python for Python shell)
-        if: matrix.system == 'msys2'
-        shell: pwsh
-        run: |
-          py -3.9 -m pip install --disable-pip-version-check --break-system-packages -U tomli
+#      - name: 🔧 Install dependencies (system Python for Python shell)
+#        if: matrix.system == 'msys2'
+#        shell: pwsh
+#        run: |
+#          py -3.12 -m pip install --disable-pip-version-check --break-system-packages -U tomli
 
       - name: Compute path to requirements file
         id: requirements
@@ -286,7 +286,7 @@ jobs:
             "ruamel.yaml":         "python-ruamel-yaml:p",
           #  "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             "sphinx":              "python-markupsafe:p",
-            "tomli":               "python-tomli:p",
+            "tomli":               "python-tomli:p",        # outdated, now part of Python as tomllib
             "wheel":               "python-wheel:p",
             "pyedaa.projectmodel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
             "pyedaa.reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
@@ -351,10 +351,10 @@ jobs:
 
 # Python Dependency steps
 
-      - name: 🔧 Install wheel,tomli and pip dependencies (native)
+      - name: 🔧 Install wheel and pip dependencies (native)
         if: matrix.system != 'msys2'
         run: |
-          python -m pip install --disable-pip-version-check -U wheel tomli
+          python -m pip install --disable-pip-version-check -U wheel
           python -m pip install --disable-pip-version-check ${{ steps.requirements.outputs.requirements }}
 
       - name: 🔧 Install pip dependencies (MSYS2)

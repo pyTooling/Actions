@@ -70,7 +70,6 @@ jobs:
             python-markupsafe:p
             python-pyaml:p python-types-pyyaml:p
             python-ruamel-yaml:p python-ruamel.yaml.clib:p
-            python-tomli:p
 
       - name: 🐍 Setup Python ${{ matrix.python }}
         uses: actions/setup-python@v6

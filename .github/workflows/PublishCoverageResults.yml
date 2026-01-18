@@ -124,9 +124,9 @@ jobs:
         run: |
           tree -pash artifacts
 
-      - name: 🔧 Install coverage and tomli
+      - name: 🔧 Install coverage
         run: |
-          python -m pip install -U --disable-pip-version-check --break-system-packages coverage[toml] tomli
+          python -m pip install -U --disable-pip-version-check --break-system-packages coverage[toml]
 
       - name: Rename .coverage files and move them all into 'coverage/'
         run: |

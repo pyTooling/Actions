@@ -287,9 +287,9 @@ jobs:
           exclude_list =   "${{ inputs.exclude_list }}".strip()
           disable_list =   "${{ inputs.disable_list }}".strip()
 
-          currentMSYS2Version = "3.12"
+          currentMSYS2Version = "3.13"
           currentAlphaVersion = "3.15"
-          currentAlphaRelease = "3.15.0-a.1"
+          currentAlphaRelease = "3.15.0-a.4"
 
           if systems == "":
             print("::error title=Parameters::system_list is empty.")
