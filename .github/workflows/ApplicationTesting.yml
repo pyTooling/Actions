@@ -37,7 +37,7 @@ on:
       requirements:
         description: 'Python dependencies to be installed through pip.'
         required: false
-        default: '-r tests/requirements.txt'
+        default: '-r ./requirements.txt'
         type: string
       pacboy:
         description: 'MSYS2 dependencies to be installed through pacboy (pacman).'
@@ -94,6 +94,39 @@ jobs:
           name: ${{ inputs.wheel }}
           path: install
 
+      # TODO: extract step to an Action so package, so code can be shared with UnitTesting.yml
+      - name: Compute path to requirements file
+        id: requirements
+        shell: python
+        run: |
+          from os      import getenv
+          from pathlib import Path
+          from sys     import version
+
+          print(f"Python: {version}")
+
+          requirements = "${{ inputs.requirements }}"
+          if requirements.startswith("-r"):
+            requirements = requirements[2:].lstrip()
+            if requirements.startswith("./"):
+              requirementsFile = Path("${{ inputs.root_directory || '.' }}") / Path("${{ inputs.tests_directory || '.' }}") / Path("${{ inputs.apptest_directory || '.' }}") / Path(requirements[2:])
+            else:
+              requirementsFile = Path(requirements)
+
+            if not requirementsFile.exists():
+              print(f"::error title=FileNotFoundError::{requirementsFile}")
+              exit(1)
+
+            print(f"requirements file: {requirementsFile.as_posix()}")
+
+            # Write requirements path to special file
+            github_output = Path(getenv("GITHUB_OUTPUT"))
+            print(f"GITHUB_OUTPUT: {github_output}")
+            with github_output.open("a+") as f:
+              f.write(f"requirements=-r {requirementsFile.as_posix()}\n")
+          else:
+            print(f"requirements list: {requirements}")
+
       # TODO: extract step to an Action so package lists are shared with UnitTesting (and GHDL?)
       - name: Compute pacman/pacboy packages
         id: pacboy
@@ -122,7 +155,7 @@ jobs:
 
             return requirements
 
-          requirements = "${{ inputs.requirements }}"
+          requirements = "${{ steps.requirements.outputs.requirements }}"
           if requirements.startswith("-r"):
             requirementsFile = Path(requirements[2:].lstrip())
             try:
@@ -191,6 +224,8 @@ jobs:
           with github_output.open("a+") as f:
             f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
 
+# Python setup
+
       - name: '🟦 Setup MSYS2 for ${{ matrix.runtime }}'
         uses: msys2/setup-msys2@v2
         if: matrix.system == 'msys2'
@@ -207,6 +242,8 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
+# Python Dependency steps
+
       - name: 🔧 Install wheel and pip dependencies (native)
         if: matrix.system != 'msys2'
         run: |
@@ -222,6 +259,8 @@ jobs:
             python -m pip install --disable-pip-version-check --break-system-packages ${{ inputs.requirements }}
           fi
 
+# TODO: Before scripts?
+
       - name: 🔧 Install wheel from artifact (Ubuntu/macOS)
         if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
         run: |
@@ -231,6 +270,8 @@ jobs:
         if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
         run: |
           python -m pip install -v --disable-pip-version-check (Get-Item .\install\*.whl).FullName
+
+# Run pytests
 
       - name: ✅ Run application tests (Ubuntu/macOS)
         if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
@@ -261,6 +302,8 @@ jobs:
             Write-Host "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
             python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
           }
+
+# Upload artifacts
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.apptest_xml_artifact != ''
