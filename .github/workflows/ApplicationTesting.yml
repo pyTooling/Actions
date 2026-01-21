@@ -136,14 +136,14 @@ jobs:
           packages = {
             "aiohttp":             "python-aiohttp:p",
             "coverage":            "python-coverage:p",
-            "docstr_coverage":     "python-pyyaml:p python-types-pyyaml:p",
+            "docstr_coverage":     "python-pyaml:p python-types-pyyaml:p",
             "igraph":              "igraph:p",
             "jinja2":              "python-markupsafe:p",
             "lxml":                "python-lxml:p",
             "numpy":               "python-numpy:p",
             "markupsafe":          "python-markupsafe:p",
             "pip":                 "python-pip:p",
-            "pyyaml":              "python-pyyaml:p python-types-pyyaml:p",
+            "pyyaml":              "python-pyaml:p python-types-pyyaml:p",
             "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             "sphinx":              "python-markupsafe:p",
             "tomli":               "python-tomli:p",        # outdated, now part of Python as tomllib
