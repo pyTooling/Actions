@@ -3,17 +3,17 @@
 pyTooling ~= 8.11
 
 # Enforce latest version on ReadTheDocs
-sphinx ~= 8.2
-docutils ~= 0.21.0
+sphinx ~= 9.1
+docutils ~= 0.22.0
 docutils_stubs ~= 0.0.22
 
 # ReadTheDocs Theme
 sphinx_rtd_theme ~= 3.0
 
 # Sphinx Extenstions
-sphinxcontrib-mermaid ~= 1.2
+sphinxcontrib-mermaid ~= 2.0
 autoapi >= 2.0.1
-sphinx_design ~= 0.6.0
+sphinx_design ~= 0.7.0
 sphinx-copybutton >= 0.5.0
 sphinx_autodoc_typehints ~= 3.5   # 3.6 is conflicting with old sphinx_design and rtd theme due to sphinx<9 and docutils<0.22
-sphinx_reports ~= 0.9.0
+sphinx_reports ~= 0.10.0

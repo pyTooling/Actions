@@ -292,7 +292,7 @@ jobs:
             "numpy":               "python-numpy:p",
             "markupsafe":          "python-markupsafe:p",
             "pip":                 "python-pip:p",
-            "pyyaml":              "python-pyyaml:p python-types-pyyaml:p",
+            "pyyaml":              "python-pyaml:p python-types-pyyaml:p",
             "ruamel.yaml":         "python-ruamel-yaml:p",
           #  "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             "sphinx":              "python-markupsafe:p",
