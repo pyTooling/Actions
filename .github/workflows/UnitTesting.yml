@@ -215,6 +215,7 @@ jobs:
 #        run: |
 #          py -3.12 -m pip install --disable-pip-version-check --break-system-packages -U tomli
 
+      # TODO: extract step to an Action so package, so code can be shared with AppTesting.yml
       - name: Compute path to requirements file
         id: requirements
         shell: python
@@ -247,6 +248,7 @@ jobs:
           else:
             print(f"requirements list: {requirements}")
 
+      # TODO: extract step to an Action so package lists are shared with UnitTesting (and GHDL?)
       - name: Compute pacman/pacboy packages
         id: pacboy
         if: matrix.system == 'msys2'
