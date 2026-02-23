@@ -164,12 +164,12 @@ Example Pipelines
             .. code-block:: toml
 
                [build-system]
-               requires = ["setuptools >= 80.0", "wheel ~= 0.45.0", "pyTooling ~= 8.11"]
+               requires = ["setuptools >= 80.0", "pyTooling ~= 8.12"]
                build-backend = "setuptools.build_meta"
 
                [tool.mypy]
                packages = ["myPackage"]
-               python_version = "3.13"
+               python_version = "3.14"
                strict = true
                pretty = true
                show_error_context = true
