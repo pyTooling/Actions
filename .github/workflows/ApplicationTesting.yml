@@ -89,7 +89,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: 📥 Download artifacts '${{ inputs.wheel }}' from 'Package' job
-        uses: pyTooling/download-artifact@v7
+        uses: pyTooling/download-artifact@v8
         with:
           name: ${{ inputs.wheel }}
           path: install
@@ -307,7 +307,7 @@ jobs:
 
       - name: 📤 Upload 'TestReportSummary.xml' artifact
         if: inputs.apptest_xml_artifact != ''
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         with:
           name: ${{ inputs.apptest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           working-directory: report/unit

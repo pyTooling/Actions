@@ -115,7 +115,7 @@ jobs:
           submodules: true
 
       - name: 📥 Download Artifacts
-        uses: pyTooling/download-artifact@v7
+        uses: pyTooling/download-artifact@v8
         with:
           pattern: ${{ inputs.coverage_artifacts_pattern }}
           path: artifacts
@@ -156,7 +156,7 @@ jobs:
           tree -pash ${{ fromJson(inputs.coverage_report_html).directory }}
 
       - name: 📤 Upload 'Coverage SQLite Database' artifact
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         if: inputs.coverage_sqlite_artifact != ''
         continue-on-error: true
         with:
@@ -166,7 +166,7 @@ jobs:
           retention-days: 1
 
       - name: 📤 Upload 'Coverage XML Report' artifact
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         if: inputs.coverage_xml_artifact != ''
         continue-on-error: true
         with:
@@ -177,7 +177,7 @@ jobs:
           retention-days: 1
 
       - name: 📤 Upload 'Coverage JSON Report' artifact
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         if: inputs.coverage_json_artifact != ''
         continue-on-error: true
         with:
@@ -188,7 +188,7 @@ jobs:
           retention-days: 1
 
       - name: 📤 Upload 'Coverage HTML Report' artifact
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         if: inputs.coverage_html_artifact != ''
         continue-on-error: true
         with:

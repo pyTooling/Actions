@@ -64,20 +64,20 @@ jobs:
       github_pages_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: 📥 Download artifacts '${{ inputs.doc }}' from 'SphinxDocumentation' job
-        uses: pyTooling/download-artifact@v7
+        uses: pyTooling/download-artifact@v8
         with:
           name: ${{ inputs.doc }}
           path: public
 
       - name: 📥 Download artifacts '${{ inputs.coverage }}' from 'Coverage' job
-        uses: pyTooling/download-artifact@v7
+        uses: pyTooling/download-artifact@v8
         if: ${{ inputs.coverage != '' }}
         with:
           name: ${{ inputs.coverage }}
           path: public/coverage
 
       - name: 📥 Download artifacts '${{ inputs.typing }}' from 'StaticTypeCheck' job
-        uses: pyTooling/download-artifact@v7
+        uses: pyTooling/download-artifact@v8
         if: ${{ inputs.typing != '' }}
         with:
           name: ${{ inputs.typing }}

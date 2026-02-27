@@ -470,7 +470,7 @@ jobs:
 # Upload artifacts
 
       - name: 📤 Upload '${{ fromJson(inputs.unittest_report_xml).filename }}' artifact
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         if: inputs.unittest_xml_artifact != ''
         continue-on-error: true
         with:
@@ -483,7 +483,7 @@ jobs:
 #      - name: 📤 Upload 'Unit Tests HTML Report' artifact
 #        if: inputs.unittest_html_artifact != ''
 #        continue-on-error: true
-#        uses: pyTooling/upload-artifact@v6
+#        uses: pyTooling/upload-artifact@v7
 #        with:
 #          name: ${{ inputs.unittest_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
 #          path: ${{ inputs.unittest_report_html_directory }}
@@ -493,7 +493,7 @@ jobs:
       - name: 📤 Upload 'Coverage SQLite Database' artifact
         if: inputs.coverage_sqlite_artifact != ''
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         with:
           name: ${{ inputs.coverage_sqlite_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           path: .coverage
@@ -504,7 +504,7 @@ jobs:
       - name: 📤 Upload 'Coverage XML Report' artifact
         if: inputs.coverage_xml_artifact != '' && steps.convert_xml.outcome == 'success'
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         with:
           name: ${{ inputs.coverage_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           working-directory: ${{ fromJson(inputs.coverage_report_xml).directory }}
@@ -515,7 +515,7 @@ jobs:
       - name: 📤 Upload 'Coverage JSON Report' artifact
         if: inputs.coverage_json_artifact != '' && steps.convert_json.outcome == 'success'
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         with:
           name: ${{ inputs.coverage_json_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           working-directory: ${{ fromJson(inputs.coverage_report_json).directory }}
@@ -526,7 +526,7 @@ jobs:
       - name: 📤 Upload 'Coverage HTML Report' artifact
         if: inputs.coverage_html_artifact != '' && steps.convert_html.outcome == 'success'
         continue-on-error: true
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         with:
           name: ${{ inputs.coverage_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
           working-directory: ${{ fromJson(inputs.coverage_report_html).directory }}

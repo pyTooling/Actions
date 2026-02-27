@@ -69,7 +69,7 @@ jobs:
         - ${{ github.workspace }}/latex:/latex
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
-        uses: pyTooling/download-artifact@v7
+        uses: pyTooling/download-artifact@v8
         with:
           name: ${{ inputs.latex_artifact }}
           path: latex
@@ -86,7 +86,7 @@ jobs:
           latexmk --${{ inputs.processor }} --interaction=nonstopmode -file-line-error -max-print-line=250 ${HALT_ON_ERROR} "${{ inputs.document }}.tex"
 
       - name: 📤 Upload 'PDF Documentation' artifact
-        uses: pyTooling/upload-artifact@v6
+        uses: pyTooling/upload-artifact@v7
         if: inputs.pdf_artifact != ''
         with:
           name: ${{ inputs.pdf_artifact }}
