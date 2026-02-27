@@ -33,7 +33,7 @@ jobs:
           printf "%s\n" "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"        > program.py
 
       - name: 📤 Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: other
           path: |
