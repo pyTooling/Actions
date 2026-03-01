@@ -153,7 +153,7 @@ jobs:
                   typingHTMLDirectory =   Path(section["html_report"])
             else:
               print(f"File '{pyProjectFile}' not found.")
-              print(f"::error title=FileNotFoundError::File '{pyProjectFile}' not found.")
+              print(f"::error title=FileNotFoundError::Python project file '{pyProjectFile}' doesn't exist.")
               exit(1)
 
           # Read output paths from '.coveragerc' file
@@ -170,7 +170,7 @@ jobs:
               coverageJSONFile =      Path(coverageRCSettings["json"]["output"])
             else:
               print(f"File '{coverageRCFile}' not found.")
-              print(f"::error title=FileNotFoundError::File '{coverageRCFile}' not found.")
+              print(f"::error title=FileNotFoundError::Coverage RC file '{coverageRCFile}' doesn't exist.")
               exit(1)
 
           unittest_report_xml = {

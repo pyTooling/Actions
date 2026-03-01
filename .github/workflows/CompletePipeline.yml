@@ -210,7 +210,7 @@ jobs:
 
           versionFile = Path("${{ needs.UnitTestingParams.outputs.package_version_file }}")
           if not versionFile.exists():
-            print(f"::error title=CompletePipeline::Version file '{versionFile}' not found.")
+            print(f"::error title=CompletePipeline::Version file '{versionFile}' doesn't exist.")
             exit(1)
 
           versionInformation = extractVersionInformation(versionFile)
@@ -218,7 +218,7 @@ jobs:
           print(f"from code: {versionInformation.Version}")
 
           if expectedVersion != versionInformation.Version:
-            print(f"::error title=CompletePipeline::Expected version does not version in Python code.")
+            print(f"::error title=CompletePipeline::Expected version ({expectedVersion}) doesn't match the version in Python code ({versionInformation.Version}).")
             exit(2)
 
           # Write jobs to special file
