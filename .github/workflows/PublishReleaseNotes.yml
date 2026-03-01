@@ -780,7 +780,7 @@ jobs:
                   NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1# /gm;t' | sed 's/&/\\&/g')}"
                   ;;
                 "PULLREQUEST+2")
-                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1### /gm;t' | sed 's/&/\\&/g')}"
+                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1## /gm;t' | sed 's/&/\\&/g')}"
                   ;;
                 "PULLREQUEST+3")
                   NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1### /gm;t' | sed 's/&/\\&/g')}"
