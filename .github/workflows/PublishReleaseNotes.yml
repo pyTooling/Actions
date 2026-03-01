@@ -761,7 +761,7 @@ jobs:
           # Inline description
           printf -- "Inline '__DESCRIPTION__.md' ... "
           if [[ -s __DESCRIPTION__.md ]]; then
-            NOTES="${NOTES//%%DESCRIPTION%%/$(<__DESCRIPTION__.md)}"
+            NOTES="${NOTES//%%DESCRIPTION%%/$(cat __DESCRIPTION__.md | sed 's/&/\\&/g')}"
             printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             NOTES="${NOTES//%%DESCRIPTION%%/}"
@@ -774,16 +774,16 @@ jobs:
             while [[ "${NOTES}" =~ %%(PULLREQUEST(\+[0-3])?)%% ]]; do
               case "${BASH_REMATCH[1]}" in
                 "PULLREQUEST+0" | "PULLREQUEST")
-                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(<__PULLREQUEST__.md)}"
+                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed 's/&/\\&/g')}"
                   ;;
                 "PULLREQUEST+1")
-                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1# /gm;t')}"
+                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1# /gm;t' | sed 's/&/\\&/g')}"
                   ;;
                 "PULLREQUEST+2")
-                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1### /gm;t')}"
+                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1### /gm;t' | sed 's/&/\\&/g')}"
                   ;;
                 "PULLREQUEST+3")
-                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1### /gm;t')}"
+                  NOTES="${NOTES//${BASH_REMATCH[0]}/$(cat __PULLREQUEST__.md | sed -E 's/^(#+) /\1### /gm;t' | sed 's/&/\\&/g')}"
                   ;;
               esac
             done
@@ -798,7 +798,7 @@ jobs:
           # Inline Files table
           printf -- "Inline '__ASSETS__.md' ... "
           if [[ -s __ASSETS__.md ]]; then
-            NOTES="${NOTES//%%ASSETS%%/$(<__ASSETS__.md)}"
+            NOTES="${NOTES//%%ASSETS%%/$(cat __ASSETS__.md | sed 's/&/\\&/g')}"
             printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             NOTES="${NOTES//%%ASSETS%%/}"
@@ -808,7 +808,7 @@ jobs:
           # Inline Footer
           printf -- "Inline '__FOOTER__.md' ... "
           if [[ -s __FOOTER__.md ]]; then
-            NOTES="${NOTES//%%FOOTER%%/$(<__FOOTER__.md)}"
+            NOTES="${NOTES//%%FOOTER%%/$(cat __FOOTER__.md | sed 's/&/\\&/g')}"
             printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             NOTES="${NOTES//%%FOOTER%%/}"
