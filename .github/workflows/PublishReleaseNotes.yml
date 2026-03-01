@@ -696,7 +696,7 @@ jobs:
           else
             printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
-            printf "Search Pull Request to '%s' and branch containing SHA %s ... " "${{ inputs.release_branch }}" "${FATHER_SHA}"
+            printf "Search pull-request to '%s' and branch containing SHA %s ... " "${{ inputs.release_branch }}" "${FATHER_SHA}"
             PULL_REQUESTS=$(gh pr list --base "${{ inputs.release_branch }}" --search "${FATHER_SHA}" --state "merged" --json "title,number,mergedBy,mergedAt,body")
             if [[ $? -ne 0 || "${PULL_REQUESTS}" == "" ]]; then
               printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
@@ -719,7 +719,9 @@ jobs:
               printf "  %s\n" "MergedAt: ${PR_MERGED_AT} ($(date -d"${PR_MERGED_AT}" '+%d.%m.%Y - %H:%M:%S'))"
             fi
 
+            printf "Write pull-request body of '%s' to '__PULLREQUEST__.md' ... " "${PR_TITLE}"
             printf "%s\n" "${PR_BODY}" > __PULLREQUEST__.md
+            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           fi
 
           # Check if a release description file should be used and exists.
@@ -757,13 +759,17 @@ jobs:
           NOTES=$(<__NOTES__.md)
 
           # Inline description
+          printf -- "Inline '__DESCRIPTION__.md' ... "
           if [[ -s __DESCRIPTION__.md ]]; then
             NOTES="${NOTES//%%DESCRIPTION%%/$(<__DESCRIPTION__.md)}"
+            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             NOTES="${NOTES//%%DESCRIPTION%%/}"
+            printf "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
           fi
 
           # Inline PullRequest and increase headline levels
+          printf -- "Inline '__PULLREQUEST__.md' ... "
           if [[ -s __PULLREQUEST__.md ]]; then
             while [[ "${NOTES}" =~ %%(PULLREQUEST(\+[0-3])?)%% ]]; do
               case "${BASH_REMATCH[1]}" in
@@ -781,27 +787,36 @@ jobs:
                   ;;
               esac
             done
+            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             while [[ "${NOTES}" =~ %%(PULLREQUEST(\+[0-3])?)%% ]]; do
               NOTES="${NOTES//${BASH_REMATCH[0]}/}"
             done
+            printf "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
           fi
 
           # Inline Files table
+          printf -- "Inline '__ASSETS__.md' ... "
           if [[ -s __ASSETS__.md ]]; then
             NOTES="${NOTES//%%ASSETS%%/$(<__ASSETS__.md)}"
+            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             NOTES="${NOTES//%%ASSETS%%/}"
+            printf "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
           fi
 
           # Inline Footer
+          printf -- "Inline '__FOOTER__.md' ... "
           if [[ -s __FOOTER__.md ]]; then
             NOTES="${NOTES//%%FOOTER%%/$(<__FOOTER__.md)}"
+            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             NOTES="${NOTES//%%FOOTER%%/}"
+            printf "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
           fi
 
           # Apply replacements
+          printf -- "Apply replacements ... "
           while IFS=$'\r\n' read -r patternLine; do
             # skip empty lines
             [[ "$patternLine" == "" ]] && continue
@@ -810,12 +825,14 @@ jobs:
             replacement="${patternLine#*=}"
             NOTES="${NOTES//$pattern/$replacement}"
           done <<<'${{ inputs.replacements }}'
+          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
           # Workarounds for stupid GitHub variables
           owner_repo="${{ github.repository }}"
           repo=${owner_repo##*/}
 
           # Replace special identifiers
+          printf -- "Replace GitHub variables ... "
           NOTES="${NOTES//%%gh_server%%/${{ github.server_url }}}"
           NOTES="${NOTES//%%gh_workflow_name%%/${{ github.workflow }}}"
           NOTES="${NOTES//%%gh_owner%%/${{ github.repository_owner }}}"
@@ -828,9 +845,12 @@ jobs:
           NOTES="${NOTES//%%date%%/$(date '+%Y-%m-%d')}"
           NOTES="${NOTES//%%time%%/$(date '+%H:%M:%S %Z')}"
           NOTES="${NOTES//%%datetime%%/$(date '+%Y-%m-%d %H:%M:%S %Z')}"
+          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
           # Write final release notes to file
+          printf "Write final release note '__NOTES__.md' ... "
           printf "%s\n" "${NOTES}" > __NOTES__.md
+          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
           # Display partial contents for debugging
           if [[ -s __DESCRIPTION__.md ]]; then
