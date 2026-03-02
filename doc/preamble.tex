@@ -1,0 +1,35 @@
+% ================================================================================
+% User defined additional preamble code
+% ================================================================================
+% Add more Unicode characters for pdfLaTeX.
+% - Alternatively, compile with XeLaTeX or LuaLaTeX.
+% - https://GitHub.com/sphinx-doc/sphinx/issues/3511
+%
+\usepackage{fontspec}
+\usepackage{unicode-math}
+
+% Set Main fonts
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+
+% Set your requested Source Code Pro for Monospace
+% Make sure "Source Code Pro" is installed on your Windows system
+\setmonofont{Source Code Pro}[Scale=MatchLowercase]
+
+% Set Math font
+\setmathfont{Libertinus Math}
+
+% Set Symbol font
+\newfontfamily{\symbolsfont}{DejaVu Sans}
+
+
+% 4. Handle the "Package" Icon and other Symbols
+% If Noto Serif misses the 📦 icon, we can define a fallback
+%\newfontfamily{\symbolsfont}{Segoe UI Symbol} % Excellent on Windows
+%\newfontfamily{\emojifont}{Segoe UI Emoji}
+
+% Tell XeLaTeX to look for specific characters in other fonts if missing
+% This requires the 'ucharclasses' package or manual substitution
+
+
+% ================================================================================

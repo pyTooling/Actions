@@ -32,7 +32,10 @@ Param(
 	[switch]$help
 )
 
-$PackageName = "Actions"
+$PackageName =    "Actions"
+$PackageVersion = "7.5.1"
+$PythonVersion =  "3.14"
+$LaTeXDocument =  $PackageName
 
 # set default values
 $EnableDebug =        [bool]$PSCmdlet.MyInvocation.BoundParameters["Debug"]
