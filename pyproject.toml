@@ -37,7 +37,10 @@ junit_xml = "report/typing/StaticTypingSummary.xml"
 cobertura_xml_report = "report/typing"
 
 [tool.pytest]
-addopts = ["--tb=native"]
+addopts = [
+	"--tb=native",
+	"--junitxml=report/unit/UnittestReportSummary.xml"
+]
 # Don't set 'python_classes = *' otherwise, pytest doesn't search for classes
 # derived from unittest.Testcase
 python_files = ["*"]

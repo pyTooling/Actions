@@ -70,7 +70,7 @@ class Base:
 		"""
 		return self._value
 
-	def Add(self, value) -> None:
+	def Add(self, value: int) -> None:
 		"""
 		Accumulate value to internal value.
 

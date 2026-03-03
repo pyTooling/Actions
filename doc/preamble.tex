@@ -6,30 +6,44 @@
 % - https://GitHub.com/sphinx-doc/sphinx/issues/3511
 %
 \usepackage{fontspec}
-\usepackage{unicode-math}
 
 % Set Main fonts
-\setmainfont{Noto Serif}
-\setsansfont{Noto Sans}
-
-% Set your requested Source Code Pro for Monospace
-% Make sure "Source Code Pro" is installed on your Windows system
-\setmonofont{Source Code Pro}[Scale=MatchLowercase]
+\usepackage{libertinus-otf}
+%\usepackage{noto-emoji}
 
 % Set Math font
-\setmathfont{Libertinus Math}
+\usepackage{unicode-math}
+\setmathfont{LibertinusMath}
 
 % Set Symbol font
-\newfontfamily{\symbolsfont}{DejaVu Sans}
+\usepackage{newunicodechar}
+\newfontfamily{\emojifont}[Renderer=OpenType]{NotoColorEmoji.ttf}
+\newunicodechar{≤}{\ensuremath{\le}}
+\newunicodechar{—}{---}
+\newunicodechar{…}{\dots}
+\newunicodechar{␣}{\ttfamily\char32}  % open box = visible space   U+2423
 
-
-% 4. Handle the "Package" Icon and other Symbols
-% If Noto Serif misses the 📦 icon, we can define a fallback
-%\newfontfamily{\symbolsfont}{Segoe UI Symbol} % Excellent on Windows
-%\newfontfamily{\emojifont}{Segoe UI Emoji}
-
-% Tell XeLaTeX to look for specific characters in other fonts if missing
-% This requires the 'ucharclasses' package or manual substitution
-
+\newunicodechar{🍎}{{\emojifont 🍎}}  % red apple
+\newunicodechar{🍏}{{\emojifont 🍏}}  % green apple
+\newunicodechar{🐧}{{\emojifont 🐧}}  % penguin
+\newunicodechar{⛄}{{\emojifont ⛄}}  % snowman
+\newunicodechar{🪟}{{\emojifont 🪟}}  % window
+\newunicodechar{🏢}{{\emojifont 🏢}}  % glas building
+\newunicodechar{🐍}{{\emojifont 🐍}}  % green snake
+\newunicodechar{🔴}{{\emojifont 🔴}}  % red circle
+\newunicodechar{🟠}{{\emojifont 🟠}}   % orange circle
+\newunicodechar{🟡}{{\emojifont 🟡}}   % yellow circle
+\newunicodechar{🟢}{{\emojifont 🟢}}   % green circle
+\newunicodechar{🟣}{{\emojifont 🟣}}   % purple circle
+\newunicodechar{⚫}{{\emojifont ⚫}}  % black circle   U+26AB
+\newunicodechar{🟧}{{\emojifont 🟧}}   % red square     U+1F7E7
+\newunicodechar{🟨}{{\emojifont 🟨}}   % yellow square  U+1F7E8
+\newunicodechar{🟫}{{\emojifont 🟫}}   % braun square   U+1F7EB
+\newunicodechar{🟦}{{\emojifont 🟦}}   % blue square    U+1F7E6
+\newunicodechar{🟪}{{\emojifont 🟪}}   % purple square  U+1F7EA
+\newunicodechar{⟲}{{\emojifont ⟲}}   % circular arrow counterclockwise  U+27F2
+\newunicodechar{📦}{{\emojifont 📦}}
+\newunicodechar{📂}{{\emojifont 📂}}
+\newunicodechar{🗑}{{\emojifont 🗑}}    % Wastebasket  🗑️  U+1F5D1
 
 % ================================================================================
