@@ -40,7 +40,7 @@ on:
       processor:
         description: 'Name of the used LaTeX processor.'
         required: false
-        default: 'xelatex'
+        default: 'lualatex'
         type: string
       halt-on-error:
         description: 'Halt on first error, otherwise continue as long as possible.'
@@ -75,6 +75,10 @@ jobs:
           path: latex
           investigate: 'true'
 
+      - name: Debug
+        run: |
+          find / -name "texmfapp.ini" | xargs -I {} sh -c 'echo -e "\e[31mPath: {}\e[0m"; cat "{}"' 2>/dev/null
+
       - name: Build LaTeX document using 'pytooling/miktex:sphinx'
         if: inputs.pdf_artifact != ''
         run: |
@@ -83,7 +87,7 @@ jobs:
           fi
 
           cd latex
-          latexmk --${{ inputs.processor }} --interaction=nonstopmode -file-line-error -max-print-line=250 ${HALT_ON_ERROR} "${{ inputs.document }}.tex"
+          latexmk --${{ inputs.processor }} --interaction=nonstopmode --file-line-error --max-print-line=1000 ${HALT_ON_ERROR} "${{ inputs.document }}.tex"
 
       - name: 📤 Upload 'PDF Documentation' artifact
         uses: pyTooling/upload-artifact@v7
