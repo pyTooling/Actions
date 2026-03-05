@@ -126,8 +126,13 @@ jobs:
               toolSection = pyProjectSettings["tool"]
               if "pytest" in toolSection:
                 section = toolSection["pytest"]
+                # TODO: will be dropped in @r8
                 if "junit_xml" in section:
                   unittestXMLFile = Path(section["junit_xml"])
+                elif "addopts" in section:
+                  options = {k: v for k, v in (option.split("=") for option in section["addopts"] if "=" in option)}
+                  if "--junitxml" in options:
+                    unittestXMLFile = Path(options["--junitxml"])
 
               if "pyedaa-reports" in toolSection:
                 section = toolSection["pyedaa-reports"]

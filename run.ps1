@@ -155,7 +155,7 @@ $runUnitFunc = {
 
   $env:PYTHONPATH="."
   $env:ENVIRONMENT_NAME = "Windows (x86-64)"
-  pytest -raP --color=yes --template=html1/index.html --report=report/unit/html/index.html --split-report tests/unit
+  pytest --template=html1/index.html --report=report/unit/html/index.html --split-report tests/unit
 
   if ($copy) {
     & $runCopyFunc $live
@@ -177,7 +177,7 @@ $runCovFunc = {
 
   $env:PYTHONPATH="."
   $env:ENVIRONMENT_NAME = "Windows (x86-64)"
-  coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -ra --color=yes tests/unit
+  coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest tests/unit
 
   if ($live) {
     Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Convert coverage report to HTML ..."
