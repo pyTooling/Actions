@@ -130,9 +130,9 @@ except Exception as ex:
 	latexPreamble = ""
 
 latex_elements = {
-	"inputenc":  "",             # Let XeLaTeX handle input encoding
+	"inputenc":  "",             # Let LuaLaTeX handle input encoding
 	"utf8extra": "",
-	"fontenc":   "",             # Disable the default T1 font encoding (Essential for XeLaTeX/LuaLaTeX)
+	"fontenc":   "",             # Disable the default T1 font encoding (Essential for LuaLaTeX)
 	"fontpkg":   "",             # Disable the default TeX font package (Times/Palatino)
 	"papersize": "a4paper",      # The paper size ('letterpaper' or 'a4paper').
 	#'pointsize': '10pt',       	# The font size ('10pt', '11pt' or '12pt').

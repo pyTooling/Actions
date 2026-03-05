@@ -123,6 +123,11 @@ on:
         required: false
         default: 'true'
         type: string
+      documentation_steps:
+        description: 'Create documentation.'
+        required: false
+        default: 'html pages'   # none, html, latex, pdf, pages, asset, all
+        type: string
     secrets:
       PYPI_TOKEN:
         description: "Token for pushing releases to PyPI."
@@ -152,6 +157,7 @@ jobs:
       include_list:        ${{ inputs.unittest_include_list }}
       exclude_list:        ${{ inputs.unittest_exclude_list }}
       disable_list:        ${{ inputs.unittest_disable_list }}
+      documentation_steps: ${{ inputs.documentation_steps }}
 
 #  AppTestingParams:
 #    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
@@ -176,6 +182,7 @@ jobs:
       include_list:        ${{ inputs.unittest_include_list }}
       exclude_list:        ${{ inputs.unittest_exclude_list }}
       disable_list:        ${{ inputs.unittest_disable_list }}
+      documentation_steps: 'none'
 
   VersionCheck:
     name: ''
@@ -262,6 +269,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@dev
     needs:
       - UnitTestingParams
+      - PublishTestResults  # artificial dependency to delay start when pipeline has free job resources
     with:
       python_version:    ${{ needs.UnitTestingParams.outputs.python_version }}
       package_directory: ${{ needs.UnitTestingParams.outputs.package_directory }}
@@ -273,6 +281,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@dev
     needs:
       - UnitTestingParams
+      - StaticTypeCheck     # artificial dependency to delay start when pipeline has free job resources
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       directory:      ${{ needs.UnitTestingParams.outputs.package_directory }}

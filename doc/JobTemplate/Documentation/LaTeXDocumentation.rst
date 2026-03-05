@@ -9,7 +9,7 @@ LaTeXDocumentation
 The ``LaTeXDocumentation`` job template downloads an artifact containing a LaTeX document and translates to a PDF file
 using MikTeX.
 
-The translation process uses ``latexmk`` for handling multiple passes. The default LaTeX processor is ``xelatex``, but
+The translation process uses ``latexmk`` for handling multiple passes. The default LaTeX processor is ``lualatex``, but
 can be switched by a parameter.
 
 .. topic:: Features
@@ -86,7 +86,7 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/LaTeXDocumentation/Input/document`                    | yes      | string   | — — — —                                                           |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/LaTeXDocumentation/Input/processor`                   | no       | string   | ``'xelatex'``                                                     |
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/processor`                   | no       | string   | ``'lualatex'``                                                    |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/LaTeXDocumentation/Input/pdf_artifact`                | no       | string   | ``''``                                                            |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
@@ -141,7 +141,7 @@ processor
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'xelatex'``
+:Default Value:   ``'lualatex'``
 :Possible Values: Any supported LaTeX processor supported by MikTeX and ``latexmk``.
 :Description:     Name of the used LaTeX processor.
 

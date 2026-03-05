@@ -17,6 +17,7 @@ jobs:
       package_name:        'myPackage'
       python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11'
       disable_list:        'windows-arm:pypy-3.11'
+      documentation_steps: 'all'
 
   PlatformTestingParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
@@ -25,6 +26,7 @@ jobs:
       name:                'Platform'
       python_version_list: ''
       system_list:         'ubuntu ubuntu-arm windows windows-arm macos mingw64 clang64 ucrt64'
+      documentation_steps: 'none'
 
   InstallParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
@@ -32,6 +34,7 @@ jobs:
       package_name:        'myPackage'
       python_version:      ${{ needs.UnitTestingParams.outputs.python_version }}
       python_version_list: ''
+      documentation_steps: ''
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
@@ -85,6 +88,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@dev
     needs:
       - UnitTestingParams
+      - PublishTestResults  # artificial dependency to delay start when pipeline has free job resources
     with:
       python_version:    ${{ needs.UnitTestingParams.outputs.python_version }}
       package_directory: ${{ needs.UnitTestingParams.outputs.package_directory }}
@@ -97,6 +101,7 @@ jobs:
     needs:
       - ConfigParams
       - UnitTestingParams
+      - StaticTypeCheck     # artificial dependency to delay start when pipeline has free job resources
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       directory     : ${{ needs.ConfigParams.outputs.package_directory }}

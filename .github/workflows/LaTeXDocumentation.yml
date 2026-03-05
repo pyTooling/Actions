@@ -37,6 +37,11 @@ on:
         description: 'LaTeX root document without *.tex extension.'
         required: true
         type: string
+      miktex_image:
+        description: 'Name of MiKTeX docker image.'
+        required: false
+        default: 'pytooling/miktex:sphinx'
+        type: string
       processor:
         description: 'Name of the used LaTeX processor.'
         required: false
@@ -64,7 +69,7 @@ jobs:
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     continue-on-error: ${{ inputs.can-fail == 'true' }}
     container:
-      image: pytooling/miktex:sphinx
+      image: ${{ inputs.miktex_image }}
       volumes:
         - ${{ github.workspace }}/latex:/latex
     steps:
@@ -75,19 +80,28 @@ jobs:
           path: latex
           investigate: 'true'
 
-      - name: Debug
+      - name: Update
         run: |
-          find / -name "texmfapp.ini" | xargs -I {} sh -c 'echo -e "\e[31mPath: {}\e[0m"; cat "{}"' 2>/dev/null
+          sudo miktex --admin packages update-package-database
+          sudo miktex --admin packages update
+          sudo initexmf --admin --update-fndb
 
       - name: Build LaTeX document using 'pytooling/miktex:sphinx'
         if: inputs.pdf_artifact != ''
         run: |
+          set -o pipefail
+
           if [[ "${{ inputs.halt-on-error }}" == "true" ]]; then
             HALT_ON_ERROR="--halt-on-error"
           fi
 
           cd latex
-          latexmk --${{ inputs.processor }} --interaction=nonstopmode --file-line-error --max-print-line=1000 ${HALT_ON_ERROR} "${{ inputs.document }}.tex"
+          latexmk \
+            --${{ inputs.processor }} \
+            --interaction=nonstopmode \
+            --file-line-error \
+            ${HALT_ON_ERROR} \
+          "${{ inputs.document }}.tex" | filter.latexmk.sh
 
       - name: 📤 Upload 'PDF Documentation' artifact
         uses: pyTooling/upload-artifact@v7
