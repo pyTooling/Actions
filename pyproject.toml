@@ -37,7 +37,13 @@ junit_xml = "report/typing/StaticTypingSummary.xml"
 cobertura_xml_report = "report/typing"
 
 [tool.pytest]
-addopts = ["--tb=native"]
+addopts = [
+	"-ra",
+	"--show-capture=all",
+	"--tb=native",
+	"--color=yes",
+	"--junitxml=report/unit/UnittestReportSummary.xml"
+]
 # Don't set 'python_classes = *' otherwise, pytest doesn't search for classes
 # derived from unittest.Testcase
 python_files = ["*"]
@@ -46,7 +52,6 @@ filterwarnings = [
 	"error::DeprecationWarning",
 	"error::PendingDeprecationWarning"
 ]
-junit_xml = "report/unit/UnittestReportSummary.xml"
 junit_logging = "all"
 
 [tool.pyedaa-reports]

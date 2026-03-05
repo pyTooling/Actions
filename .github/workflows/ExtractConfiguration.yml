@@ -126,8 +126,13 @@ jobs:
               toolSection = pyProjectSettings["tool"]
               if "pytest" in toolSection:
                 section = toolSection["pytest"]
+                # TODO: will be dropped in @r8
                 if "junit_xml" in section:
                   unittestXMLFile = Path(section["junit_xml"])
+                elif "addopts" in section:
+                  options = {k: v for k, v in (option.split("=") for option in section["addopts"] if "=" in option)}
+                  if "--junitxml" in options:
+                    unittestXMLFile = Path(options["--junitxml"])
 
               if "pyedaa-reports" in toolSection:
                 section = toolSection["pyedaa-reports"]
@@ -153,7 +158,7 @@ jobs:
                   typingHTMLDirectory =   Path(section["html_report"])
             else:
               print(f"File '{pyProjectFile}' not found.")
-              print(f"::error title=FileNotFoundError::File '{pyProjectFile}' not found.")
+              print(f"::error title=FileNotFoundError::Python project file '{pyProjectFile}' doesn't exist.")
               exit(1)
 
           # Read output paths from '.coveragerc' file
@@ -170,7 +175,7 @@ jobs:
               coverageJSONFile =      Path(coverageRCSettings["json"]["output"])
             else:
               print(f"File '{coverageRCFile}' not found.")
-              print(f"::error title=FileNotFoundError::File '{coverageRCFile}' not found.")
+              print(f"::error title=FileNotFoundError::Coverage RC file '{coverageRCFile}' doesn't exist.")
               exit(1)
 
           unittest_report_xml = {

@@ -267,14 +267,19 @@ License
 .. raw:: latex
 
    \part{Main Documentation}
+   \chapter{Actions}
 
 .. toctree::
    :caption: Actions
    :hidden:
 
    Action/index
-   Action/Releaser
    Action/With-post-step
+   Action/Releaser
+
+.. raw:: latex
+
+   \chapter{Job Templates}
 
 .. toctree::
    :caption: Job Templates

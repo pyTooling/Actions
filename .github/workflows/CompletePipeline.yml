@@ -123,6 +123,16 @@ on:
         required: false
         default: 'true'
         type: string
+      documentation_steps:
+        description: 'Create documentation.'
+        required: false
+        default: 'html pages'   # none, html, latex, pdf, pages, asset, all
+        type: string
+      miktex_image:
+        description: 'Name of MiKTeX docker image.'
+        required: false
+        default: 'pytooling/miktex:sphinx'
+        type: string
     secrets:
       PYPI_TOKEN:
         description: "Token for pushing releases to PyPI."
@@ -152,6 +162,7 @@ jobs:
       include_list:        ${{ inputs.unittest_include_list }}
       exclude_list:        ${{ inputs.unittest_exclude_list }}
       disable_list:        ${{ inputs.unittest_disable_list }}
+      documentation_steps: ${{ inputs.documentation_steps }}
 
 #  AppTestingParams:
 #    uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
@@ -176,6 +187,7 @@ jobs:
       include_list:        ${{ inputs.unittest_include_list }}
       exclude_list:        ${{ inputs.unittest_exclude_list }}
       disable_list:        ${{ inputs.unittest_disable_list }}
+      documentation_steps: 'none'
 
   VersionCheck:
     name: ''
@@ -210,7 +222,7 @@ jobs:
 
           versionFile = Path("${{ needs.UnitTestingParams.outputs.package_version_file }}")
           if not versionFile.exists():
-            print(f"::error title=CompletePipeline::Version file '{versionFile}' not found.")
+            print(f"::error title=CompletePipeline::Version file '{versionFile}' doesn't exist.")
             exit(1)
 
           versionInformation = extractVersionInformation(versionFile)
@@ -218,7 +230,7 @@ jobs:
           print(f"from code: {versionInformation.Version}")
 
           if expectedVersion != versionInformation.Version:
-            print(f"::error title=CompletePipeline::Expected version does not version in Python code.")
+            print(f"::error title=CompletePipeline::Expected version ({expectedVersion}) doesn't match the version in Python code ({versionInformation.Version}).")
             exit(2)
 
           # Write jobs to special file
@@ -262,6 +274,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@main
     needs:
       - UnitTestingParams
+      - PublishTestResults  # artificial dependency to delay start when pipeline has free job resources
     with:
       python_version:    ${{ needs.UnitTestingParams.outputs.python_version }}
       package_directory: ${{ needs.UnitTestingParams.outputs.package_directory }}
@@ -273,6 +286,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@main
     needs:
       - UnitTestingParams
+      - StaticTypeCheck     # artificial dependency to delay start when pipeline has free job resources
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       directory:      ${{ needs.UnitTestingParams.outputs.package_directory }}
@@ -390,6 +404,7 @@ jobs:
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
       pdf_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
       can-fail:       'true'
+      miktex_image:   ${{ inputs.miktex_image }}
 
   PublishToGitHubPages:
     uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@main

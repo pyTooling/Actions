@@ -36,7 +36,7 @@ __author__ =        "Patrick Lehmann"
 __email__ =         "Paebbels@gmail.com"
 __copyright__ =     "2017-2026, Patrick Lehmann"
 __license__ =       "Apache License, Version 2.0"
-__version__ =       "7.4.4"
+__version__ =       "7.6.0"
 __keywords__ =      ["GitHub Actions"]
 __issue_tracker__ = "https://GitHub.com/pyTooling/Actions/issues"
 
@@ -70,7 +70,7 @@ class Base:
 		"""
 		return self._value
 
-	def Add(self, value) -> None:
+	def Add(self, value: int) -> None:
 		"""
 		Accumulate value to internal value.
 
