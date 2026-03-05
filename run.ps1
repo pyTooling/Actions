@@ -14,6 +14,7 @@ Param(
   [switch]$latex,
   [switch]$pdf,
   [switch]$doccov,
+  [switch]$view,
 
   [switch]$unit,
   [switch]$liveunit,
@@ -54,7 +55,8 @@ $help = $help -or ( -not (
     $unit -or $liveunit -or $copyunit -or
     $cov -or $livecov -or $copycov -or
     $type -or $livetype -or $copytype -or
-    $build -or $install
+    $build -or $install -or
+    $view
   )
 )
 
@@ -384,6 +386,11 @@ if ($livedoc) {
       & $compileDocFunc $LaTeXDocument
     } -ArgumentList $docLaTeXJob, $compilePDFDocFunc, $LaTeXDocument
   }
+}
+
+if ($view) {
+  Write-Host -ForegroundColor Green  "[live][VIEW]      Launching '$(Get-Location)\doc\_build\html\index.html' in Chrome ..."
+  Start-Process "C:\Program Files\Google\Chrome\Application\chrome.exe" "$(Get-Location)\doc\_build\html\index.html"
 }
 
 # Await jobs
