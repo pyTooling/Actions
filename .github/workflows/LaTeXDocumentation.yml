@@ -70,8 +70,6 @@ jobs:
     continue-on-error: ${{ inputs.can-fail == 'true' }}
     container:
       image: ${{ inputs.miktex_image }}
-      volumes:
-        - ${{ github.workspace }}/latex:/latex
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
         uses: pyTooling/download-artifact@v8

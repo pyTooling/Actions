@@ -128,6 +128,11 @@ on:
         required: false
         default: 'html pages'   # none, html, latex, pdf, pages, asset, all
         type: string
+      miktex_image:
+        description: 'Name of MiKTeX docker image.'
+        required: false
+        default: 'pytooling/miktex:sphinx'
+        type: string
     secrets:
       PYPI_TOKEN:
         description: "Token for pushing releases to PyPI."
@@ -399,6 +404,7 @@ jobs:
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
       pdf_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
       can-fail:       'true'
+      miktex_image:   ${{ inputs.miktex_image }}
 
   PublishToGitHubPages:
     uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@dev
