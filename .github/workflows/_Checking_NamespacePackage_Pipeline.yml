@@ -8,15 +8,16 @@ jobs:
   NamespacePackage:
     uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r7
     with:
-      package_namespace: 'myFramework'
-      package_name:      'Extension'
+      package_namespace:   'myFramework'
+      package_name:        'Extension'
       unittest_python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11'
-      bandit:            'true'
-      pylint:            'true'
-      codecov:           'true'
-      codacy:            'true'
-      dorny:             'true'
-      cleanup:           'false'
+      bandit:              'true'
+      pylint:              'true'
+      codecov:             'true'
+      codacy:              'true'
+      dorny:               'true'
+      cleanup:             'false'
+      documentation_steps: 'html latex'
     secrets:
       PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

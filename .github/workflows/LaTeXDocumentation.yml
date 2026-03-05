@@ -37,10 +37,15 @@ on:
         description: 'LaTeX root document without *.tex extension.'
         required: true
         type: string
+      miktex_image:
+        description: 'Name of MiKTeX docker image.'
+        required: false
+        default: 'pytooling/miktex:sphinx'
+        type: string
       processor:
         description: 'Name of the used LaTeX processor.'
         required: false
-        default: 'xelatex'
+        default: 'lualatex'
         type: string
       halt-on-error:
         description: 'Halt on first error, otherwise continue as long as possible.'
@@ -64,9 +69,7 @@ jobs:
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     continue-on-error: ${{ inputs.can-fail == 'true' }}
     container:
-      image: pytooling/miktex:sphinx
-      volumes:
-        - ${{ github.workspace }}/latex:/latex
+      image: ${{ inputs.miktex_image }}
     steps:
       - name: 📥 Download artifacts '${{ inputs.latex_artifact }}' from 'SphinxDocumentation' job
         uses: pyTooling/download-artifact@v8
@@ -75,15 +78,28 @@ jobs:
           path: latex
           investigate: 'true'
 
+      - name: Update
+        run: |
+          sudo miktex --admin packages update-package-database
+          sudo miktex --admin packages update
+          sudo initexmf --admin --update-fndb
+
       - name: Build LaTeX document using 'pytooling/miktex:sphinx'
         if: inputs.pdf_artifact != ''
         run: |
+          set -o pipefail
+
           if [[ "${{ inputs.halt-on-error }}" == "true" ]]; then
             HALT_ON_ERROR="--halt-on-error"
           fi
 
           cd latex
-          latexmk --${{ inputs.processor }} --interaction=nonstopmode -file-line-error -max-print-line=250 ${HALT_ON_ERROR} "${{ inputs.document }}.tex"
+          latexmk \
+            --${{ inputs.processor }} \
+            --interaction=nonstopmode \
+            --file-line-error \
+            ${HALT_ON_ERROR} \
+          "${{ inputs.document }}.tex" | filter.latexmk.sh
 
       - name: 📤 Upload 'PDF Documentation' artifact
         uses: pyTooling/upload-artifact@v7

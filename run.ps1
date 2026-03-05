@@ -1,15 +1,20 @@
 [CmdletBinding()]
 Param(
-	# Clean up all files and directories
-	[switch]$clean,
+# Clean up all files and directories
+  [switch]$clean,
 
-  # Commands
+# Commands
   [switch]$all,
+  [switch]$alldoc,
   [switch]$copyall,
 
   [switch]$doc,
   [switch]$livedoc,
+  [switch]$html,
+  [switch]$latex,
+  [switch]$pdf,
   [switch]$doccov,
+  [switch]$view,
 
   [switch]$unit,
   [switch]$liveunit,
@@ -28,292 +33,429 @@ Param(
   [switch]$build,
   [switch]$install,
 
-	# Display this help"
-	[switch]$help
+# Display this help"
+  [switch]$help
 )
 
-$PackageName = "Actions"
+$ProjectName =    "Actions"
+$PackageName =    "myPackage"
+$PackageVersion = "7.6.0"
+$PythonVersion =  "3.14"
+$LaTeXDocument =  "${ProjectName}.tex"
 
 # set default values
-$EnableDebug =        [bool]$PSCmdlet.MyInvocation.BoundParameters["Debug"]
-$EnableVerbose =      [bool]$PSCmdlet.MyInvocation.BoundParameters["Verbose"] -or $EnableDebug
+$EnableDebug =   [bool]$PSCmdlet.MyInvocation.BoundParameters["Debug"]
+$EnableVerbose = [bool]$PSCmdlet.MyInvocation.BoundParameters["Verbose"] -or $EnableDebug
 
 # Display help if no command was selected
-$help = $help -or ( -not(
-  $all -or $copyall -or
+$help = $help -or ( -not (
+  $all -or $alldoc -or $copyall -or
     $clean -or
-    $doc -or $livedoc -or $doccov -or
+    $doc -or $livedoc -or $doccov -or $html -or $latex -or $pdf -or
     $unit -or $liveunit -or $copyunit -or
     $cov -or $livecov -or $copycov -or
     $type -or $livetype -or $copytype -or
-    $build -or $install
+    $build -or $install -or
+    $view
   )
 )
 
 Write-Host "================================================================================" -ForegroundColor Magenta
-Write-Host "$PackageName Documentation Compilation and Assembly Tool"                         -ForegroundColor Magenta
+Write-Host "$ProjectName Documentation Compilation and Assembly Tool"                         -ForegroundColor Magenta
 Write-Host "================================================================================" -ForegroundColor Magenta
 
-if ($help)
-{	Get-Help $MYINVOCATION.MyCommand.Path -Detailed
-	exit 0
+if ($help) {
+  Get-Help $MYINVOCATION.MyCommand.Path -Detailed
+  exit 0
 }
 
-if ($all)
-{	$doc =      $true
-	$unit =     $true
-#	$copyunit = $true
-	$cov =      $true
-#	$copycov =  $true
-	$type =     $true
-	$copytype = $true
+if ($all) {
+  $doc =      $true
+  $html =     $true
+  $latex =    $true
+  $pdf =      $true
+  $unit =     $false
+  $copyunit = $false
+  $cov =      $true
+  $copycov =  $false
+  $type =     $true
+  $copytype = $true
+} elseif ($alldoc) {
+  $doc =      $true
+  $html =     $true
+  $latex =    $true
+  $pdf =      $true
 }
-if ($copyall)
-{# $copyunit = $true
-#  $copycov =  $true
+
+if ($livecov -or $liveunit) {
+  $cov = $unit = $false
+}
+if ($livecov -or $cov) {
+  $liveunit = $unit = $false
+}
+
+if (($doc -or $alldoc -or $livedoc) -and -not ($html -or $latex -or $pdf)) {
+  $html = $true
+}
+
+if ($copyall) {
+  $copyunit = $false
+  $copycov =  $false
   $copytype = $true
 }
 
-if ($clean)
-{ Write-Host -ForegroundColor DarkYellow    "[live][DOC]        Cleaning documentation directories ..."
-  rm -Force .\doc\$PackageName\*
-  .\doc\make.bat clean
-  Write-Host -ForegroundColor DarkYellow   "[live][BUILD]      Cleaning build directories ..."
-  rm -Force .\build\bdist.win-amd64
-  rm -Force .\build\lib
+if ($clean) {
+  Write-Host -ForegroundColor DarkYellow    "[live][DOC]       Cleaning documentation directories ..."
+  Remove-Item -Recurse -Force .\doc\_build\*          -ErrorAction SilentlyContinue
+  Remove-Item -Recurse -Force .\doc\$PackageName\*    -ErrorAction SilentlyContinue
+
+  Write-Host -ForegroundColor DarkYellow    "[live][BUILD]     Cleaning build directories ..."
+  Remove-Item -Recurse -Force .\build\bdist.win-amd64 -ErrorAction SilentlyContinue
+  Remove-Item -Recurse -Force .\build\lib             -ErrorAction SilentlyContinue
 }
 
-if ($build)
-{ Write-Host -ForegroundColor Yellow        "[live][BUILD]      Cleaning build directories ..."
-  rm -Force .\build\bdist.win-amd64
-  rm -Force .\build\lib
+if ($build) {
+  Write-Host -ForegroundColor Yellow        "[live][BUILD]      Cleaning build directories ..."
+  Remove-Item -Recurse -Force .\build\bdist.win-amd64 -ErrorAction SilentlyContinue
+  Remove-Item -Recurse -Force .\build\lib             -ErrorAction SilentlyContinue
+
   Write-Host -ForegroundColor Yellow        "[live][BUILD]      Building $PackageName package as wheel ..."
-  py -3.13 -m build --wheel --no-isolation
+  py -$PythonVersion -m build --wheel --no-isolation
 
   Write-Host -ForegroundColor Yellow        "[live][BUILD]      Building wheel finished"
 }
-if ($install)
-{ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-  { Write-Host -ForegroundColor Yellow      "[live][INSTALL]    Installing $PackageName with administrator rights ..."
+if ($install) {
+  if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]"Administrator")) {
+    Write-Host -ForegroundColor Yellow      "[live][INSTALL]    Installing $PackageName with administrator rights ..."
     $proc = Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -WorkingDirectory `"$PSScriptRoot`" -File `"$PSCommandPath`" `"-install`"" -Verb RunAs -Wait
 
-#    Write-Host -ForegroundColor Yellow   "[live][INSTALL]    Wait on administrator console ..."
-#    Wait-Process -Id $proc.Id
-  }
-  else
-  { Write-Host -ForegroundColor Cyan        "[ADMIN][UNINSTALL] Uninstalling $PackageName ..."
-    py -3.13 -m pip uninstall -y $PackageName
+    #    Write-Host -ForegroundColor Yellow   "[live][INSTALL]    Wait on administrator console ..."
+    #    Wait-Process -Id $proc.Id
+  } else {
+    Write-Host -ForegroundColor Cyan        "[ADMIN][UNINSTALL] Uninstalling $PackageName ..."
+    py -$PythonVersion -m pip uninstall -y $PackageName
     Write-Host -ForegroundColor Cyan        "[ADMIN][INSTALL]   Installing $PackageName from wheel ..."
-    py -3.13 -m pip install .\dist\$PackageName-8.1.0-py3-none-any.whl
+    py -$PythonVersion -m pip install .\dist\$PackageName-$PackageVersion-py3-none-any.whl
 
     Write-Host -ForegroundColor Cyan        "[ADMIN][INSTALL]   Closing window in 5 seconds ..."
     Start-Sleep -Seconds 5
   }
 }
 
-$jobs = @()
+$runUnitCopyFunc = {
+  param($live)
 
-if ($livedoc)
-{ Write-Host -ForegroundColor DarkYellow    "[live][DOC]       Building documentation using Sphinx ..."
-
-  cd doc
-  py -3.14 -m sphinx.cmd.build -b html . _build/html --doctree-dir _build/doctrees --jobs auto --warning-file _build/sphinx-warnings.log --verbose
-  cd ..
-
-  Write-Host -ForegroundColor DarkYellow    "[live][DOC]       Documentation finished"
-}
-elseif ($doc)
-{ Write-Host -ForegroundColor DarkYellow    "[Job1][DOC]       Building documentation using Sphinx ..."
-  Write-Host -ForegroundColor DarkGreen     "[SCRIPT]          Starting Documentation job ..."
-
-  # Compile documentation
-  $compileDocFunc = {
-    cd doc
-    py -3.14 -m sphinx.cmd.build -b html . _build/html --doctree-dir _build/doctrees --jobs auto --warning-file _build/sphinx-warnings.log --verbose
+  cp -Recurse -Force .\report\unit\html\* .\doc\_build\html\unittests
+  if ($live) {
+    Write-Host -ForegroundColor DarkBlue      "[live][UNIT]      Copyed unit testing report to 'unittests' directory in HTML directory"
   }
-  $docJob = Start-Job -Name "Documentation" -ScriptBlock $compileDocFunc
-#  $jobs += $docJob
 }
+$runUnitFunc = {
+  param($live, $copy, $runCopyStr)
 
+  $runCopyFunc = [ScriptBlock]::Create($runCopyStr)
 
-if ($doccov)
-{
-  .\doc\make.bat coverage
-}
-
-if ($liveunit)
-{ Write-Host -ForegroundColor DarkYellow    "[live][UNIT]      Running Unit Tests using pytest ..."
-
+  $env:PYTHONPATH="."
   $env:ENVIRONMENT_NAME = "Windows (x86-64)"
-  pytest -raP --color=yes --junitxml=report/unit/unittest.xml --template=html1/index.html --report=report/unit/html/index.html --split-report tests/unit
+  pytest --template=html1/index.html --report=report/unit/html/index.html --split-report tests/unit
 
-  if ($copyunit)
-  { cp -Recurse -Force .\report\unit\html\* .\doc\_build\html\unittests
-    Write-Host -ForegroundColor DarkBlue    "[live][UNIT]      Copyed unit testing report to 'unittests' directory in HTML directory"
+  if ($copy) {
+    & $runCopyFunc $live
   }
-
-  Write-Host -ForegroundColor DarkYellow    "[live][UNIT]      Unit Tests finished"
-}
-elseif ($unit)
-{ Write-Host -ForegroundColor DarkYellow    "[Job2][UNIT]      Running Unit Tests using pytest ..."
-  Write-Host -ForegroundColor DarkGreen     "[SCRIPT]          Starting UnitTests jobs ..."
-
-  # Run unit tests
-  $runUnitFunc = {
-    $env:ENVIRONMENT_NAME = "Windows (x86-64)"
-    pytest -raP --color=yes --junitxml=report/unit/unittest.xml --template=html1/index.html --report=report/unit/html/index.html --split-report tests/unit
-  }
-  $unitJob = Start-Job -Name "UnitTests" -ScriptBlock $runUnitFunc
-  $jobs += $unitJob
 }
 
-if ($livecov)
-{ Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Running Unit Tests with coverage ..."
+$runCovCopyFunc = {
+  param($live)
 
+  cp -Recurse -Force .\report\coverage\html\* .\doc\_build\html\coverage
+  if ($live) {
+    Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Copyed code coverage report to 'coverage' directory in HTML directory"
+  }
+}
+$runCovFunc = {
+  param($live, $copy, $runCopyStr)
+
+  $runCopyFunc = [ScriptBlock]::Create($runCopyStr)
+
+  $env:PYTHONPATH="."
   $env:ENVIRONMENT_NAME = "Windows (x86-64)"
-  coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -ra --tb=line --color=yes tests/unit
+  coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest tests/unit
 
-  Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Convert coverage report to HTML ..."
+  if ($live) {
+    Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Convert coverage report to HTML ..."
+  }
   coverage html
 
-  Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Convert coverage report to XML (Cobertura) ..."
+  if ($live) {
+    Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Convert coverage report to XML (Cobertura) ..."
+  }
   coverage xml
 
-  Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Convert coverage report to JSON ..."
+  if ($live) {
+    Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Convert coverage report to JSON ..."
+  }
   coverage json
 
-  Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Write coverage report to console ..."
+  if ($live) {
+    Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Write coverage report to console ..."
+  }
   coverage report
 
-  if ($copycov)
-  { cp -Recurse -Force .\report\coverage\html\* .\doc\_build\html\coverage
-    Write-Host -ForegroundColor DarkMagenta "[live][COV]       Copyed code coverage report to 'coverage' directory in HTML directory"
+  if ($copy) {
+    & $runCopyFunc $live
   }
-
-  Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Coverage finished"
-}
-elseif ($cov)
-{ Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Running Unit Tests with coverage ..."
-  Write-Host -ForegroundColor DarkMagenta   "[SCRIPT]          Starting Coverage jobs ..."
-
-  # Collect coverage
-  $collectCovFunc = {
-    $env:ENVIRONMENT_NAME = "Windows (x86-64)"
-    coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -ra --tb=line --color=yes tests/unit
-
-    Write-Host -ForegroundColor DarkMagenta "[Job3][COV]       Convert coverage report to HTML ..."
-    coverage html
-
-    Write-Host -ForegroundColor DarkMagenta "[Job3][COV]       Convert coverage report to XML (Cobertura) ..."
-    coverage xml
-
-    Write-Host -ForegroundColor DarkMagenta "[Job3][COV]       Convert coverage report to JSON ..."
-    coverage json
-  }
-  $covJob = Start-Job -Name "Coverage" -ScriptBlock $collectCovFunc
-  $jobs += $covJob
 }
 
-if ($livetype)
-{ Write-Host -ForegroundColor DarkCyan      "[live][TYPE]      Running static type analysis using mypy ..."
+$runTypingCopyFunc = {
+  param($live)
+
+  cp -Recurse -Force .\report\typing\* .\doc\_build\html\typing
+  if ($live) {
+    Write-Host -ForegroundColor DarkCyan    "[live][TYPE]      Copyed typing report to 'typing' directory in HTML directory."
+  }
+}
+$runTypingFunc = {
+  param($PackageName, $live, $copy, $runCopyStr)
+
+  $runCopyFunc = [ScriptBlock]::Create($runCopyStr)
 
   $env:MYPY_FORCE_COLOR = 1
   mypy.exe -p $PackageName
 
-  if ($copytype)
-  { cp -Recurse -Force .\report\typing\* .\doc\_build\html\typing
-    Write-Host -ForegroundColor DarkCyan    "[live][TYPE]      Copyed typing report to 'typing' directory in HTML directory."
+  if ($copy) {
+    & $runCopyFunc $live
   }
+}
 
+$compileHTMLDocFunc = {
+  param($PyVersion, $live, $copyUnit, $copyCov, $copyType, [scriptblock]$runUnitCopyFunc, [scriptblock]$runCovCopyFunc, [scriptblock]$runTypingCopyFunc)
+
+  Push-Location "doc"
+  py -$PyVersion -m sphinx.cmd.build --builder html --write-all --doctree-dir _build/doctrees-html --jobs 8 --warning-file _build/sphinx-html-warnings.log --verbose . _build/html
+  Pop-Location
+
+  if ($copyUnit) {
+    & $runUnitCopyFunc $live
+  }
+  if ($copyCov) {
+    & $runCovCopyFunc $live
+  }
+  if ($copyType) {
+    & $runTypingCopyFunc $live
+  }
+}
+$compileLaTeXDocFunc = {
+  param($PyVersion, $LaTeXDocument)
+
+  Push-Location "doc"
+  py -$PyVersion -m sphinx.cmd.build --builder latex --write-all --doctree-dir _build/doctrees-latex --jobs 8 --warning-file _build/sphinx-latex-warnings.log --verbose . _build/latex
+
+  Move-Item -Force "_build/latex/doc-CC--BY_41.0-green" "_build/latex/doc-CC--BY_41_0-green.png"
+
+  $texFile = Get-Content "_build/latex/$LaTeXDocument"
+  $texFile.Replace('{{doc-CC--BY_41}.0-green}}', '{{doc-CC--BY_41_0-green}.png}}') | Set-Content "_build/latex/$LaTeXDocument"
+
+  Pop-Location
+}
+$compilePDFDocFunc = {
+  param($Document)
+
+  if (Test-Path -Path "doc/_build/latex" -PathType Container) {
+    Push-Location "doc/_build/latex"
+    latexmk -C
+    # --latexoption=--cnf-line=max_print_line=1000
+    latexmk --lualatex --latexoption=--c-style-errors --interaction=nonstopmode --halt-on-error $Document
+    Pop-Location
+  } else {
+    Write-Host -ForegroundColor Yellow "No LaTeX source directory 'doc/_build/latex' found."
+  }
+}
+
+# Unit testing (with/without code coverage)
+if ($livecov) {
+  Write-Host -ForegroundColor DarkMagenta   "[live][COV]       Running Unit Tests using pytest with coverage ..."
+  & $runCovFunc $true $copycov $runCovCopyFunc
+  Write-Host -ForegroundColor DarkYellow    "[live][COV]       Unit Tests finished"
+} elseif ($liveunit) {
+  Write-Host -ForegroundColor DarkYellow    "[live][UNIT]      Running Unit Tests using pytest ..."
+  & $runUnitFunc $true $copyunit $runUnitCopyFunc
+  Write-Host -ForegroundColor DarkYellow    "[live][UNIT]      Unit Tests finished"
+} elseif ($cov) {
+  Write-Host -ForegroundColor DarkYellow    "[Job1][COV]       Running Unit Tests using pytest with coverage ..."
+  Write-Host -ForegroundColor DarkGreen     "[SCRIPT]          Starting Coverage jobs ..."
+  $testJob = Start-Job -Name "Coverage"  -ScriptBlock $runCovFunc -ArgumentList $false, $copycov, $runCovCopyFunc
+} elseif ($unit) {
+  Write-Host -ForegroundColor DarkYellow    "[Job1][UNIT]      Running Unit Tests using pytest ..."
+  Write-Host -ForegroundColor DarkGreen     "[SCRIPT]          Starting UnitTests jobs ..."
+  $testJob = Start-Job -Name "UnitTests" -ScriptBlock $runUnitFunc -ArgumentList $false, $copyunit, $runUnitCopyFunc
+}
+
+# Static type checking
+if ($livetype) {
+  Write-Host -ForegroundColor DarkCyan      "[live][TYPE]      Running static type analysis using mypy ..."
+  & $runTypingFunc $PackageName $true $copytype $runTypingCopyFunc
   Write-Host -ForegroundColor DarkCyan      "[live][TYPE]      Static type analysis finished"
+} elseif ($type) {
+  Write-Host -ForegroundColor DarkCyan      "[Job2][TYPE]      Running static type analysis using mypy ..."
+  Write-Host -ForegroundColor DarkCyan      "[SCRIPT]          Starting TypeChecking jobs ..."
+  $typingJob = Start-Job -Name "TypeChecking" -ScriptBlock $runTypingFunc -ArgumentList $PackageName, $false, $copytype, $runTypingCopyFunc
 }
-elseif ($type)
-{ Write-Host -ForegroundColor DarkCyan      "[live][TYPE]      Running static type analysis using mypy ..."
-  Write-Host -ForegroundColor DarkCyan      "[SCRIPT]          Starting Typing jobs ..."
 
-  # Analyze types
-  $analyzeTypesFunc = {
-    $env:MYPY_FORCE_COLOR = 1
-    mypy.exe -p $PackageName
+# Documentation generation
+if ($livedoc) {
+  if ($typingJob) {
+    $null = Wait-Job -Job $typingJob
+    Write-Host                              "[live][DOC]       Awaited Job2:TypeChecking"
   }
-  $typeJob = Start-Job -Name "Typing" -ScriptBlock $analyzeTypesFunc
-  $jobs += $typeJob
-}
-
-
-if ($doc)
-{ Write-Host -ForegroundColor DarkGreen     "[SCRIPT]          Waiting on Documentation job ..."
-  Wait-Job -Job $docJob
-  Write-Host -ForegroundColor DarkYellow    "[Job1][DOC]       Documentation finished"
-}
-if ($jobs.Count -ne 0)
-{
-  Write-Host -ForegroundColor DarkGreen (   "[SCRIPT]          Waiting on {0} jobs ({1}) ..." -f $jobs.Count, (($jobs | %{ $_.Name }) -join ", "))
-  Wait-Job -Job $jobs
-}
-
-
-if (-not $liveunit -and $copyunit)
-{
-#  if ($unit)
-#  { Wait-Job -Job $unitJob
-#    Write-Host -ForegroundColor DarkBlue "[Job2][UNIT] Unit tests finished"
-#  }
-  cp -Recurse -Force .\report\unit\html\* .\doc\_build\html\unittests
-  Write-Host -ForegroundColor DarkBlue      "[post][UNIT]      Copyed unit testing report to 'unittests' directory in HTML directory"
-}
-if (-not ($livecov -or $cov) -and $copycov)
-{
-#  if ($cov)
-#  { Wait-Job -Job $unitJob
-#    Write-Host -ForegroundColor DarkMagenta "[Job3][UNIT] Coverage collection finished"
-#  }
-  cp -Recurse -Force .\report\coverage\html\* .\doc\_build\html\coverage
-  Write-Host -ForegroundColor DarkMagenta   "[post][COV]       Copyed code coverage report to 'coverage' directory in HTML directory"
-}
-if (-not $livetype -and $copytype)
-{
-#  if ($type)
-#  { Wait-Job -Job $typeJob
-#    Write-Host -ForegroundColor DarkCyan "[Job4][UNIT] Static type analysis finished"
-#  }
-  cp -Recurse -Force .\report\typing\* .\doc\_build\html\typing
-  Write-Host -ForegroundColor DarkCyan      "[post][TYPE]      Copyed typing report to 'typing' directory in HTML directory."
-}
-
-
-if ($type)
-{ Write-Host -ForegroundColor DarkCyan      "================================================================================"
-  if (-not $nooutput)
-  { Receive-Job -Job $typeJob
+  if ($testJob) {
+    $null = Wait-Job -Job $testJob
+    Write-Host                              "[live][DOC]       Awaited Job1:Test"
   }
-  Remove-Job  -Job $typeJob
-}
-if ($doc)
-{ Write-Host -ForegroundColor DarkYellow    "================================================================================"
-  if (-not $nooutput)
-  { Receive-Job -Job $docJob
-  }
-  Remove-Job  -Job $docJob
-}
-if ($unit)
-{ Write-Host -ForegroundColor DarkBlue      "================================================================================"
-  if (-not $nooutput)
-  { Receive-Job -Job $unitJob
-  }
-  Remove-Job  -Job $unitJob
-}
-if ($cov)
-{ Write-Host -ForegroundColor DarkMagenta   "================================================================================"
-  if (-not $nooutput)
-  { Receive-Job -Job $covJob
-  }
-  Remove-Job  -Job $covJob
 
-  if ($copycov)
-  { cp -Recurse -Force .\report\coverage\html\* .\doc\_build\html\coverage
-    Write-Host -ForegroundColor DarkMagenta "[post][COV]       Copyed code coverage report to 'coverage' directory in HTML directory"
+  Write-Host -ForegroundColor DarkYellow    "[live][DOC]       Building documentation using Sphinx ..."
+  if ($html) {
+    Write-Host -ForegroundColor DarkYellow  "[live][HTML]      Building HTML documentation using Sphinx ..."
+    & $compileHTMLDocFunc $PythonVersion $true $copyunit $copycov $copytype $runUnitCopyFunc $runCovCopyFunc $runTypingCopyFunc
+  }
+  if ($latex) {
+    Write-Host -ForegroundColor DarkYellow  "[live][LaTeX]     Building LaTeX documentation using Sphinx ..."
+    & $compileLaTeXDocFunc $PythonVersion $LaTeXDocument
+  }
+  if ($pdf) {
+    Write-Host -ForegroundColor DarkYellow  "[live][PDF]       Building PDF documentation using LuaLaTeX ..."
+    & $compilePDFDocFunc $LaTeXDocument
+  }
+  Write-Host -ForegroundColor DarkYellow    "[live][DOC]       Documentation finished"
+} else {
+  if ($html -or $latex -or $pdf) {
+    Write-Host -ForegroundColor DarkGreen   "[SCRIPT]          Starting Documentation jobs ..."
+  }
+
+  if ($html) {
+    Write-Host -ForegroundColor DarkYellow  "[Job3][HTML]      Building HTML documentation using Sphinx (waiting on Job1:Testing and Job2:Typing) ..."
+    $docHTMLJob = Start-Job -Name "HTMLDoc" -ScriptBlock {
+      param($typingJob, $testJob, $compileDocStr, $PyVersion, $copyUnit, $copyCov, $copyType, $runUnitCopyStr, $runCovCopyStr, $runTypingCopyStr)
+
+      $compileDocFunc =    [ScriptBlock]::Create($compileDocStr)
+      $runUnitCopyFunc =   [ScriptBlock]::Create($runUnitCopyStr)
+      $runCovCopyFunc =    [ScriptBlock]::Create($runCovCopyStr)
+      $runTypingCopyFunc = [ScriptBlock]::Create($runTypingCopyStr)
+
+      if ($typingJob) {
+        $null = Wait-Job -Job $typingJob
+        Write-Host                          "[Job3][HTML]      Awaited Job2:TypeChecking"
+      }
+      if ($testJob) {
+        $null = Wait-Job -Job $testJob
+        Write-Host                          "[Job3][HTML]      Awaited Job1:Test"
+      }
+
+      & $compileDocFunc $PyVersion $false $copyUnit $copyCov $copyType $runUnitCopyFunc $runCovCopyFunc $runTypingCopyFunc
+    } -ArgumentList $typingJob, $testJob, $compileHTMLDocFunc, $PythonVersion, $copyunit, $copycov, $copytype, $runUnitCopyFunc, $runCovCopyFunc, $runTypingCopyFunc
+  }
+  if ($latex) {
+    Write-Host -ForegroundColor DarkYellow  "[Job4][LaTeX]     Building LaTeX documentation using Sphinx (waiting on Job1:Testing and Job2:Typing) ..."
+    $docLaTeXJob = Start-Job -Name "LaTeXDoc" -ScriptBlock {
+      param($typingJob, $testJob, $compileDocStr, $PyVersion, $LaTeXDocument)
+
+      $compileDocFunc = [ScriptBlock]::Create($compileDocStr)
+
+      if ($typingJob) {
+        $null = Wait-Job -Job $typingJob
+        Write-Host                          "[Job4][LaTeX]     Awaited Job2:TypeChecking"
+      }
+      if ($testJob) {
+        $null = Wait-Job -Job $testJob
+        Write-Host                          "[Job4][LaTeX]     Awaited Job1:Test"
+      }
+
+      & $compileDocFunc $PyVersion $LaTeXDocument
+    } -ArgumentList $typingJob, $testJob, $compileLaTeXDocFunc, $PythonVersion, $LaTeXDocument
+  }
+  if ($pdf) {
+    Write-Host -ForegroundColor DarkYellow  "[Job5][PDF]       Building PDF documentation using LuaLaTex (waiting on Job4:LaTeX) ..."
+    $docPDFJob = Start-Job   -Name "PDFDoc"   -ScriptBlock {
+      param($docLaTeXJob, $compileDocStr, $LaTeXDocument)
+
+      $compileDocFunc = [ScriptBlock]::Create($compileDocStr)
+
+      if ($docLaTeXJob) {
+        $null = Wait-Job -Job $docLaTeXJob
+        Write-Host "[Job5][PDF]       Awaited Job4:LaTeX"
+      }
+      & $compileDocFunc $LaTeXDocument
+    } -ArgumentList $docLaTeXJob, $compilePDFDocFunc, $LaTeXDocument
   }
 }
+
+if ($view) {
+  Write-Host -ForegroundColor Green  "[live][VIEW]      Launching '$(Get-Location)\doc\_build\html\index.html' in Chrome ..."
+  Start-Process "C:\Program Files\Google\Chrome\Application\chrome.exe" "$(Get-Location)\doc\_build\html\index.html"
+}
+
+# Await jobs
+if ($typingJob) {
+  Write-Host -ForegroundColor DarkGreen     "[SCRIPT]          Waiting on TypeChecking job ..."
+  $null = Wait-Job -Job $typingJob
+  Write-Host -ForegroundColor DarkYellow    "[Job2][TYPE]      Static type checking finished"
+}
+if ($testJob) {
+  Write-Host -ForegroundColor DarkGreen     "[SCRIPT]          Waiting on unit testing job ..."
+  $null = Wait-Job -Job $testJob
+  Write-Host -ForegroundColor DarkYellow    "[Job1][TEST]      Unit testing finished"
+}
+if ($docHTMLJob) {
+  Write-Host -ForegroundColor DarkGreen     "[SCRIPT]          Waiting on HTML Documentation job ..."
+  $null = Wait-Job -Job $docHTMLJob
+  Write-Host -ForegroundColor DarkYellow    "[Job3][HTML]      HTML Documentation finished"
+}
+if ($docLaTeXJob) {
+  Write-Host -ForegroundColor DarkGreen     "[SCRIPT]          Waiting on LaTeX Documentation job ..."
+  $null = Wait-Job -Job $docLaTeXJob
+  Write-Host -ForegroundColor DarkYellow    "[Job4][LaTeX]     LaTeX Documentation finished"
+}
+if ($docPDFJob) {
+  Write-Host -ForegroundColor DarkGreen     "[SCRIPT]          Waiting on PDF Documentation job ..."
+  $null = Wait-Job -Job $docPDFJob
+  Write-Host -ForegroundColor DarkYellow    "[Job5][PDF]       PDF Documentation finished"
+}
+
+# Write collected outputs
+if ($typingJob) {
+  Write-Host -ForegroundColor DarkCyan      "================================================================================"
+  if (-not $nooutput) {
+    Receive-Job -Job $typingJob
+  }
+  Remove-Job  -Job $typingJob
+}
+if ($docHTMLJob) {
+  Write-Host -ForegroundColor DarkYellow    "================================================================================"
+  if (-not $nooutput) {
+    Receive-Job -Job $docHTMLJob
+  }
+  Remove-Job  -Job $docHTMLJob
+}
+if ($docLaTeXJob) {
+  Write-Host -ForegroundColor DarkYellow    "================================================================================"
+  if (-not $nooutput) {
+    Receive-Job -Job $docLaTeXJob
+  }
+  Remove-Job  -Job $docLaTeXJob
+}
+if ($docPDFJob) {
+  Write-Host -ForegroundColor DarkYellow    "================================================================================"
+  if (-not $nooutput) {
+    Receive-Job -Job $docPDFJob
+  }
+  Remove-Job  -Job $docPDFJob
+}
+if ($testJob) {
+  Write-Host -ForegroundColor DarkBlue      "================================================================================"
+  if (-not $nooutput) {
+    Receive-Job -Job $testJob
+  }
+  Remove-Job  -Job $testJob
+}
+
 Write-Host -ForegroundColor DarkGreen       "================================================================================"
 Write-Host -ForegroundColor DarkGreen       "[SCRIPT]          Finished"

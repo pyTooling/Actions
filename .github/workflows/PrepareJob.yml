@@ -404,7 +404,7 @@ jobs:
           export GH_TOKEN=${{ github.token }}
 
           printf "Read second parent of current SHA (%s) ... " "${{ github.ref }}"
-          FATHER_SHA=$(git rev-parse ${{ github.ref }}^2)
+          FATHER_SHA=$(git rev-parse ${{ github.ref }}^2 2> /dev/null)
           if [[ $? -ne 0 || "{FATHER_SHA}" == "" ]]; then
             printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
             printf "${ANSI_LIGHT_RED}Couldn't read second parent (father) of '%s'.${ANSI_NOCOLOR}\n" "${{ github.ref }}^2"

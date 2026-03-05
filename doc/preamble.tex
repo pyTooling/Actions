@@ -1,0 +1,49 @@
+% ================================================================================
+% User defined additional preamble code
+% ================================================================================
+% Add more Unicode characters for pdfLaTeX.
+% - Alternatively, compile with XeLaTeX or LuaLaTeX.
+% - https://GitHub.com/sphinx-doc/sphinx/issues/3511
+%
+\usepackage{fontspec}
+
+% Set Main fonts
+\usepackage{libertinus-otf}
+%\usepackage{noto-emoji}
+
+% Set Math font
+\usepackage{unicode-math}
+\setmathfont{LibertinusMath}
+
+% Set Symbol font
+\usepackage{newunicodechar}
+\newfontfamily{\emojifont}[Renderer=OpenType]{NotoColorEmoji.ttf}
+\newunicodechar{≤}{\ensuremath{\le}}
+\newunicodechar{—}{---}
+\newunicodechar{…}{\dots}
+\newunicodechar{␣}{\ttfamily\char32}  % open box = visible space   U+2423
+
+\newunicodechar{🍎}{{\emojifont 🍎}}  % red apple
+\newunicodechar{🍏}{{\emojifont 🍏}}  % green apple
+\newunicodechar{🐧}{{\emojifont 🐧}}  % penguin
+\newunicodechar{⛄}{{\emojifont ⛄}}  % snowman
+\newunicodechar{🪟}{{\emojifont 🪟}}  % window
+\newunicodechar{🏢}{{\emojifont 🏢}}  % glas building
+\newunicodechar{🐍}{{\emojifont 🐍}}  % green snake
+\newunicodechar{🔴}{{\emojifont 🔴}}  % red circle
+\newunicodechar{🟠}{{\emojifont 🟠}}   % orange circle
+\newunicodechar{🟡}{{\emojifont 🟡}}   % yellow circle
+\newunicodechar{🟢}{{\emojifont 🟢}}   % green circle
+\newunicodechar{🟣}{{\emojifont 🟣}}   % purple circle
+\newunicodechar{⚫}{{\emojifont ⚫}}  % black circle   U+26AB
+\newunicodechar{🟧}{{\emojifont 🟧}}   % red square     U+1F7E7
+\newunicodechar{🟨}{{\emojifont 🟨}}   % yellow square  U+1F7E8
+\newunicodechar{🟫}{{\emojifont 🟫}}   % braun square   U+1F7EB
+\newunicodechar{🟦}{{\emojifont 🟦}}   % blue square    U+1F7E6
+\newunicodechar{🟪}{{\emojifont 🟪}}   % purple square  U+1F7EA
+\newunicodechar{⟲}{{\emojifont ⟲}}   % circular arrow counterclockwise  U+27F2
+\newunicodechar{📦}{{\emojifont 📦}}
+\newunicodechar{📂}{{\emojifont 📂}}
+\newunicodechar{🗑}{{\emojifont 🗑}}    % Wastebasket  🗑️  U+1F5D1
+
+% ================================================================================

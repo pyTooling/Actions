@@ -110,6 +110,11 @@ on:
         required: false
         default: 'macos-15'
         type: string
+      documentation_steps:
+        description: 'Create documentation.'
+        required: false
+        default: 'all'   # none, html, latex, pdf, pages, asset, all
+        type: string
       pipeline-delay:
         description: 'Slow down this job, to delay the startup of the GitHub Action pipline.'
         required: false
@@ -234,9 +239,12 @@ jobs:
           from pathlib import Path
           from textwrap import dedent
 
-          package_namespace = "${{ inputs.package_namespace }}".strip()
-          package_name =      "${{ inputs.package_name }}".strip()
-          artifact_basename = "${{ steps.variables.outputs.artifact_basename }}"
+          package_namespace =  "${{ inputs.package_namespace }}".strip()
+          package_name =       "${{ inputs.package_name }}".strip()
+          artifact_basename =  "${{ steps.variables.outputs.artifact_basename }}"
+          documentationSteps = [step for step in "${{ inputs.documentation_steps }}".split(" ") if step != ""]
+          if "none" in documentationSteps:
+            documentationSteps = []
 
           artifact_names = {
             "unittesting_xml":        f"{artifact_basename}-UnitTestReportSummary-XML",
@@ -256,6 +264,15 @@ jobs:
             "documentation_latex":    f"{artifact_basename}-Documentation-LaTeX",
             "documentation_pdf":      f"{artifact_basename}-Documentation-PDF",
           }
+          if "html" not in documentationSteps and "all" not in documentationSteps:
+            print(f"Disabled HTML artifact:  {artifact_names["documentation_html"]}")
+            artifact_names["documentation_html"] = ""
+          if "latex" not in documentationSteps and "all" not in documentationSteps:
+            print(f"Disabled LaTeX artifact: {artifact_names["documentation_latex"]}")
+            artifact_names["documentation_latex"] = ""
+          if "pdf" not in documentationSteps and "all" not in documentationSteps:
+            print(f"Disabled PDF artifact:   {artifact_names["documentation_pdf"]}")
+            artifact_names["documentation_pdf"] = ""
 
           print("Artifacts Names ({len(artifact_names)}):")
           for id, artifactName in artifact_names.items():
