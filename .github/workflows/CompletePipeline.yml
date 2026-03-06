@@ -118,11 +118,6 @@ on:
         required: false
         default: 'false'
         type: string
-      cleanup:
-        description: 'Cleanup artifacts afterwards.'
-        required: false
-        default: 'true'
-        type: string
       documentation_steps:
         description: 'Create documentation.'
         required: false
@@ -132,6 +127,16 @@ on:
         description: 'Name of MiKTeX docker image.'
         required: false
         default: 'pytooling/miktex:sphinx'
+        type: string
+      auto_tag:
+        description: 'Auto tag if a branch was merged to the release branch and an associated pull-request with matching version name was found.'
+        required: false
+        default: 'true'
+        type: string
+      cleanup:
+        description: 'Cleanup artifacts afterwards.'
+        required: false
+        default: 'true'
         type: string
     secrets:
       PYPI_TOKEN:
@@ -384,15 +389,17 @@ jobs:
       latex_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
   IntermediateCleanUp:
-    uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@main
+    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@main
     needs:
       - UnitTestingParams
       - PublishCoverageResults
       - PublishTestResults
     if: ( success() || failure() ) && inputs.cleanup  == 'true'
     with:
-      sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-
-      xml_unittest_artifacts_prefix:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
+      json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
+      artifact-json-ids: >-
+        unittesting_xml:-*
+        codecoverage_sqlite:-*
 
   PDFDocumentation:
     uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@main
@@ -435,7 +442,7 @@ jobs:
       actions:  write  # required for trigger workflow
     with:
       version:  ${{ needs.Prepare.outputs.version }}
-      auto_tag: ${{ needs.Prepare.outputs.is_release_commit }}
+      auto_tag: ${{ needs.Prepare.outputs.is_release_commit == 'true' && inputs.auto_tag == 'true' }}
     secrets: inherit
 
   ReleasePage:
@@ -472,7 +479,7 @@ jobs:
       PYPI_TOKEN:     ${{ secrets.PYPI_TOKEN }}
 
   ArtifactCleanUp:
-    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@main
+    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@main
     needs:
       - UnitTestingParams
       - UnitTesting
@@ -487,20 +494,21 @@ jobs:
       - IntermediateCleanUp
     if: inputs.cleanup  == 'true'
     with:
-      package: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
-      remaining: |
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_html }}-*
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}-*
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}-*
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}-*
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_html }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
-#        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).apptesting_xml }}-*
-#        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
+      json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
+      artifact-json-ids: >-
+        package_all
+        unittesting_html:-*
+        codecoverage_xml:-*
+        codecoverage_json:-*
+        codecoverage_html:-*
+        unittesting_xml
+        unittesting_html
+        codecoverage_sqlite
+        codecoverage_xml
+        codecoverage_json
+        codecoverage_html
+        statictyping_html
+        #apptesting_xml:-*
+        documentation_html
+        documentation_latex
+        #documentation_pdf
