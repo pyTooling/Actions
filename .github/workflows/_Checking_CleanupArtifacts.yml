@@ -1,7 +1,7 @@
 name: Verification Pipeline for ArtifactCleanup
 
 on:
-  push:
+#  push:
   workflow_dispatch:
 
 jobs:
@@ -50,12 +50,13 @@ jobs:
           retention-days: 1
 
   ArtifactCleanUp:
-    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@r7
+    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r7
     needs:
       - Params
       - Testing
       - Package
     with:
-      package: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
-      remaining: |
-        ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}-*
+      json: ${{ needs.Params.outputs.artifact_names }}
+      artifact-json-ids: >-
+        unittesting_xml:-*
+        package_all
