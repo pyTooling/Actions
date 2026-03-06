@@ -118,8 +118,6 @@ modindex_common_prefix = [
 # ==============================================================================
 # Options for LaTeX / PDF output
 # ==============================================================================
-from textwrap import dedent
-
 preamblePath = Path("preamble.tex")
 try:
 	with preamblePath.open("r", encoding="utf-8") as fileHandle:
