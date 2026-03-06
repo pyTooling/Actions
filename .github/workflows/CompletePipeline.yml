@@ -118,11 +118,6 @@ on:
         required: false
         default: 'false'
         type: string
-      cleanup:
-        description: 'Cleanup artifacts afterwards.'
-        required: false
-        default: 'true'
-        type: string
       documentation_steps:
         description: 'Create documentation.'
         required: false
@@ -132,6 +127,16 @@ on:
         description: 'Name of MiKTeX docker image.'
         required: false
         default: 'pytooling/miktex:sphinx'
+        type: string
+      auto_tag:
+        description: 'Auto tag if a branch was merged to the release branch and an associated pull-request with matching version name was found.'
+        required: false
+        default: 'true'
+        type: string
+      cleanup:
+        description: 'Cleanup artifacts afterwards.'
+        required: false
+        default: 'true'
         type: string
     secrets:
       PYPI_TOKEN:
@@ -437,7 +442,7 @@ jobs:
       actions:  write  # required for trigger workflow
     with:
       version:  ${{ needs.Prepare.outputs.version }}
-      auto_tag: ${{ needs.Prepare.outputs.is_release_commit }}
+      auto_tag: ${{ needs.Prepare.outputs.is_release_commit == 'true' && inputs.auto_tag == 'true' }}
     secrets: inherit
 
   ReleasePage:

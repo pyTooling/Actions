@@ -15,8 +15,9 @@ jobs:
       codecov:             'true'
       codacy:              'true'
       dorny:               'true'
-      cleanup:             'false'
       documentation_steps: 'html latex'
+      auto_tag:            'false'
+      cleanup:             'false'
     secrets:
       PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

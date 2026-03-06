@@ -1,7 +1,7 @@
 name: Verification Pipeline for ArtifactCleanup
 
 on:
-  push:
+#  push:
   workflow_dispatch:
 
 jobs:
