@@ -187,14 +187,16 @@ jobs:
       latex_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
   IntermediateCleanUp:
-    uses: pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml@dev
+    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@dev
     needs:
       - UnitTestingParams
       - PublishCoverageResults
       - PublishTestResults
     with:
-      sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}-
-      xml_unittest_artifacts_prefix:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-
+      json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
+      artifact-json-ids: >-
+        codecoverage_sqlite:-*
+        unittesting_xml:-*
 
   PDFDocumentation:
     uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@dev
@@ -269,7 +271,7 @@ jobs:
     secrets: inherit
 
   ArtifactCleanUp:
-    uses: pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml@dev
+    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@dev
     needs:
       - UnitTestingParams
       - PlatformTestingParams
@@ -284,24 +286,27 @@ jobs:
       - Install
       - IntermediateCleanUp
     with:
-      package: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
-      remaining: |
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}-*
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_html }}-*
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}-*
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}-*
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}-*
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_html }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
-        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
-        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_xml }}-*
-        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_html }}-*
-        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_xml }}-*
-        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_json }}-*
-        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_html }}-*
+      json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
+      artifact-json-ids: >-
+        package_all
+        unittesting_xml:-*
+        unittesting_html:-*
+        codecoverage_xml:-*
+        codecoverage_json:-*
+        codecoverage_html:-*
+        unittesting_xml
+        unittesting_html
+        codecoverage_sqlite
+        codecoverage_xml
+        codecoverage_json
+        codecoverage_html
+        statictyping_html
+        documentation_html
+        documentation_latex
+      json2: ${{ needs.PlatformTestingParams.outputs.artifact_names }}
+      artifact-json-ids2: >-
+        unittesting_xml:-*
+        unittesting_html:-*
+        codecoverage_xml:-*
+        codecoverage_json:-*
+        codecoverage_html:-*
