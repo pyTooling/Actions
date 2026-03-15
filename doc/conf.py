@@ -1,9 +1,10 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-from sys     import path as sys_path
-from os.path import abspath
-from pathlib import Path
+from sys      import path as sys_path
+from os.path  import abspath
+from pathlib  import Path
+from textwrap import dedent
 
 from pyTooling.Packaging import extractVersionInformation
 
@@ -127,15 +128,34 @@ except Exception as ex:
 	print(ex)
 	latexPreamble = ""
 
+latex_engine = "lualatex"
+latex_use_xindy = False
 latex_elements = {
-	"inputenc":  "",             # Let LuaLaTeX handle input encoding
-	"utf8extra": "",
-	"fontenc":   "",             # Disable the default T1 font encoding (Essential for LuaLaTeX)
-	"fontpkg":   "",             # Disable the default TeX font package (Times/Palatino)
 	"papersize": "a4paper",      # The paper size ('letterpaper' or 'a4paper').
-	#'pointsize': '10pt',       	# The font size ('10pt', '11pt' or '12pt').
+	"pointsize": "10pt",         # The font size ('10pt', '11pt' or '12pt').
+	"inputenc":   "",            # Let LuaLaTeX handle input encoding
+	"utf8extra":  "",
+	"fontenc":    r"\usepackage{fontspec}",  # Disable the default T1 font encoding (Essential for LuaLaTeX)
+	"fontpkg":    dedent("""\
+		\\usepackage{unicode-math}
+
+		% Set the Text Fonts (Libertinus)
+		\\setmainfont{Libertinus Serif}
+		\\setsansfont{Libertinus Sans}
+		\\setmonofont{Libertinus Mono}
+		\\setmathfont{Libertinus Math}
+
+		% Set Symbol font
+		\\usepackage{newunicodechar}
+		\\newfontfamily{\\emojifont}[Renderer=OpenType]{NotoColorEmoji.ttf}
+	"""),
+	"passoptionstopackages": dedent("""\
+		\\PassOptionsToPackage{verbatimvisiblespace=\\ }{sphinx}
+	"""),
 	"preamble":  latexPreamble,  # Additional stuff for the LaTeX preamble.
 	#'figure_align': 'htbp',     # Latex figure (float) alignment
+	"makeindex":  r"\usepackage[columns=1]{idxlayout}\makeindex",
+	"printindex": r"\def\twocolumn[#1]{#1}\printindex",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples

@@ -5,23 +5,24 @@
 % - Alternatively, compile with XeLaTeX or LuaLaTeX.
 % - https://GitHub.com/sphinx-doc/sphinx/issues/3511
 %
-\usepackage{fontspec}
-
-% Set Main fonts
-\usepackage{libertinus-otf}
-%\usepackage{noto-emoji}
-
-% Set Math font
-\usepackage{unicode-math}
-\setmathfont{LibertinusMath}
-
-% Set Symbol font
-\usepackage{newunicodechar}
-\newfontfamily{\emojifont}[Renderer=OpenType]{NotoColorEmoji.ttf}
+%%\usepackage{fontspec}
+%
+%% Set Main fonts
+%\usepackage{libertinus-otf}
+%%\usepackage{noto-emoji}
+%
+%% Set Math font
+%\usepackage{unicode-math}
+%\setmathfont{LibertinusMath}
+%
+%% Set Symbol font
+%\usepackage{newunicodechar}
+%\newfontfamily{\emojifont}[Renderer=OpenType]{NotoColorEmoji.ttf}
 \newunicodechar{≤}{\ensuremath{\le}}
 \newunicodechar{—}{---}
 \newunicodechar{…}{\dots}
-\newunicodechar{␣}{\ttfamily\char32}  % open box = visible space   U+2423
+\newunicodechar{␣}{xxyyzz}               % open box = visible space   U+2423
+\newunicodechar{⟲}{\nvcirclearrowleft}   % circular arrow counterclockwise  U+27F2
 
 \newunicodechar{🍎}{{\emojifont 🍎}}  % red apple
 \newunicodechar{🍏}{{\emojifont 🍏}}  % green apple
@@ -41,9 +42,14 @@
 \newunicodechar{🟫}{{\emojifont 🟫}}   % braun square   U+1F7EB
 \newunicodechar{🟦}{{\emojifont 🟦}}   % blue square    U+1F7E6
 \newunicodechar{🟪}{{\emojifont 🟪}}   % purple square  U+1F7EA
-\newunicodechar{⟲}{{\emojifont ⟲}}   % circular arrow counterclockwise  U+27F2
+\newunicodechar{⬛}{{\emojifont ⬛}}  % black square  U+2B1B
 \newunicodechar{📦}{{\emojifont 📦}}
 \newunicodechar{📂}{{\emojifont 📂}}
 \newunicodechar{🗑}{{\emojifont 🗑}}    % Wastebasket  🗑️  U+1F5D1
+\newunicodechar{⚙}{{\emojifont ⚙}}     % Gear             ⚙️  U+2699
+\newunicodechar{❌}{{\emojifont ❌}}   % Red X                 U+274C
+\newunicodechar{🚫}{{\emojifont 🚫}}   % Prohibited        🚫  U+
+\newunicodechar{⚠}{{\emojifont ⚠}}     % Warning           ⚠️  U+26A0
+\newunicodechar{✅}{{\emojifont ✅}}   % Green checkbox        U+2705
 
 % ================================================================================

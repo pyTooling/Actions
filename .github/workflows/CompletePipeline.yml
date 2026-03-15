@@ -514,5 +514,5 @@ jobs:
         statictyping_html
         #apptesting_xml:-*
         documentation_html
-        documentation_latex
+        #documentation_latex
         #documentation_pdf
