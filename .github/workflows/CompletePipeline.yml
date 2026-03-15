@@ -485,7 +485,7 @@ jobs:
       - UnitTesting
       - StaticTypeCheck
       - Documentation
-#      - PDFDocumentation
+      - PDFDocumentation
       - PublishTestResults
       - PublishCoverageResults
       - PublishToGitHubPages
