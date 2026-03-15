@@ -44,14 +44,19 @@ on:
         required: false
         default: ''
         type: string
+      pages:
+        description: 'Name of the GitHub Pages artifact.'
+        required: false
+        default: 'github-pages'
+        type: string
 
     outputs:
       github_pages_url:
         description: "URL to GitHub Pages."
-        value: ${{ jobs.PrepareGitHubPages.outputs.github_pages_url }}
+        value: ${{ jobs.GitHubPages.outputs.github_pages_url }}
 
 jobs:
-  PrepareGitHubPages:
+  GitHubPages:
     name: 📖 Merge multiple contents for publishing
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     permissions:
@@ -83,13 +88,27 @@ jobs:
           name: ${{ inputs.typing }}
           path: public/typing
 
+      - name: 🗑️ Delete GitHub Pages artifact
+        uses: geekyeggo/delete-artifact@v6
+        with:
+          name: ${{ inputs.pages }}
+
       - name: 📑 Upload static files as artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
+          name: ${{ inputs.pages }}
           path: public/
 
       - name: 📖 Deploy to GitHub Pages
         id: deployment
         if: github.event_name != 'pull_request'
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ inputs.pages }}
+
+      - name: 🗑️ Delete GitHub Pages artifact
+        uses: geekyeggo/delete-artifact@v6
+        if: github.event_name != 'pull_request'
+        with:
+          name: ${{ inputs.pages }}

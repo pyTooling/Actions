@@ -78,13 +78,13 @@ jobs:
           path: latex
           investigate: 'true'
 
-      - name: Update
+      - name: ⚙️ Update
         run: |
           sudo miktex --admin packages update-package-database
           sudo miktex --admin packages update
           sudo initexmf --admin --update-fndb
 
-      - name: Build LaTeX document using 'pytooling/miktex:sphinx'
+      - name: 📖 Build LaTeX document using 'pytooling/miktex:sphinx'
         if: inputs.pdf_artifact != ''
         run: |
           set -o pipefail
