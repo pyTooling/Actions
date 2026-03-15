@@ -49,7 +49,11 @@ on:
         required: false
         default: 'github-pages'
         type: string
-
+      cleanup:
+        description: 'Cleanup artifacts afterwards.'
+        required: false
+        default: 'true'
+        type: string
     outputs:
       github_pages_url:
         description: "URL to GitHub Pages."
@@ -109,6 +113,6 @@ jobs:
 
       - name: 🗑️ Delete GitHub Pages artifact
         uses: geekyeggo/delete-artifact@v6
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && inputs.cleanup == 'true'
         with:
           name: ${{ inputs.pages }}

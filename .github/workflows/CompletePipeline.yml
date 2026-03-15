@@ -425,6 +425,7 @@ jobs:
       doc:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
       coverage: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
       typing:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
+      cleanup:  ${{ inputs.cleanup }}
 
   TriggerTaggedRelease:
     uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@dev
@@ -475,6 +476,7 @@ jobs:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       requirements:   '-r dist/requirements.txt'
       artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      cleanup:        ${{ inputs.cleanup }}
     secrets:
       PYPI_TOKEN:     ${{ secrets.PYPI_TOKEN }}
 
