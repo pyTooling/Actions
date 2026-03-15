@@ -82,6 +82,6 @@ jobs:
         run: twine upload dist/*.tar.gz
 
       - name: 🗑️ Delete packaging Artifacts
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         with:
           name: ${{ inputs.artifact }}

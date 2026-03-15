@@ -46,14 +46,14 @@ jobs:
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     steps:
       - name: 🗑️ Delete SQLite coverage artifacts from matrix jobs
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         if: inputs.sqlite_coverage_artifacts_prefix != ''
         continue-on-error: true
         with:
           name: ${{ inputs.sqlite_coverage_artifacts_prefix }}*
 
       - name: 🗑️ Delete JUnit XML artifacts from matrix jobs
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         if: inputs.xml_unittest_artifacts_prefix != ''
         continue-on-error: true
         with:
