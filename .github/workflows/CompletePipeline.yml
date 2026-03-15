@@ -406,6 +406,7 @@ jobs:
     needs:
       - UnitTestingParams
       - Documentation
+    if: contains(inputs.documentation_steps, 'latex') && contains(inputs.documentation_steps, 'pdf')
     with:
       document:       ${{ needs.UnitTestingParams.outputs.package_fullname }}
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
@@ -421,6 +422,7 @@ jobs:
 #      - PDFDocumentation
       - PublishCoverageResults
       - StaticTypeCheck
+    if: contains(inputs.documentation_steps, 'pages')
     with:
       doc:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
       coverage: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}

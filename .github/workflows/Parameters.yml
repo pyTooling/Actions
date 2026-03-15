@@ -242,9 +242,9 @@ jobs:
           package_namespace =  "${{ inputs.package_namespace }}".strip()
           package_name =       "${{ inputs.package_name }}".strip()
           artifact_basename =  "${{ steps.variables.outputs.artifact_basename }}"
-          documentationSteps = [step for step in "${{ inputs.documentation_steps }}".split(" ") if step != ""]
+          documentationSteps = set(step for step in "${{ inputs.documentation_steps }}".split(" ") if step != "")
           if "none" in documentationSteps:
-            documentationSteps = []
+            documentationSteps = set()
 
           artifact_names = {
             "unittesting_xml":        f"{artifact_basename}-UnitTestReportSummary-XML",

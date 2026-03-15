@@ -83,7 +83,7 @@ jobs:
   Sphinx-HTML:
     name: 📓 HTML Documentation using Sphinx and Python ${{ inputs.python_version }}
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
-
+    if: inputs.html_artifact != ''
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v6
@@ -142,7 +142,7 @@ jobs:
   Sphinx-LaTeX:
     name: 📓 LaTeX Documentation using Sphinx and Python ${{ inputs.python_version }}
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
-
+    if: inputs.latex_artifact != ''
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v6
