@@ -158,17 +158,17 @@ jobs:
       python_jobs:          ${{ steps.jobs.outputs.python_jobs }}
 
     steps:
+      - name: ⌛ Generate a startup delay of ${{ inputs.pipeline-delay }} seconds
+        id: delay
+        if: inputs.pipeline-delay >= 0
+        run: |
+          sleep ${{ inputs.pipeline-delay }}
+
       - name: ⏬ Checkout repository
         uses: actions/checkout@v6
         with:
           # The command 'git describe' (used for version) needs the history.
           fetch-depth: 0
-
-      - name: Generate a startup delay of ${{ inputs.pipeline-delay }} seconds
-        id: delay
-        if: inputs.pipeline-delay >= 0
-        run: |
-          sleep ${{ inputs.pipeline-delay }}
 
       - name: Generate 'python_version'
         id: variables

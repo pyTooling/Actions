@@ -152,6 +152,8 @@ on:
 jobs:
   Prepare:
     uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@dev
+    with:
+      pipeline-delay: 10
 
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@dev
