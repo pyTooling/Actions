@@ -125,7 +125,7 @@ jobs:
           fi
 
       - name: 📊 Publish Bandit Results
-        uses: dorny/test-reporter@v2
+        uses: dorny/test-reporter@v3
         if: steps.bandit.outputs.bandit_passed == 'false'
         continue-on-error: true
         with:
