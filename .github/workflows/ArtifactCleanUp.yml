@@ -47,13 +47,13 @@ jobs:
 
     steps:
       - name: 🗑️ Delete package Artifacts
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         if: ${{ ! startsWith(github.ref, 'refs/tags') }}
         with:
           name: ${{ inputs.package }}
 
       - name: 🗑️ Delete remaining Artifacts
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         if: ${{ inputs.remaining != '' }}
         with:
           name: ${{ inputs.remaining }}

@@ -99,7 +99,7 @@ jobs:
             f.write(f"artifacts={dumps(artifacts)}\n")
 
       - name: 🗑️ Delete artifacts
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         if: inputs.artifact-json-ids != '' && steps.compute.outputs.artifacts != ''
         continue-on-error: true
         with:
@@ -146,7 +146,7 @@ jobs:
             f.write(f"artifacts={dumps(artifacts)}\n")
 
       - name: 🗑️ Delete artifacts
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         if: inputs.artifact-json-ids2 != '' && steps.compute2.outputs.artifacts != ''
         continue-on-error: true
         with:
@@ -154,8 +154,8 @@ jobs:
             ${{ join(fromJSON(steps.compute.outputs.artifacts).*, '
             ') }}
 
-      - name: 🗑️ Delete other Artifacts
-        uses: geekyeggo/delete-artifact@v5
+      - name: 🗑️ Delete other artifacts
+        uses: geekyeggo/delete-artifact@v6
         if: ${{ inputs.others != '' }}
         with:
           name: ${{ inputs.others }}

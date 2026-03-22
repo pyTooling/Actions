@@ -44,6 +44,11 @@ on:
         description: 'Name of the package artifact.'
         required: true
         type: string
+      cleanup:
+        description: 'Cleanup artifacts afterwards.'
+        required: false
+        default: 'true'
+        type: string
     secrets:
       PYPI_TOKEN:
         description: "Token for pushing releases to PyPI"
@@ -82,6 +87,7 @@ jobs:
         run: twine upload dist/*.tar.gz
 
       - name: 🗑️ Delete packaging Artifacts
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
+        if: inputs.cleanup == 'true'
         with:
           name: ${{ inputs.artifact }}
