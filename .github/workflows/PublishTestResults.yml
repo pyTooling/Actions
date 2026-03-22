@@ -134,7 +134,7 @@ jobs:
           cat ${{ inputs.merged_junit_filename }}
 
       - name: 📊 Publish Unit Test Results
-        uses: dorny/test-reporter@v2
+        uses: dorny/test-reporter@v3
         id: test-reporter
         if: ( inputs.dorny  == 'true' || inputs.publish  == 'true' ) && inputs.report_title != ''
         continue-on-error: true
