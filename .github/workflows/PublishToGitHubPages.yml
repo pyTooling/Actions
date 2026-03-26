@@ -107,7 +107,7 @@ jobs:
       - name: 📖 Deploy to GitHub Pages
         id: deployment
         if: github.event_name != 'pull_request'
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
         with:
           artifact_name: ${{ inputs.pages }}
 
