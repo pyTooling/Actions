@@ -144,7 +144,7 @@ jobs:
           reporter: java-junit
 
       - name: 📊 Publish unittest results at CodeCov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         id: codecov
         if: inputs.codecov == 'true'
         continue-on-error: true
