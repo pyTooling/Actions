@@ -832,6 +832,10 @@ jobs:
           repo=${owner_repo##*/}
 
           # Replace special identifiers
+          printf -- "Replace pyTooling/Action variables ... "
+          NOTES="${NOTES//%%TAG%%/${{ inputs.tag }}}"
+          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+
           printf -- "Replace GitHub variables ... "
           NOTES="${NOTES//%%gh_server%%/${{ github.server_url }}}"
           NOTES="${NOTES//%%gh_workflow_name%%/${{ github.workflow }}}"
