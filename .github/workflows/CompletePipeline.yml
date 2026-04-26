@@ -128,6 +128,11 @@ on:
         required: false
         default: 'pytooling/miktex:sphinx'
         type: string
+      miktex_update:
+        description: 'Update MiKTeX packages.'
+        required: false
+        default: 'false'
+        type: string
       auto_tag:
         description: 'Auto tag if a branch was merged to the release branch and an associated pull-request with matching version name was found.'
         required: false
@@ -415,6 +420,7 @@ jobs:
       pdf_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
       can-fail:       'true'
       miktex_image:   ${{ inputs.miktex_image }}
+      update:         ${{ inputs.miktex_update }}
 
   PublishToGitHubPages:
     uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@dev
