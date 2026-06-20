@@ -14,19 +14,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {icon: '🐧', name: 'Ubuntu 22.04 (x86-64)',  image: 'ubuntu-22.04',     shell: 'bash', can-fail: false}
-          - {icon: '🐧', name: 'Ubuntu 24.04 (x86-64)',  image: 'ubuntu-24.04',     shell: 'bash', can-fail: false}  # latest
-          - {icon: '🍎', name: 'macOS-14 (x86-64)',      image: 'macos-14-large',   shell: 'bash', can-fail: true }  # not in free plan
-###       - {icon: '🍎', name: 'macOS-15 (x86-64)',      image: 'macos-15-large',   shell: 'bash', can-fail: true }  # same as -intel; not in free plan
-          - {icon: '🍎', name: 'macOS-15 (x86-64)',      image: 'macos-15-intel',   shell: 'bash', can-fail: false}
-          - {icon: '🍏', name: 'macOS-14 (aarch64)',     image: 'macos-14',         shell: 'bash', can-fail: false}  # latest
-          - {icon: '🍏', name: 'macOS-15 (aarch64)',     image: 'macos-15',         shell: 'bash', can-fail: false}
-          - {icon: '🪟', name: 'Windows Server 2022',    image: 'windows-2022',     shell: 'bash', can-fail: false}
-          - {icon: '🪟', name: 'Windows Server 2025',    image: 'windows-2025',     shell: 'bash', can-fail: false}  # latest
-        # Third party images by ARM for aarch64
-          - {icon: '⛄', name: 'Ubuntu 22.04 (aarch64)', image: 'ubuntu-22.04-arm', shell: 'bash', can-fail: false}
-          - {icon: '⛄', name: 'Ubuntu 24.04 (aarch64)', image: 'ubuntu-24.04-arm', shell: 'bash', can-fail: false}
-          - {icon: '🏢', name: 'Windows 11 (arch64)',    image: 'windows-11-arm',   shell: 'bash', can-fail: false}
+          # https://github.com/actions/runner-images#available-images
+          - {icon: '🐧', name: 'Ubuntu 22.04 (x86-64)',       image: 'ubuntu-22.04',     shell: 'bash', can-fail: false}
+          - {icon: '🐧', name: 'Ubuntu 24.04 (x86-64)',       image: 'ubuntu-24.04',     shell: 'bash', can-fail: false}  # latest
+          - {icon: '🐧', name: 'Ubuntu 26.04 (x86-64)',       image: 'ubuntu-26.04',     shell: 'bash', can-fail: false}
+          - {icon: '🐧', name: 'Ubuntu 24.04 (x86-64 slime)', image: 'ubuntu-slim',      shell: 'bash', can-fail: false}
+          - {icon: '⛄', name: 'Ubuntu 22.04 (aarch64)',      image: 'ubuntu-22.04-arm', shell: 'bash', can-fail: false}
+          - {icon: '⛄', name: 'Ubuntu 24.04 (aarch64)',      image: 'ubuntu-24.04-arm', shell: 'bash', can-fail: false}
+          - {icon: '⛄', name: 'Ubuntu 26.04 (aarch64)',      image: 'ubuntu-26.04-arm', shell: 'bash', can-fail: false}
+          - {icon: '🍎', name: 'macOS-14 (x86-64)',           image: 'macos-14-large',   shell: 'bash', can-fail: true }  # not in free plan
+###       - {icon: '🍎', name: 'macOS-15 (x86-64)',           image: 'macos-15-large',   shell: 'bash', can-fail: true }  # same as -intel; not in free plan
+          - {icon: '🍎', name: 'macOS-15 (x86-64)',           image: 'macos-15-intel',   shell: 'bash', can-fail: false}  # latest
+          - {icon: '🍎', name: 'macOS-26 (x86-64)',           image: 'macos-26-intel',   shell: 'bash', can-fail: false}
+          - {icon: '🍏', name: 'macOS-14 (aarch64)',          image: 'macos-14',         shell: 'bash', can-fail: false}
+          - {icon: '🍏', name: 'macOS-15 (aarch64)',          image: 'macos-15',         shell: 'bash', can-fail: false}  # latest
+          - {icon: '🍏', name: 'macOS-26 (aarch64)',          image: 'macos-26',         shell: 'bash', can-fail: false}
+          - {icon: '🪟', name: 'Windows Server 2022',         image: 'windows-2022',     shell: 'bash', can-fail: false}
+          - {icon: '🪟', name: 'Windows Server 2025',         image: 'windows-2025',     shell: 'bash', can-fail: false}  # latest
+          - {icon: '🏢', name: 'Windows 11 (arch64)',         image: 'windows-11-arm',   shell: 'bash', can-fail: false}
 
     defaults:
       run:

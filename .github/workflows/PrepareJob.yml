@@ -27,7 +27,7 @@ on:
       ubuntu_image:
         description: 'Name of the Ubuntu image.'
         required: false
-        default: 'ubuntu-24.04'
+        default: 'ubuntu-26.04'
         type: string
       main_branch:
         description: 'Name of the branch containing releases.'
@@ -131,7 +131,7 @@ on:
 jobs:
   Prepare:
     name: Extract Information
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       on_default_branch:   ${{ steps.Classify.outputs.on_default_branch }}
       on_main_branch:      ${{ steps.Classify.outputs.on_main_branch }}

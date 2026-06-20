@@ -27,7 +27,7 @@ on:
       ubuntu_image:
         description: 'Name of the Ubuntu image.'
         required: false
-        default: 'ubuntu-24.04'
+        default: 'ubuntu-26.04'
         type: string
       release_branch:
         description: 'Name of the branch containing releases.'

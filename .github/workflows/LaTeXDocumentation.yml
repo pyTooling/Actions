@@ -27,7 +27,7 @@ on:
       ubuntu_image_version:
         description: 'Ubuntu image version.'
         required: false
-        default: '24.04'
+        default: '26.04'
         type: string
       latex_artifact:
         description: 'Name of the LaTeX documentation artifact.'

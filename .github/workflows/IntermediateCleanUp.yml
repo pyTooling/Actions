@@ -27,7 +27,7 @@ on:
       ubuntu_image_version:
         description: 'Ubuntu image version.'
         required: false
-        default: '24.04'
+        default: '26.04'
         type: string
       sqlite_coverage_artifacts_prefix:
         description: 'Prefix for SQLite coverage artifacts to be removed.'

@@ -58,7 +58,7 @@ jobs:
   Params_Check_Default:
     needs:
       - Params_Default
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         shell: python
@@ -73,7 +73,7 @@ jobs:
           expected-python-versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
           expected-systems:         '["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]'
           expected-exclude-jobs:    '["windows-arm:3.10"]'
-          expected-include-jobs:    '["mingw64:3.13", "ucrt64:3.13"]'
+          expected-include-jobs:    '["mingw64:3.14", "ucrt64:3.14"]'
           generated-default-version: ${{ needs.Params_Default.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_Default.outputs.python_jobs }}
 
@@ -86,7 +86,7 @@ jobs:
   Params_Check_PythonVersions:
     needs:
       - Params_PythonVersions
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         shell: python
@@ -101,14 +101,14 @@ jobs:
           expected-python-versions: '["3.12", "3.13", "pypy-3.10", "pypy-3.11"]'
           expected-systems:         '["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]'
           expected-exclude-jobs:    '["windows-arm:pypy-3.10", "windows-arm:pypy-3.11"]'
-          expected-include-jobs:    '["mingw64:3.13", "ucrt64:3.13"]'
+          expected-include-jobs:    '["mingw64:3.14", "ucrt64:3.14"]'
           generated-default-version: ${{ needs.Params_PythonVersions.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_PythonVersions.outputs.python_jobs }}
 
   Params_Check_Systems:
     needs:
       - Params_Systems
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         shell: python
@@ -123,14 +123,14 @@ jobs:
           expected-python-versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
           expected-systems:         '["windows"]'
           expected-exclude-jobs:    '[]'
-          expected-include-jobs:    '["mingw32:3.13", "mingw64:3.13"]'
+          expected-include-jobs:    '["mingw32:3.14", "mingw64:3.14"]'
           generated-default-version: ${{ needs.Params_Systems.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_Systems.outputs.python_jobs }}
 
   Params_Check_Include:
     needs:
       - Params_Include
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         shell: python
@@ -152,7 +152,7 @@ jobs:
   Params_Check_Exclude:
     needs:
       - Params_Exclude
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         shell: python
@@ -174,7 +174,7 @@ jobs:
   Params_Check_Disable:
     needs:
       - Params_Disable
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         shell: python
@@ -196,7 +196,7 @@ jobs:
   Params_Check_All:
     needs:
       - Params_All
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     defaults:
       run:
         shell: python
