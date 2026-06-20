@@ -102,7 +102,7 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 📥 Download Artifacts
         uses: pyTooling/download-artifact@v8
@@ -144,7 +144,7 @@ jobs:
           reporter: java-junit
 
       - name: 📊 Publish unittest results at CodeCov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         id: codecov
         if: inputs.codecov == 'true'
         continue-on-error: true

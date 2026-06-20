@@ -242,15 +242,8 @@ Contributors
 License
 *******
 
-.. only:: html
-
-   This Python package (source code) is licensed under `Apache License 2.0 <Code-License.html>`__. |br|
-   The accompanying documentation is licensed under `Creative Commons - Attribution 4.0 (CC-BY 4.0) <Doc-License.html>`__.
-
-.. only:: latex
-
-   This Python package (source code) is licensed under **Apache License 2.0**. |br|
-   The accompanying documentation is licensed under **Creative Commons - Attribution 4.0 (CC-BY 4.0)**.
+This Python package (source code) is licensed under :ref:`Apache License 2.0 <CODELICENSE>`. |br|
+The accompanying documentation is licensed under :ref:`Creative Commons - Attribution 4.0 (CC-BY 4.0) <DOCLICENSE>`.
 
 
 .. toctree::

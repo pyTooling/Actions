@@ -50,7 +50,7 @@ jobs:
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v6
