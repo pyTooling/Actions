@@ -39,7 +39,7 @@ Glossary
 
      :Source Code:   `github.com/GeekyEggo/delete-artifact/ <https://github.com/GeekyEggo/delete-artifact/>`__
      :Marketplace:   `github.com/marketplace/actions/delete-artifact/ <https://github.com/marketplace/actions/delete-artifact/>`__
-     :README:        `github.com/GeekyEggo/delete-artifact ⭢ README.md <https://github.com/GeekyEggo/delete-artifact/blob/main/README.md>`__
+     :README:        `github.com/GeekyEggo/delete-artifact → README.md <https://github.com/GeekyEggo/delete-artifact/blob/main/README.md>`__
 
    docstr_coverage
      Docstring coverage analysis and rating for Python.
@@ -118,7 +118,7 @@ Glossary
 
      :Source Code:   `github.com/dorny/test-reporter/ <https://github.com/dorny/test-reporter/>`__
      :Marketplace:   `github.com/marketplace/actions/test-reporter/ <https://github.com/marketplace/actions/test-reporter/>`__
-     :README:        `github.com/dorny/test-reporter ⭢ README.md <https://github.com/dorny/test-reporter/blob/main/README.md>`__
+     :README:        `github.com/dorny/test-reporter → README.md <https://github.com/dorny/test-reporter/blob/main/README.md>`__
 
    twine
      Utilities for interacting with PyPI.

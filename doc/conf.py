@@ -119,41 +119,22 @@ modindex_common_prefix = [
 # ==============================================================================
 # Options for LaTeX / PDF output
 # ==============================================================================
-# preamblePath = Path("preamble.tex")
-# try:
-# 	with preamblePath.open("r", encoding="utf-8") as fileHandle:
-# 		latexPreamble = fileHandle.read()
-# except Exception as ex:
-# 	print(f"[ERROR:] While reading '{preamblePath}'.")
-# 	print(ex)
-# 	latexPreamble = ""
-
 latex_engine = "lualatex"
 latex_use_xindy = False
 latex_elements = {
-	"papersize": "a4paper",      # The paper size ('letterpaper' or 'a4paper').
-	"pointsize": "10pt",         # The font size ('10pt', '11pt' or '12pt').
-	"inputenc":   "",            # Let LuaLaTeX handle input encoding
-	"utf8extra":  "",
+	"papersize":   "a4paper",      # The paper size ('letterpaper' or 'a4paper').
+	"pointsize":   "10pt",         # The font size ('10pt', '11pt' or '12pt').
+	"inputenc":    "",             # Let LuaLaTeX handle input encoding
+	"utf8extra":   "",
+	"polyglossia": "",
+	"babel":      r"\usepackage[english]{babel}",
 	"fontenc":    r"\usepackage{fontspec}",  # Disable the default T1 font encoding (Essential for LuaLaTeX)
 	"fontpkg":    dedent("""\
-		\\usepackage{unicode-math}
-
-		% Set the Text Fonts (Libertinus)
-		\\setmainfont{Libertinus Serif}
-		\\setsansfont{Libertinus Sans}
-		\\setmonofont{Libertinus Mono}
-		\\setmathfont{Libertinus Math}
-
-		% Set Symbol font
-		\\usepackage{newunicodechar}
-		\\newfontfamily{\\emojifont}[Renderer=OpenType]{NotoColorEmoji.ttf}
-		\\usepackage{pytooling}
+		\\usepackage[fontfamily=libertinus]{pytooling}
 	"""),
 	"passoptionstopackages": dedent("""\
 		\\PassOptionsToPackage{verbatimvisiblespace=\\ }{sphinx}
 	"""),
-# "preamble":  latexPreamble,  # Additional stuff for the LaTeX preamble.
 # "sphinxsetup": "verbatimvisiblespace=\\textvisiblespace"
 # "figure_align": "htbp",     # Latex figure (float) alignment
 	"makeindex":  r"\usepackage[columns=1]{idxlayout}\makeindex",
@@ -165,10 +146,10 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
 	( master_doc,
-		f"{githubProject}.tex",
-		f"The {githubProject} Documentation",
-		f"Patrick Lehmann",
-		f"manual"
+		f"{pythonProject}.tex",
+		f"The {pythonProject.replace("_", r"\_")} Documentation",
+		 "Patrick Lehmann",
+		 "manual"
 	),
 ]
 

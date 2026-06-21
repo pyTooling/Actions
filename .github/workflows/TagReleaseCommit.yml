@@ -28,7 +28,7 @@ on:
       ubuntu_image:
         description: 'Name of the Ubuntu image.'
         required: false
-        default: 'ubuntu-24.04'
+        default: 'ubuntu-26.04'
         type: string
       version:
         description: 'Version used as tag name.'
