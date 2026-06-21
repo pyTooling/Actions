@@ -28,7 +28,7 @@ on:
       ubuntu_image_version:
         description: 'Ubuntu image version.'
         required: false
-        default: '24.04'
+        default: '26.04'
         type: string
       name:
         description: 'Name of the tool.'
@@ -83,12 +83,12 @@ on:
       ubuntu_image:
         description: 'The used GitHub Action image for Ubuntu (x86-64) based jobs.'
         required: false
-        default: 'ubuntu-24.04'
+        default: 'ubuntu-26.04'
         type: string
       ubuntu_arm_image:
         description: 'The used GitHub Action image for Ubuntu (aarch64) based jobs.'
         required: false
-        default: 'ubuntu-24.04-arm'
+        default: 'ubuntu-26.04-arm'
         type: string
       windows_image:
         description: 'The used GitHub Action image for Windows Server (x86-64) based jobs.'
@@ -165,7 +165,7 @@ jobs:
           sleep ${{ inputs.pipeline-delay }}
 
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # The command 'git describe' (used for version) needs the history.
           fetch-depth: 0
@@ -304,7 +304,7 @@ jobs:
           exclude_list =   "${{ inputs.exclude_list }}".strip()
           disable_list =   "${{ inputs.disable_list }}".strip()
 
-          currentMSYS2Version = "3.13"
+          currentMSYS2Version = "3.14"
           currentAlphaVersion = "3.15"
           currentAlphaRelease = "3.15.0-a.4"
 

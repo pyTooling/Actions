@@ -27,7 +27,7 @@ on:
       ubuntu_image_version:
         description: 'Ubuntu image version.'
         required: false
-        default: '24.04'
+        default: '26.04'
         type: string
       python_version:
         description: 'Python version.'
@@ -82,7 +82,7 @@ jobs:
 
     steps:
       - name: ⏬ Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v6

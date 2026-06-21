@@ -27,7 +27,7 @@ on:
       ubuntu_image_version:
         description: 'Ubuntu image version.'
         required: false
-        default: '24.04'
+        default: '26.04'
         type: string
       latex_artifact:
         description: 'Name of the LaTeX documentation artifact.'
@@ -41,6 +41,11 @@ on:
         description: 'Name of MiKTeX docker image.'
         required: false
         default: 'pytooling/miktex:sphinx'
+        type: string
+      update:
+        description: 'Update MiKTeX packages.'
+        required: false
+        default: 'false'
         type: string
       processor:
         description: 'Name of the used LaTeX processor.'
@@ -79,10 +84,15 @@ jobs:
           investigate: 'true'
 
       - name: ⚙️ Update
+        if: inputs.update == 'true'
         run: |
+          printf -- "Update package database (miktex --admin packages update-package-database) ...\n"
           sudo miktex --admin packages update-package-database
+          printf -- "Update packages (miktex --admin packages update) ...\n"
           sudo miktex --admin packages update
+          printf -- "Update filename database (initexmf --admin --updatefndb) ...\n"
           sudo initexmf --admin --update-fndb
+          printf -- "DONE\n"
 
       - name: 📖 Build LaTeX document using 'pytooling/miktex:sphinx'
         if: inputs.pdf_artifact != ''

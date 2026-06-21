@@ -139,6 +139,8 @@ Additional text from :ref:`JOBTMPL/PublishReleaseNotes/Input/description_footer`
      moved by N levels down.
    ``%%FOOTER%%``
      Replaces the placeholder with the content from :ref:`JOBTMPL/PublishReleaseNotes/Input/description_footer`.
+   ``%%TAG%%``
+     Replaces the placeholder with the ``tag`` parameter provided to the job template.
    ``%%gh_server%%``
      Replaced by the GitHub server URL. |br|
      The value is derived from ``${{ github.server_url }}``.
