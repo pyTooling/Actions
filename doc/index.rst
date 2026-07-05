@@ -164,7 +164,7 @@ Example Pipelines
             .. code-block:: toml
 
                [build-system]
-               requires = ["setuptools >= 80.0", "pyTooling ~= 8.14"]
+               requires = ["setuptools >= 83.0", "pyTooling ~= 8.15"]
                build-backend = "setuptools.build_meta"
 
                [tool.mypy]
