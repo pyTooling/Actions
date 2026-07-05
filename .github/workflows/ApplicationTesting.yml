@@ -183,7 +183,7 @@ jobs:
             "wheel":               "python-wheel:p",
             "pyEDAA.ProjectModel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
             "pyEDAA.Reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
-            "sphinx-reports":      "python-markupsafe:p python-pyaml:p python-types-pyyaml:p",
+            "sphinx_reports":      "python-markupsafe:p python-pyaml:p python-types-pyyaml:p",
           }
           subPackages = {
             "pytooling": {
