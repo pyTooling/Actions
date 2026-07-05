@@ -39,7 +39,7 @@ Param(
 
 $ProjectName =    "Actions"
 $PackageName =    "myPackage"
-$PackageVersion = "7.10.1"
+$PackageVersion = "7.11.1"
 $PythonVersion =  "3.14"
 $LaTeXDocument =  "${ProjectName}.tex"
 
