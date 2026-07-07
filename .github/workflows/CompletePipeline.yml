@@ -331,6 +331,7 @@ jobs:
   AppTesting:
     uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@dev
     needs:
+      - ConfigParams
       - AppTestingParams
       - UnitTestingParams
       - Package
@@ -338,8 +339,8 @@ jobs:
     with:
       jobs:                 ${{ needs.AppTestingParams.outputs.python_jobs }}
       wheel:                ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
-      apptest_report_xml:   ${{ needs.AppTestingParams.outputs.unittest_report_xml }}
-      apptest_xml_artifact: ${{ fromJson(needs.AppTestingParams.outputs.artifact_names).apptesting_xml }}
+      apptest_report_xml:   ${{ needs.ConfigParams.outputs.unittest_report_xml }}
+      apptest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).apptesting_xml }}
 
   PublishCoverageResults:
     uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@dev

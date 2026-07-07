@@ -383,7 +383,7 @@ jobs:
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
-          [ -n '${{ inputs.apptest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=report/unit/TestReportSummary.xml' || unset PYTEST_ARGS
+          [ -n '${{ inputs.apptest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}' || unset PYTEST_ARGS
           printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
           python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
 
@@ -394,7 +394,7 @@ jobs:
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
-          $PYTEST_ARGS = if ("${{ inputs.apptest_xml_artifact }}") { "--junitxml=report/unit/TestReportSummary.xml" } else { "" }
+          $PYTEST_ARGS = if ("${{ inputs.apptest_xml_artifact }}") { "--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}" } else { "" }
           Write-Host "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
           python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
 
@@ -405,8 +405,8 @@ jobs:
         uses: pyTooling/upload-artifact@v7
         with:
           name: ${{ inputs.apptest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          working-directory: ${{ fromJson(inputs.unittest_report_xml).directory }}
-          path: ${{ fromJson(inputs.unittest_report_xml).filename }}
+          working-directory: ${{ fromJson(inputs.apptest_report_xml).directory }}
+          path: ${{ fromJson(inputs.apptest_report_xml).filename }}
           if-no-files-found: error
           retention-days: 1
 
