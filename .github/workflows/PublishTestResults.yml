@@ -32,7 +32,7 @@ on:
         type: string
       unittest_artifacts_pattern:
         required: false
-        default: '*-UnitTestReportSummary-XML-*'
+        default: '*-*TestReportSummary-XML-*'
         type: string
       merged_junit_filename:
         description: 'Filename of the merged JUnit Test Summary.'

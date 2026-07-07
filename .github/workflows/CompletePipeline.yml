@@ -370,9 +370,11 @@ jobs:
       - ConfigParams
       - UnitTestingParams
       - UnitTesting
+      - AppTesting
     if: success() || failure()
     with:
       testsuite-summary-name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
+      additional_merge_args: '"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests"'
       merged_junit_filename:  ${{ fromJson(needs.ConfigParams.outputs.unittest_merged_report_xml).filename }}
       merged_junit_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       dorny:                  ${{ inputs.dorny }}
