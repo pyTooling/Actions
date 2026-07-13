@@ -150,7 +150,7 @@ on:
         default: ''
         type: string
       unittest_html_artifact:
-        description: "Generate unit test report with junitxml and upload results as an artifact."
+        description: "Generate unit test report with html and upload results as an artifact."
         required: false
         default: ''
         type: string

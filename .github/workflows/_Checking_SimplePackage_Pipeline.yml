@@ -10,6 +10,7 @@ jobs:
     with:
       package_name:        'myPackage'
       unittest_python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11'
+      apptest:             'true'
       bandit:              'true'
       pylint:              'true'
       codecov:             'true'
