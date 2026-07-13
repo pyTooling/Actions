@@ -63,6 +63,11 @@ on:
         required: false
         default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
         type: string
+      apptest:
+        description: 'Run Application Testing.'
+        required: false
+        default: 'false'
+        type: string
       apptest_python_version:
         description: 'Python version.'
         required: false
@@ -176,17 +181,18 @@ jobs:
       disable_list:        ${{ inputs.unittest_disable_list }}
       documentation_steps: ${{ inputs.documentation_steps }}
 
-#  AppTestingParams:
-#    uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
-#    with:
-#      package_namespace:   ${{ inputs.package_namespace }}
-#      package_name:        ${{ inputs.package_name }}
-#      python_version:      ${{ inputs.apptest_python_version }}
-#      python_version_list: ${{ inputs.apptest_python_version_list }}
-#      system_list:         ${{ inputs.apptest_system_list }}
-#      include_list:        ${{ inputs.apptest_include_list }}
-#      exclude_list:        ${{ inputs.apptest_exclude_list }}
-#      disable_list:        ${{ inputs.apptest_disable_list }}
+  AppTestingParams:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
+    if: inputs.apptest == 'true'
+    with:
+      package_namespace:   ${{ inputs.package_namespace }}
+      package_name:        ${{ inputs.package_name }}
+      python_version:      ${{ inputs.apptest_python_version }}
+      python_version_list: ${{ inputs.apptest_python_version_list }}
+      system_list:         ${{ inputs.apptest_system_list }}
+      include_list:        ${{ inputs.apptest_include_list }}
+      exclude_list:        ${{ inputs.apptest_exclude_list }}
+      disable_list:        ${{ inputs.apptest_disable_list }}
 
   InstallParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
@@ -322,16 +328,19 @@ jobs:
       wheel:        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
       package_name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
 
-#  AppTesting:
-#    uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@main
-#    needs:
-#      - AppTestingParams
-#      - UnitTestingParams
-#      - Package
-#    with:
-#      jobs: ${{ needs.AppTestingParams.outputs.python_jobs }}
-#      wheel: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
-#      apptest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).apptesting_xml }}
+  AppTesting:
+    uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@main
+    needs:
+      - ConfigParams
+      - AppTestingParams
+      - UnitTestingParams
+      - Package
+    if: inputs.apptest == 'true'
+    with:
+      jobs:                 ${{ needs.AppTestingParams.outputs.python_jobs }}
+      wheel:                ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      apptest_report_xml:   ${{ needs.ConfigParams.outputs.unittest_report_xml }}
+      apptest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).apptesting_xml }}
 
   PublishCoverageResults:
     uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@main
@@ -361,9 +370,11 @@ jobs:
       - ConfigParams
       - UnitTestingParams
       - UnitTesting
+      - AppTesting
     if: success() || failure()
     with:
       testsuite-summary-name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
+      additional_merge_args: '"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests"'
       merged_junit_filename:  ${{ fromJson(needs.ConfigParams.outputs.unittest_merged_report_xml).filename }}
       merged_junit_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       dorny:                  ${{ inputs.dorny }}

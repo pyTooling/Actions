@@ -34,18 +34,63 @@ on:
         required: false
         default: ''
         type: string
-      requirements:
-        description: 'Python dependencies to be installed through pip.'
+      apt:
+        description: 'Ubuntu dependencies to be installed through apt.'
         required: false
-        default: '-r ./requirements.txt'
+        default: ''
+        type: string
+      brew:
+        description: 'macOS dependencies to be installed through brew.'
+        required: false
+        default: ''
         type: string
       pacboy:
         description: 'MSYS2 dependencies to be installed through pacboy (pacman).'
         required: false
         default: ""
         type: string
+      requirements:
+        description: 'Python dependencies to be installed through pip.'
+        required: false
+        default: '-r ./requirements.txt'
+        type: string
       mingw_requirements:
         description: 'Override Python dependencies to be installed through pip on MSYS2 (MINGW64) only.'
+        required: false
+        default: ''
+        type: string
+      macos_before_script:
+        description: 'Scripts to execute before pytest on macOS (Intel).'
+        required: false
+        default: ''
+        type: string
+      macos_arm_before_script:
+        description: 'Scripts to execute before pytest on macOS (ARM).'
+        required: false
+        default: ''
+        type: string
+      ubuntu_before_script:
+        description: 'Scripts to execute before pytest on Ubuntu.'
+        required: false
+        default: ''
+        type: string
+      windows_before_script:
+        description: 'Scripts to execute before pytest on Windows (x64-64).'
+        required: false
+        default: ''
+        type: string
+      windows_arm_before_script:
+        description: 'Scripts to execute before pytest on Windows (aarch64).'
+        required: false
+        default: ''
+        type: string
+      mingw64_before_script:
+        description: 'Scripts to execute before pytest on Windows (x64-64) within MSYS2 MinGW64.'
+        required: false
+        default: ''
+        type: string
+      ucrt64_before_script:
+        description: 'Scripts to execute before pytest on Windows (x64-64) within MSYS2 UCRT64.'
         required: false
         default: ''
         type: string
@@ -64,15 +109,29 @@ on:
         required: false
         default: 'app'
         type: string
+      apptest_report_xml:
+        description: 'JSON object describing the path where to save the application test summary report XML.'
+        required: false
+        default: >-
+          { "directory": "report/app",
+            "filename":  "TestReportSummary.xml",
+            "fullpath":  "report/app/TestReportSummary.xml"
+          }
+        type: string
       apptest_xml_artifact:
         description: "Generate application test report with junitxml and upload results as an artifact."
+        required: false
+        default: ''
+        type: string
+      unittest_html_artifact:
+        description: "Generate application test report with html and upload results as an artifact."
         required: false
         default: ''
         type: string
 
 jobs:
   ApplicationTesting:
-    name: ${{ matrix.sysicon }} ${{ matrix.pyicon }} Application Tests using Python ${{ matrix.python }}
+    name: ${{ matrix.sysicon }} ${{ matrix.pyicon }} Application Tests - Python ${{ matrix.python }}
     runs-on: ${{ matrix.runs-on }}
 
     strategy:
@@ -87,12 +146,20 @@ jobs:
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v7
+#        with:
+#          lfs: true
+#          submodules: true
 
-      - name: 📥 Download artifacts '${{ inputs.wheel }}' from 'Package' job
-        uses: pyTooling/download-artifact@v8
-        with:
-          name: ${{ inputs.wheel }}
-          path: install
+# Package Manager steps
+      - name: 🔧 Install homebrew dependencies on macOS
+        if: ( matrix.system == 'macos' || matrix.system == 'macos-arm' ) && inputs.brew != ''
+        run: brew install ${{ inputs.brew }}
+
+      - name: 🔧 Install apt dependencies on Ubuntu
+        if: ( matrix.system == 'ubuntu' || matrix.system == 'ubuntu-arm' ) && inputs.apt != ''
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ${{ inputs.apt }}
 
       # TODO: extract step to an Action so package, so code can be shared with UnitTesting.yml
       - name: Compute path to requirements file
@@ -259,7 +326,43 @@ jobs:
             python -m pip install --disable-pip-version-check --break-system-packages ${{ steps.requirements.outputs.requirements }}
           fi
 
-# TODO: Before scripts?
+# Before scripts
+
+      - name: 🍎 macOS (Intel) before scripts
+        if: matrix.system == 'macos' && inputs.macos_before_script != ''
+        run: ${{ inputs.macos_before_script }}
+
+      - name: 🍏 macOS (ARM) before scripts
+        if: matrix.system == 'macos-arm' && inputs.macos_arm_before_script != ''
+        run: ${{ inputs.macos_arm_before_script }}
+
+      - name: 🐧 Ubuntu before scripts
+        if: ( matrix.system == 'ubuntu' || matrix.system == 'ubuntu-arm' ) && inputs.ubuntu_before_script != ''
+        run: ${{ inputs.ubuntu_before_script }}
+
+      - name: 🪟 Windows (x86-64) before scripts
+        if: matrix.system == 'windows' && inputs.windows_before_script != ''
+        run: ${{ inputs.windows_before_script }}
+
+      - name: 🏢 Windows (aarch64) before scripts
+        if: matrix.system == 'windows-arm' && inputs.windows_arm_before_script != ''
+        run: ${{ inputs.windows_arm_before_script }}
+
+      - name: 🪟🟦 Windows (x86-64) + MinGW64 before scripts
+        if: matrix.system == 'msys2' && matrix.runtime == 'MINGW64' && inputs.mingw64_before_script != ''
+        run: ${{ inputs.mingw64_before_script }}
+
+      - name: 🪟🟨 Windows (x86-64) + UCRT64 before scripts
+        if: matrix.system == 'msys2' && matrix.runtime == 'UCRT64' && inputs.ucrt64_before_script != ''
+        run: ${{ inputs.ucrt64_before_script }}
+
+# Install package
+
+      - name: 📥 Download artifacts '${{ inputs.wheel }}' from 'Package' job
+        uses: pyTooling/download-artifact@v8
+        with:
+          name: ${{ inputs.wheel }}
+          path: install
 
       - name: 🔧 Install wheel from artifact (Ubuntu/macOS)
         if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
@@ -274,34 +377,26 @@ jobs:
 # Run pytests
 
       - name: ✅ Run application tests (Ubuntu/macOS)
+        id: pytest_bash
         if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
-          [ -n '${{ inputs.apptest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=report/unit/TestReportSummary.xml' || unset PYTEST_ARGS
-          if [ -n '${{ inputs.coverage_config }}' ]; then
-            printf "%s\n" "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
-            coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
-          else
-            printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
-            python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
-          fi
+          [ -n '${{ inputs.apptest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}' || unset PYTEST_ARGS
+          printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
+          python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
 
       - name: ✅ Run application tests (Windows)
+        id: pytest_posh
         if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
-          $PYTEST_ARGS = if ("${{ inputs.apptest_xml_artifact }}") { "--junitxml=report/unit/TestReportSummary.xml" } else { "" }
-          if ("${{ inputs.coverage_config }}") {
-            Write-Host "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
-            coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
-          } else {
-            Write-Host "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
-            python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
-          }
+          $PYTEST_ARGS = if ("${{ inputs.apptest_xml_artifact }}") { "--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}" } else { "" }
+          Write-Host "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
+          python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
 
 # Upload artifacts
 
@@ -310,7 +405,31 @@ jobs:
         uses: pyTooling/upload-artifact@v7
         with:
           name: ${{ inputs.apptest_xml_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
-          working-directory: report/unit
-          path: TestReportSummary.xml
+          working-directory: ${{ fromJson(inputs.apptest_report_xml).directory }}
+          path: ${{ fromJson(inputs.apptest_report_xml).filename }}
           if-no-files-found: error
           retention-days: 1
+
+#      - name: 📤 Upload 'Application Tests HTML Report' artifact
+#        if: inputs.apptest_html_artifact != ''
+#        continue-on-error: true
+#        uses: pyTooling/upload-artifact@v7
+#        with:
+#          name: ${{ inputs.apptest_html_artifact }}-${{ matrix.system }}-${{ matrix.runtime }}-${{ matrix.python }}
+#          path: ${{ inputs.apptest_report_html_directory }}
+#          if-no-files-found: error
+#          retention-days: 1
+
+      - name: Generate error messages
+        shell: bash
+        run: |
+          exitCode=0
+          if [[ "${{ steps.pytest_bash.outcome }}" == "failure" || "${{ steps.pytest_posh.outcome }}" == "failure" ]]; then
+            printf "❌ pytest: %s\n" "Error in pytest execution."
+            printf "::error title=%s::%s\n" "pytest" "Error in pytest execution."
+            exitCode=1
+          else
+            printf "✅ pytest: No errors.\n"
+          fi
+
+          exit $exitCode

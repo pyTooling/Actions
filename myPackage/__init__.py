@@ -32,13 +32,15 @@
 A module for a set of dummy classes.
 """
 
-__author__ =        "Patrick Lehmann"
-__email__ =         "Paebbels@gmail.com"
-__copyright__ =     "2017-2026, Patrick Lehmann"
-__license__ =       "Apache License, Version 2.0"
-__version__ =       "7.11.1"
-__keywords__ =      ["GitHub Actions"]
-__issue_tracker__ = "https://GitHub.com/pyTooling/Actions/issues"
+__author__ =            "Patrick Lehmann"
+__email__ =             "Paebbels@gmail.com"
+__copyright__ =         "2017-2026, Patrick Lehmann"
+__license__ =           "Apache License, Version 2.0"
+__version__ =           "7.12.0"
+__keywords__ =          ["GitHub Actions"]
+__project_url__ =       "https://github.com/pyTooling/Actions"
+__documentation_url__ = "https://pyTooling.github.io/Actions"
+__issue_tracker_url__ = "https://GitHub.com/pyTooling/Actions/issues"
 
 from pickle               import dumps
 from subprocess           import check_call
