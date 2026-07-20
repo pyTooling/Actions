@@ -72,7 +72,7 @@ jobs:
             python-ruamel-yaml:p python-ruamel.yaml.clib:p
 
       - name: 🐍 Setup Python ${{ matrix.python }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         if: matrix.system != 'msys2'
         with:
           python-version: ${{ matrix.python }}
