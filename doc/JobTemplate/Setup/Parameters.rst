@@ -729,7 +729,7 @@ python_jobs
                          steps:
                            - name: 🐍 Setup Python ${{ matrix.python }}
                              if: matrix.system != 'msys2'
-                             uses: actions/setup-python@v4
+                             uses: actions/setup-python@v7
                              with:
                                python-version: ${{ matrix.python }}
 :Debugging:       The job prints debugging information like system |times| Python version |times| environment
