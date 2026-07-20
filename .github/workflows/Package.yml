@@ -59,7 +59,7 @@ jobs:
           submodules: true
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ inputs.python_version }}
 
