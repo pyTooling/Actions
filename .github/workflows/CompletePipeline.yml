@@ -294,8 +294,7 @@ jobs:
     needs:
       - UnitTestingParams
       - PublishTestResults  # artificial dependency to delay start when pipeline has free job resources
-    # !cancelled(): the dependency above is only for ordering, so its result must not gate this job.
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() }}  # the artificial dependency above is for ordering only and must not gate this job
     with:
       python_version:    ${{ needs.UnitTestingParams.outputs.python_version }}
       package_directory: ${{ needs.UnitTestingParams.outputs.package_directory }}
@@ -308,8 +307,7 @@ jobs:
     needs:
       - UnitTestingParams
       - StaticTypeCheck     # artificial dependency to delay start when pipeline has free job resources
-    # !cancelled(): the dependency above is only for ordering, so its result must not gate this job.
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() }}  # the artificial dependency above is for ordering only and must not gate this job
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       directory:      ${{ needs.UnitTestingParams.outputs.package_directory }}
@@ -353,8 +351,7 @@ jobs:
       - ConfigParams
       - UnitTestingParams
       - UnitTesting
-    # !cancelled() instead of 'success() || failure()', because the latter is false if a dependency was skipped.
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() }}  # not 'success() || failure()', because that's false if a dependency was skipped
     with:
 #      coverage_sqlite_artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
 #      coverage_xml_artifact:          ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_xml }}
@@ -377,9 +374,7 @@ jobs:
       - UnitTestingParams
       - UnitTesting
       - AppTesting
-    # !cancelled() instead of 'success() || failure()', because the latter is false if a dependency was skipped.
-    # AppTesting is skipped when 'apptest' is false, which used to skip this job and the whole chain below it.
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() }}  # not 'success() || failure()', because that's false if AppTesting was skipped (apptest: false)
     with:
       testsuite-summary-name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
       additional_merge_args: '"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests"'
@@ -405,8 +400,7 @@ jobs:
       - PublishTestResults
       - PublishCoverageResults
 #      - VerifyDocs
-    # !cancelled() instead of 'success() || failure()', because the latter is false if a dependency was skipped.
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() }}  # not 'success() || failure()', because that's false if a dependency was skipped
     with:
       python_version:         ${{ needs.UnitTestingParams.outputs.python_version }}
       coverage_report_json:   ${{ needs.ConfigParams.outputs.coverage_report_json }}
@@ -421,8 +415,7 @@ jobs:
       - UnitTestingParams
       - PublishCoverageResults
       - PublishTestResults
-    # !cancelled() instead of 'success() || failure()', because the latter is false if a dependency was skipped.
-    if: ${{ !cancelled() && inputs.cleanup == 'true' }}
+    if: ${{ !cancelled() && inputs.cleanup == 'true' }}  # not 'success() || failure()', because that's false if a dependency was skipped
     with:
       json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
       artifact-json-ids: >-
@@ -468,9 +461,7 @@ jobs:
       - Package
       - Install
       - PublishToGitHubPages
-    # !failure() && !cancelled() tolerates skipped dependencies (e.g. PublishToGitHubPages when
-    # 'documentation_steps' contains no 'pages'), but still blocks the release if a dependency failed.
-    if: ${{ !failure() && !cancelled() && needs.Prepare.outputs.is_release_commit == 'true' && github.event_name != 'schedule' }}
+    if: ${{ !failure() && !cancelled() && needs.Prepare.outputs.is_release_commit == 'true' && github.event_name != 'schedule' }}  # !failure(): tolerate skipped dependencies (e.g. PublishToGitHubPages), but not failed ones
     permissions:
       contents: write  # required for create tag
       actions:  write  # required for trigger workflow
@@ -489,9 +480,7 @@ jobs:
       - Package
       - Install
       - PublishToGitHubPages
-    # !failure() && !cancelled() tolerates skipped dependencies (e.g. PublishToGitHubPages when
-    # 'documentation_steps' contains no 'pages'), but still blocks the release if a dependency failed.
-    if: ${{ !failure() && !cancelled() && needs.Prepare.outputs.is_release_tag == 'true' }}
+    if: ${{ !failure() && !cancelled() && needs.Prepare.outputs.is_release_tag == 'true' }}  # !failure(): tolerate skipped dependencies (e.g. PublishToGitHubPages), but not failed ones
     permissions:
       contents: write
       actions:  write
@@ -506,8 +495,7 @@ jobs:
       - UnitTestingParams
       - Package
       - ReleasePage
-    # !failure() && !cancelled() tolerates skipped dependencies, but still blocks publishing on a failure.
-    if: ${{ !failure() && !cancelled() && needs.Prepare.outputs.is_release_tag == 'true' }}
+    if: ${{ !failure() && !cancelled() && needs.Prepare.outputs.is_release_tag == 'true' }}  # !failure(): tolerate skipped dependencies, but not failed ones
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       requirements:   '-r dist/requirements.txt'
@@ -530,9 +518,7 @@ jobs:
 #      - PublishOnPyPI
       - Install
       - IntermediateCleanUp
-    # !cancelled(), because PDFDocumentation is skipped unless 'documentation_steps' contains 'latex' and
-    # 'pdf'. With the implicit success(), this job could never run in the default configuration.
-    if: ${{ !cancelled() && inputs.cleanup == 'true' }}
+    if: ${{ !cancelled() && inputs.cleanup == 'true' }}  # !cancelled(), because PDFDocumentation is skipped without 'latex' and 'pdf' in documentation_steps
     with:
       json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
       artifact-json-ids: >-
