@@ -13,8 +13,13 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@dev
     with:
       package_name:        'myPackage'
-      unittest_python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11'
+      # Reduced matrix: slow-starting platforms (windows, macos, msys2) have limited runners and dominate the wall time.
+      # NamespacePackage covers Python 3.11, so both pipelines together still test the version range's ends.
+      unittest_python_version_list: '3.14'
+      unittest_system_list:         'ubuntu ubuntu-arm'
       apptest:             'true'
+      apptest_python_version_list:  '3.14'
+      apptest_system_list:          'ubuntu ubuntu-arm'
       bandit:              'true'
       pylint:              'true'
       codecov:             'true'

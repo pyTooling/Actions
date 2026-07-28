@@ -32,6 +32,13 @@ jobs:
       system_list:         'ubuntu ubuntu-arm windows windows-arm macos mingw64 clang64 ucrt64'
       documentation_steps: 'none'
 
+  AppTestingParams:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
+    with:
+      package_name:        'myPackage'
+      python_version_list: ''                # just the default Python version
+      system_list:         'ubuntu ubuntu-arm'
+
   InstallParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
@@ -132,6 +139,19 @@ jobs:
       wheel:        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
       package_name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
 
+  AppTesting:
+    uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@dev
+    needs:
+      - ConfigParams
+      - AppTestingParams
+      - UnitTestingParams
+      - Package
+    with:
+      jobs:                 ${{ needs.AppTestingParams.outputs.python_jobs }}
+      wheel:                ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      apptest_report_xml:   ${{ needs.ConfigParams.outputs.unittest_report_xml }}
+      apptest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).apptesting_xml }}
+
   PublishCoverageResults:
     uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@dev
     needs:
@@ -158,8 +178,10 @@ jobs:
       - UnitTestingParams
       - UnitTesting
       - PlatformTesting
+      - AppTesting
+    if: ${{ !cancelled() }}  # not 'success() || failure()', because that's false if a dependency was skipped
     with:
-      additional_merge_args:  '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit;reduce-depth:pytest.tests.platform"'
+      additional_merge_args:  '-d "--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit;reduce-depth:pytest.tests.platform;reduce-depth:pytest.tests.app"'
       testsuite-summary-name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
       merged_junit_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).unittesting_xml }}
       codecov:                true
@@ -305,6 +327,7 @@ jobs:
         codecoverage_json
         codecoverage_html
         statictyping_html
+        #apptesting_xml:-*
         documentation_html
         documentation_latex
       json2: ${{ needs.PlatformTestingParams.outputs.artifact_names }}

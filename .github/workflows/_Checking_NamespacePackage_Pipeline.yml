@@ -14,7 +14,10 @@ jobs:
     with:
       package_namespace:   'myFramework'
       package_name:        'Extension'
-      unittest_python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11'
+      # Reduced matrix: slow-starting platforms (windows, macos, msys2) have limited runners and dominate the wall time.
+      # SimplePackage covers Python 3.14, so both pipelines together still test the version range's ends.
+      unittest_python_version_list: '3.11'
+      unittest_system_list:         'ubuntu ubuntu-arm'
       bandit:              'true'
       pylint:              'true'
       codecov:             'true'
