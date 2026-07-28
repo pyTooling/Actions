@@ -215,7 +215,7 @@ jobs:
           print(f"  python_version:       {python_version}")
           print(f"  package_fullname:     {package_fullname}")
           print(f"  package_directory:    {package_directory}")
-          print(f"  package_version_file: {package_directory}")
+          print(f"  package_version_file: {package_version_file}")
           print(f"  artifact_basename:    {artifact_basename}")
 
           # Write jobs to special file
