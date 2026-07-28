@@ -6,7 +6,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/dev' && github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/heads/r') }}  # keep runs that might tag or publish
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}  # tag pushes can publish a release, so never cancel those
 
 jobs:
   NamespacePackage:
