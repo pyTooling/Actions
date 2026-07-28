@@ -1,6 +1,6 @@
 -r ../requirements.txt
 
-pyTooling ~= 8.16
+pyTooling ~= 8.17
 
 # Enforce latest version on ReadTheDocs
 sphinx ~= 9.1
@@ -15,5 +15,5 @@ sphinxcontrib-mermaid ~= 2.1
 autoapi >= 2.0.1
 sphinx_design ~= 0.7.0
 sphinx-copybutton >= 0.5.2
-sphinx_autodoc_typehints ~= 3.12
+sphinx_autodoc_typehints ~= 3.13
 sphinx_reports ~= 0.11.0
