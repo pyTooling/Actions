@@ -36,8 +36,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       package_name:        'myPackage'
-      python_version_list: ''                # just the default Python version
-      system_list:         'ubuntu ubuntu-arm'
+      python_version_list: ''                # just the default Python version, but on all systems
 
   InstallParams:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
