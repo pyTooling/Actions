@@ -295,23 +295,10 @@ jobs:
       artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
     secrets: inherit
 
-  PackageArtifactCleanUp:
-    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@dev
-    needs:
-      - UnitTestingParams
-      - Install
-      - PublishOnPyPI
-    if: ${{ !cancelled() }}  # 'PublishOnPyPI' is skipped on a non-release run
-    with:
-      json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
-      # Kept on tagged runs: 'PublishOnPyPI.yml' consumes the package artifact and deletes it itself.
-      condition: ${{ ! startsWith(github.ref, 'refs/tags') }}
-      artifact-json-ids: >-
-        package_all
-
   ArtifactCleanUp:
     uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@dev
     needs:
+      - Prepare
       - UnitTestingParams
       - PlatformTestingParams
       - UnitTesting
@@ -342,10 +329,17 @@ jobs:
         #apptesting_xml:-*
         documentation_html
         documentation_latex
-      json2: ${{ needs.PlatformTestingParams.outputs.artifact_names }}
+      # The package artifact is kept on a release-tag run: 'PublishOnPyPI' consumes it and deletes
+      # it itself. Same flag that job keys off.
+      json2: ${{ needs.UnitTestingParams.outputs.artifact_names }}
+      condition2: ${{ needs.Prepare.outputs.is_release_tag != 'true' }}
       artifact-json-ids2: >-
-        unittesting_xml:-*
-        unittesting_html:-*
-        codecoverage_xml:-*
-        codecoverage_json:-*
-        codecoverage_html:-*
+        package_all
+      # The platform artifacts are unconditional, and both JSON slots are taken, so they are listed
+      # literally - which exercises the 'others' input as a side effect.
+      others: |
+        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_xml }}-*
+        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_html }}-*
+        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_xml }}-*
+        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_json }}-*
+        ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_html }}-*
