@@ -59,4 +59,8 @@ jobs:
       json: ${{ needs.Params.outputs.artifact_names }}
       artifact-json-ids: >-
         unittesting_xml:-*
+      # The package artifact is kept on tagged runs, so 'PublishOnPyPI.yml' can still consume it.
+      json2: ${{ needs.Params.outputs.artifact_names }}
+      condition2: ${{ ! startsWith(github.ref, 'refs/tags') }}
+      artifact-json-ids2: >-
         package_all

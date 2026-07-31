@@ -34,6 +34,11 @@ on:
         required: false
         default: '{}'
         type: string
+      condition:
+        description: 'Delete the first set of artifacts only if this is true.'
+        required: false
+        default: true
+        type: boolean
       artifact-json-ids:
         description: 'Artifacts to be removed by JSON name.'
         required: false
@@ -44,6 +49,11 @@ on:
         required: false
         default: '{}'
         type: string
+      condition2:
+        description: 'Delete the second set of artifacts only if this is true.'
+        required: false
+        default: true
+        type: boolean
       artifact-json-ids2:
         description: 'Second set of artifacts to be removed by JSON name.'
         required: false
@@ -62,7 +72,7 @@ jobs:
     steps:
       - name: 🧮 Compute artifact names
         id: compute
-        if: inputs.json != '' && inputs.json != '{}'
+        if: inputs.condition && inputs.json != '' && inputs.json != '{}'
         shell: python
         run: |
           from json    import loads, dumps
@@ -100,7 +110,7 @@ jobs:
 
       - name: 🗑️ Delete artifacts
         uses: geekyeggo/delete-artifact@v6
-        if: inputs.artifact-json-ids != '' && steps.compute.outputs.artifacts != ''
+        if: inputs.condition && inputs.artifact-json-ids != '' && steps.compute.outputs.artifacts != ''
         continue-on-error: true
         with:
           name: |
@@ -109,7 +119,7 @@ jobs:
 
       - name: 🧮 Compute artifact names for second JSON dictionary
         id: compute2
-        if: inputs.json2 != '' && inputs.json2 != '{}'
+        if: inputs.condition2 && inputs.json2 != '' && inputs.json2 != '{}'
         shell: python
         run: |
           from json    import loads, dumps
@@ -147,7 +157,7 @@ jobs:
 
       - name: 🗑️ Delete artifacts
         uses: geekyeggo/delete-artifact@v6
-        if: inputs.artifact-json-ids2 != '' && steps.compute2.outputs.artifacts != ''
+        if: inputs.condition2 && inputs.artifact-json-ids2 != '' && steps.compute2.outputs.artifacts != ''
         continue-on-error: true
         with:
           name: |
