@@ -330,14 +330,12 @@ jobs:
         #apptesting_xml:-*
         documentation_html
         documentation_latex
-      # The package artifact is kept on a release-tag run: 'PublishOnPyPI' consumes it and deletes
-      # it itself. Same flag that job keys off.
-      json2: ${{ needs.UnitTestingParams.outputs.artifact_names }}
+      # The package artifact is kept on a release-tag run: 'PublishOnPyPI' consumes it and deletes it itself.
+      json2:      ${{ needs.UnitTestingParams.outputs.artifact_names }}
       condition2: ${{ needs.Prepare.outputs.is_release_tag != 'true' }}
       artifact-json-ids2: >-
         package_all
-      # The platform artifacts are unconditional, and both JSON slots are taken, so they are listed
-      # literally - which exercises the 'others' input as a side effect.
+      # The platform artifacts are unconditional, and both JSON slots are taken, so they are listed literally.
       others: |
         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_xml }}-*
         ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).unittesting_html }}-*

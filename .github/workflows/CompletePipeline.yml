@@ -231,10 +231,10 @@ jobs:
         if: endsWith(needs.UnitTestingParams.outputs.package_version_file, '.py')
         shell: python
         run: |
-          from os                  import getenv
-          from pathlib             import Path
-          from sys                 import exit
-          from textwrap            import dedent
+          from os                   import getenv
+          from pathlib              import Path
+          from sys                  import exit
+          from textwrap             import dedent
           from pyTooling.Packaging  import extractVersionInformation
           from pyTooling.Versioning import SemanticVersion
 
@@ -303,7 +303,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@dev
     needs:
       - UnitTestingParams
-      - PublishTestResults  # artificial dependency to delay start when pipeline has free job resources
+      - PublishTestResults   # artificial dependency to delay start when pipeline has free job resources
     if: ${{ !cancelled() }}  # the artificial dependency above is for ordering only and must not gate this job
     with:
       python_version:    ${{ needs.UnitTestingParams.outputs.python_version }}
@@ -316,7 +316,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@dev
     needs:
       - UnitTestingParams
-      - StaticTypeCheck     # artificial dependency to delay start when pipeline has free job resources
+      - StaticTypeCheck      # artificial dependency to delay start when pipeline has free job resources
     if: ${{ !cancelled() }}  # the artificial dependency above is for ordering only and must not gate this job
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
@@ -548,7 +548,7 @@ jobs:
         documentation_html
         #documentation_latex
         #documentation_pdf
-      json2: ${{ needs.UnitTestingParams.outputs.artifact_names }}
+      json2:      ${{ needs.UnitTestingParams.outputs.artifact_names }}
       condition2: ${{ needs.Prepare.outputs.is_release_tag != 'true' }}  # the same flag 'PublishOnPyPI' keys off: it consumes the package artifact and deletes it itself
       artifact-json-ids2: >-
         package_all
