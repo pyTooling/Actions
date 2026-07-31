@@ -295,6 +295,20 @@ jobs:
       artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
     secrets: inherit
 
+  PackageArtifactCleanUp:
+    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@dev
+    needs:
+      - UnitTestingParams
+      - Install
+      - PublishOnPyPI
+    if: ${{ !cancelled() }}  # 'PublishOnPyPI' is skipped on a non-release run
+    with:
+      json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
+      # Kept on tagged runs: 'PublishOnPyPI.yml' consumes the package artifact and deletes it itself.
+      condition: ${{ ! startsWith(github.ref, 'refs/tags') }}
+      artifact-json-ids: >-
+        package_all
+
   ArtifactCleanUp:
     uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@dev
     needs:
@@ -313,7 +327,6 @@ jobs:
     with:
       json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
       artifact-json-ids: >-
-        package_all
         unittesting_xml:-*
         unittesting_html:-*
         codecoverage_xml:-*

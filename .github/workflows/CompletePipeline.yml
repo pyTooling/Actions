@@ -235,7 +235,8 @@ jobs:
           from pathlib             import Path
           from sys                 import exit
           from textwrap            import dedent
-          from pyTooling.Packaging import extractVersionInformation
+          from pyTooling.Packaging  import extractVersionInformation
+          from pyTooling.Versioning import SemanticVersion
 
           expectedVersion = "${{ needs.Prepare.outputs.version }}".strip()
 
@@ -248,7 +249,16 @@ jobs:
           print(f"expected:  {expectedVersion}")
           print(f"from code: {versionInformation.Version}")
 
-          if expectedVersion != versionInformation.Version:
+          # The expected version is derived from the tag, so it may carry a 'v' or 'r' prefix, while
+          # a version in Python code never does. Compare the parsed versions, which ignore the prefix.
+          try:
+            expected = SemanticVersion.Parse(expectedVersion)
+            fromCode = SemanticVersion.Parse(versionInformation.Version)
+          except Exception as ex:
+            print(f"::error title=CompletePipeline::Can't parse version ('{expectedVersion}' / '{versionInformation.Version}'): {ex}")
+            exit(2)
+
+          if expected != fromCode:
             print(f"::error title=CompletePipeline::Expected version ({expectedVersion}) doesn't match the version in Python code ({versionInformation.Version}).")
             exit(2)
 
@@ -522,7 +532,6 @@ jobs:
     with:
       json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
       artifact-json-ids: >-
-        package_all
         unittesting_html:-*
         codecoverage_xml:-*
         codecoverage_json:-*
@@ -538,3 +547,7 @@ jobs:
         documentation_html
         #documentation_latex
         #documentation_pdf
+      json2: ${{ needs.UnitTestingParams.outputs.artifact_names }}
+      condition2: ${{ ! startsWith(github.ref, 'refs/tags') }}  # on a tagged run, 'PublishOnPyPI' consumes the package artifact and deletes it itself
+      artifact-json-ids2: >-
+        package_all

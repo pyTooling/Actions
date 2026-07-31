@@ -46,6 +46,28 @@ jobs:
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
 
     steps:
+      - name: ⚠️ Deprecation warning
+        shell: bash
+        run: |
+          printf "::warning title=Deprecated workflow::%s\n" \
+            "'ArtifactCleanUp.yml' is deprecated and will be removed in r8. Use 'CleanupArtifacts.yml' instead."
+          printf "\n"
+          printf "%s\n" "'ArtifactCleanUp.yml' is deprecated and will be removed in r8."
+          printf "%s\n" "Use 'CleanupArtifacts.yml' instead, which resolves artifact names from the"
+          printf "%s\n" "'artifact_names' JSON dictionary produced by 'Parameters.yml' and can delete"
+          printf "%s\n" "two independently guarded sets of artifacts."
+          printf "\n"
+          printf "%s\n" "Migration:"
+          printf "%s\n" "  * 'package'   -> 'json2' + 'artifact-json-ids2', guarded by 'condition2'."
+          printf "%s\n" "                  Set 'condition2' to an expression that is false on a tag ref"
+          printf "%s\n" "                  (negate a startsWith check against 'refs/tags'), so that the"
+          printf "%s\n" "                  current behaviour is kept: don't delete the package"
+          printf "%s\n" "                  artifact on tagged runs, so 'PublishOnPyPI.yml' can consume it."
+          printf "%s\n" "  * 'remaining' -> 'json' + 'artifact-json-ids' (deleted unconditionally),"
+          printf "%s\n" "                  or the 'others' input for literal artifact names."
+          printf "\n"
+          printf "%s\n" "See 'CompletePipeline.yml' for a worked example."
+
       - name: 🗑️ Delete package Artifacts
         uses: geekyeggo/delete-artifact@v6
         if: ${{ ! startsWith(github.ref, 'refs/tags') }}
