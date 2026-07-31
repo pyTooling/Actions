@@ -311,6 +311,7 @@ jobs:
       - PublishToGitHubPages
       - Install
       - IntermediateCleanUp
+    if: ${{ !cancelled() }}  # match 'CompletePipeline.yml': still clean up when an unrelated job failed
     with:
       json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
       artifact-json-ids: >-
