@@ -48,6 +48,15 @@ The job template generates various output parameters derived from
    3. Compute output parameters.
    4. Find associated pull-request.
 
+      Runs for :ref:`release commits <JOBTMPL/PrepareJob/Output/is_release_commit>` only - a merge commit on the
+      main-branch or a version-branch. A merge commit on the development-branch originates from a pull-request based on
+      the development-branch, which is not a release.
+
+      Merged pull-requests are searched by the merge commit's second parent, then reduced to those whose ``headRefOid``
+      **equals** it, because the second parent of a merge commit is the head commit of the merged branch. The search
+      alone would also list pull-requests that merely *contain* that commit. If a pull-request was closed and recreated
+      from the same branch, both share a head commit and the most recently merged one is used.
+
 .. topic:: Job Execution
 
    .. image:: ../../_static/pyTooling-Actions-PrepareJob.png
