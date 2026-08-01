@@ -397,12 +397,15 @@ jobs:
           git_submodule_paths=${git_submodule_paths}
           EOF
 
-# TODO: why not is_release_commit?
 # TODO: how to support version branches and hotfix releases on version branches?
 
+      # This step searches a merged Pull Request whose base is the release branch, so it must only run for merge
+      # commits that actually landed there. A merge commit on the development branch originates from a Pull Request
+      # based on the development branch and could never be found. 'is_release_commit' is exactly 'is_merge_commit'
+      # restricted to the main and version branches, and it's the same flag 'TriggerTaggedRelease' keys off.
       - name: 🔁 Find merged PullRequest from second parent of current SHA (${{ github.sha }})
         id: FindPullRequest
-        if: steps.Classify.outputs.is_merge_commit == 'true'
+        if: steps.Classify.outputs.is_release_commit == 'true'
         run: |
           set +e
 
@@ -426,26 +429,53 @@ jobs:
           fi
 
           printf "Search Pull Request to '%s' and branch containing SHA %s ... " "${{ inputs.release_branch }}" "${FATHER_SHA}"
-          PULL_REQUESTS=$(gh pr list --base "${{ inputs.release_branch }}" --search "${FATHER_SHA}" --state "merged" --json "title,number,mergedBy,mergedAt")
-          if [[ $? -ne 0 || "${PULL_REQUESTS}" == "" ]]; then
+          PULL_REQUESTS=$(gh pr list --base "${{ inputs.release_branch }}" --search "${FATHER_SHA}" --state "merged" --json "title,number,headRefOid,mergedBy,mergedAt")
+          if [[ $? -ne 0 ]]; then
             printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "${ANSI_LIGHT_RED}Couldn't find a merged Pull Request to '%s'. -> %s${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
-            printf "::error title=PullRequest::Couldn't find a merged Pull Request to '%s'. -> %s\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
+            printf "${ANSI_LIGHT_RED}Couldn't search Pull Requests to '%s'. -> %s${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
+            printf "::error title=PullRequest::Couldn't search Pull Requests to '%s'. -> %s\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
             exit 1
-          else
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
-
-            PR_TITLE="$(    printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].title")"
-            PR_NUMBER="$(   printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].number")"
-            PR_MERGED_BY="$(printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].mergedBy.login")"
-            PR_MERGED_AT="$(printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].mergedAt")"
-
-            printf "${ANSI_LIGHT_BLUE}Found Pull Request:${ANSI_NOCOLOR}\n"
-            printf "  %s\n" "Title:    ${PR_TITLE}"
-            printf "  %s\n" "Number:   ${PR_NUMBER}"
-            printf "  %s\n" "MergedBy: ${PR_MERGED_BY}"
-            printf "  %s\n" "MergedAt: ${PR_MERGED_AT} ($(date -d"${PR_MERGED_AT}" '+%d.%m.%Y - %H:%M:%S'))"
           fi
+          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+
+          # The search lists every Pull Request *containing* that commit, so it can report more than one - for example
+          # an older release Pull Request built from an ancestor. The second parent (father) of a merge commit is the
+          # head commit of the merged branch, so a Pull Request whose 'headRefOid' equals it is the one that created
+          # this merge commit. Newest first, in case a Pull Request was closed and redone from the same branch.
+          MATCHES=$(printf "%s\n" "${PULL_REQUESTS}" | jq --arg sha "${FATHER_SHA}" '[.[] | select(.headRefOid == $sha)] | sort_by(.mergedAt) | reverse')
+          MATCH_COUNT=$(printf "%s\n" "${MATCHES}" | jq 'length')
+
+          printf "Select Pull Request with head commit %s ... " "${FATHER_SHA}"
+          if [[ "${MATCH_COUNT}" -eq 0 ]]; then
+            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf "${ANSI_LIGHT_RED}No merged Pull Request to '%s' has head commit '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${FATHER_SHA}"
+            if [[ "$(printf "%s\n" "${PULL_REQUESTS}" | jq 'length')" -eq 0 ]]; then
+              printf "${ANSI_LIGHT_RED}The search returned no candidates at all.${ANSI_NOCOLOR}\n"
+            else
+              printf "${ANSI_LIGHT_RED}Candidates returned by the search: %s${ANSI_NOCOLOR}\n" "$(printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output '[.[] | "#\(.number) (\(.headRefOid[0:7]))"] | join(", ")')"
+            fi
+            printf "::error title=PullRequest::No merged Pull Request to '%s' has head commit '%s'.\n" "${{ inputs.release_branch }}" "${FATHER_SHA}"
+            exit 1
+          fi
+          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+
+          if [[ "${MATCH_COUNT}" -gt 1 ]]; then
+            # Rare, but possible: a Pull Request was closed and recreated from the same branch, so both share a head
+            # commit. The most recently merged one describes this release.
+            printf "${ANSI_LIGHT_YELLOW}%s Pull Requests share head commit '%s': %s${ANSI_NOCOLOR}\n" "${MATCH_COUNT}" "${FATHER_SHA}" "$(printf "%s\n" "${MATCHES}" | jq --raw-output '[.[] | "#\(.number)"] | join(", ")')"
+            printf "${ANSI_LIGHT_YELLOW}Using the most recently merged one.${ANSI_NOCOLOR}\n"
+          fi
+
+          PR_TITLE="$(    printf "%s\n" "${MATCHES}" | jq --raw-output ".[0].title")"
+          PR_NUMBER="$(   printf "%s\n" "${MATCHES}" | jq --raw-output ".[0].number")"
+          PR_MERGED_BY="$(printf "%s\n" "${MATCHES}" | jq --raw-output ".[0].mergedBy.login")"
+          PR_MERGED_AT="$(printf "%s\n" "${MATCHES}" | jq --raw-output ".[0].mergedAt")"
+
+          printf "${ANSI_LIGHT_BLUE}Found Pull Request:${ANSI_NOCOLOR}\n"
+          printf "  %s\n" "Title:    ${PR_TITLE}"
+          printf "  %s\n" "Number:   ${PR_NUMBER}"
+          printf "  %s\n" "MergedBy: ${PR_MERGED_BY}"
+          printf "  %s\n" "MergedAt: ${PR_MERGED_AT} ($(date -d"${PR_MERGED_AT}" '+%d.%m.%Y - %H:%M:%S'))"
 
           RELEASE_TAG_PATTERN='^${{ inputs.release_tag_pattern }}$'
           printf "Check Pull Request title against regexp '%s' ... " "${RELEASE_TAG_PATTERN}"
