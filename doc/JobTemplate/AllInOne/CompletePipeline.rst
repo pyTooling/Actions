@@ -95,6 +95,14 @@ It can be used for simple Python packages as well as namespace packages.
 
    .. include:: _Behavior.rst
 
+   Steps 6, 12 and 14 are optional and controlled by ``apptest`` and ``documentation_steps``. Disabling one of them
+   disables that step only, all remaining steps are executed as usual.
+
+   .. seealso::
+
+      :ref:`DEV/ConditionalJobs`
+        How a disabled - and therefore skipped - job influences the other jobs of a pipeline.
+
 
 .. topic:: Pipeline Graph
 
