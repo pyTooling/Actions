@@ -29,14 +29,16 @@ duplications within jobs.
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Install Python dependencies.
-   3. Compute the full package name and the package source directory.
-   4. Read :file:`pyproject.toml` and extract settings for:
+   2. Setup Python and install Python dependencies.
+   3. Read :file:`pyproject.toml` and extract settings for:
 
       * :term:`Coverage.py`
       * :term:`mypy`
       * :term:`pyEDAA.Reports`
       * :term:`pytest`
+
+      Each setting is emitted as a JSON object with ``directory``, ``filename`` and ``fullpath`` fields, so a consuming
+      job can pick whichever form it needs.
 
 .. topic:: Job Execution
 

@@ -43,10 +43,11 @@ The job template generates various output parameters derived from
 
 .. topic:: Behavior
 
-   1. Checkout repository.
-   2. Classify ``${{ github.ref }}`` into branch, tag or pull-request.
-   3. Compute output parameters.
-   4. Find associated pull-request.
+   1. Delay job execution by :ref:`JOBTMPL/PrepareJob/Input/pipeline-delay` seconds.
+   2. Checkout repository.
+   3. Dump the ``${{ github }}`` context into the job log.
+   4. Classify ``${{ github.ref }}`` into branch, tag or pull-request and compute all output parameters.
+   5. Find the associated pull-request.
 
       Runs for :ref:`release commits <JOBTMPL/PrepareJob/Output/is_release_commit>` only - a merge commit on the
       main-branch or a version-branch. A merge commit on the development-branch originates from a pull-request based on

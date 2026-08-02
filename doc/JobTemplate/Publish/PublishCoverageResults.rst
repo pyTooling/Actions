@@ -26,20 +26,23 @@ cloud services like :term:`CodeCov` or :term:`Codacy`.
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Download artifact matching the :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_artifacts_pattern`.
-   3. Install Python dependencies especially :pypi:`coverage`.
-   4. Rename SQLite database files within artifact download directory to match the required filename pattern for
-      Coverage.py's merge operation.
-   5. Report code coverage as table into job log.
-   6. Convert code coverage to Cobertura XML format.
-   7. Convert code coverage to JSON format.
-   8. Convert code coverage to HTML report (website).
-   9. Upload merged SQLite database as artifact.
-   10. Upload Cobertura XML file as artifact.
-   11. Upload JSON file as artifact.
-   12. Upload HTML report as artifact.
-   13. Publish Cobertura report to CodeCov.
-   14. Publish Cobertura report to Codacy.
+   2. Download all artifacts matching :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_artifacts_pattern`.
+   3. Install Python dependencies, especially :pypi:`coverage`.
+   4. Rename the SQLite database files in the download directory to the filename pattern Coverage.py's
+      combine operation expects, and move them into a common directory.
+   5. Combine the SQLite databases into a single database using Coverage.py.
+   6. Report code coverage as a table into the job log.
+   7. Convert the code coverage to Cobertura XML format.
+   8. Convert the code coverage to JSON format.
+   9. Convert the code coverage to an HTML report (website).
+   10. Upload the combined SQLite database as an artifact.
+   11. Upload the Cobertura XML file as an artifact.
+   12. Upload the JSON file as an artifact.
+   13. Upload the HTML report as an artifact.
+   14. Publish the Cobertura report to CodeCov.
+   15. Publish the Cobertura report to Codacy.
+
+   Each conversion and upload runs only if the corresponding artifact parameter is non-empty.
 
 .. topic:: Job Execution
 

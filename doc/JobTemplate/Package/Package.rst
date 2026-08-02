@@ -18,14 +18,18 @@ as an artifact.
 
    1. Checkout repository.
    2. Setup Python and install dependencies.
-   3. Package Python sources:
+   3. Package the Python sources:
 
       * If parameter :ref:`JOBTMPL/Package/Input/requirements` is empty, use :pypi:`build` for packaging and execute
         ``python -m build ...``.
       * If parameter :ref:`JOBTMPL/Package/Input/requirements` is ``no-isolation``, use :pypi:`build` for packaging in
         *no-isolation* mode executing ``python -m build --no-isolation ...``.
-      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is non-empty, use :pypi:`setuptools` for package and
+      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is non-empty, use :pypi:`setuptools` for packaging and
         execute ``python setup.py ...``.
+
+      Both a source distribution and a wheel are built.
+
+   4. Upload both packages as a single artifact.
 
 .. topic:: Job Execution
 

@@ -24,15 +24,18 @@ Supported services are:
 
 .. topic:: Behavior
 
-   1. Checkout repository
-   2. Download multiple artifacts containing test report summaries in JUnit XML format conforming to an artifact name
-      pattern (see :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern`) for limiting the number of
-      downloaded artifacts and the hereby generated traffic.
-   3. Rename the found JUnit XML files.
-   4. Merge all found JUnit XML files using :term:`pyEDAA.Reports` into a new JUnit XML file. |br|
-      Optionally, apply certain transformation and cleanup operations to the JUnit report structure.
-   5. Publish test results as a markdown report page to GitHub Actions using :term:`Test Reporter`.
-   6. Publish test results to :term:`Codecov` using :gh:`codecov/test-results-action`.
+   1. Checkout repository.
+   2. Download the artifacts whose names match
+      :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern`. The pattern limits the number of
+      downloaded artifacts and thereby the generated traffic.
+   3. Install :term:`pyEDAA.Reports`.
+   4. Rename the found JUnit XML files and move them into a common directory.
+   5. Merge all found JUnit XML files into a new JUnit XML file. |br|
+      Optionally, apply transformation and cleanup operations to the report structure - see
+      :ref:`JOBTMPL/PublishTestResults/Input/additional_merge_args`.
+   6. Publish the test results as a Markdown report page to GitHub Actions using :term:`Test Reporter`.
+   7. Publish the test results to :term:`Codecov`.
+   8. Upload the merged JUnit XML file as an artifact.
 
 .. topic:: Job Execution
 

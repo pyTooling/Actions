@@ -19,8 +19,12 @@ can be switched by a parameter.
 .. topic:: Behavior
 
    1. Download the LaTeX artifact.
-   2. Build the PDF using ``latexmk``.
-   3. Upload the generated PDF as an artifact.
+   2. Optionally update the MiKTeX packages in the container - see
+      :ref:`JOBTMPL/LaTeXDocumentation/Input/update`.
+   3. Build the PDF using ``latexmk`` inside the MiKTeX container.
+   4. Upload the generated PDF as an artifact.
+
+   Steps 3 and 4 are skipped if :ref:`JOBTMPL/LaTeXDocumentation/Input/pdf_artifact` is empty.
 
 .. topic:: Dependencies
 

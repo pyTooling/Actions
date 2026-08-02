@@ -15,10 +15,11 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
 
 .. topic:: Behavior
 
-   1. Download package artifact
-   2. Publish source package(s) (``*.tar.gz``)
-   3. Publish wheel package(s) (``*.whl``)
-   4. Delete the artifact
+   1. Download the package artifact.
+   2. Setup Python and install dependencies (:term:`twine`).
+   3. Publish the wheel package(s) (:file:`*.whl`).
+   4. Publish the source package(s) (:file:`*.tar.gz`).
+   5. Delete the artifact - see :ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`.
 
 .. topic:: Preconditions
 

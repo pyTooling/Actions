@@ -15,9 +15,23 @@ This job template publishes HTML content from artifacts of other jobs to GitHub 
 
 .. topic:: Behavior
 
-   1. Checkout repository.
-   2. Download artifacts.
-   3. Push HTML files to branch ``gh-pages``.
+   1. Download the HTML documentation artifact.
+   2. Optionally download the code coverage report artifact into :file:`coverage/`.
+   3. Optionally download the static typing report artifact into :file:`typing/`.
+   4. Delete a left-over GitHub Pages artifact from a previous run.
+   5. Upload the merged directory as a GitHub Pages artifact.
+   6. Deploy that artifact to GitHub Pages.
+   7. Delete the GitHub Pages artifact - see :ref:`JOBTMPL/PublishToGitHubPages/Input/cleanup`.
+
+   .. note::
+
+      The job merges up to three artifacts into a single website: the documentation at the root, the code
+      coverage report at :file:`/coverage` and the static typing report at :file:`/typing`.
+
+   .. attention::
+
+      Steps 5 to 7 are skipped for ``pull_request`` events, because a pull-request must not overwrite the
+      published site. The repository's GitHub Pages source has to be set to *GitHub Actions*.
 
 .. topic:: Job Execution
 

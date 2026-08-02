@@ -27,18 +27,27 @@ This template creates a GitHub Release Page and uploads assets to that page.
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Install dependencies.
-   3. Check if it's a full release or nightly release (rolling release).
-   4. Delete old release.
-   5. Assemble release notes.
-   6. Create a new or recreate the release page as draft.
-   7. Attach files from artifacts as assets:
+   2. Install dependencies (``zstd``).
+   3. Determine whether this is a full release or a nightly release (rolling release).
+   4. For a nightly release, delete the previous release page.
+   5. Create the release page as a draft - a new page for a release, a recreated page for a nightly.
+   6. Attach files from artifacts as assets:
 
-      1. Download artifact
-      2. Optionally, create compressed archives of that content.
-      3. Upload assets to release page.
+      1. Download the artifact.
+      2. Unpack the tarball created by :gh:`pyTooling/upload-artifact` - see
+         :ref:`JOBTMPL/PublishReleaseNotes/Input/tarball-name`.
+      3. Optionally create compressed archives of that content.
+      4. Upload the assets to the release page.
+      5. Optionally record the asset in the JSON inventory - see
+         :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`.
 
-   8. Remove draft state from new release page.
+   7. Assemble the release notes and update the release page with them.
+   8. Remove the draft state from the release page.
+
+   .. note::
+
+      The page is created *before* the assets are attached and the notes are written, so a failure while
+      uploading assets leaves a draft page behind rather than a published, incomplete release.
 
 .. topic:: Job Execution
 

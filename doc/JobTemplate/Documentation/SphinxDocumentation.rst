@@ -24,17 +24,30 @@ website and a LaTeX documentation. This LaTeX document can be translated using e
 
 .. topic:: Behavior
 
+   The template defines two independent jobs, ``Sphinx-HTML`` and ``Sphinx-LaTeX``, which run in parallel.
+   Each is enabled by its artifact parameter: a job whose artifact name is empty is skipped.
+
+   Both jobs perform the same preparation:
+
    1. Checkout repository.
-   2. Install system dependencies.
+   2. Install system dependencies (``graphviz``).
    3. Setup Python environment and install Python dependencies.
-   4. Download optional artifacts for integration of further reports into the documentation.
-   5. Build the HTML documentation using Sphinx.
-   6. Build the LaTeX documentation using Sphinx.
+   4. Download the optional unit test and code coverage artifacts, so their reports can be integrated into
+      the documentation.
 
-      1. Apply LaTeX workaround I.
-      2. Apply LaTeX workaround II.
+   ``Sphinx-HTML`` then:
 
-   7. Upload the HTML and LaTeX artifacts.
+   5. Builds the HTML documentation using Sphinx.
+   6. Uploads the HTML documentation as an artifact.
+
+   ``Sphinx-LaTeX`` then:
+
+   5. Builds the LaTeX documentation using Sphinx.
+   6. Applies two workarounds to the generated LaTeX sources |br|
+      (`sphinx#13190 <https://github.com/sphinx-doc/sphinx/issues/13190>`__ and
+      `sphinx#13189 <https://github.com/sphinx-doc/sphinx/issues/13189>`__).
+   7. Uploads the LaTeX documentation as an artifact, which :ref:`JOBTMPL/LaTeXDocumentation` translates
+      to PDF.
 
 .. topic:: Job Execution
 

@@ -15,8 +15,11 @@ variant after test results have been merged into a single file.
 
 .. topic:: Behavior
 
-   1. Delete all SQLite code coverage artifacts if given as a parameter.
-   2. Delete all JUnit XML report artifacts if given as a parameter.
+   1. Delete all SQLite code coverage artifacts, if a prefix was given.
+   2. Delete all JUnit XML report artifacts, if a prefix was given.
+
+   The job removes the per-matrix-job artifacts once they have been merged, so they don't count against the
+   repository's artifact storage for the retention period.
 
 .. topic:: Job Execution
 

@@ -15,10 +15,14 @@ to a HTML report and uploaded as an artifact.
 
 .. topic:: Behavior
 
-   1. Checkout repository
-   2. Setup Python and install dependencies
-   3. Run type checking.
-   4. Upload type checking report as an artifact
+   1. Checkout repository.
+   2. Setup Python and install dependencies (:term:`mypy`).
+   3. Run the static type check.
+   4. Upload the HTML report as an artifact.
+   5. Upload the JUnit XML report as an artifact.
+   6. Upload the Cobertura XML report as an artifact.
+
+   Each upload runs only if the corresponding artifact parameter is non-empty.
 
 .. topic:: Job Execution
 

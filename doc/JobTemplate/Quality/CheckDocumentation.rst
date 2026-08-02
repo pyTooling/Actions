@@ -18,8 +18,8 @@ The ``CheckDocumentation`` job checks the level of documentation coverage for Py
 
    1. Checkout repository.
    2. Setup Python environment and install dependencies.
-   3. Run ``docstr_coverage``.
-   4. Run ``interrogate``.
+   3. Run ``interrogate``.
+   4. Run ``docstr_coverage``.
 
 .. topic:: Job Execution
 

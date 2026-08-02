@@ -29,12 +29,14 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Setup environment and install dependencies (``apt``, ``homebrew``, ``pacman``, ...).
-   3. Setup Python and install dependencies (:term:`pip`).
-   4. Run instructions from ``*_before_script`` parameter.
-   5. Run unit tests using *pytest* and if enabled in combination with *Coverage.py*.
-   6. Convert gathered results to other formats.
-   7. Upload results (test reports, code coverage reports, ...) as an artifacts.
+   2. Install system dependencies (``apt``, ``homebrew``, ``pacboy``).
+   3. Setup MSYS2 or Python, depending on the matrix entry, and install Python dependencies (:term:`pip`).
+   4. Run the instructions given by the ``*_before_script`` parameter of the current system.
+   5. Run the unit tests using *pytest*, in combination with :term:`Coverage.py` if code coverage is enabled.
+   6. Convert the collected code coverage to Cobertura XML, JSON and HTML format.
+   7. Upload the test report and the code coverage reports as artifacts.
+
+   Each conversion and upload runs only if the corresponding artifact parameter is non-empty.
 
 .. topic:: Job Execution
 

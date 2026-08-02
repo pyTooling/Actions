@@ -16,10 +16,11 @@ the installation is verified. This aims for packaging and dependency mistakes in
 
 .. topic:: Behavior
 
-   * Download Python package as artifact.
-   * Prepare the Python environment.
-   * Install the Python package using :term:`pip`.
-   * Read out and verify the package version.
+   1. Download the wheel package artifact.
+   2. Setup MSYS2 or Python, depending on the matrix entry.
+   3. Install Python dependencies (:term:`pip`).
+   4. Install the Python package from the downloaded wheel.
+   5. Read out the installed package's version and verify it matches the expected version.
 
 .. topic:: Job Execution
 
