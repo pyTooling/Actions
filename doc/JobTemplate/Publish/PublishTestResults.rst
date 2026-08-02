@@ -86,7 +86,7 @@ Simple Example
 
    jobs:
      PublishTestResults:
-       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r7
 
 Complex Example
 ===============
@@ -101,7 +101,7 @@ Complex Example
        # ...
 
      PublishTestResults:
-       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r7
        needs:
          - CodeCoverage
          - UnitTesting
@@ -131,13 +131,7 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
 | :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect`       | no       | string | ``'pyTest-JUnit'``                                                  |
 +--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/merge-input-dialect`        | no       | string | ``'pyTest-JUnit'``                                                  |
-+--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect`       | no       | string | ``'pyTest-JUnit'``                                                  |
-+--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
 | :ref:`JOBTMPL/PublishTestResults/Input/additional_merge_args`      | no       | string | ``'"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'`` |
-+--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/testsuite-summary-name`     | no       | string | ``''``                                                              |
 +--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
 | :ref:`JOBTMPL/PublishTestResults/Input/publish`                    | no       | string | ``'true'``                                                          |
 +--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
@@ -182,7 +176,10 @@ unittest_artifacts_pattern
 :Required:        no
 :Default Value:   ``'*-*TestReportSummary-XML-*'``
 :Possible Values: Any valid artifact matching pattern using fixed text and ``*`` characters.
-:Description:     tbd
+:Description:     Pattern selecting the artifacts to download and merge. |br|
+                  The default matches the per-matrix-job artifacts of unit, platform and application testing, which all end in
+                  ``TestReportSummary-XML-<environment>``. Restricting the pattern limits the number of downloaded artifacts and
+                  thereby the generated traffic.
 
 
 .. _JOBTMPL/PublishTestResults/Input/merged_junit_filename:
@@ -250,30 +247,6 @@ merged_junit_artifact
 :Description:
 
 
-.. _JOBTMPL/PublishTestResults/Input/merge-input-dialect:
-
-merge-input-dialect
-===================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'pyTest-JUnit'``
-:Possible Values: tbd
-:Description:     tbd
-
-
-.. _JOBTMPL/PublishTestResults/Input/merge-output-dialect:
-
-merge-output-dialect
-====================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'pyTest-JUnit'``
-:Possible Values: tbd
-:Description:     tbd
-
-
 .. _JOBTMPL/PublishTestResults/Input/additional_merge_args:
 
 additional_merge_args
@@ -282,20 +255,10 @@ additional_merge_args
 :Type:            string
 :Required:        no
 :Default Value:   ``'"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'``
-:Possible Values: tbd
-:Description:     tbd
-
-
-.. _JOBTMPL/PublishTestResults/Input/testsuite-summary-name:
-
-testsuite-summary-name
-======================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``''``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any additional command line arguments accepted by ``pyedaa-reports unittest``.
+:Description:     Additional arguments passed to the merge operation. |br|
+                  The default rewrites the dunder ``__init__`` test suites and reduces the hierarchy depth, so the merged
+                  report is not dominated by the directory structure of the test suite.
 
 
 .. _JOBTMPL/PublishTestResults/Input/publish:
@@ -306,8 +269,10 @@ publish
 :Type:            string
 :Required:        no
 :Default Value:   ``'true'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the merged results as a report page in the pipeline summary. |br|
+                  The report page is created when this or :ref:`JOBTMPL/PublishTestResults/Input/dorny` is ``'true'`` **and**
+                  :ref:`JOBTMPL/PublishTestResults/Input/report_title` is not empty.
 
 
 .. _JOBTMPL/PublishTestResults/Input/report_title:
@@ -318,8 +283,10 @@ report_title
 :Type:            string
 :Required:        no
 :Default Value:   ``'Unit Test Results'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any title. An empty string disables the report page.
+:Description:     Title of the report page in the pipeline summary. |br|
+                  An empty title skips publishing, regardless of :ref:`JOBTMPL/PublishTestResults/Input/publish` and
+                  :ref:`JOBTMPL/PublishTestResults/Input/dorny`.
 
 
 .. _JOBTMPL/PublishTestResults/Input/dorny:
@@ -330,8 +297,8 @@ dorny
 :Type:            string
 :Required:        no
 :Default Value:   ``'true'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the merged results using :term:`Test Reporter` (:gh:`dorny/test-reporter`).
 
 
 .. _JOBTMPL/PublishTestResults/Input/codecov:
@@ -342,8 +309,9 @@ codecov
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the merged results to :term:`Codecov`. |br|
+                  Requires the ``CODECOV_TOKEN`` secret.
 
 
 .. _JOBTMPL/PublishTestResults/Input/codecov_flags:
@@ -354,8 +322,9 @@ codecov_flags
 :Type:            string
 :Required:        no
 :Default Value:   ``'unittest'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: A comma separated list of Codecov flags.
+:Description:     Flags attached to the upload, so Codecov can separate the results of different test kinds. |br|
+                  Only used when :ref:`JOBTMPL/PublishTestResults/Input/codecov` is ``'true'``.
 
 
 .. _JOBTMPL/PublishTestResults/Secrets:

@@ -77,17 +77,17 @@ The following
 
    jobs:
      ConfigParams:
-       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
        with:
          package_name: myPackage
 
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
        with:
          package_name: myPackage
 
      UnitTesting:
-       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
        needs:
          - ConfigParams
          - UnitTestingParams
@@ -96,7 +96,7 @@ The following
          coverage_sqlite_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
 
      PublishCoverageResults:
-       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r7
        needs:
          - ConfigParams
          - UnitTestingParams
@@ -183,7 +183,9 @@ coverage_artifacts_pattern
 :Required:        no
 :Default Value:   ``'*-CodeCoverage-SQLite-*'``
 :Possible Values: Any valid artifact matching pattern using fixed text and ``*`` characters.
-:Description:     tbd
+:Description:     Pattern selecting the SQLite coverage artifacts to download and combine. |br|
+                  The default matches the per-matrix-job artifacts, which end in ``CodeCoverage-SQLite-<environment>``.
+                  Restricting the pattern limits the number of downloaded artifacts and thereby the generated traffic.
 
 
 .. _JOBTMPL/PublishCoverageResults/Input/coverage_config:
@@ -253,10 +255,10 @@ coverage_report_xml
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                      PublishCoverageResults:
-                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r7
                        needs:
                          - ConfigParams
                        with:
@@ -293,10 +295,10 @@ coverage_report_json
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                      PublishCoverageResults:
-                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r7
                        needs:
                          - ConfigParams
                        with:
@@ -326,10 +328,10 @@ coverage_report_html
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                      PublishCoverageResults:
-                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r7
                        needs:
                          - ConfigParams
                        with:

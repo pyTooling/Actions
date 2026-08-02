@@ -67,7 +67,7 @@ Instantiation
 *************
 
 The following instantiation example creates a ``UnitTesting`` job derived from job template ``UnitTesting`` version
-`@r6`. For providing the job matrix as a JSON string, the :ref:`JOBTMPL/Parameters` job template is used. Additionally,
+`@r7`. For providing the job matrix as a JSON string, the :ref:`JOBTMPL/Parameters` job template is used. Additionally,
 the job needs configuration settings, which are stored in :file:`pyproject.toml`. Instead of duplicating these settings,
 the :ref:`JOBTMPL/ExtractConfiguration` job template is used to extract these settings.
 
@@ -75,15 +75,15 @@ the :ref:`JOBTMPL/ExtractConfiguration` job template is used to extract these se
 
    jobs:
      ConfigParams:
-       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
        with:
          package_name: myPackage
 
      UnitTesting:
-       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
        needs:
          - ConfigParams
          - UnitTestingParams
@@ -164,7 +164,7 @@ Parameter Summary
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/UnitTesting/Input/coverage_report_json`      | no       | string | :jsoncode:`{"directory": "report/coverage", "filename":  "coverage.json", "fullpath":  "report/coverage/coverage.json"}`         |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/coverage_report_html`      | no       | string | :jsoncode:`{"directory": "report/coverage"}`                                                                                     |
+| :ref:`JOBTMPL/UnitTesting/Input/coverage_report_html`      | no       | string | :jsoncode:`{"directory": "report/coverage/html"}`                                                                                |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/UnitTesting/Input/unittest_xml_artifact`     | no       | string | ``''``                                                                                                                           |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
@@ -536,10 +536,10 @@ unittest_report_xml
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
                        needs:
                          - ConfigParams
                        with:
@@ -587,10 +587,10 @@ coverage_report_xml
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
                        needs:
                          - ConfigParams
                        with:
@@ -627,10 +627,10 @@ coverage_report_json
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
                        needs:
                          - ConfigParams
                        with:
@@ -660,10 +660,10 @@ coverage_report_html
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
                        needs:
                          - ConfigParams
                        with:

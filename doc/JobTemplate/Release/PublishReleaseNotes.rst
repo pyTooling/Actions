@@ -71,10 +71,10 @@ Instantiation
 
    jobs:
      Prepare:
-       uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r7
 
      Release:
-       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r7
        needs:
          - Prepare
        if: needs.Prepare.outputs.is_release_tag == 'true'
@@ -267,16 +267,6 @@ Parameter Summary
 +---------------------------------------------------------------+----------+---------+-----------------------------------------+
 | :ref:`JOBTMPL/PublishReleaseNotes/Input/can-fail`             | no       | boolean | ``false``                               |
 +---------------------------------------------------------------+----------+---------+-----------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/tarball-name`         | no       | string  | ``'__pyTooling_upload_artifact__.tar'`` |
-+---------------------------------------------------------------+----------+---------+-----------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`       | no       | string  | ``''``                                  |
-+---------------------------------------------------------------+----------+---------+-----------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-version`    | no       | string  | ``''``                                  |
-+---------------------------------------------------------------+----------+---------+-----------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-categories` | no       | string  | ``''``                                  |
-+---------------------------------------------------------------+----------+---------+-----------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/can-fail`             | no       | boolean | ``false``                               |
-+---------------------------------------------------------------+----------+---------+-----------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishReleaseNotes/Secrets>`
 
@@ -460,7 +450,7 @@ replacements
                   .. code-block:: yaml
 
                      ReleasePage:
-                       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r7
                        needs:
                          - Prepare
                        if: needs.Prepare.outputs.is_release_tag == 'true'
@@ -536,36 +526,10 @@ inventory-categories
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: A colon separated list of identifiers used as category names in an inventory JSON.
+:Possible Values: A comma separated list of identifiers used as category names in an inventory JSON.
 :Description:     For decoding hierarchy levels (categories) in an inventory JSON, the hierarchy of categories can be
                   added to the inventoy JSON. |br|
                   See :ref:`JOBTMPL/PublishReleaseNotes/Inventory` for more details.
-
-
-.. _JOBTMPL/PublishReleaseNotes/Input/tarball-name:
-
-tarball-name
-============
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'__pyTooling_upload_artifact__.tar'``
-:Possible Values: Any valid name for a tarball file.
-:Description:
-                  .. todo:: PublishReleaseNotes::tarball-name Needs documentation.
-
-
-.. _JOBTMPL/PublishReleaseNotes/Input/can-fail:
-
-can-fail
-========
-
-:Type:            :red:`boolean`
-:Required:        no
-:Default Value:   ``false``
-:Possible Values: ``false``, ``true``
-:Description:
-                  .. todo:: PublishReleaseNotes::can-fail Needs documentation.
 
 
 .. _JOBTMPL/PublishReleaseNotes/Input/tarball-name:
@@ -580,44 +544,6 @@ tarball-name
 :Description:     Name of the tarball inside an artifact uploaded by :gh:`pyTooling/upload-artifact`. |br|
                   That action packs the uploaded files into a tarball to preserve file modes and symlinks. When an
                   asset is attached to the release page, the tarball is unpacked again.
-
-.. _JOBTMPL/PublishReleaseNotes/Input/inventory-json:
-
-inventory-json
-==============
-
-:Type:            string
-:Required:        no
-:Default Value:   ``''``
-:Possible Values: Any valid file name, e.g. ``'inventory.json'``. An empty string disables the inventory.
-:Description:     File name of a machine readable inventory of all release assets, attached to the release page as an
-                  additional asset. |br|
-                  Consumers can read it instead of scraping the release page - GHDL's nightly release uses it to map
-                  operating systems to installer files.
-
-.. _JOBTMPL/PublishReleaseNotes/Input/inventory-version:
-
-inventory-version
-=================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``''``
-:Possible Values: Any version string.
-:Description:     Version written into the ``version`` field of the inventory. |br|
-                  Only meaningful together with :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`.
-
-.. _JOBTMPL/PublishReleaseNotes/Input/inventory-categories:
-
-inventory-categories
-====================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``''``
-:Possible Values: A comma separated list of category names.
-:Description:     Categories written into the inventory for each asset. |br|
-                  Only meaningful together with :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`.
 
 .. _JOBTMPL/PublishReleaseNotes/Input/can-fail:
 
@@ -651,17 +577,8 @@ release-page
 
 :Type:            string
 :Description:     Returns the URL to the release page.
-:Example:         ``tbd``
+:Example:         ``https://github.com/pyTooling/Actions/releases/tag/v7.14.2``
 
-
-.. _JOBTMPL/PublishReleaseNotes/Output/release-page:
-
-release-page
-============
-
-:Type:            string
-:Possible Values: A URL, e.g. ``https://github.com/pyTooling/Actions/releases/tag/v7.14.2``.
-:Description:     URL of the created or updated release page.
 
 .. _JOBTMPL/PublishReleaseNotes/Optimizations:
 

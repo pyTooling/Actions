@@ -10,7 +10,11 @@ This job template publishes HTML content from artifacts of other jobs to GitHub 
 
 .. topic:: Features
 
-   tbd
+   * Merge up to three artifacts into a single website: the documentation at the root, the code coverage report at
+     :file:`/coverage` and the static typing report at :file:`/typing`.
+   * Deploy the result to GitHub Pages using GitHub's own deployment actions, so no ``gh-pages`` branch is needed.
+   * Skip the deployment for ``pull_request`` events, so a pull-request cannot overwrite the published site.
+   * Optionally delete the GitHub Pages artifact afterwards.
 
 
 .. topic:: Behavior
@@ -67,7 +71,7 @@ Instantiation
              # ...
 
            PublishToGitHubPages:
-             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r6
+             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r7
              needs:
                - BuildTheDocs
              with:
@@ -82,7 +86,7 @@ Instantiation
 
          jobs:
            PublishToGitHubPages:
-             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r6
+             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r7
              needs:
                - Params
                - BuildTheDocs

@@ -59,7 +59,7 @@ Simple Example
       :columns: 5
 
       The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version
-      ``@r6``. It only requires a :ref:`JOBTMPL/Parameters/Input/package_name` parameter to create the artifact names.
+      ``@r7``. It only requires a :ref:`JOBTMPL/Parameters/Input/package_name` parameter to create the artifact names.
 
    .. grid-item::
       :columns: 7
@@ -68,12 +68,12 @@ Simple Example
 
          jobs:
            Params:
-             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
              with:
                package_name: myPackage
 
            UnitTesting:
-             uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+             uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
              needs:
                - Params
              with:
@@ -107,7 +107,7 @@ Complex Example
 
          jobs:
            UnitTestingParams:
-             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
              with:
                package_namespace:   myFramework
                package_name:        Extension
@@ -117,7 +117,7 @@ Complex Example
                exclude_list:        'windows:pypy-3.10 windows:pypy-3.11'
 
            PerformanceTestingParams:
-             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
              with:
                package_namespace:   myFramework
                package_name:        Extension
@@ -125,7 +125,7 @@ Complex Example
                system_list:         'ubuntu windows macos macos-arm'
 
            PlatformTestingParams:
-             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
              with:
                package_namespace:   myFramework
                package_name:        Extension
@@ -200,8 +200,6 @@ Parameter Summary
 | :ref:`JOBTMPL/Parameters/Input/macos_intel_image`    | no       | string | ``'macos-15-intel'``                                                       |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/macos_arm_image`      | no       | string | ``'macos-15'``                                                             |
-+------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/pipeline-delay`       | no       | number | ``0``                                                                      |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/version_file`         | no       | string | ``'__init__.py'``                                                          |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -296,7 +294,7 @@ package_namespace
 
                            jobs:
                              ConfigParams:
-                               uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                               uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                                with:
                                  package_namespace: myFramework
                                  package_name:      Extension
@@ -345,7 +343,7 @@ package_name
 
                            jobs:
                              ConfigParams:
-                               uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                               uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                                with:
                                  package_name: myPackage
 
@@ -428,7 +426,7 @@ include_list
 
                      jobs:
                        ConfigParams:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            package_name: myPackage
                            include_list: "ubuntu:3.11 macos:3.11"
@@ -450,7 +448,7 @@ exclude_list
 
                      jobs:
                        ConfigParams:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            package_name: myPackage
                            exclude_list: "windows:pypy-3.8 windows:pypy-3.9"
@@ -473,7 +471,7 @@ disable_list
 
                      jobs:
                        ConfigParams:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            package_name: myPackage
                            disable_list: "windows:3.10 windows:3.11"
@@ -556,18 +554,6 @@ macos_arm_image
 :Description:     Name of the macOS aarch64 image and version used to run a macOS ARM jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
 
 
-.. _JOBTMPL/Parameters/Input/pipeline-delay:
-
-pipeline-delay
-==============
-
-:Type:            number
-:Required:        no
-:Default Value:   ``0``
-:Possible Values: Any integer number.
-:Description:     Slow down this job, to delay the startup of the GitHub Action pipline.
-
-
 .. _JOBTMPL/Parameters/Input/version_file:
 
 version_file
@@ -628,12 +614,12 @@ python_version
 
                      jobs:
                        Params:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            name: pyTooling
 
                        CodeCoverage:
-                         uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r7
                          needs:
                            - Params
                          with:
@@ -709,12 +695,12 @@ artifact_names
 
                      jobs:
                        Params:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            name: pyTooling
 
                        Coverage:
-                         uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
                          needs:
                            - Params
                          with:
@@ -743,12 +729,12 @@ python_jobs
 
                      jobs:
                        Params:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            name: pyDummy
 
                        UnitTesting:
-                         uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
                          needs:
                            - Params
                          with:
