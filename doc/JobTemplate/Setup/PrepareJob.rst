@@ -519,12 +519,7 @@ has_submodules
 
 :Type:            string
 :Possible Values: ``'true'`` / ``'false'``
-:Description:     The repository contains Git submodules.
-
-                  .. attention::
-
-                     This output is currently always ``'false'``: the detection tests for a file named
-                     :file:`.gitsubmodules`, while Git's file is named :file:`.gitmodules`.
+:Description:     The repository contains a :file:`.gitmodules` file.
 
 .. _JOBTMPL/PrepareJob/Output/git_submodule_count:
 
@@ -541,7 +536,7 @@ git_submodule_names
 ===================
 
 :Type:            string
-:Possible Values: A space separated list of submodule names.
+:Possible Values: A colon separated list of submodule names, e.g. ``'libA:libB'``.
 :Description:     Names of the Git submodules registered in the repository.
 
 .. _JOBTMPL/PrepareJob/Output/git_submodule_paths:
@@ -550,7 +545,7 @@ git_submodule_paths
 ===================
 
 :Type:            string
-:Possible Values: A space separated list of paths.
+:Possible Values: A colon separated list of paths, e.g. ``'deps/libA:deps/libB'``.
 :Description:     Paths of the Git submodules registered in the repository.
 
 .. _JOBTMPL/PrepareJob/Optimizations:

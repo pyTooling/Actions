@@ -177,12 +177,12 @@ artifact
 :Required:        yes
 :Default Value:   — — — —
 :Possible Values: Any valid artifact name.
-:Description:     Name used for the bandit report.
+:Description:     Name of the package artifact.
 
-                  .. attention::
+                  .. note::
 
-                     The *Bandit* step is guarded by ``inputs.artifact != ''``, so passing an empty string silently
-                     disables the security scan while the job still reports success.
+                     The template currently does not reference this parameter. It is kept because it is declared
+                     ``required: true`` and removing it would break consumers that pass it.
 
 
 .. _JOBTMPL/CheckCodeQuality/Input/requirements:
