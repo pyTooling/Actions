@@ -52,7 +52,6 @@ duplications within jobs.
 
      * :pypi:`wheel`
 
-
 .. _JOBTMPL/ExtractConfiguration/Instantiation:
 
 Instantiation

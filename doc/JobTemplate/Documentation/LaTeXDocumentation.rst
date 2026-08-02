@@ -36,10 +36,8 @@ can be switched by a parameter.
 
      * :gh:`actions/upload-artifact`
 
-   * :gh:`addnab/docker-run-action`
-
-     * :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>`
-
+   * The job runs inside the MiKTeX container given by
+     :ref:`JOBTMPL/LaTeXDocumentation/Input/miktex_image`, which provides ``latexmk``.
 
 .. _JOBTMPL/LaTeXDocumentation/Instantiation:
 

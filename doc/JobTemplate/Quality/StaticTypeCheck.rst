@@ -33,14 +33,13 @@ to a HTML report and uploaded as an artifact.
 
    * :gh:`actions/checkout`
    * :gh:`actions/setup-python`
-   * pip
-
-     * Python packages specified via :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`.
-
    * :gh:`pyTooling/upload-artifact`
 
      * :gh:`actions/upload-artifact`
 
+   * pip
+
+     * :pypi:`mypy`
 
 .. _JOBTMPL/StaticTypeCheck/Instantiation:
 

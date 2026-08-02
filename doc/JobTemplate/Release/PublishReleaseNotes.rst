@@ -57,12 +57,10 @@ This template creates a GitHub Release Page and uploads assets to that page.
 .. topic:: Dependencies
 
    * :gh:`actions/checkout`
-   * ``gh`` (GitHub command line interface)
-   * ``jq`` (JSON processing)
+   * :gh:`GitHub command line tool 'gh' <cli/cli>`
    * apt
 
-     * zstd
-
+     * ``zstd``
 
 .. _JOBTMPL/PublishReleaseNotes/Instantiation:
 

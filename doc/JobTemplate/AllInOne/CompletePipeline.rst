@@ -157,6 +157,18 @@ It can be used for simple Python packages as well as namespace packages.
                   :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
 
             * :ref:`pyTooling/Actions/.github/workflows/ApplicationTesting.yml <JOBTMPL/ApplicationTesting>`
+
+              * :gh:`actions/checkout`
+              * :gh:`msys2/setup-msys2`
+              * :gh:`actions/setup-python`
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+
+              * :gh:`pyTooling/upload-artifact`
+
+                * :gh:`actions/upload-artifact`
+
             * :ref:`pyTooling/Actions/.github/workflows/CheckDocumentation.yml <JOBTMPL/CheckDocumentation>`
 
               * :gh:`actions/checkout`
@@ -167,6 +179,28 @@ It can be used for simple Python packages as well as namespace packages.
                 * :pypi:`interrogate`
 
             * :ref:`pyTooling/Actions/.github/workflows/StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`
+
+              * :gh:`actions/checkout`
+              * :gh:`actions/setup-python`
+              * :gh:`pyTooling/upload-artifact`
+
+                * :gh:`actions/upload-artifact`
+
+              * pip
+
+                * :pypi:`mypy`
+
+            * :ref:`pyTooling/Actions/.github/workflows/CheckCodeQuality.yml <JOBTMPL/CheckCodeQuality>`
+
+              * :gh:`actions/checkout`
+              * :gh:`actions/setup-python`
+              * :gh:`dorny/test-reporter`
+              * pip
+
+                * :pypi:`bandit`
+                * :pypi:`radon`
+                * :pypi:`pylint`
+
             * :ref:`pyTooling/Actions/.github/workflows/Package.yml <JOBTMPL/Package>`
 
               * :gh:`actions/checkout`
@@ -180,6 +214,14 @@ It can be used for simple Python packages as well as namespace packages.
                 * :pypi:`build`
                 * :pypi:`wheel`
 
+            * :ref:`pyTooling/Actions/.github/workflows/InstallPackage.yml <JOBTMPL/InstallPackage>`
+
+              * :gh:`actions/setup-python`
+              * :gh:`msys2/setup-msys2`
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+
             * :ref:`pyTooling/Actions/.github/workflows/PublishTestResults.yml <JOBTMPL/PublishTestResults>`
 
               * :gh:`actions/checkout`
@@ -192,7 +234,7 @@ It can be used for simple Python packages as well as namespace packages.
                 * :pypi:`pyEDAA.Reports`
 
               * :gh:`dorny/test-reporter`
-              * :gh:`codecov/test-results-action`
+              * :gh:`codecov/codecov-action`
               * :gh:`pyTooling/upload-artifact`
 
                 * :gh:`actions/upload-artifact`
@@ -249,11 +291,18 @@ It can be used for simple Python packages as well as namespace packages.
 
                 * :gh:`actions/upload-artifact`
 
-              * :gh:`addnab/docker-run-action`
-
-                * :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>`
+              * runs inside :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>`
 
             * :ref:`pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml <JOBTMPL/PublishToGitHubPages>`
+
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+
+              * :gh:`actions/upload-pages-artifact`
+              * :gh:`actions/deploy-pages`
+              * :gh:`geekyeggo/delete-artifact`
+
             * :ref:`pyTooling/Actions/.github/workflows/PublishOnPyPI.yml <JOBTMPL/PublishOnPyPI>`
 
               * :gh:`pyTooling/download-artifact`

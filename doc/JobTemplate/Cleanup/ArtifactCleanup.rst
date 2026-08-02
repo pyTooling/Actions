@@ -26,7 +26,6 @@ This job removes artifacts which were used to exchange data between jobs.
 
    * :gh:`geekyeggo/delete-artifact`
 
-
 .. _JOBTMPL/ArtifactCleanup/Instantiation:
 
 Instantiation

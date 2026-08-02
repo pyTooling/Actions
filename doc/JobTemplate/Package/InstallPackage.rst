@@ -29,17 +29,11 @@ the installation is verified. This aims for packaging and dependency mistakes in
 
 .. topic:: Dependencies
 
-   * :gh:`actions/checkout`
+   * :gh:`actions/setup-python`
+   * :gh:`msys2/setup-msys2`
    * :gh:`pyTooling/download-artifact`
 
      * :gh:`actions/download-artifact`
-
-   * :gh:`msys2/setup-msys2`
-   * :gh:`actions/setup-python`
-   * pip
-
-     * :pypi:`pip`
-     * :pypi:`wheel`
 
 
 .. _JOBTMPL/InstallPackage/Instantiation:

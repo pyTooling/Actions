@@ -48,10 +48,6 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
    * :gh:`actions/checkout`
    * :gh:`msys2/setup-msys2`
    * :gh:`actions/setup-python`
-   * :gh:`pyTooling/download-artifact`
-
-     * :gh:`actions/download-artifact`
-
    * :gh:`pyTooling/upload-artifact`
 
      * :gh:`actions/upload-artifact`
@@ -64,7 +60,6 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
      * :pypi:`wheel`
      * Python packages specified via :ref:`JOBTMPL/UnitTesting/Input/requirements` or
        :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
-
 
 .. _JOBTMPL/UnitTesting/Instantiation:
 

@@ -43,7 +43,6 @@ triggers a new pipeline run for that tag, a.k.a *tag pipeline* or *release pipel
 
    * :gh:`actions/github-script`
 
-
 .. _JOBTMPL/TagReleaseCommit/Instantiation:
 
 Instantiation

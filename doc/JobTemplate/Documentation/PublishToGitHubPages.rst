@@ -40,11 +40,13 @@ This job template publishes HTML content from artifacts of other jobs to GitHub 
 
 .. topic:: Dependencies
 
-   * :gh:`actions/checkout`
    * :gh:`pyTooling/download-artifact`
 
      * :gh:`actions/download-artifact`
 
+   * :gh:`actions/upload-pages-artifact`
+   * :gh:`actions/deploy-pages`
+   * :gh:`geekyeggo/delete-artifact`
 
 .. _JOBTMPL/PublishToGitHubPages/Instantiation:
 

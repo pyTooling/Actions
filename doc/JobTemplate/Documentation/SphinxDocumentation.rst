@@ -68,13 +68,11 @@ website and a LaTeX documentation. This LaTeX document can be translated using e
 
    * apt
 
-     * `graphviz <https://graphviz.org/>`__
+     * ``graphviz``
 
    * pip
 
-     * :pypi:`wheel`
-     * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` parameter.
-
+     * :pypi:`Sphinx`
 
 .. _JOBTMPL/SphinxDocumentation/Instantiation:
 

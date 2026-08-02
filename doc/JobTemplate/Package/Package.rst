@@ -49,7 +49,6 @@ as an artifact.
      * :pypi:`build`
      * :pypi:`wheel`
 
-
 .. _JOBTMPL/Package/Instantiation:
 
 Instantiation

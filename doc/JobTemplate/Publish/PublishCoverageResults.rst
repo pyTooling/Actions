@@ -56,17 +56,15 @@ cloud services like :term:`CodeCov` or :term:`Codacy`.
 
      * :gh:`actions/download-artifact`
 
-   * pip
-
-     * :pypi:`coverage`
-
+   * :gh:`codecov/codecov-action`
+   * :gh:`codacy/codacy-coverage-reporter-action`
    * :gh:`pyTooling/upload-artifact`
 
      * :gh:`actions/upload-artifact`
 
-   * :gh:`codecov/codecov-action`
-   * :gh:`codacy/codacy-coverage-reporter-action`
+   * pip
 
+     * :pypi:`coverage`
 
 .. _JOBTMPL/PublishCoverageResults/Instantiation:
 

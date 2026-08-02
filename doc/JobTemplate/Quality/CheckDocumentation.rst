@@ -35,7 +35,6 @@ The ``CheckDocumentation`` job checks the level of documentation coverage for Py
      * :pypi:`docstr_coverage`
      * :pypi:`interrogate`
 
-
 .. _JOBTMPL/CheckDocumentation/Instantiation:
 
 Instantiation

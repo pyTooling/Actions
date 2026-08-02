@@ -68,7 +68,6 @@ The job template generates various output parameters derived from
    * :gh:`actions/checkout`
    * :gh:`GitHub command line tool 'gh' <cli/cli>`
 
-
 .. _JOBTMPL/PrepareJob/Instantiation:
 
 Instantiation

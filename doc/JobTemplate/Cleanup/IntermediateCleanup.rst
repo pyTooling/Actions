@@ -30,7 +30,6 @@ variant after test results have been merged into a single file.
 
    * :gh:`geekyeggo/delete-artifact`
 
-
 .. _JOBTMPL/IntermediateCleanUp/Instantiation:
 
 Instantiation

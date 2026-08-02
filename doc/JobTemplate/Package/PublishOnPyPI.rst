@@ -35,17 +35,16 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
 
 .. topic:: Dependencies
 
+   * :gh:`actions/setup-python`
    * :gh:`pyTooling/download-artifact`
 
      * :gh:`actions/download-artifact`
-   * :gh:`actions/setup-python`
-   * :gh:`geekyeggo/delete-artifact`
 
+   * :gh:`geekyeggo/delete-artifact`
    * pip
 
-     * :pypi:`wheel`
      * :pypi:`twine`
-
+     * :pypi:`wheel`
 
 .. _JOBTMPL/PublishOnPyPI/Instantiation:
 

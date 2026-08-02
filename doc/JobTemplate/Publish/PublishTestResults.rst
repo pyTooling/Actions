@@ -64,17 +64,15 @@ Supported services are:
 
      * :gh:`actions/download-artifact`
 
-   * pip
-
-     * :pypi:`pyEDAA.Reports`
-
    * :gh:`dorny/test-reporter`
-   * :gh:`codecov/test-results-action`
+   * :gh:`codecov/codecov-action`
    * :gh:`pyTooling/upload-artifact`
 
      * :gh:`actions/upload-artifact`
 
+   * pip
 
+     * :pypi:`pyEDAA.Reports`
 
 .. _JOBTMPL/PublishTestResults/Instantiation:
 

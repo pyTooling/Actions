@@ -43,8 +43,7 @@ It generates output parameters containing a list of artifact names and a job mat
 
 .. topic:: Dependencies
 
-   * Python from base-system.
-
+   * :gh:`actions/checkout`
 
 .. _JOBTMPL/Parameters/Instantiation:
 
