@@ -163,6 +163,8 @@ Parameter Summary
 +======================================================+==========+========+============================================================================+
 | :ref:`JOBTMPL/Parameters/Input/ubuntu_image_version` | no       | string | ``'26.04'``                                                                |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/pipeline-delay`       | no       | number | ``0``                                                                      |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/name`                 | no       | string | ``''``                                                                     |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/package_namespace`    | no       | string | ``''``                                                                     |
@@ -195,6 +197,10 @@ Parameter Summary
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/pipeline-delay`       | no       | number | ``0``                                                                      |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/version_file`         | no       | string | ``'__init__.py'``                                                          |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/documentation_steps`  | no       | string | ``'all'``                                                                  |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/Parameters/Secrets>`
 
@@ -223,6 +229,18 @@ This job template needs no secrets.
 
 Input Parameters
 ****************
+
+.. _JOBTMPL/Parameters/Input/pipeline-delay:
+
+pipeline-delay
+==============
+
+:Type:            number
+:Required:        no
+:Default Value:   ``0``
+:Possible Values: Any non-negative number of seconds. ``0`` disables the delay.
+:Description:     Delay this job's start by the given number of seconds. |br|
+                  See :ref:`JOBTMPL/PrepareJob/Input/pipeline-delay` for the rationale.
 
 .. _JOBTMPL/Parameters/Input/ubuntu_image_version:
 
@@ -544,6 +562,33 @@ pipeline-delay
 :Description:     Slow down this job, to delay the startup of the GitHub Action pipline.
 
 
+.. _JOBTMPL/Parameters/Input/version_file:
+
+version_file
+============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'__init__.py'``
+:Possible Values: Any path relative to the package directory.
+:Description:     Module inside the package that carries the ``__version__`` variable. |br|
+                  Reported back as :ref:`JOBTMPL/Parameters/Output/package_version_file` and used by the version check
+                  of :ref:`JOBTMPL/CompletePipeline`.
+
+.. _JOBTMPL/Parameters/Input/documentation_steps:
+
+documentation_steps
+===================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'all'``
+:Possible Values: A space separated list of ``none``, ``html``, ``latex``, ``pdf``, ``pages``, ``asset`` or ``all``.
+:Description:     Documentation steps the pipeline will run. |br|
+                  This parameter does not run anything itself - it decides which documentation artifact names are
+                  generated. A step that is not listed gets an empty artifact name, which disables the corresponding
+                  job. ``none`` clears the whole set.
+
 .. _JOBTMPL/Parameters/Secrets:
 
 Secrets
@@ -762,6 +807,16 @@ python_jobs
                        {"sysicon": "🪟🟨", "system": "msys2",    "runs-on": "windows-2025", "runtime": "UCRT64",  "shell": "msys2 {0}", "pyicon": "🟢", "python": "3.12", "envname": "Windows+MSYS2 (x86-64) - UCRT64" }
                      ]
 
+
+.. _JOBTMPL/Parameters/Output/package_version_file:
+
+package_version_file
+====================
+
+:Type:            string
+:Possible Values: A path such as ``'pyTooling/__init__.py'``.
+:Description:     Path to the package module carrying the ``__version__`` variable, assembled from the package
+                  directory and :ref:`JOBTMPL/Parameters/Input/version_file`.
 
 .. _JOBTMPL/Parameters/Optimizations:
 

@@ -260,6 +260,16 @@ Parameter Summary
 +---------------------------------------------------------------+----------+---------+-----------------------------------------+
 | :ref:`JOBTMPL/PublishReleaseNotes/Input/can-fail`             | no       | boolean | ``false``                               |
 +---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/tarball-name`         | no       | string  | ``'__pyTooling_upload_artifact__.tar'`` |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`       | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-version`    | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-categories` | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/can-fail`             | no       | boolean | ``false``                               |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishReleaseNotes/Secrets>`
 
@@ -551,6 +561,69 @@ can-fail
                   .. todo:: PublishReleaseNotes::can-fail Needs documentation.
 
 
+.. _JOBTMPL/PublishReleaseNotes/Input/tarball-name:
+
+tarball-name
+============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'__pyTooling_upload_artifact__.tar'``
+:Possible Values: Any valid file name.
+:Description:     Name of the tarball inside an artifact uploaded by :gh:`pyTooling/upload-artifact`. |br|
+                  That action packs the uploaded files into a tarball to preserve file modes and symlinks. When an
+                  asset is attached to the release page, the tarball is unpacked again.
+
+.. _JOBTMPL/PublishReleaseNotes/Input/inventory-json:
+
+inventory-json
+==============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid file name, e.g. ``'inventory.json'``. An empty string disables the inventory.
+:Description:     File name of a machine readable inventory of all release assets, attached to the release page as an
+                  additional asset. |br|
+                  Consumers can read it instead of scraping the release page - GHDL's nightly release uses it to map
+                  operating systems to installer files.
+
+.. _JOBTMPL/PublishReleaseNotes/Input/inventory-version:
+
+inventory-version
+=================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any version string.
+:Description:     Version written into the ``version`` field of the inventory. |br|
+                  Only meaningful together with :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`.
+
+.. _JOBTMPL/PublishReleaseNotes/Input/inventory-categories:
+
+inventory-categories
+====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: A comma separated list of category names.
+:Description:     Categories written into the inventory for each asset. |br|
+                  Only meaningful together with :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`.
+
+.. _JOBTMPL/PublishReleaseNotes/Input/can-fail:
+
+can-fail
+========
+
+:Type:            boolean
+:Required:        no
+:Default Value:   ``false``
+:Possible Values: ``true`` - a failed release page does not fail the pipeline.
+                  ``false`` - a failure fails the job.
+:Description:     Sets ``continue-on-error`` on the job.
+
 .. _JOBTMPL/PublishReleaseNotes/Secrets:
 
 Secrets
@@ -573,6 +646,15 @@ release-page
 :Description:     Returns the URL to the release page.
 :Example:         ``tbd``
 
+
+.. _JOBTMPL/PublishReleaseNotes/Output/release-page:
+
+release-page
+============
+
+:Type:            string
+:Possible Values: A URL, e.g. ``https://github.com/pyTooling/Actions/releases/tag/v7.14.2``.
+:Description:     URL of the created or updated release page.
 
 .. _JOBTMPL/PublishReleaseNotes/Optimizations:
 

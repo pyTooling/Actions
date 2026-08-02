@@ -109,21 +109,23 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PrepareJob/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                                           |
-+=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/PrepareJob/Input/ubuntu_image`                        | no       | string   | ``'ubuntu-26.04'``                                                |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/main_branch`                         | no       | string   | ``'main'``                                                        |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/development_branch`                  | no       | string   | ``'dev'``                                                         |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/release_branch`                      | no       | string   | ``'main'``                                                        |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/nightly_tag_pattern`                 | no       | string   | ``'nightly'``                                                     |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`                 | no       | string   | ``'(v|r)?[0-9]+(\.[0-9]+){0,2}(-(dev|alpha|beta|rc)([0-9]*))?'``  |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
+| Parameter Name                                      | Required | Type   | Default            |                                |       |      |                  |
++=====================================================+==========+========+====================+================================+=======+======+==================+
+| :ref:`JOBTMPL/PrepareJob/Input/ubuntu_image`        | no       | string | ``'ubuntu-26.04'`` |                                |       |      |                  |
++-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/pipeline-delay`      | no       | number | ``0``              |                                |       |      |                  |
++-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/main_branch`         | no       | string | ``'main'``         |                                |       |      |                  |
++-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/development_branch`  | no       | string | ``'dev'``          |                                |       |      |                  |
++-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/release_branch`      | no       | string | ``'main'``         |                                |       |      |                  |
++-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/nightly_tag_pattern` | no       | string | ``'nightly'``      |                                |       |      |                  |
++-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern` | no       | string | ``'(v              | r)?[0-9]+(\.[0-9]+){0,2}(-(dev | alpha | beta | rc)([0-9]*))?'`` |
++-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PrepareJob/Secrets>`
 
@@ -131,37 +133,49 @@ This job template needs no secrets.
 
 .. rubric:: Goto :ref:`output parameters <JOBTMPL/PrepareJob/Outputs>`
 
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| Result Name                                                         | Type     | Description                                                       |
-+=====================================================================+==========+===================================================================+
-| :ref:`JOBTMPL/PrepareJob/Output/on_main_branch`                     | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/on_dev_branch`                      | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/on_release_branch`                  | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/is_regular_commit`                  | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/is_merge_commit`                    | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/is_release_commit`                  | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/is_nightly_tag`                     | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/is_release_tag`                     | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/ref_kind`                           | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/branch`                             | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/tag`                                | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/version`                            | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/pr_title`                           | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Output/pr_number`                          | string   |                                                                   |
-+---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| Result Name                                          | Type   | Description                                                           |
++======================================================+========+=======================================================================+
+| :ref:`JOBTMPL/PrepareJob/Output/on_default_branch`   | string | Pipeline runs on the repository's default branch.                     |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/on_main_branch`      | string | Pipeline runs on the main branch.                                     |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/on_release_branch`   | string | Pipeline runs on the main branch or a version branch.                 |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/on_dev_branch`       | string | Pipeline runs on the development branch.                              |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/is_regular_commit`   | string | The commit is neither a merge commit nor a release commit.            |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/is_merge_commit`     | string | The commit has more than one parent.                                  |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/is_release_commit`   | string | The commit is a merge commit on the main branch or a version branch.  |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/is_nightly_tag`      | string | The tag matches the nightly tag pattern.                              |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/is_release_tag`      | string | The tag matches the release tag pattern.                              |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/has_submodules`      | string | The repository contains Git submodules - see the note on that output. |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/ref_kind`            | string | ``'branch'``, ``'tag'`` or ``'pull-request'``.                        |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/default_branch`      | string | Name of the repository's default branch.                              |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/branch`              | string | Branch name, if the pipeline runs on a branch.                        |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/tag`                 | string | Tag name, if the pipeline runs on a tag.                              |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/version`             | string | Version derived from the tag or the pull-request title.               |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/pr_title`            | string | Title of the associated merged pull-request.                          |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/pr_number`           | string | Number of the associated merged pull-request.                         |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/git_submodule_count` | string | Number of registered Git submodules.                                  |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/git_submodule_names` | string | Names of the registered Git submodules.                               |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/git_submodule_paths` | string | Paths of the registered Git submodules.                               |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
 
 
 .. _JOBTMPL/PrepareJob/Inputs:
@@ -231,6 +245,19 @@ nightly_tag_pattern
 :Description:     Name of the tag used for rolling releases, a.k.a nightly builds.
 
 
+
+.. _JOBTMPL/PrepareJob/Input/pipeline-delay:
+
+pipeline-delay
+==============
+
+:Type:            number
+:Required:        no
+:Default Value:   ``0``
+:Possible Values: Any non-negative number of seconds. ``0`` disables the delay.
+:Description:     Delay this job's start by the given number of seconds. |br|
+                  GitHub Actions starts all jobs without dependencies at once. Delaying the pipeline's first job lets
+                  GitHub allocate runners for the remaining jobs before this one occupies a runner slot.
 
 .. _JOBTMPL/PrepareJob/Input/release_tag_pattern:
 
@@ -464,6 +491,67 @@ pr_number
                   for this commit matches :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`, otherwise returns an
                   empty string ``''``.
 
+
+.. _JOBTMPL/PrepareJob/Output/default_branch:
+
+default_branch
+==============
+
+:Type:            string
+:Possible Values: The repository's default branch name, e.g. ``'main'`` or ``'dev'``.
+:Description:     Name of the repository's default branch as reported by the GitHub API.
+
+.. _JOBTMPL/PrepareJob/Output/on_default_branch:
+
+on_default_branch
+=================
+
+:Type:            string
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     The pipeline runs on the repository's :ref:`default branch <JOBTMPL/PrepareJob/Output/default_branch>`. |br|
+                  This is not necessarily the release branch - repositories using a ``dev``/``main`` split have their
+                  default branch set to ``dev``.
+
+.. _JOBTMPL/PrepareJob/Output/has_submodules:
+
+has_submodules
+==============
+
+:Type:            string
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     The repository contains Git submodules.
+
+                  .. attention::
+
+                     This output is currently always ``'false'``: the detection tests for a file named
+                     :file:`.gitsubmodules`, while Git's file is named :file:`.gitmodules`.
+
+.. _JOBTMPL/PrepareJob/Output/git_submodule_count:
+
+git_submodule_count
+===================
+
+:Type:            string
+:Possible Values: A non-negative integer as string.
+:Description:     Number of Git submodules registered in the repository.
+
+.. _JOBTMPL/PrepareJob/Output/git_submodule_names:
+
+git_submodule_names
+===================
+
+:Type:            string
+:Possible Values: A space separated list of submodule names.
+:Description:     Names of the Git submodules registered in the repository.
+
+.. _JOBTMPL/PrepareJob/Output/git_submodule_paths:
+
+git_submodule_paths
+===================
+
+:Type:            string
+:Possible Values: A space separated list of paths.
+:Description:     Paths of the Git submodules registered in the repository.
 
 .. _JOBTMPL/PrepareJob/Optimizations:
 

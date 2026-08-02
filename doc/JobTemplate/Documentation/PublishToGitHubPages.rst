@@ -85,17 +85,21 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishToGitHubPages/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                                           |
-+=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/PublishToGitHubPages/Input/ubuntu_image_version`      | no       | string   | ``'26.04'``                                                       |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishToGitHubPages/Input/doc`                       | yes      | string   | — — — —                                                           |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishToGitHubPages/Input/coverage`                  | no       | string   | ``''``                                                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishToGitHubPages/Input/typing`                    | no       | string   | ``''``                                                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++----------------------------------------------------------------+----------+--------+--------------------+
+| Parameter Name                                                 | Required | Type   | Default            |
++================================================================+==========+========+====================+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/ubuntu_image_version` | no       | string | ``'26.04'``        |
++----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/doc`                  | yes      | string | — — — —            |
++----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/coverage`             | no       | string | ``''``             |
++----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/typing`               | no       | string | ``''``             |
++----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/pages`                | no       | string | ``'github-pages'`` |
++----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/cleanup`              | no       | string | ``'true'``         |
++----------------------------------------------------------------+----------+--------+--------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishToGitHubPages/Secrets>`
 
@@ -154,6 +158,31 @@ typing
                   as a subdirectory.
 
 
+.. _JOBTMPL/PublishToGitHubPages/Input/pages:
+
+pages
+=====
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'github-pages'``
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact handed to :gh:`actions/deploy-pages`. |br|
+                  ``'github-pages'`` is the name GitHub's Pages deployment expects and should only be changed if
+                  the artifact is consumed by something else.
+
+.. _JOBTMPL/PublishToGitHubPages/Input/cleanup:
+
+cleanup
+=======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` - delete the GitHub Pages artifact after deployment.
+                  ``'false'`` - keep it.
+:Description:     Delete the artifact named by :ref:`JOBTMPL/PublishToGitHubPages/Input/pages` after deployment.
+
 .. _JOBTMPL/PublishToGitHubPages/Secrets:
 
 Secrets
@@ -169,6 +198,15 @@ Outputs
 
 This job template has no output parameters.
 
+
+.. _JOBTMPL/PublishToGitHubPages/Output/github_pages_url:
+
+github_pages_url
+================
+
+:Type:            string
+:Possible Values: A URL, e.g. ``https://pytooling.github.io/Actions/``.
+:Description:     URL of the deployed GitHub Pages site, as reported by :gh:`actions/deploy-pages`.
 
 .. _JOBTMPL/PublishToGitHubPages/Optimizations:
 

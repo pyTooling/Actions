@@ -124,6 +124,12 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
 | :ref:`JOBTMPL/PublishTestResults/Input/merged_junit_artifact`      | no       | string | ``''``                                                              |
 +--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/testsuite-summary-name`     | no       | string | ``''``                                                              |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/merge-input-dialect`        | no       | string | ``'pyTest-JUnit'``                                                  |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect`       | no       | string | ``'pyTest-JUnit'``                                                  |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
 | :ref:`JOBTMPL/PublishTestResults/Input/merge-input-dialect`        | no       | string | ``'pyTest-JUnit'``                                                  |
 +--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
 | :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect`       | no       | string | ``'pyTest-JUnit'``                                                  |
@@ -191,6 +197,45 @@ merged_junit_filename
                   See :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect` for the used JUnit dialect in the
                   merged report file.
 
+
+.. _JOBTMPL/PublishTestResults/Input/testsuite-summary-name:
+
+testsuite-summary-name
+======================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid name for a testsuite summary.
+:Description:     Name of the *TestsuiteSummary* in the merged JUnit XML file. |br|
+                  If empty, the name found in the merged reports is kept. Usually set to the package name, so the
+                  report stays identifiable when several packages publish to the same service.
+
+.. _JOBTMPL/PublishTestResults/Input/merge-input-dialect:
+
+merge-input-dialect
+===================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'pyTest-JUnit'``
+:Possible Values: Any JUnit dialect supported by :term:`pyEDAA.Reports`, e.g. ``'pyTest-JUnit'``, ``'Ant-JUnit'``,
+                  ``'CTest-JUnit'`` or ``'GoogleTest-JUnit'``.
+:Description:     JUnit dialect used to read and parse the downloaded reports. |br|
+                  *JUnit XML* has no single specification - test frameworks emit structurally different files, so the
+                  dialect must match the framework that produced them.
+
+.. _JOBTMPL/PublishTestResults/Input/merge-output-dialect:
+
+merge-output-dialect
+====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'pyTest-JUnit'``
+:Possible Values: Any JUnit dialect supported by :term:`pyEDAA.Reports`.
+:Description:     JUnit dialect used to write the merged report. |br|
+                  Choose the dialect understood by the service consuming the merged file.
 
 .. _JOBTMPL/PublishTestResults/Input/merged_junit_artifact:
 

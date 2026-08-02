@@ -394,6 +394,18 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`       | no       | string | ``'3.14'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/bandit`                       | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/pylint`                       | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/documentation_steps`          | no       | string | ``'html pages'``                                                           |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/miktex_image`                 | no       | string | ``'pytooling/miktex:sphinx'``                                              |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/miktex_update`                | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/auto_tag`                     | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`  | no       | string | ``''``                                                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_system_list`          | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``         |
@@ -403,6 +415,8 @@ Parameter Summary
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`         | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`         | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                          |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest`                      | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/codecov`                      | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -719,6 +733,41 @@ apptest_disable_list
                   For more details see :ref:`JOBTMPL/Parameters/Input/disable_list`.
 
 
+.. _JOBTMPL/CompletePipeline/Input/apptest:
+
+apptest
+=======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Run application tests via :ref:`JOBTMPL/ApplicationTesting`. |br|
+                  Application testing installs the built wheel and exercises the package as an installed program,
+                  so it needs a packaging step to have run first.
+
+.. _JOBTMPL/CompletePipeline/Input/bandit:
+
+bandit
+======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Run Static Application Security Testing (SAST) using :term:`bandit`.
+
+.. _JOBTMPL/CompletePipeline/Input/pylint:
+
+pylint
+======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Run Python linting using :term:`pylint`.
+
 .. _JOBTMPL/CompletePipeline/Input/codecov:
 
 codecov
@@ -756,6 +805,65 @@ dorny
 :Possible Values: ``'true'``, ``'false'``
 :Description:     If *true*, publish a merged unit test summary as pipeline result.
 
+
+.. _JOBTMPL/CompletePipeline/Input/documentation_steps:
+
+documentation_steps
+===================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'html pages'``
+:Possible Values: A space separated list of ``none``, ``html``, ``latex``, ``pdf``, ``pages``, ``asset`` or ``all``.
+:Description:     Documentation steps to run.
+
+                  :html:  Build the HTML documentation using :term:`Sphinx`.
+                  :latex: Build the LaTeX documentation using :term:`Sphinx`.
+                  :pdf:   Translate the LaTeX documentation to PDF using :term:`MikTeX`. Requires ``latex``.
+                  :pages: Publish the HTML documentation to :term:`GitHub Pages`. Requires ``html``.
+                  :asset: Attach the documentation to the release page.
+                  :all:   All of the above.
+                  :none:  No documentation at all.
+
+                  A step that is not listed is skipped and its artifact is not produced.
+
+.. _JOBTMPL/CompletePipeline/Input/miktex_image:
+
+miktex_image
+============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'pytooling/miktex:sphinx'``
+:Possible Values: Any Docker image providing a MiKTeX installation with ``latexmk``.
+:Description:     Docker image used to translate LaTeX to PDF. |br|
+                  Forwarded to :ref:`JOBTMPL/LaTeXDocumentation/Input/miktex_image`.
+
+.. _JOBTMPL/CompletePipeline/Input/miktex_update:
+
+miktex_update
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Update the MiKTeX packages before building the PDF. |br|
+                  Forwarded to :ref:`JOBTMPL/LaTeXDocumentation/Input/update`.
+
+.. _JOBTMPL/CompletePipeline/Input/auto_tag:
+
+auto_tag
+========
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Create a release tag when a pull-request was merged into the release branch and its title matches
+                  the release tag pattern. |br|
+                  The new tag triggers a second, tagged pipeline run which publishes the release. Forwarded to
+                  :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag`.
 
 .. _JOBTMPL/CompletePipeline/Input/cleanup:
 

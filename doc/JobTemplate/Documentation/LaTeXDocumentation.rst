@@ -77,19 +77,27 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/LaTeXDocumentation/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                                           |
-+=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/LaTeXDocumentation/Input/ubuntu_image_version`        | no       | string   | ``'26.04'``                                                       |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/LaTeXDocumentation/Input/latex_artifact`              | yes      | string   | — — — —                                                           |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/LaTeXDocumentation/Input/document`                    | yes      | string   | — — — —                                                           |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/LaTeXDocumentation/Input/processor`                   | no       | string   | ``'lualatex'``                                                    |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/LaTeXDocumentation/Input/pdf_artifact`                | no       | string   | ``''``                                                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++--------------------------------------------------------------+----------+--------+-------------------------------+
+| Parameter Name                                               | Required | Type   | Default                       |
++==============================================================+==========+========+===============================+
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/ubuntu_image_version` | no       | string | ``'26.04'``                   |
++--------------------------------------------------------------+----------+--------+-------------------------------+
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/latex_artifact`       | yes      | string | — — — —                       |
++--------------------------------------------------------------+----------+--------+-------------------------------+
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/document`             | yes      | string | — — — —                       |
++--------------------------------------------------------------+----------+--------+-------------------------------+
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/processor`            | no       | string | ``'lualatex'``                |
++--------------------------------------------------------------+----------+--------+-------------------------------+
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/pdf_artifact`         | no       | string | ``''``                        |
++--------------------------------------------------------------+----------+--------+-------------------------------+
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/miktex_image`         | no       | string | ``'pytooling/miktex:sphinx'`` |
++--------------------------------------------------------------+----------+--------+-------------------------------+
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/update`               | no       | string | ``'false'``                   |
++--------------------------------------------------------------+----------+--------+-------------------------------+
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/halt-on-error`        | no       | string | ``'true'``                    |
++--------------------------------------------------------------+----------+--------+-------------------------------+
+| :ref:`JOBTMPL/LaTeXDocumentation/Input/can-fail`             | no       | string | ``'false'``                   |
++--------------------------------------------------------------+----------+--------+-------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/LaTeXDocumentation/Secrets>`
 
@@ -160,6 +168,60 @@ pdf_artifact
                   .. hint::
 
                      If this parameter is empty, no PDF file will be generated and no artifact will be uploaded.
+
+.. _JOBTMPL/LaTeXDocumentation/Input/miktex_image:
+
+miktex_image
+============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'pytooling/miktex:sphinx'``
+:Possible Values: Any Docker image providing a MiKTeX installation with ``latexmk``.
+:Description:     Docker image used to translate the LaTeX sources to PDF. |br|
+                  The default image ships the LaTeX packages Sphinx emits.
+
+.. _JOBTMPL/LaTeXDocumentation/Input/update:
+
+update
+======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` - update the MiKTeX packages inside the container before building.
+                  ``'false'`` - use the packages shipped with the image.
+:Description:     Update MiKTeX packages before the document is built. |br|
+                  Updating costs runtime on every run, so this is meant as an escape hatch when the image lags behind
+                  a LaTeX package Sphinx needs.
+
+.. _JOBTMPL/LaTeXDocumentation/Input/halt-on-error:
+
+halt-on-error
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` - stop at the first LaTeX error.
+                  ``'false'`` - continue as far as possible.
+:Description:     Pass ``-halt-on-error`` to ``latexmk``. |br|
+                  With ``'false'`` LaTeX keeps going, and a PDF may still be produced from a document with unresolved
+                  references.
+
+.. _JOBTMPL/LaTeXDocumentation/Input/can-fail:
+
+can-fail
+========
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` - a failed translation does not fail the pipeline.
+                  ``'false'`` - a failed translation fails the job.
+:Description:     Sets ``continue-on-error`` on the job. |br|
+                  PDF generation is the most fragile documentation step, so a pipeline that only needs HTML can
+                  tolerate its failure.
 
 .. _JOBTMPL/LaTeXDocumentation/Secrets:
 

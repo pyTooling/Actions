@@ -122,6 +122,8 @@ Parameter Summary
 +---------------------------------------------------------+----------+--------+-------------------+
 | :ref:`JOBTMPL/PublishOnPyPI/Input/artifact`             | yes      | string | — — — —           |
 +---------------------------------------------------------+----------+--------+-------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`              | no       | string | ``'true'``        |
++---------------------------------------------------------+----------+--------+-------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishOnPyPI/Secrets>`
 
@@ -176,6 +178,20 @@ artifact
 :Possible Values: Any valid artifact name.
 :Description:     Name of the artifact containing the packaged Python package(s).
 
+
+.. _JOBTMPL/PublishOnPyPI/Input/cleanup:
+
+cleanup
+=======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` - delete the package artifact after publishing.
+                  ``'false'`` - keep the package artifact.
+:Description:     Delete the artifact named by :ref:`JOBTMPL/PublishOnPyPI/Input/artifact` after the packages were
+                  uploaded. |br|
+                  This job consumes the artifact, so a pipeline usually has no further use for it.
 
 .. _JOBTMPL/PublishOnPyPI/Secrets:
 
