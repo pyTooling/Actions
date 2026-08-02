@@ -284,7 +284,7 @@ It can be used for simple Python packages as well as namespace packages.
 
               * :gh:`geekyeggo/delete-artifact`
 
-            * :ref:`pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml <JOBTMPL/ArtifactCleanUp>`
+            * :ref:`pyTooling/Actions/.github/workflows/CleanupArtifacts.yml <JOBTMPL/CleanupArtifacts>`
 
               * :gh:`geekyeggo/delete-artifact`
 

@@ -18,11 +18,17 @@ report.
 
 .. topic:: Final cleanups
 
-   * :ref:`JOBTMPL/ArtifactCleanup` - remove artifacts after publising results and creating release assets.
+   * :ref:`JOBTMPL/CleanupArtifacts` - remove artifacts after publishing results and creating release assets.
+
+
+.. topic:: Deprecated
+
+   * :ref:`JOBTMPL/ArtifactCleanup` - replaced by :ref:`JOBTMPL/CleanupArtifacts`.
 
 
 .. toctree::
    :hidden:
 
    IntermediateCleanup
+   CleanupArtifacts
    ArtifactCleanup
