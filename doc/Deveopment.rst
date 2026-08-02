@@ -93,8 +93,8 @@ Which function to choose:
   dependency suppresses the job. This is the default for optional jobs (:ref:`JOBTMPL/PublishToGitHubPages`,
   :ref:`JOBTMPL/LaTeXDocumentation`) as well as for release jobs, which must not run if any check failed.
 * ``!cancelled()`` - the job runs regardless of the outcome of its dependencies. Use it for jobs collecting or
-  cleaning up results (:ref:`JOBTMPL/PublishTestResults`, ``CleanupArtifacts``), because artifacts of a failed run
-  still need to be published or deleted.
+  cleaning up results (:ref:`JOBTMPL/PublishTestResults`, :ref:`JOBTMPL/CleanupArtifacts`), because artifacts of a
+  failed run still need to be published or deleted.
 * ``always()`` - avoid it. It also runs the job when the workflow was cancelled, which delays the cancellation.
 
 .. hint::

@@ -127,6 +127,8 @@ the pipeline is not a tagged release.
      Deletes the per-matrix-job artifacts in the middle of a pipeline, so they don't pile up while later jobs run.
    :ref:`JOBTMPL/ArtifactCleanup`
      The deprecated predecessor of this template.
+   :ref:`DEV/ConditionalJobs`
+     Why an ``if:`` without a status check function skips the cleanup.
 
 
 .. _JOBTMPL/CleanupArtifacts/Parameters:
