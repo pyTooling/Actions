@@ -104,7 +104,7 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | Parameter Name                                                      | Required | Type     | Default                                                           |
 +=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/ExtractConfiguration/Input/ubuntu_image_version`      | no       | string   | ``'24.04'``                                                       |
+| :ref:`JOBTMPL/ExtractConfiguration/Input/ubuntu_image_version`      | no       | string   | ``'26.04'``                                                       |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/ExtractConfiguration/Input/python_version`            | no       | string   | ``'3.14'``                                                        |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
@@ -236,9 +236,9 @@ unittest_report_xml
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/unit",
+                     { "directory": "report/unit",
                        "filename":  "UnittestReportSummary.xml",
-                       "fullpath":  "reports/unit/UnittestReportSummary.xml"
+                       "fullpath":  "report/unit/UnittestReportSummary.xml"
                      }
 :Usage:
                   .. tab-set::
@@ -319,9 +319,9 @@ unittest_merged_report_xml
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/unit",
+                     { "directory": "report/unit",
                        "filename":  "unittest.xml",
-                       "fullpath":  "reports/unit/unittest.xml"
+                       "fullpath":  "report/unit/unittest.xml"
                      }
 :Usage:
                   .. tab-set::
@@ -483,9 +483,9 @@ coverage_report_xml
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/coverage",
+                     { "directory": "report/coverage",
                        "filename":  "coverage.xml",
-                       "fullpath":  "reports/coverage/coverage.xml"
+                       "fullpath":  "report/coverage/coverage.xml"
                      }
 :Usage:
                   .. tab-set::
@@ -566,9 +566,9 @@ coverage_report_json
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/coverage",
+                     { "directory": "report/coverage",
                        "filename":  "coverage.json",
-                       "fullpath":  "reports/coverage/coverage.json"
+                       "fullpath":  "report/coverage/coverage.json"
                      }
 :Usage:
                   .. tab-set::
@@ -649,9 +649,9 @@ typing_report_cobertura
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/typing",
+                     { "directory": "report/typing",
                        "filename":  "cobertura.xml",
-                       "fullpath":  "reports/typing/cobertura.xml"
+                       "fullpath":  "report/typing/cobertura.xml"
                      }
 :Usage:
                   .. tab-set::
@@ -732,9 +732,9 @@ typing_report_junit
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/typing",
+                     { "directory": "report/typing",
                        "filename":  "StaticTypingSummary.xml",
-                       "fullpath":  "reports/typing/StaticTypingSummary.xml"
+                       "fullpath":  "report/typing/StaticTypingSummary.xml"
                      }
 :Usage:
                   .. tab-set::
@@ -813,8 +813,8 @@ typing_report_html
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/typing/html",
-                       "fullpath":  "reports/typing/html"
+                     { "directory": "report/typing/html",
+                       "fullpath":  "report/typing/html"
                      }
 :Usage:
                   .. tab-set::

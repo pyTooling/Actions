@@ -82,7 +82,7 @@ ubuntu_image
 
 :Type:            string
 :Required:        usually no
-:Default Value:   ``'ubuntu-24.04'``
+:Default Value:   ``'ubuntu-26.04'``
 :Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
                   for available Ubuntu image versions.
 :Description:     Name of the Ubuntu image used to run a job.

@@ -96,7 +96,7 @@ Parameter Summary
 +-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
 | Parameter Name                                                          | Required | Type           | Default                                                           |
 +=========================================================================+==========+================+===================================================================+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/ubuntu_image_version`           | no       | string         | ``'24.04'``                                                       |
+| :ref:`JOBTMPL/SphinxDocumentation/Input/ubuntu_image_version`           | no       | string         | ``'26.04'``                                                       |
 +-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/SphinxDocumentation/Input/python_version`                 | no       | string         | ``'3.14'``                                                        |
 +-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
@@ -194,7 +194,7 @@ coverage_report_json
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/coverage",
+                     { "directory": "report/coverage",
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 
@@ -240,7 +240,7 @@ unittest_xml
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/unit",
+                     { "directory": "report/unit",
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 

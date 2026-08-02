@@ -64,7 +64,7 @@
 
       .. rubric:: Cleanup
 
-      * :ref:`JOBTMPL/IntermediateCleanup`
+      * :ref:`JOBTMPL/IntermediateCleanUp`
       * :ref:`JOBTMPL/ArtifactCleanup`
 
    .. #grid-item::

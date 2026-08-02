@@ -111,17 +111,17 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishOnPyPI/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                                           |
-+=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/ubuntu_image_version`             | no       | string   | ``'24.04'``                                                       |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/python_version`                   | no       | string   | ``'3.14'``                                                        |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/requirements`                     | no       | string   | ``'wheel twine'``                                                 |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/artifact`                         | yes      | string   | — — — —                                                           |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++---------------------------------------------------------+----------+--------+-------------------+
+| Parameter Name                                          | Required | Type   | Default           |
++=========================================================+==========+========+===================+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/ubuntu_image_version` | no       | string | ``'26.04'``       |
++---------------------------------------------------------+----------+--------+-------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/python_version`       | no       | string | ``'3.14'``        |
++---------------------------------------------------------+----------+--------+-------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/requirements`         | no       | string | ``'wheel twine'`` |
++---------------------------------------------------------+----------+--------+-------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/artifact`             | yes      | string | — — — —           |
++---------------------------------------------------------+----------+--------+-------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishOnPyPI/Secrets>`
 
@@ -158,7 +158,7 @@ requirements
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'wheel twine'``
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'wheel twine'``.

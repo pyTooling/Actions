@@ -13,7 +13,7 @@ report.
 
 .. topic:: Intermediate cleanups
 
-   * :ref:`JOBTMPL/IntermediateCleanup` - remove intermediate artifacts after merging reports into one summary report.
+   * :ref:`JOBTMPL/IntermediateCleanUp` - remove intermediate artifacts after merging reports into one summary report.
 
 
 .. topic:: Final cleanups
