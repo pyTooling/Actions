@@ -31,9 +31,11 @@
 """
 A module for a dummy CLI interface.
 """
+from sys    import exit as sys_exit
 from typing import NoReturn
 
 
 def main() -> NoReturn:
+	"""Print a greeting and terminate the program."""
 	print("Hello world")
-	exit(0)
+	sys_exit(0)
