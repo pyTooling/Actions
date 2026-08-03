@@ -11,15 +11,16 @@ The ``CheckDocumentation`` job checks the level of documentation coverage for Py
 
 .. topic:: Features
 
-   * Check documentation coverage in Python code using :pypi:`docstr_coverage`.
-   * Check documentation coverage in Python code using :pypi:`interrogate`.
+   * Check documentation coverage in Python code using :term:`docstr_coverage`.
+   * Check documentation coverage in Python code using :term:`interrogate`.
 
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Setup Python environment and install dependencies.
-   3. Run ``docstr_coverage``.
-   4. Run ``interrogate``.
+   2. Setup Python (:ref:`JOBTMPL/CheckDocumentation/Input/python_version`) and install the dependencies.
+   3. Run :term:`interrogate` on :ref:`JOBTMPL/CheckDocumentation/Input/directory`, failing below
+      :ref:`JOBTMPL/CheckDocumentation/Input/fail_under` percent.
+   4. Run :term:`docstr_coverage` on :ref:`JOBTMPL/CheckDocumentation/Input/directory`.
 
 .. topic:: Job Execution
 
@@ -32,9 +33,8 @@ The ``CheckDocumentation`` job checks the level of documentation coverage for Py
    * :gh:`actions/setup-python`
    * pip
 
-     * :pypi:`docstr_coverage`
-     * :pypi:`interrogate`
-
+     * :term:`docstr_coverage` (:pypi:`PyPI package <docstr_coverage>`)
+     * :term:`interrogate` (:pypi:`PyPI package <interrogate>`)
 
 .. _JOBTMPL/CheckDocumentation/Instantiation:
 
@@ -76,7 +76,7 @@ Parameter Summary
 +-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | Parameter Name                                                          | Required | Type     | Default                                                           |
 +=========================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/CheckDocumentation/Input/ubuntu_image_version`            | no       | string   | ``'24.04'``                                                       |
+| :ref:`JOBTMPL/CheckDocumentation/Input/ubuntu_image_version`            | no       | string   | ``'26.04'``                                                       |
 +-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/CheckDocumentation/Input/python_version`                  | no       | string   | ``'3.14'``                                                        |
 +-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+

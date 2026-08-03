@@ -1,6 +1,8 @@
 .. _JOBTMPL/SphinxDocumentation:
 .. index::
    single: Sphinx; SphinxDocumentation Template
+   single: MikTeX; SphinxDocumentation Template
+   single: wheel; SphinxDocumentation Template
    single: GitHub Action Reusable Workflow; SphinxDocumentation Template
 
 SphinxDocumentation
@@ -11,30 +13,51 @@ website and a LaTeX documentation. This LaTeX document can be translated using e
 
 .. topic:: Features
 
-   * Build documentation using Sphinx as HTML and upload as artifact. |br|
-     (see :ref:`JOBTMPL/SphinxDocumentation/Input/html_artifact`).
-   * Build documentation using Sphinx as LaTeX and upload as artifact. |br|
-     (see :ref:`JOBTMPL/SphinxDocumentation/Input/latex_artifact`).
+   * Build documentation using :term:`Sphinx` as HTML and upload as artifact
+     (:ref:`JOBTMPL/SphinxDocumentation/Input/html_artifact`).
+   * Build documentation using :term:`Sphinx` as LaTeX and upload as artifact
+     (:ref:`JOBTMPL/SphinxDocumentation/Input/latex_artifact`).
 
      * Workaround `sphinx-doc/sphinx#13189 <https://github.com/sphinx-doc/sphinx/issues/13189>`__
      * Workaround `sphinx-doc/sphinx#13190 <https://github.com/sphinx-doc/sphinx/issues/13190>`__
 
-   * Optionally: download code coverage artifact (JSON format) given by :ref:`JOBTMPL/SphinxDocumentation/Input/coverage_json_artifact`.
-   * Optionally: download unit test report artifact (XML format) given by :ref:`JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact`.
+   * Optionally: download code coverage artifact (JSON format)
+     (:ref:`JOBTMPL/SphinxDocumentation/Input/coverage_json_artifact`).
+   * Optionally: download unit test report artifact (XML format)
+     (:ref:`JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact`).
 
 .. topic:: Behavior
 
+   The template defines two independent jobs, ``Sphinx-HTML`` and ``Sphinx-LaTeX``, which run in parallel.
+   Each is enabled by its artifact parameter: a job whose artifact name is empty is skipped.
+
+   Both jobs perform the same preparation:
+
    1. Checkout repository.
-   2. Install system dependencies.
-   3. Setup Python environment and install Python dependencies.
-   4. Download optional artifacts for integration of further reports into the documentation.
-   5. Build the HTML documentation using Sphinx.
-   6. Build the LaTeX documentation using Sphinx.
+   2. Install system dependencies (`graphviz <https://graphviz.org/>`__).
+   3. Setup Python (:ref:`JOBTMPL/SphinxDocumentation/Input/python_version`) and install the Python dependencies
+      (:ref:`JOBTMPL/SphinxDocumentation/Input/requirements`), which must provide :term:`Sphinx`.
+   4. Download the optional unit test and code coverage artifacts, so their reports can be integrated into
+      the documentation (:ref:`JOBTMPL/SphinxDocumentation/Input/unittest_xml_artifact`,
+      :ref:`JOBTMPL/SphinxDocumentation/Input/unittest_xml`,
+      :ref:`JOBTMPL/SphinxDocumentation/Input/coverage_json_artifact`,
+      :ref:`JOBTMPL/SphinxDocumentation/Input/coverage_report_json`).
 
-      1. Apply LaTeX workaround I.
-      2. Apply LaTeX workaround II.
+   ``Sphinx-HTML`` then:
 
-   7. Upload the HTML and LaTeX artifacts.
+   5. Builds the HTML documentation using :term:`Sphinx`
+      (:ref:`JOBTMPL/SphinxDocumentation/Input/doc_directory`).
+   6. Uploads the HTML documentation as an artifact (:ref:`JOBTMPL/SphinxDocumentation/Input/html_artifact`).
+
+   ``Sphinx-LaTeX`` then:
+
+   5. Builds the LaTeX documentation using :term:`Sphinx`
+      (:ref:`JOBTMPL/SphinxDocumentation/Input/doc_directory`).
+   6. Applies two workarounds to the generated LaTeX sources |br|
+      (`sphinx#13190 <https://github.com/sphinx-doc/sphinx/issues/13190>`__ and
+      `sphinx#13189 <https://github.com/sphinx-doc/sphinx/issues/13189>`__).
+   7. Uploads the LaTeX documentation as an artifact (:ref:`JOBTMPL/SphinxDocumentation/Input/latex_artifact`),
+      which :ref:`JOBTMPL/LaTeXDocumentation` translates to PDF.
 
 .. topic:: Job Execution
 
@@ -59,9 +82,10 @@ website and a LaTeX documentation. This LaTeX document can be translated using e
 
    * pip
 
-     * :pypi:`wheel`
-     * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` parameter.
-
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
+     * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` parameter. This is where
+       :term:`Sphinx` (:pypi:`PyPI package <Sphinx>`), its theme and its extensions come from - the job template
+       installs none of them itself.
 
 .. _JOBTMPL/SphinxDocumentation/Instantiation:
 
@@ -96,7 +120,7 @@ Parameter Summary
 +-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
 | Parameter Name                                                          | Required | Type           | Default                                                           |
 +=========================================================================+==========+================+===================================================================+
-| :ref:`JOBTMPL/SphinxDocumentation/Input/ubuntu_image_version`           | no       | string         | ``'24.04'``                                                       |
+| :ref:`JOBTMPL/SphinxDocumentation/Input/ubuntu_image_version`           | no       | string         | ``'26.04'``                                                       |
 +-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/SphinxDocumentation/Input/python_version`                 | no       | string         | ``'3.14'``                                                        |
 +-------------------------------------------------------------------------+----------+----------------+-------------------------------------------------------------------+
@@ -194,7 +218,7 @@ coverage_report_json
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/coverage",
+                     { "directory": "report/coverage",
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 
@@ -240,7 +264,7 @@ unittest_xml
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/unit",
+                     { "directory": "report/unit",
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 

@@ -1,4 +1,5 @@
 name: Verification Pipeline for ArtifactCleanup
+run-name: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
 
 on:
 #  push:
@@ -57,8 +58,10 @@ jobs:
       - Package
     with:
       json: ${{ needs.Params.outputs.artifact_names }}
+      # Deliberate added 'unknown_key' for exception testing.
       artifact-json-ids: >-
         unittesting_xml:-*
+        unknown_key
       # The package artifact is kept on tagged runs, so 'PublishOnPyPI.yml' can still consume it.
       json2: ${{ needs.Params.outputs.artifact_names }}
       condition2: ${{ ! startsWith(github.ref, 'refs/tags') }}

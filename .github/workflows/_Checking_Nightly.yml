@@ -1,4 +1,5 @@
 name: Verification of Nightly Releases
+run-name: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
 
 on:
 #  push:

@@ -21,6 +21,25 @@ triggers a new pipeline run for that tag, a.k.a *tag pipeline* or *release pipel
    In addition, GitHub doesn't support *project access token*, thus there is no solution to create a user independent
    token to emulate a manual push operation.
 
+.. hint::
+
+   The run's title can be corrected in the *calling* workflow, without changing how the run is triggered. A top-level
+   ``run-name`` key overrides the title GitHub derives from the event, and ``github.ref_name`` holds the tag name for
+   a run dispatched onto a tag:
+
+   .. code-block:: yaml
+
+      name: Pipeline
+      run-name: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+
+   An empty ``run-name`` falls back to the title GitHub derives from the event, so only tag runs are renamed and a
+   push keeps its commit message as the title.
+
+   This changes the displayed title only. It does not turn the ``workflow_dispatch`` event into a ``push`` event, so
+   anything keying off ``github.event_name`` is unaffected. ``run-name`` is evaluated when the run is queued, so only
+   the ``github``, ``inputs`` and ``vars`` contexts are available - a value computed inside the pipeline, such as the
+   version extracted by :ref:`JOBTMPL/PrepareJob`, cannot appear in the title.
+
 .. topic:: Features
 
    * Tag the current pipeline's commit.
@@ -29,7 +48,16 @@ triggers a new pipeline run for that tag, a.k.a *tag pipeline* or *release pipel
 .. topic:: Behavior
 
    1. Tag the current commit with a tag named like :ref:`JOBTMPL/TagReleaseCommit/Input/version`.
-   2. Trigger a pipeline run for the new tag.
+   2. Trigger a pipeline run for the new tag (:ref:`JOBTMPL/TagReleaseCommit/Input/workflow`).
+
+   The job is skipped unless :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag` is ``'true'``. Tagging from a workflow does
+   not trigger a tag pipeline by itself, which is why the second step dispatches the run explicitly.
+
+   .. note::
+
+      Because the run is started as a ``workflow_dispatch`` event and not by a tag push, GitHub titles it with the
+      workflow's name instead of the tag name. See the note at the top of this page for the reason and for a way to
+      correct the displayed title.
 
 .. topic:: Job Execution
 
@@ -39,7 +67,6 @@ triggers a new pipeline run for that tag, a.k.a *tag pipeline* or *release pipel
 .. topic:: Dependencies
 
    * :gh:`actions/github-script`
-
 
 .. _JOBTMPL/TagReleaseCommit/Instantiation:
 
@@ -96,7 +123,7 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | Parameter Name                                                      | Required | Type     | Default                                                           |
 +=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/TagReleaseCommit/Input/ubuntu_image`                  | no       | string   | ``'ubuntu-24.04'``                                                |
+| :ref:`JOBTMPL/TagReleaseCommit/Input/ubuntu_image`                  | no       | string   | ``'ubuntu-26.04'``                                                |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/TagReleaseCommit/Input/version`                       | yes      | string   | — — — —                                                           |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
@@ -126,7 +153,7 @@ ubuntu_image
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'ubuntu-24.04'``
+:Default Value:   ``'ubuntu-26.04'``
 :Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
                   for available Ubuntu image versions.
 :Description:     Name of the Ubuntu image used to run this job.
@@ -152,8 +179,10 @@ auto_tag
 :Type:            string
 :Required:        yes
 :Default Value:   — — — —
-:Possible Values: ``'false'``, ``'true'```
-:Description:     If *true*, tag the current commit.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Tag the current commit and dispatch the tag pipeline. |br|
+                  ``'true'`` - create the tag and trigger the run. |br|
+                  ``'false'`` - do nothing; the job's steps are skipped.
 
 
 .. _JOBTMPL/TagReleaseCommit/Input/workflow:

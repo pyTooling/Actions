@@ -6,6 +6,12 @@
 ArtifactCleanUp
 ###############
 
+.. attention::
+
+   This job template is **deprecated** and will be removed in ``r8``. Use :ref:`JOBTMPL/CleanupArtifacts` instead,
+   which resolves artifact names from the ``artifact_names`` JSON dictionary produced by :ref:`JOBTMPL/Parameters`
+   and can delete two independently guarded sets of artifacts. The job template emits the same warning at runtime.
+
 This job removes artifacts which were used to exchange data between jobs.
 
 .. topic:: Features
@@ -14,8 +20,10 @@ This job removes artifacts which were used to exchange data between jobs.
 
 .. topic:: Behavior
 
-   1. Delete the package artifact if the current pipeline run was not a tagged run.
-   2. Delete all remaining artifacts if given as a parameter.
+   1. Delete the package artifact if the current pipeline run was not a tagged run
+      (:ref:`JOBTMPL/ArtifactCleanup/Input/package`).
+   2. Delete all remaining artifacts if given as a parameter
+      (:ref:`JOBTMPL/ArtifactCleanup/Input/remaining`).
 
 .. topic:: Job Execution
 
@@ -25,7 +33,6 @@ This job removes artifacts which were used to exchange data between jobs.
 .. topic:: Dependencies
 
    * :gh:`geekyeggo/delete-artifact`
-
 
 .. _JOBTMPL/ArtifactCleanup/Instantiation:
 
@@ -68,9 +75,11 @@ Complex Example
 
 .. seealso::
 
+   :ref:`JOBTMPL/CleanupArtifacts`
+     The replacement for this template.
    :ref:`JOBTMPL/IntermediateCleanUp`
      ``IntermediateCleanUp`` is used to remove intermediate artifacts like unit test artifacts for each job variant
-     after test results have been merged into a single file.
+     after test results have been merged into a single file. Deprecated as well.
 
 
 .. _JOBTMPL/ArtifactCleanup/Parameters:
@@ -83,7 +92,7 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
 | Parameter Name                                                      | Required | Type     | Default                                           |
 +=====================================================================+==========+==========+===================================================+
-| :ref:`JOBTMPL/ArtifactCleanup/Input/ubuntu_image_version`           | no       | string   | ``'24.04'``                                       |
+| :ref:`JOBTMPL/ArtifactCleanup/Input/ubuntu_image_version`           | no       | string   | ``'26.04'``                                       |
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
 | :ref:`JOBTMPL/ArtifactCleanup/Input/package`                        | yes      | string   | — — — —                                           |
 +---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
@@ -130,7 +139,8 @@ remaining
 :Required:        no
 :Default Value:   ``''``
 :Possible Values: Multi-line string accepting any valid artifact name per line.
-:Description:     Versi
+:Description:     Artifacts to be removed on every run, one artifact name per line. |br|
+                  Names may end in ``*`` to delete all per-matrix-job variants of an artifact.
 
 
 .. _JOBTMPL/ArtifactCleanup/Secrets:

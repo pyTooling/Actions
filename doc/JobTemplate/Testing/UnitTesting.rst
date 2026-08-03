@@ -2,6 +2,8 @@
 .. index::
    single: pytest; UnitTesting Template
    single: Coverage.py; UnitTesting Template
+   single: pip; UnitTesting Template
+   single: wheel; UnitTesting Template
    single: GitHub Action Reusable Workflow; UnitTesting Template
 
 UnitTesting
@@ -29,12 +31,29 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Setup environment and install dependencies (``apt``, ``homebrew``, ``pacman``, ...).
-   3. Setup Python and install dependencies (:term:`pip`).
-   4. Run instructions from ``*_before_script`` parameter.
-   5. Run unit tests using *pytest* and if enabled in combination with *Coverage.py*.
-   6. Convert gathered results to other formats.
-   7. Upload results (test reports, code coverage reports, ...) as an artifacts.
+   2. Install system dependencies (:ref:`JOBTMPL/UnitTesting/Input/apt`, :ref:`JOBTMPL/UnitTesting/Input/brew`,
+      :ref:`JOBTMPL/UnitTesting/Input/pacboy`).
+   3. Prepare the Python environment as described by the matrix entry (:ref:`JOBTMPL/UnitTesting/Input/jobs`) and
+      install the Python dependencies using :term:`pip` (:ref:`JOBTMPL/UnitTesting/Input/requirements`,
+      :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements`).
+   4. Run the instructions given by the ``*_before_script`` parameter of the current system, e.g.
+      :ref:`JOBTMPL/UnitTesting/Input/ubuntu_before_script`.
+   5. Run the unit tests using :term:`pytest` (:ref:`JOBTMPL/UnitTesting/Input/unittest_directory`,
+      :ref:`JOBTMPL/UnitTesting/Input/tests_directory`, :ref:`JOBTMPL/UnitTesting/Input/root_directory`), in
+      combination with :term:`Coverage.py` if code coverage is enabled
+      (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`).
+   6. Convert the collected code coverage to Cobertura XML, JSON and HTML format
+      (:ref:`JOBTMPL/UnitTesting/Input/coverage_report_xml`, :ref:`JOBTMPL/UnitTesting/Input/coverage_report_json`,
+      :ref:`JOBTMPL/UnitTesting/Input/coverage_report_html`).
+   7. Upload the test report and the code coverage reports as artifacts
+      (:ref:`JOBTMPL/UnitTesting/Input/unittest_xml_artifact`,
+      :ref:`JOBTMPL/UnitTesting/Input/unittest_html_artifact`,
+      :ref:`JOBTMPL/UnitTesting/Input/coverage_sqlite_artifact`,
+      :ref:`JOBTMPL/UnitTesting/Input/coverage_xml_artifact`,
+      :ref:`JOBTMPL/UnitTesting/Input/coverage_json_artifact`,
+      :ref:`JOBTMPL/UnitTesting/Input/coverage_html_artifact`).
+
+   Each conversion and upload runs only if the corresponding artifact parameter is non-empty.
 
 .. topic:: Job Execution
 
@@ -46,10 +65,6 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
    * :gh:`actions/checkout`
    * :gh:`msys2/setup-msys2`
    * :gh:`actions/setup-python`
-   * :gh:`pyTooling/download-artifact`
-
-     * :gh:`actions/download-artifact`
-
    * :gh:`pyTooling/upload-artifact`
 
      * :gh:`actions/upload-artifact`
@@ -59,10 +74,9 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
    * MSYS2: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/pacboy` parameter.
    * pip
 
-     * :pypi:`wheel`
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
      * Python packages specified via :ref:`JOBTMPL/UnitTesting/Input/requirements` or
        :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
-
 
 .. _JOBTMPL/UnitTesting/Instantiation:
 
@@ -124,59 +138,63 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/UnitTesting/Inputs>`
 
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| Parameter Name                                                          | Required | Type     | Default                                                                                                                           |
-+=========================================================================+==========+==========+===================================================================================================================================+
-| :ref:`JOBTMPL/UnitTesting/Input/jobs`                                   | yes      | string   | — — — —                                                                                                                           |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/apt`                                    | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/brew`                                   | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/pacboy`                                 | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/requirements`                           | no       | string   | ``'-r tests/requirements.txt'``                                                                                                   |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements`                     | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/macos_before_script`                    | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/macos_arm_before_script`                | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/ubuntu_before_script`                   | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/mingw64_before_script`                  | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/ucrt64_before_script`                   | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/root_directory`                         | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/tests_directory`                        | no       | string   | ``'tests'``                                                                                                                       |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/unittest_directory`                     | no       | string   | ``'unit'``                                                                                                                        |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/unittest_report_xml`                    | no       | string   | :jsoncode:`{"directory": "report/unit", "filename":  "TestReportSummary.xml", "fullpath":  "report/unit/TestReportSummary.xml"}`  |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/coverage_config`                        | no       | string   | ``'pyproject.toml'``                                                                                                              |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/coverage_report_xml`                    | no       | string   | :jsoncode:`{"directory": "report/coverage", "filename":  "coverage.xml", "fullpath":  "report/coverage/coverage.xml"}`            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/coverage_report_json`                   | no       | string   | :jsoncode:`{"directory": "report/coverage", "filename":  "coverage.json", "fullpath":  "report/coverage/coverage.json"}`          |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/coverage_report_html`                   | no       | string   | :jsoncode:`{"directory": "report/coverage"}`                                                                                      |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/unittest_xml_artifact`                  | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/unittest_html_artifact`                 | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/coverage_sqlite_artifact`               | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/coverage_xml_artifact`                  | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/coverage_json_artifact`                 | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/coverage_html_artifact`                 | no       | string   | ``''``                                                                                                                            |
-+-------------------------------------------------------------------------+----------+----------+-----------------------------------------------------------------------------------------------------------------------------------+
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| Parameter Name                                             | Required | Type   | Default                                                                                                                          |
++============================================================+==========+========+==================================================================================================================================+
+| :ref:`JOBTMPL/UnitTesting/Input/jobs`                      | yes      | string | — — — —                                                                                                                          |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/apt`                       | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/brew`                      | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/pacboy`                    | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/requirements`              | no       | string | ``'-r ./requirements.txt'``                                                                                                      |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements`        | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/macos_before_script`       | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/macos_arm_before_script`   | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/ubuntu_before_script`      | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/windows_before_script`     | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/windows_arm_before_script` | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/mingw64_before_script`     | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/ucrt64_before_script`      | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/root_directory`            | no       | string | ``'.'``                                                                                                                          |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/tests_directory`           | no       | string | ``'tests'``                                                                                                                      |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/unittest_directory`        | no       | string | ``'unit'``                                                                                                                       |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/unittest_report_xml`       | no       | string | :jsoncode:`{"directory": "report/unit", "filename":  "TestReportSummary.xml", "fullpath":  "report/unit/TestReportSummary.xml"}` |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/coverage_config`           | no       | string | ``'pyproject.toml'``                                                                                                             |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/coverage_report_xml`       | no       | string | :jsoncode:`{"directory": "report/coverage", "filename":  "coverage.xml", "fullpath":  "report/coverage/coverage.xml"}`           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/coverage_report_json`      | no       | string | :jsoncode:`{"directory": "report/coverage", "filename":  "coverage.json", "fullpath":  "report/coverage/coverage.json"}`         |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/coverage_report_html`      | no       | string | :jsoncode:`{"directory": "report/coverage/html"}`                                                                                |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/unittest_xml_artifact`     | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/unittest_html_artifact`    | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/coverage_sqlite_artifact`  | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/coverage_xml_artifact`     | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/coverage_json_artifact`    | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/coverage_html_artifact`    | no       | string | ``''``                                                                                                                           |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/UnitTesting/Secrets>`
 
@@ -307,11 +325,30 @@ requirements
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'-r tests/requirements.txt'``
+:Default Value:   ``'-r ./requirements.txt'``
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'coverage pytest'``.
 :Description:     Python dependencies to be installed through *pip*.
+
+                  A requirements file is looked up in one of two ways, depending on the path:
+
+                  * A path starting with ``./`` is resolved relative to the unit test directory, which is the
+                    concatenation of :ref:`JOBTMPL/UnitTesting/Input/root_directory`,
+                    :ref:`JOBTMPL/UnitTesting/Input/tests_directory` and
+                    :ref:`JOBTMPL/UnitTesting/Input/unittest_directory`. |br|
+                    With the defaults, ``'-r ./requirements.txt'`` refers to :file:`./tests/unit/requirements.txt`.
+                  * Any other path is used as given, thus relative to the repository root.
+
+                  .. attention::
+
+                     The resolved file's existence is checked before the installation. If it is missing, the job is
+                     aborted with a ``FileNotFoundError`` annotation naming the resolved path.
+
+                  .. note::
+
+                     :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` is not resolved this way. Its value is passed
+                     to ``pip install`` unchanged.
 
 
 .. _JOBTMPL/UnitTesting/Input/mingw_requirements:
@@ -366,6 +403,29 @@ ubuntu_before_script
 :Description:     These optional *Bash* instructions for Ubuntu are executed after setting up the environment and
                   installing the platform specific dependencies and before running the unit test.
 
+
+.. _JOBTMPL/UnitTesting/Input/windows_before_script:
+
+windows_before_script
+=====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid PowerShell script.
+:Description:     Scripts to execute on Windows (x86-64) before *pytest* is started. |br|
+                  See :ref:`JOBTMPL/UnitTesting/Input/ubuntu_before_script` for the Linux equivalent.
+
+.. _JOBTMPL/UnitTesting/Input/windows_arm_before_script:
+
+windows_arm_before_script
+=========================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid PowerShell script.
+:Description:     Scripts to execute on Windows (aarch64) before *pytest* is started.
 
 .. _JOBTMPL/UnitTesting/Input/mingw64_before_script:
 
@@ -453,7 +513,7 @@ root_directory
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'.'``
 :Possible Values: Any valid directory or sub-directory.
 :Description:     Working directory for running tests. |br|
                   Usually, this is the repository's root directory. Tests are called relatively from here. See
@@ -494,9 +554,9 @@ unittest_report_xml
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/unit",
+                     { "directory": "report/unit",
                        "filename":  "UnittestReportSummary.xml",
-                       "fullpath":  "reports/unit/UnittestReportSummary.xml"
+                       "fullpath":  "report/unit/UnittestReportSummary.xml"
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 
@@ -544,9 +604,9 @@ coverage_report_xml
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/coverage",
+                     { "directory": "report/coverage",
                        "filename":  "coverage.xml",
-                       "fullpath":  "reports/coverage/coverage.xml"
+                       "fullpath":  "report/coverage/coverage.xml"
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 
@@ -584,9 +644,9 @@ coverage_report_json
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/coverage",
+                     { "directory": "report/coverage",
                        "filename":  "coverage.json",
-                       "fullpath":  "reports/coverage/coverage.json"
+                       "fullpath":  "report/coverage/coverage.json"
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 
@@ -624,7 +684,7 @@ coverage_report_html
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/coverage/html"
+                     { "directory": "report/coverage/html"
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 

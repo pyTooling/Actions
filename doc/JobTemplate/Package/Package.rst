@@ -1,6 +1,7 @@
 .. _JOBTMPL/Package:
 .. index::
    single: build; Package Template
+   single: wheel; Package Template
    single: GitHub Action Reusable Workflow; Package Template
 
 Package
@@ -12,20 +13,25 @@ as an artifact.
 .. topic:: Features
 
    * Package source code as wheel and source distribution.
-   * Support packaging using :pypi:`build` (recommended) or :pypi:`setuptools`.
+   * Support packaging using :term:`build` (recommended) or :pypi:`setuptools`.
 
 .. topic:: Behavior
 
    1. Checkout repository.
    2. Setup Python and install dependencies.
-   3. Package Python sources:
+   3. Package the Python sources:
 
-      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is empty, use :pypi:`build` for packaging and execute
+      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is empty, use :term:`build` for packaging and execute
         ``python -m build ...``.
-      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is ``no-isolation``, use :pypi:`build` for packaging in
+      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is ``no-isolation``, use :term:`build` for packaging in
         *no-isolation* mode executing ``python -m build --no-isolation ...``.
-      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is non-empty, use :pypi:`setuptools` for package and
+      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is non-empty, use :pypi:`setuptools` for packaging and
         execute ``python setup.py ...``.
+
+      Both a source distribution and a wheel are built.
+
+   4. Upload both packages in a single artifact
+      (:ref:`JOBTMPL/Package/Input/artifact`).
 
 .. topic:: Job Execution
 
@@ -42,9 +48,8 @@ as an artifact.
 
    * pip
 
-     * :pypi:`build`
-     * :pypi:`wheel`
-
+     * :term:`build` (:pypi:`PyPI package <build>`)
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
 
 .. _JOBTMPL/Package/Instantiation:
 
@@ -89,7 +94,7 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | Parameter Name                                                      | Required | Type     | Default                                                           |
 +=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/Package/Input/ubuntu_image_version`                   | no       | string   | ``'24.04'``                                                       |
+| :ref:`JOBTMPL/Package/Input/ubuntu_image_version`                   | no       | string   | ``'26.04'``                                                       |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/Package/Input/python_version`                         | no       | string   | ``'3.14'``                                                        |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
@@ -133,8 +138,8 @@ requirements
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'build wheel'``.
-:Behavior:        If the value is an empty string, :pypi:`build` is used for packaging. |br|
-                  if the value is ``no-isolation``, :pypi:`build` is used in *no-isolation* mode for packaging. |br|
+:Behavior:        If the value is an empty string, :term:`build` is used for packaging. |br|
+                  if the value is ``no-isolation``, :term:`build` is used in *no-isolation* mode for packaging. |br|
                   otherwise, a list of requirements is assumed and :pypi:`setuptools` is used for packaging.
 :Description:     Python dependencies to be installed through *pip*.
 

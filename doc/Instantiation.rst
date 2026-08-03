@@ -65,30 +65,26 @@ Documentation Only (Sphinx)
        - cron: '0 22 * * 5'
 
    jobs:
-     BuildTheDocs:
-       uses: pyTooling/Actions/.github/workflows/BuildTheDocs.yml@r7
+     Documentation:
+       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r7
        with:
-         artifact: Documentation
+         html_artifact: Documentation
 
      PublishToGitHubPages:
        uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r7
        needs:
-         - BuildTheDocs
+         - Documentation
        with:
          doc: Documentation
 
      ArtifactCleanUp:
-       name: 🗑️ Artifact Cleanup
+       uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r7
        needs:
-         - BuildTheDocs
+         - Documentation
          - PublishToGitHubPages
-       runs-on: ubuntu-24.04
-
-       steps:
-         - name: 🗑️ Delete artifacts
-           uses: geekyeggo/delete-artifact@v6
-           with:
-             name: Documentation
+       if: ${{ !cancelled() }}
+       with:
+         others: Documentation
 
 
 Simple Package
