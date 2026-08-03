@@ -403,8 +403,10 @@ codecov
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'``, ``'false'``
-:Description:     If *true*, publish code coverage results to CodeCov.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish code coverage results to :term:`CodeCov`. |br|
+                  ``'true'`` - publish; the ``CODECOV_TOKEN`` secret must be set. |br|
+                  ``'false'`` - do not publish.
 
 
 .. _JOBTMPL/PublishCoverageResults/Input/codacy:
@@ -415,8 +417,10 @@ codacy
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'``, ``'false'``
-:Description:     If *true*, publish code coverage results to Codacy.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish code coverage results to :term:`Codacy`. |br|
+                  ``'true'`` - publish; the ``CODACY_TOKEN`` secret must be set. |br|
+                  ``'false'`` - do not publish.
 
 
 .. _JOBTMPL/PublishCoverageResults/Secrets:

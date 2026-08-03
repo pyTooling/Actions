@@ -200,11 +200,13 @@ update
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'`` - update the :term:`MikTeX` packages inside the container before building.
-                  ``'false'`` - use the packages shipped with the image.
+:Possible Values: ``'true'`` / ``'false'``
 :Description:     Update :term:`MikTeX` packages before the document is built. |br|
                   Updating costs runtime on every run, so this is meant as an escape hatch when the image lags behind
-                  a LaTeX package needs.
+                  a LaTeX package needs. |br|
+                  ``'true'`` - update the packages inside the container before building. |br|
+                  ``'false'`` - use the packages shipped with the image.
+
 
 .. _JOBTMPL/LaTeXDocumentation/Input/halt-on-error:
 
@@ -214,11 +216,12 @@ halt-on-error
 :Type:            string
 :Required:        no
 :Default Value:   ``'true'``
-:Possible Values: ``'true'`` - stop at the first LaTeX error.
-                  ``'false'`` - continue as far as possible.
+:Possible Values: ``'true'`` / ``'false'``
 :Description:     Pass ``-halt-on-error`` to ``latexmk``. |br|
-                  With ``'false'`` LaTeX keeps going, and a PDF may still be produced from a document with unresolved
+                  ``'true'`` - stop at the first LaTeX error. |br|
+                  ``'false'`` - continue as far as possible; a PDF may still be produced from a document with unresolved
                   references.
+
 
 .. _JOBTMPL/LaTeXDocumentation/Input/can-fail:
 
@@ -228,11 +231,13 @@ can-fail
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'`` - a failed translation does not fail the pipeline.
-                  ``'false'`` - a failed translation fails the job.
-:Description:     Sets ``continue-on-error`` on the job. |br|
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Set ``continue-on-error`` on the job. |br|
                   PDF generation is the most fragile documentation step, so a pipeline that only needs HTML can
-                  tolerate its failure.
+                  tolerate its failure. |br|
+                  ``'true'`` - a failed translation does not fail the pipeline. |br|
+                  ``'false'`` - a failed translation fails the job.
+
 
 .. _JOBTMPL/LaTeXDocumentation/Secrets:
 

@@ -39,7 +39,7 @@ Configuration options for :term:`pytest` should be given via section ``[tool.pyt
       :ref:`JOBTMPL/ApplicationTesting/Input/mingw_requirements`).
    4. Run the instructions given by the ``*_before_script`` parameter of the current system, e.g.
       :ref:`JOBTMPL/ApplicationTesting/Input/ubuntu_before_script`.
-   5. Download the wheel artifact (:ref:`JOBTMPL/ApplicationTesting/Input/wheel`).
+   5. Download the Python package artifact containing the wheel (:ref:`JOBTMPL/ApplicationTesting/Input/wheel`).
    6. Install the wheel using :term:`pip`.
    7. Run the application tests using :term:`pytest` (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_directory`,
       :ref:`JOBTMPL/ApplicationTesting/Input/tests_directory`,

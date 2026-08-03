@@ -208,9 +208,11 @@ cleanup
 :Type:            string
 :Required:        no
 :Default Value:   ``'true'``
-:Possible Values: ``'true'`` - delete the GitHub Pages artifact after deployment.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Delete the artifact named by :ref:`JOBTMPL/PublishToGitHubPages/Input/pages` after deployment. |br|
+                  ``'true'`` - delete the GitHub Pages artifact. |br|
                   ``'false'`` - keep it.
-:Description:     Delete the artifact named by :ref:`JOBTMPL/PublishToGitHubPages/Input/pages` after deployment.
+
 
 .. _JOBTMPL/PublishToGitHubPages/Secrets:
 

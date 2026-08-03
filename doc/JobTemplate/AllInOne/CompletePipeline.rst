@@ -790,8 +790,11 @@ apptest
 :Default Value:   ``'false'``
 :Possible Values: ``'true'`` / ``'false'``
 :Description:     Run application tests via :ref:`JOBTMPL/ApplicationTesting`. |br|
-                  Application testing installs the built wheel and exercises the package as an installed program,
-                  so it needs a packaging step to have run first.
+                  Application testing installs the built wheel and exercises the package as an installed package,
+                  so it needs a packaging step to have run first. |br|
+                  ``'true'`` - run the application tests. |br|
+                  ``'false'`` - skip the application testing jobs.
+
 
 .. _JOBTMPL/CompletePipeline/Input/bandit:
 
@@ -802,7 +805,10 @@ bandit
 :Required:        no
 :Default Value:   ``'false'``
 :Possible Values: ``'true'`` / ``'false'``
-:Description:     Run Static Application Security Testing (SAST) using :term:`bandit`.
+:Description:     Run Static Application Security Testing (SAST) using :term:`bandit`. |br|
+                  ``'true'`` - run the *Bandit* job. |br|
+                  ``'false'`` - skip it.
+
 
 .. _JOBTMPL/CompletePipeline/Input/pylint:
 
@@ -813,7 +819,10 @@ pylint
 :Required:        no
 :Default Value:   ``'false'``
 :Possible Values: ``'true'`` / ``'false'``
-:Description:     Run Python linting using :term:`pylint`.
+:Description:     Run Python linting using :term:`pylint`. |br|
+                  ``'true'`` - run the *PyLint* job. |br|
+                  ``'false'`` - skip it.
+
 
 .. _JOBTMPL/CompletePipeline/Input/codecov:
 
@@ -823,9 +832,10 @@ codecov
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'``, ``'false'``
-:Description:     If *true*, publish merged code coverage results and a merged unit test summary to CodeCov. |br|
-                  Secret :ref:`JOBTMPL/CompletePipeline/Secret/CODECOV_TOKEN` must be set.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish merged code coverage results and a merged unit test summary to :term:`CodeCov`. |br|
+                  ``'true'`` - publish; secret :ref:`JOBTMPL/CompletePipeline/Secret/CODECOV_TOKEN` must be set. |br|
+                  ``'false'`` - do not publish.
 
 
 .. _JOBTMPL/CompletePipeline/Input/codacy:
@@ -836,9 +846,10 @@ codacy
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'``, ``'false'``
-:Description:     If *true*, publish merged code coverage results to Codacy. |br|
-                  Secret :ref:`JOBTMPL/CompletePipeline/Secret/CODACY_TOKEN` must be set.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish merged code coverage results to :term:`Codacy`. |br|
+                  ``'true'`` - publish; secret :ref:`JOBTMPL/CompletePipeline/Secret/CODACY_TOKEN` must be set. |br|
+                  ``'false'`` - do not publish.
 
 
 .. _JOBTMPL/CompletePipeline/Input/dorny:
@@ -849,8 +860,10 @@ dorny
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'``, ``'false'``
-:Description:     If *true*, publish a merged unit test summary as pipeline result.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish a merged unit test summary as pipeline result using :term:`Test Reporter`. |br|
+                  ``'true'`` - create the report page. |br|
+                  ``'false'`` - do not create it.
 
 
 .. _JOBTMPL/CompletePipeline/Input/documentation_steps:
@@ -897,7 +910,10 @@ miktex_update
 :Default Value:   ``'false'``
 :Possible Values: ``'true'`` / ``'false'``
 :Description:     Update the :term:`MikTeX` packages before building the PDF. |br|
-                  Forwarded to :ref:`JOBTMPL/LaTeXDocumentation/Input/update`.
+                  Forwarded to :ref:`JOBTMPL/LaTeXDocumentation/Input/update`. |br|
+                  ``'true'`` - update the packages inside the container first. |br|
+                  ``'false'`` - use the packages shipped with the image.
+
 
 .. _JOBTMPL/CompletePipeline/Input/auto_tag:
 
@@ -908,10 +924,13 @@ auto_tag
 :Required:        no
 :Default Value:   ``'true'``
 :Possible Values: ``'true'`` / ``'false'``
-:Description:     Create a release tag when a pull-request was merged into the release branch and its title matches
-                  the release tag pattern. |br|
+:Description:     Create a release tag when a pull-request was merged into the release branch and its title
+                  matches the release tag pattern. |br|
                   The new tag triggers a second, tagged pipeline run which publishes the release. Forwarded to
-                  :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag`.
+                  :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag`. |br|
+                  ``'true'`` - tag the release commit. |br|
+                  ``'false'`` - never tag automatically.
+
 
 .. _JOBTMPL/CompletePipeline/Input/cleanup:
 
@@ -921,9 +940,10 @@ cleanup
 :Type:            string
 :Required:        no
 :Default Value:   ``'true'``
-:Possible Values: ``'true'``, ``'false'``
-:Description:     If *false*, do not remove intermediate artifacts. |br|
-                  This might help debugging artifact handovers between jobs.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Remove intermediate artifacts once they were merged or consumed. |br|
+                  ``'true'`` - delete them. |br|
+                  ``'false'`` - keep them, which helps debugging artifact handovers between jobs.
 
 
 .. _JOBTMPL/CompletePipeline/Secrets:

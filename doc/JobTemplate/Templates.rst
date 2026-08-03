@@ -23,7 +23,7 @@
       * :ref:`JOBTMPL/PublishToGitHubPages`
       * :ref:`JOBTMPL/CheckDocumentation`
 
-      .. rubric:: Testing
+      .. rubric:: Testing and Code Coverage
 
       * :ref:`JOBTMPL/UnitTesting`
       * :ref:`JOBTMPL/ApplicationTesting`

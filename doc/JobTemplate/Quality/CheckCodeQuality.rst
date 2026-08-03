@@ -214,7 +214,9 @@ bandit
 :Required:        no
 :Default Value:   ``'true'``
 :Possible Values: ``'true'`` / ``'false'``
-:Description:     Run the *Bandit* job performing Static Application Security Testing (SAST).
+:Description:     Run the *Bandit* job performing Static Application Security Testing (SAST). |br|
+                  ``'true'`` - run the job. |br|
+                  ``'false'`` - skip it.
 
 
 .. _JOBTMPL/CheckCodeQuality/Input/radon:
@@ -226,7 +228,9 @@ radon
 :Required:        no
 :Default Value:   ``'true'``
 :Possible Values: ``'true'`` / ``'false'``
-:Description:     Run the *Radon* job reporting code metrics, complexity and maintainability.
+:Description:     Run the *Radon* job reporting code metrics, complexity and maintainability. |br|
+                  ``'true'`` - run the job. |br|
+                  ``'false'`` - skip it.
 
 
 .. _JOBTMPL/CheckCodeQuality/Input/pylint:
@@ -238,7 +242,9 @@ pylint
 :Required:        no
 :Default Value:   ``'true'``
 :Possible Values: ``'true'`` / ``'false'``
-:Description:     Run the *PyLint* job performing code linting.
+:Description:     Run the *PyLint* job performing code linting. |br|
+                  ``'true'`` - run the job. |br|
+                  ``'false'`` - skip it.
 
 
 .. _JOBTMPL/CheckCodeQuality/Secrets:

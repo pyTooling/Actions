@@ -216,7 +216,10 @@ condition
 :Required:        no
 :Default Value:   ``true``
 :Possible Values: ``true`` / ``false``
-:Description:     Delete the first set of artifacts only if this is true.
+:Description:     Guard for the first set of artifacts. |br|
+                  ``true`` - delete the artifacts computed from
+                  :ref:`JOBTMPL/CleanupArtifacts/Input/artifact-json-ids`. |br|
+                  ``false`` - keep them.
 
 
 .. _JOBTMPL/CleanupArtifacts/Input/artifact-json-ids:
@@ -255,7 +258,10 @@ condition2
 :Required:        no
 :Default Value:   ``true``
 :Possible Values: ``true`` / ``false``
-:Description:     Delete the second set of artifacts only if this is true.
+:Description:     Guard for the second set of artifacts. |br|
+                  ``true`` - delete the artifacts computed from
+                  :ref:`JOBTMPL/CleanupArtifacts/Input/artifact-json-ids2`. |br|
+                  ``false`` - keep them.
 
 
 .. _JOBTMPL/CleanupArtifacts/Input/artifact-json-ids2:

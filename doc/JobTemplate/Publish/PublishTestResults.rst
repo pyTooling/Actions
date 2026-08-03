@@ -25,9 +25,7 @@ Supported services are:
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Download the artifacts whose names match
-      :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern`. The pattern limits the number of
-      downloaded artifacts and thereby the generated traffic.
+   2. Download all artifacts matching :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern`.
    3. Install :term:`pyEDAA.Reports`.
    4. Rename the found JUnit XML files and move them into a common directory.
    5. Merge all found JUnit XML files into a new JUnit XML file
@@ -185,9 +183,9 @@ unittest_artifacts_pattern
 :Default Value:   ``'*-*TestReportSummary-XML-*'``
 :Possible Values: Any valid artifact matching pattern using fixed text and ``*`` characters.
 :Description:     Pattern selecting the artifacts to download and merge. |br|
-                  The default matches the per-matrix-job artifacts of unit, platform and application testing, which all end in
-                  ``TestReportSummary-XML-<environment>``. Restricting the pattern limits the number of downloaded artifacts and
-                  thereby the generated traffic.
+                  The default matches the per-matrix-job artifacts of unit, platform and application testing, which all
+                  end in ``TestReportSummary-XML-<environment>``. Restricting the pattern limits the number of
+                  downloaded artifacts and thereby the generated traffic.
 
 
 .. _JOBTMPL/PublishTestResults/Input/merged_junit_filename:
@@ -286,8 +284,10 @@ publish
 :Default Value:   ``'true'``
 :Possible Values: ``'true'`` / ``'false'``
 :Description:     Publish the merged results as a report page in the pipeline summary. |br|
-                  The report page is created when this or :ref:`JOBTMPL/PublishTestResults/Input/dorny` is ``'true'`` **and**
-                  :ref:`JOBTMPL/PublishTestResults/Input/report_title` is not empty.
+                  The report page is created when this or :ref:`JOBTMPL/PublishTestResults/Input/dorny` is true and
+                  :ref:`JOBTMPL/PublishTestResults/Input/report_title` is not empty. |br|
+                  ``'true'`` - create the report page. |br|
+                  ``'false'`` - do not create it.
 
 
 .. _JOBTMPL/PublishTestResults/Input/report_title:
@@ -313,7 +313,9 @@ dorny
 :Required:        no
 :Default Value:   ``'true'``
 :Possible Values: ``'true'`` / ``'false'``
-:Description:     Publish the merged results using :term:`Test Reporter` (:gh:`dorny/test-reporter`).
+:Description:     Publish the merged results using :term:`Test Reporter` (:gh:`dorny/test-reporter`). |br|
+                  ``'true'`` - create the report page. |br|
+                  ``'false'`` - do not create it.
 
 
 .. _JOBTMPL/PublishTestResults/Input/codecov:
@@ -325,8 +327,9 @@ codecov
 :Required:        no
 :Default Value:   ``'false'``
 :Possible Values: ``'true'`` / ``'false'``
-:Description:     Publish the merged results to :term:`Codecov`. |br|
-                  Requires the ``CODECOV_TOKEN`` secret.
+:Description:     Publish the merged results to :term:`CodeCov`. |br|
+                  ``'true'`` - publish; the ``CODECOV_TOKEN`` secret must be set. |br|
+                  ``'false'`` - do not publish.
 
 
 .. _JOBTMPL/PublishTestResults/Input/codecov_flags:

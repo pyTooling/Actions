@@ -179,8 +179,10 @@ auto_tag
 :Type:            string
 :Required:        yes
 :Default Value:   — — — —
-:Possible Values: ``'false'``, ``'true'```
-:Description:     If *true*, tag the current commit.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Tag the current commit and dispatch the tag pipeline. |br|
+                  ``'true'`` - create the tag and trigger the run. |br|
+                  ``'false'`` - do nothing; the job's steps are skipped.
 
 
 .. _JOBTMPL/TagReleaseCommit/Input/workflow:

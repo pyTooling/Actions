@@ -406,11 +406,13 @@ description_footer
 draft
 =====
 
-:Type:            :red:`boolean`
+:Type:            boolean
 :Required:        no
 :Default Value:   ``false``
-:Possible Values: ``false``, ``true``
-:Description:     If *true*, the release is kept in *draft* state.
+:Possible Values: ``true`` / ``false``
+:Description:     Keep the release page in *draft* state. |br|
+                  ``true`` - the release stays a draft. |br|
+                  ``false`` - the release is published.
 
                   .. note::
 
@@ -422,11 +424,13 @@ draft
 prerelease
 ==========
 
-:Type:            :red:`boolean`
+:Type:            boolean
 :Required:        no
 :Default Value:   ``false``
-:Possible Values: ``false``, ``true``
-:Description:     If *true*, the release is marked as a *pre-release*.
+:Possible Values: ``true`` / ``false``
+:Description:     Mark the release as a *pre-release*. |br|
+                  ``true`` - the release is marked as a pre-release. |br|
+                  ``false`` - the release is a regular release.
 
 
 .. _JOBTMPL/PublishReleaseNotes/Input/latest:
@@ -434,11 +438,13 @@ prerelease
 latest
 ======
 
-:Type:            :red:`boolean`
+:Type:            boolean
 :Required:        no
 :Default Value:   ``true``
-:Possible Values: ``false``, ``true``
-:Description:     If *true*, the release is marked as *latest release*.
+:Possible Values: ``true`` / ``false``
+:Description:     Mark the release as *latest release*. |br|
+                  ``true`` - the release becomes the latest release. |br|
+                  ``false`` - the latest release is left unchanged.
 
 
 .. _JOBTMPL/PublishReleaseNotes/Input/replacements:
@@ -562,9 +568,11 @@ can-fail
 :Type:            boolean
 :Required:        no
 :Default Value:   ``false``
-:Possible Values: ``true`` - a failed release page does not fail the pipeline.
+:Possible Values: ``true`` / ``false``
+:Description:     Set ``continue-on-error`` on the job. |br|
+                  ``true`` - a failed release page does not fail the pipeline. |br|
                   ``false`` - a failure fails the job.
-:Description:     Sets ``continue-on-error`` on the job.
+
 
 .. _JOBTMPL/PublishReleaseNotes/Secrets:
 

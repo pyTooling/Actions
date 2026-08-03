@@ -190,11 +190,13 @@ cleanup
 :Type:            string
 :Required:        no
 :Default Value:   ``'true'``
-:Possible Values: ``'true'`` - delete the package artifact after publishing.
-                  ``'false'`` - keep the package artifact.
+:Possible Values: ``'true'`` / ``'false'``
 :Description:     Delete the artifact named by :ref:`JOBTMPL/PublishOnPyPI/Input/artifact` after the packages were
                   uploaded. |br|
-                  This job consumes the artifact, so a pipeline usually has no further use for it.
+                  This job consumes the artifact, so a pipeline usually has no further use for it. |br|
+                  ``'true'`` - delete the package artifact. |br|
+                  ``'false'`` - keep it.
+
 
 .. _JOBTMPL/PublishOnPyPI/Secrets:
 
