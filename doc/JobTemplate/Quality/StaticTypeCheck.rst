@@ -15,10 +15,18 @@ to a HTML report and uploaded as an artifact.
 
 .. topic:: Behavior
 
-   1. Checkout repository
-   2. Setup Python and install dependencies
-   3. Run type checking.
-   4. Upload type checking report as an artifact
+   1. Checkout repository.
+   2. Setup Python (:ref:`JOBTMPL/StaticTypeCheck/Input/python_version`) and install the Python dependencies
+      (:ref:`JOBTMPL/StaticTypeCheck/Input/requirements`), which must provide :term:`mypy`.
+   3. Run the static type check (:ref:`JOBTMPL/StaticTypeCheck/Input/mypy_options`).
+   4. Upload the HTML report as an artifact (:ref:`JOBTMPL/StaticTypeCheck/Input/html_artifact`,
+      :ref:`JOBTMPL/StaticTypeCheck/Input/html_report`).
+   5. Upload the JUnit XML report as an artifact (:ref:`JOBTMPL/StaticTypeCheck/Input/junit_artifact`,
+      :ref:`JOBTMPL/StaticTypeCheck/Input/junit_report`).
+   6. Upload the Cobertura XML report as an artifact (:ref:`JOBTMPL/StaticTypeCheck/Input/cobertura_artifact`,
+      :ref:`JOBTMPL/StaticTypeCheck/Input/cobertura_report`).
+
+   Each upload runs only if the corresponding artifact parameter is non-empty.
 
 .. topic:: Job Execution
 
@@ -29,14 +37,14 @@ to a HTML report and uploaded as an artifact.
 
    * :gh:`actions/checkout`
    * :gh:`actions/setup-python`
-   * pip
-
-     * Python packages specified via :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`.
-
    * :gh:`pyTooling/upload-artifact`
 
      * :gh:`actions/upload-artifact`
 
+   * pip
+
+     * Python packages specified via :ref:`JOBTMPL/StaticTypeCheck/Input/requirements` parameter. This is where
+       :term:`mypy` (:pypi:`PyPI package <mypy>`) comes from - the job template installs nothing itself.
 
 .. _JOBTMPL/StaticTypeCheck/Instantiation:
 
@@ -59,7 +67,7 @@ directory ``report/typing``.
 
          jobs:
            StaticTypeCheck:
-             uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r6
+             uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
              with:
                cobertura_artifact: 'TypeChecking-Cobertura'
                junit_artifact:     'TypeChecking-JUnit'
@@ -91,17 +99,17 @@ precompute the artifact's name.
 
    jobs:
      ConfigParams:
-       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
        with:
          package_name: myPackage
 
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
        with:
          package_name: myPackage
 
      StaticTypeCheck:
-       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r6
+       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
        needs:
          - ConfigParams
          - Params
@@ -118,29 +126,29 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/StaticTypeCheck/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type           | Default                                                                                                                                  |
-+=====================================================================+==========+================+==========================================================================================================================================+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/ubuntu_image_version`           | no       | string         | ``'24.04'``                                                                                                                              |
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/python_version`                 | no       | string         | ``'3.14'``                                                                                                                               |
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`                   | no       | string         | ``'-r tests/requirements.txt'``                                                                                                          |
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/mypy_options`                   | no       | string         | ``''``                                                                                                                                   |
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/cobertura_report`               | no       | string (JSON)  | :jsoncode:`{"fullpath": "report/typing/cobertura.xml", "directory": "report/typing", "filename": "cobertura.xml"}`                       |
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/junit_report`                   | no       | string (JSON)  | :jsoncode:`{"fullpath": "report/typing/StaticTypingSummary.xml", "directory": "report/typing", "filename": "StaticTypingSummary.xml"}`   |
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/html_report`                    | no       | string (JSON)  | :jsoncode:`{"directory": "report/typing/html"}`                                                                                          |
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/cobertura_artifact`             | no       | string         | ``''``                                                                                                                                   |
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/junit_artifact`                 | no       | string         | ``''``                                                                                                                                   |
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/html_artifact`                  | no       | string         | ``''``                                                                                                                                   |
-+---------------------------------------------------------------------+----------+----------------+------------------------------------------------------------------------------------------------------------------------------------------+
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| Parameter Name                                            | Required | Type          | Default                                                                                                                                |
++===========================================================+==========+===============+========================================================================================================================================+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/ubuntu_image_version` | no       | string        | ``'26.04'``                                                                                                                            |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/python_version`       | no       | string        | ``'3.14'``                                                                                                                             |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`         | no       | string        | ``'-r tests/typing/requirements.txt'``                                                                                                 |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/mypy_options`         | no       | string        | ``''``                                                                                                                                 |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/cobertura_report`     | no       | string (JSON) | :jsoncode:`{"fullpath": "report/typing/cobertura.xml", "directory": "report/typing", "filename": "cobertura.xml"}`                     |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/junit_report`         | no       | string (JSON) | :jsoncode:`{"fullpath": "report/typing/StaticTypingSummary.xml", "directory": "report/typing", "filename": "StaticTypingSummary.xml"}` |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/html_report`          | no       | string (JSON) | :jsoncode:`{"directory": "report/typing/html"}`                                                                                        |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/cobertura_artifact`   | no       | string        | ``''``                                                                                                                                 |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/junit_artifact`       | no       | string        | ``''``                                                                                                                                 |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/html_artifact`        | no       | string        | ``''``                                                                                                                                 |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/StaticTypeCheck/Secrets>`
 
@@ -173,7 +181,7 @@ requirements
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'-r tests/requirements.txt'``
+:Default Value:   ``'-r tests/typing/requirements.txt'``
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'mypy lxml'``.
@@ -202,9 +210,9 @@ cobertura_report
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/typing",
+                     { "directory": "report/typing",
                        "filename":  "cobertura.xml",
-                       "fullpath":  "reports/typing/cobertura.xml"
+                       "fullpath":  "report/typing/cobertura.xml"
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 
@@ -221,10 +229,10 @@ cobertura_report
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
                        needs:
                          - ConfigParams
                        with:
@@ -242,9 +250,9 @@ junit_report
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/typing",
+                     { "directory": "report/typing",
                        "filename":  "StaticTypingSummary.xml",
-                       "fullpath":  "reports/typing/StaticTypingSummary.xml"
+                       "fullpath":  "report/typing/StaticTypingSummary.xml"
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 
@@ -261,10 +269,10 @@ junit_report
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
                        needs:
                          - ConfigParams
                        with:
@@ -282,7 +290,7 @@ html_report
 :Default Value:
                   .. code-block:: json
 
-                     { "directory": "reports/typing/html"
+                     { "directory": "report/typing/html"
                      }
 :Possible Values: Any valid JSON string containing a JSON object with fields:
 
@@ -294,10 +302,10 @@ html_report
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
                        needs:
                          - ConfigParams
                        with:

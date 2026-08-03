@@ -366,9 +366,9 @@ jobs:
           fi
 
           # Submodules
-          if [[ -f .gitsubmodules ]]; then
+          git_modules_file=.gitmodules   # $(git rev-parse --show-toplevel)/.gitmodules
+          if [[ -f "${git_modules_file}" ]]; then
             has_submodules="true"
-            git_modules_file=.gitmodules   # $(git rev-parse --show-toplevel)/.gitmodules
             git_submodule_count="$(grep -Po '(?<=\[submodule \")(.*)(?=\"\])' "${git_modules_file}" | wc -l)"
             git_submodule_names="$(grep -Po '(?<=\[submodule \")(.*)(?=\"\])' "${git_modules_file}" | paste -sd ':' -)"
             git_submodule_paths="$(git config --file "${git_modules_file}" --null --name-only --get-regexp '\.path$' | xargs -0 -n1 git config --file "${git_modules_file}" --get | paste -sd ':' -)"

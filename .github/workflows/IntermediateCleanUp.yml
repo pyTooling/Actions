@@ -45,6 +45,33 @@ jobs:
     name: 🗑️ Intermediate Artifact Cleanup
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     steps:
+      - name: ⚠️ Deprecation warning
+        shell: bash
+        run: |
+          printf "::warning title=Deprecated workflow::%s\n" \
+            "'IntermediateCleanUp.yml' is deprecated and will be removed in r8. Use 'CleanupArtifacts.yml' instead."
+          printf "\n"
+          printf "%s\n" "'IntermediateCleanUp.yml' is deprecated and will be removed in r8."
+          printf "%s\n" "Use 'CleanupArtifacts.yml' instead, which resolves artifact names from the"
+          printf "%s\n" "'artifact_names' JSON dictionary produced by 'Parameters.yml', so the caller"
+          printf "%s\n" "no longer assembles artifact names itself."
+          printf "\n"
+          printf "%s\n" "Migration:"
+          printf "%s\n" "  * Pass the whole 'artifact_names' dictionary of 'Parameters.yml' as 'json',"
+          printf "%s\n" "    instead of assembling a prefix per artifact kind."
+          printf "%s\n" "  * Both prefix parameters become entries of 'artifact-json-ids' using the"
+          printf "%s\n" "    postfix form, which is what matches the per-matrix-job variants:"
+          printf "\n"
+          printf "%s\n" "      artifact-json-ids: >-"
+          printf "%s\n" "        codecoverage_sqlite:-*"
+          printf "%s\n" "        unittesting_xml:-*"
+          printf "\n"
+          printf "%s\n" "  * Give the job an 'if' containing a status check function, e.g. '!cancelled()',"
+          printf "%s\n" "    so a skipped upstream job doesn't skip the cleanup."
+          printf "\n"
+          printf "%s\n" "See 'CompletePipeline.yml' for a worked example - it instantiates"
+          printf "%s\n" "'CleanupArtifacts.yml' for the intermediate as well as the final cleanup."
+
       - name: 🗑️ Delete SQLite coverage artifacts from matrix jobs
         uses: geekyeggo/delete-artifact@v6
         if: inputs.sqlite_coverage_artifacts_prefix != ''

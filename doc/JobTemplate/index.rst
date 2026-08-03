@@ -45,7 +45,7 @@ Some templates might provide output parameters, which can be used in dependent j
 
    jobs:
      <InstanceName>:
-       uses: <GitHubOrganization>/<Repository>/.github/workflows/<Template>.yml@r6
+       uses: <GitHubOrganization>/<Repository>/.github/workflows/<Template>.yml@r7
        with:
          <Param1>: <Value1>
          <Param2>: <Value2>
@@ -82,7 +82,7 @@ ubuntu_image
 
 :Type:            string
 :Required:        usually no
-:Default Value:   ``'ubuntu-24.04'``
+:Default Value:   ``'ubuntu-26.04'``
 :Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
                   for available Ubuntu image versions.
 :Description:     Name of the Ubuntu image used to run a job.

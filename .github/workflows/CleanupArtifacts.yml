@@ -96,7 +96,7 @@ jobs:
               case [prefix, key, postfix] if key in artifactNames:
                 artifacts.append(f"{prefix}{artifactNames[key]}{postfix}")
               case _:
-                printf(f"Name '{name}' not found in JSON dictionary.")
+                print(f"Name '{name}' not found in JSON dictionary.")
 
           print("Artifact to delete:")
           for name in artifacts:
@@ -143,7 +143,7 @@ jobs:
               case [prefix, key, postfix] if key in artifactNames:
                 artifacts.append(f"{prefix}{artifactNames[key]}{postfix}")
               case _:
-                printf(f"Name '{name}' not found in JSON dictionary.")
+                print(f"Name '{name}' not found in JSON dictionary.")
 
           print("Artifact to delete:")
           for name in artifacts:

@@ -24,15 +24,24 @@ Supported services are:
 
 .. topic:: Behavior
 
-   1. Checkout repository
-   2. Download multiple artifacts containing test report summaries in JUnit XML format conforming to an artifact name
-      pattern (see :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern`) for limiting the number of
-      downloaded artifacts and the hereby generated traffic.
-   3. Rename the found JUnit XML files.
-   4. Merge all found JUnit XML files using :term:`pyEDAA.Reports` into a new JUnit XML file. |br|
-      Optionally, apply certain transformation and cleanup operations to the JUnit report structure.
-   5. Publish test results as a markdown report page to GitHub Actions using :term:`Test Reporter`.
-   6. Publish test results to :term:`Codecov` using :gh:`codecov/test-results-action`.
+   1. Checkout repository.
+   2. Download all artifacts matching :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern`.
+   3. Install :term:`pyEDAA.Reports`.
+   4. Rename the found JUnit XML files and move them into a common directory.
+   5. Merge all found JUnit XML files into a new JUnit XML file
+      (:ref:`JOBTMPL/PublishTestResults/Input/merge-input-dialect`,
+      :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect`,
+      :ref:`JOBTMPL/PublishTestResults/Input/merged_junit_filename`,
+      :ref:`JOBTMPL/PublishTestResults/Input/testsuite-summary-name`). |br|
+      Optionally, apply transformation and cleanup operations to the report structure
+      (:ref:`JOBTMPL/PublishTestResults/Input/additional_merge_args`).
+   6. Publish the test results as a Markdown report page to GitHub Actions using :term:`Test Reporter`
+      (:ref:`JOBTMPL/PublishTestResults/Input/dorny`, :ref:`JOBTMPL/PublishTestResults/Input/publish`,
+      :ref:`JOBTMPL/PublishTestResults/Input/report_title`).
+   7. Publish the test results to :term:`Codecov` (:ref:`JOBTMPL/PublishTestResults/Input/codecov`,
+      :ref:`JOBTMPL/PublishTestResults/Input/codecov_flags`).
+   8. Upload the merged JUnit XML file as an artifact
+      (:ref:`JOBTMPL/PublishTestResults/Input/merged_junit_artifact`).
 
 .. topic:: Job Execution
 
@@ -61,17 +70,15 @@ Supported services are:
 
      * :gh:`actions/download-artifact`
 
-   * pip
-
-     * :pypi:`pyEDAA.Reports`
-
    * :gh:`dorny/test-reporter`
-   * :gh:`codecov/test-results-action`
+   * :gh:`codecov/codecov-action`
    * :gh:`pyTooling/upload-artifact`
 
      * :gh:`actions/upload-artifact`
 
+   * pip
 
+     * :term:`pyEDAA.Reports` (:pypi:`PyPI package <pyEDAA.Reports>`)
 
 .. _JOBTMPL/PublishTestResults/Instantiation:
 
@@ -85,7 +92,7 @@ Simple Example
 
    jobs:
      PublishTestResults:
-       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r7
 
 Complex Example
 ===============
@@ -100,7 +107,7 @@ Complex Example
        # ...
 
      PublishTestResults:
-       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r7
        needs:
          - CodeCoverage
          - UnitTesting
@@ -113,35 +120,35 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishTestResults/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                                             |
-+=====================================================================+==========+==========+=====================================================================+
-| :ref:`JOBTMPL/PublishTestResults/Input/ubuntu_image_version`        | no       | string   | ``'24.04'``                                                         |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern`  | no       | string   | ``'*-UnitTestReportSummary-XML-*'``                                 |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/merged_junit_filename`       | no       | string   | ``'Unittesting.xml'``                                               |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/merged_junit_artifact`       | no       | string   | ``''``                                                              |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/merge-input-dialect`         | no       | string   | ``'pyTest-JUnit'``                                                  |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect`        | no       | string   | ``'pyTest-JUnit'``                                                  |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/additional_merge_args`       | no       | string   | ``'"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'`` |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/testsuite-summary-name`      | no       | string   | ``''``                                                              |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/publish`                     | no       | string   | ``'true'``                                                          |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/report_title`                | no       | string   | ``'Unit Test Results'``                                             |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/dorny`                       | no       | string   | ``'true'``                                                          |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/codecov`                     | no       | string   | ``'false'``                                                         |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishTestResults/Input/codecov_flags`               | no       | string   | ``'unittest'``                                                      |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------------------------+
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| Parameter Name                                                     | Required | Type   | Default                                                             |
++====================================================================+==========+========+=====================================================================+
+| :ref:`JOBTMPL/PublishTestResults/Input/ubuntu_image_version`       | no       | string | ``'26.04'``                                                         |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/unittest_artifacts_pattern` | no       | string | ``'*-*TestReportSummary-XML-*'``                                    |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/merged_junit_filename`      | no       | string | ``'Unittesting.xml'``                                               |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/merged_junit_artifact`      | no       | string | ``''``                                                              |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/testsuite-summary-name`     | no       | string | ``''``                                                              |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/merge-input-dialect`        | no       | string | ``'pyTest-JUnit'``                                                  |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect`       | no       | string | ``'pyTest-JUnit'``                                                  |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/additional_merge_args`      | no       | string | ``'"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'`` |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/publish`                    | no       | string | ``'true'``                                                          |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/report_title`               | no       | string | ``'Unit Test Results'``                                             |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/dorny`                      | no       | string | ``'true'``                                                          |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/codecov`                    | no       | string | ``'false'``                                                         |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
+| :ref:`JOBTMPL/PublishTestResults/Input/codecov_flags`              | no       | string | ``'unittest'``                                                      |
++--------------------------------------------------------------------+----------+--------+---------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishTestResults/Secrets>`
 
@@ -173,9 +180,12 @@ unittest_artifacts_pattern
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'*-UnitTestReportSummary-XML-*'``
+:Default Value:   ``'*-*TestReportSummary-XML-*'``
 :Possible Values: Any valid artifact matching pattern using fixed text and ``*`` characters.
-:Description:     tbd
+:Description:     Pattern selecting the artifacts to download and merge. |br|
+                  The default matches the per-matrix-job artifacts of unit, platform and application testing, which all
+                  end in ``TestReportSummary-XML-<environment>``. Restricting the pattern limits the number of
+                  downloaded artifacts and thereby the generated traffic.
 
 
 .. _JOBTMPL/PublishTestResults/Input/merged_junit_filename:
@@ -192,17 +202,18 @@ merged_junit_filename
                   merged report file.
 
 
-.. _JOBTMPL/PublishTestResults/Input/merged_junit_artifact:
+.. _JOBTMPL/PublishTestResults/Input/testsuite-summary-name:
 
-merged_junit_artifact
-=====================
+testsuite-summary-name
+======================
 
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: Any valid artifact name.
-:Description:
-
+:Possible Values: Any valid name for a testsuite summary.
+:Description:     Name of the *TestsuiteSummary* in the merged JUnit XML file. |br|
+                  If empty, the name found in the merged reports is kept. Usually set to the package name, so the
+                  report stays identifiable when several packages publish to the same service.
 
 .. _JOBTMPL/PublishTestResults/Input/merge-input-dialect:
 
@@ -212,9 +223,12 @@ merge-input-dialect
 :Type:            string
 :Required:        no
 :Default Value:   ``'pyTest-JUnit'``
-:Possible Values: tbd
-:Description:     tbd
-
+:Possible Values: Any JUnit dialect supported by :term:`pyEDAA.Reports`, e.g. ``'pyTest-JUnit'``, ``'Ant-JUnit'``,
+                  ``'CTest-JUnit'`` or ``'GoogleTest-JUnit'``. |br|
+                  See :external+pyEDAARpt:ref:`unittest/specificdatamodel/junit/dialects` for the complete list.
+:Description:     JUnit dialect used to read and parse the downloaded reports. |br|
+                  *JUnit XML* has no single specification - test frameworks emit structurally different files, so the
+                  dialect must match the framework that produced them.
 
 .. _JOBTMPL/PublishTestResults/Input/merge-output-dialect:
 
@@ -224,8 +238,24 @@ merge-output-dialect
 :Type:            string
 :Required:        no
 :Default Value:   ``'pyTest-JUnit'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any JUnit dialect supported by :term:`pyEDAA.Reports`. |br|
+                  See :external+pyEDAARpt:ref:`unittest/specificdatamodel/junit/dialects` for the complete list.
+:Description:     JUnit dialect used to write the merged report. |br|
+                  Choose the dialect understood by the service consuming the merged file.
+
+.. _JOBTMPL/PublishTestResults/Input/merged_junit_artifact:
+
+merged_junit_artifact
+=====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact receiving the merged JUnit XML file. |br|
+                  If empty, the merged report is published to the configured services, but not kept as an artifact -
+                  so no later job can consume it. :ref:`JOBTMPL/SphinxDocumentation` downloads this artifact to embed
+                  the unit test report into the documentation.
 
 
 .. _JOBTMPL/PublishTestResults/Input/additional_merge_args:
@@ -236,20 +266,12 @@ additional_merge_args
 :Type:            string
 :Required:        no
 :Default Value:   ``'"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'``
-:Possible Values: tbd
-:Description:     tbd
-
-
-.. _JOBTMPL/PublishTestResults/Input/testsuite-summary-name:
-
-testsuite-summary-name
-======================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``''``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any additional command line arguments accepted by ``pyedaa-reports unittest``. |br|
+                  See :external+pyEDAARpt:ref:`unittest/feature/transform` and
+                  :external+pyEDAARpt:ref:`unittest/feature/transform/pytest` for the available transformations.
+:Description:     Additional arguments passed to the merge operation. |br|
+                  The default rewrites the dunder ``__init__`` test suites and reduces the hierarchy depth, so the merged
+                  report is not dominated by the directory structure of the test suite.
 
 
 .. _JOBTMPL/PublishTestResults/Input/publish:
@@ -260,8 +282,12 @@ publish
 :Type:            string
 :Required:        no
 :Default Value:   ``'true'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the merged results as a report page in the pipeline summary. |br|
+                  The report page is created when this or :ref:`JOBTMPL/PublishTestResults/Input/dorny` is true and
+                  :ref:`JOBTMPL/PublishTestResults/Input/report_title` is not empty. |br|
+                  ``'true'`` - create the report page. |br|
+                  ``'false'`` - do not create it.
 
 
 .. _JOBTMPL/PublishTestResults/Input/report_title:
@@ -272,8 +298,10 @@ report_title
 :Type:            string
 :Required:        no
 :Default Value:   ``'Unit Test Results'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: Any title. An empty string disables the report page.
+:Description:     Title of the report page in the pipeline summary. |br|
+                  An empty title skips publishing, regardless of :ref:`JOBTMPL/PublishTestResults/Input/publish` and
+                  :ref:`JOBTMPL/PublishTestResults/Input/dorny`.
 
 
 .. _JOBTMPL/PublishTestResults/Input/dorny:
@@ -284,8 +312,10 @@ dorny
 :Type:            string
 :Required:        no
 :Default Value:   ``'true'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the merged results using :term:`Test Reporter` (:gh:`dorny/test-reporter`). |br|
+                  ``'true'`` - create the report page. |br|
+                  ``'false'`` - do not create it.
 
 
 .. _JOBTMPL/PublishTestResults/Input/codecov:
@@ -296,8 +326,10 @@ codecov
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the merged results to :term:`CodeCov`. |br|
+                  ``'true'`` - publish; the ``CODECOV_TOKEN`` secret must be set. |br|
+                  ``'false'`` - do not publish.
 
 
 .. _JOBTMPL/PublishTestResults/Input/codecov_flags:
@@ -308,8 +340,9 @@ codecov_flags
 :Type:            string
 :Required:        no
 :Default Value:   ``'unittest'``
-:Possible Values: tbd
-:Description:     tbd
+:Possible Values: A comma separated list of Codecov flags.
+:Description:     Flags attached to the upload, so Codecov can separate the results of different test kinds. |br|
+                  Only used when :ref:`JOBTMPL/PublishTestResults/Input/codecov` is ``'true'``.
 
 
 .. _JOBTMPL/PublishTestResults/Secrets:

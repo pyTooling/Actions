@@ -86,7 +86,6 @@ jobs:
 
       - name: 👮 Bandit
         id: bandit
-        if: inputs.artifact != ''
         run: |
           set +e
 
