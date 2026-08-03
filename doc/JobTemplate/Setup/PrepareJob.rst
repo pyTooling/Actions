@@ -1,5 +1,6 @@
 .. _JOBTMPL/PrepareJob:
 .. index::
+   single: gh; PrepareJob Template
    single: GitHub Action Reusable Workflow; PrepareJob Template
 
 PrepareJob

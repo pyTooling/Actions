@@ -1,5 +1,10 @@
 .. _JOBTMPL/ExtractConfiguration:
 .. index::
+   single: Coverage.py; ExtractConfiguration Template
+   single: mypy; ExtractConfiguration Template
+   single: pyEDAA.Reports; ExtractConfiguration Template
+   single: pytest; ExtractConfiguration Template
+   single: wheel; ExtractConfiguration Template
    single: GitHub Action Reusable Workflow; ExtractConfiguration Template
 
 ExtractConfiguration
@@ -50,7 +55,7 @@ duplications within jobs.
    * :gh:`actions/checkout`
    * :gh:`actions/setup-python`
 
-     * :pypi:`wheel`
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
 
 .. _JOBTMPL/ExtractConfiguration/Instantiation:
 

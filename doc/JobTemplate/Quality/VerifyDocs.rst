@@ -5,6 +5,13 @@
 VerifyDocs
 ##########
 
+.. attention::
+
+   Development of this job template is **on hold**. It is implemented, but it is instantiated nowhere - the job is
+   commented out in :ref:`JOBTMPL/CompletePipeline` as well as in the repository's own verification pipelines.
+   Extracting a runnable example from documentation in a general way is not solved yet: the current implementation
+   takes the *first* fenced code block of :file:`README.md` and nothing else.
+
 The ``VerifyDocs`` job template checks that the first Python code example in :file:`README.md` still runs against the
 current code. A broken example is a documentation defect the test suite cannot catch, because the example lives in
 Markdown and is never imported by the tests.

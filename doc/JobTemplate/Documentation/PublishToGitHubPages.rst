@@ -1,6 +1,7 @@
 .. _JOBTMPL/PublishToGitHubPages:
 .. index::
    single: GitHub Pages; PublishToGitHubPages Template
+   single: delete-artifact; PublishToGitHubPages Template
    single: GitHub Action Reusable Workflow; PublishToGitHubPages Template
 
 PublishToGitHubPages

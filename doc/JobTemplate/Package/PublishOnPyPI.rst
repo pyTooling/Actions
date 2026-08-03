@@ -2,6 +2,8 @@
 .. index::
    single: PyPI; PublishOnPyPI Template
    single: twine; PublishOnPyPI Template
+   single: delete-artifact; PublishOnPyPI Template
+   single: wheel; PublishOnPyPI Template
    single: GitHub Action Reusable Workflow; PublishOnPyPI Template
 
 PublishOnPyPI
@@ -45,8 +47,7 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
    * pip
 
      * :term:`twine` (:pypi:`PyPI package <twine>`)
-
-     * :pypi:`wheel`
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
 
 .. _JOBTMPL/PublishOnPyPI/Instantiation:
 

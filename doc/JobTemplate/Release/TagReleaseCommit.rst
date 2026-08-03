@@ -21,6 +21,20 @@ triggers a new pipeline run for that tag, a.k.a *tag pipeline* or *release pipel
    In addition, GitHub doesn't support *project access token*, thus there is no solution to create a user independent
    token to emulate a manual push operation.
 
+.. hint::
+
+   The run's title can be corrected in the *calling* workflow, without changing how the run is triggered. A top-level
+   ``run-name`` key overrides the title GitHub derives from the event, and ``github.ref_name`` holds the tag name for
+   a run dispatched onto a tag:
+
+   .. code-block:: yaml
+
+      name: Pipeline
+      run-name: ${{ github.ref_type == 'tag' && github.ref_name || github.workflow }}
+
+   This changes the displayed title only. It does not turn the ``workflow_dispatch`` event into a ``push`` event, so
+   anything keying off ``github.event_name`` is unaffected.
+
 .. topic:: Features
 
    * Tag the current pipeline's commit.
@@ -33,6 +47,12 @@ triggers a new pipeline run for that tag, a.k.a *tag pipeline* or *release pipel
 
    The job is skipped unless :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag` is ``'true'``. Tagging from a workflow does
    not trigger a tag pipeline by itself, which is why the second step dispatches the run explicitly.
+
+   .. note::
+
+      Because the run is started as a ``workflow_dispatch`` event and not by a tag push, GitHub titles it with the
+      workflow's name instead of the tag name. See the note at the top of this page for the reason and for a way to
+      correct the displayed title.
 
 .. topic:: Job Execution
 

@@ -3,6 +3,7 @@
    single: Bandit; CheckCodeQuality Template
    single: pylint; CheckCodeQuality Template
    single: radon; CheckCodeQuality Template
+   single: Test Reporter; CheckCodeQuality Template
    single: GitHub Action Reusable Workflow; CheckCodeQuality Template
 
 CheckCodeQuality

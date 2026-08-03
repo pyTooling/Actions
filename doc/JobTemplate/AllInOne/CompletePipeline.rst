@@ -11,6 +11,11 @@
    single: MikTeX; CompletePipeline Template
    single: mypy; CompletePipeline Template
    single: PyPI; CompletePipeline Template
+   single: pip; CompletePipeline Template
+   single: pylint; CompletePipeline Template
+   single: radon; CompletePipeline Template
+   single: wheel; CompletePipeline Template
+   single: delete-artifact; CompletePipeline Template
    single: pytest; CompletePipeline Template
    single: pyEDAA.Reports; CompletePipeline Template
    single: Sphinx; CompletePipeline Template
@@ -95,10 +100,6 @@ It can be used for simple Python packages as well as namespace packages.
 
    .. include:: _Behavior.rst
 
-   Steps 11, 15 and 16 are optional and controlled by :ref:`JOBTMPL/CompletePipeline/Input/apptest` and
-   :ref:`JOBTMPL/CompletePipeline/Input/documentation_steps`. Disabling one of them disables that step only, all
-   remaining steps are executed as usual.
-
    .. seealso::
 
       :ref:`DEV/ConditionalJobs`
@@ -132,7 +133,7 @@ It can be used for simple Python packages as well as namespace packages.
               * :gh:`actions/checkout`
               * :gh:`actions/setup-python`
 
-                * :pypi:`wheel`
+                * :term:`wheel` (:pypi:`PyPI package <wheel>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/UnitTesting.yml <JOBTMPL/UnitTesting>`
 
@@ -152,7 +153,7 @@ It can be used for simple Python packages as well as namespace packages.
               * MSYS2: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/pacboy` parameter.
               * pip
 
-                * :pypi:`wheel`
+                * :term:`wheel` (:pypi:`PyPI package <wheel>`)
                 * Python packages specified via :ref:`JOBTMPL/UnitTesting/Input/requirements` or
                   :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
 
@@ -176,7 +177,6 @@ It can be used for simple Python packages as well as namespace packages.
               * pip
 
                 * :term:`docstr_coverage` (:pypi:`PyPI package <docstr_coverage>`)
-
                 * :term:`interrogate` (:pypi:`PyPI package <interrogate>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`
@@ -199,7 +199,6 @@ It can be used for simple Python packages as well as namespace packages.
               * pip
 
                 * :term:`bandit` (:pypi:`PyPI package <bandit>`)
-
                 * :term:`radon` (:pypi:`PyPI package <radon>`)
                 * :term:`pylint` (:pypi:`PyPI package <pylint>`)
 
@@ -214,8 +213,7 @@ It can be used for simple Python packages as well as namespace packages.
               * pip
 
                 * :term:`build` (:pypi:`PyPI package <build>`)
-
-                * :pypi:`wheel`
+                * :term:`wheel` (:pypi:`PyPI package <wheel>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/InstallPackage.yml <JOBTMPL/InstallPackage>`
 
@@ -281,7 +279,7 @@ It can be used for simple Python packages as well as namespace packages.
 
               * pip
 
-                * :pypi:`wheel`
+                * :term:`wheel` (:pypi:`PyPI package <wheel>`)
                 * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` parameter.
 
             * :ref:`pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml <JOBTMPL/LaTeXDocumentation>`
@@ -294,7 +292,7 @@ It can be used for simple Python packages as well as namespace packages.
 
                 * :gh:`actions/upload-artifact`
 
-              * runs inside :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>`
+              * runs inside :term:`pyTooling/MiKTeX` (:dockerhub:`Docker image <pytooling/miktex>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml <JOBTMPL/PublishToGitHubPages>`
 
@@ -313,10 +311,9 @@ It can be used for simple Python packages as well as namespace packages.
                 * :gh:`actions/download-artifact`
               * :gh:`actions/setup-python`
               * :gh:`geekyeggo/delete-artifact`
-
               * pip
 
-                * :pypi:`wheel`
+                * :term:`wheel` (:pypi:`PyPI package <wheel>`)
                 * :term:`twine` (:pypi:`PyPI package <twine>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/TagReleaseCommit.yml <JOBTMPL/TagReleaseCommit>`
@@ -885,7 +882,8 @@ miktex_image
 :Type:            string
 :Required:        no
 :Default Value:   ``'pytooling/miktex:sphinx'``
-:Possible Values: Any Docker image providing a MiKTeX installation with ``latexmk``.
+:Possible Values: Any Docker image providing a :term:`MikTeX` installation with ``latexmk``, e.g. an image of
+                  :term:`pyTooling/MiKTeX`.
 :Description:     Docker image used to translate LaTeX to PDF. |br|
                   Forwarded to :ref:`JOBTMPL/LaTeXDocumentation/Input/miktex_image`.
 
@@ -898,7 +896,7 @@ miktex_update
 :Required:        no
 :Default Value:   ``'false'``
 :Possible Values: ``'true'`` / ``'false'``
-:Description:     Update the MiKTeX packages before building the PDF. |br|
+:Description:     Update the :term:`MikTeX` packages before building the PDF. |br|
                   Forwarded to :ref:`JOBTMPL/LaTeXDocumentation/Input/update`.
 
 .. _JOBTMPL/CompletePipeline/Input/auto_tag:

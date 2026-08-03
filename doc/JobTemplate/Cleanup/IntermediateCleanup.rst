@@ -44,7 +44,7 @@ variant after test results have been merged into a single file.
    2. Delete all JUnit XML report artifacts, if a prefix was given
       (:ref:`JOBTMPL/IntermediateCleanUp/Input/xml_unittest_artifacts_prefix`).
 
-   The job removes the per-matrix-job artifacts once they have been merged, so they don't count against the
+   The per-matrix-job artifacts are removed once they have been merged, so they no longer count against the
    repository's artifact storage for the retention period.
 
 .. topic:: Job Execution

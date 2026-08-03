@@ -1,12 +1,13 @@
 .. _JOBTMPL/CleanupArtifacts:
 .. index::
+   single: delete-artifact; CleanupArtifacts Template
    single: GitHub Action Reusable Workflow; CleanupArtifacts Template
 
 CleanupArtifacts
 ################
 
 The ``CleanupArtifacts`` job template deletes pipeline artifacts that were only needed to hand data from one job to
-the next. It replaces the deprecated :ref:`JOBTMPL/ArtifactCleanup` template.
+the next.
 
 Artifacts are not addressed by their literal names, but by *keys* into the JSON dictionary of artifact names produced
 by :ref:`JOBTMPL/Parameters`. A pipeline therefore never repeats an artifact name, and renaming an artifact in one
@@ -16,13 +17,18 @@ Two independent sets of artifacts can be deleted, each guarded by its own condit
 :ref:`JOBTMPL/CompletePipeline` deletes the intermediate reports on every run, but the package artifact only when it
 is *not* a release run - on a release run :ref:`JOBTMPL/PublishOnPyPI` consumes and deletes it.
 
+.. note::
+
+   ``CleanupArtifacts`` replaces the deprecated :ref:`JOBTMPL/ArtifactCleanup` and :ref:`JOBTMPL/IntermediateCleanUp`
+   templates.
+
 .. topic:: Features
 
    * Delete artifacts by key into an artifact-name dictionary instead of by literal name.
    * Expand a key to a name with prefix and/or postfix, so the per-matrix-job artifacts of one key can be deleted with
      a single entry.
    * Delete two independent sets of artifacts, each with its own condition.
-   * Delete further artifacts by literal name.
+   * Delete further artifacts by literal name if needed.
 
 .. topic:: Behavior
 
@@ -49,9 +55,9 @@ is *not* a release run - on a release run :ref:`JOBTMPL/PublishOnPyPI` consumes 
 Artifact ID Syntax
 ******************
 
-:ref:`JOBTMPL/CleanupArtifacts/Input/artifact-json-ids` and
-:ref:`JOBTMPL/CleanupArtifacts/Input/artifact-json-ids2` take a space or newline separated list of entries. Each entry
-is resolved against the JSON dictionary given by ``json`` / ``json2``:
+:ref:`JOBTMPL/CleanupArtifacts/Input/artifact-json-ids` takes a space or newline separated list of entries. Each
+entry is resolved against the JSON dictionary given by ``json``. The list of entries in
+:ref:`JOBTMPL/CleanupArtifacts/Input/artifact-json-ids2` is looked up in ``json2``:
 
 +------------------------+-----------------------------------------------+
 | Entry                  | Resolves to                                   |
@@ -76,7 +82,7 @@ is resolved against the JSON dictionary given by ``json`` / ``json2``:
    The resulting artifact name is ``myProject-UnitTestReportSummary-XML-ubuntu-3.14``.
 
    To delete all these variants, ``unittesting_xml:-*`` can be used. |br|
-   This won't delete the merged unit test XML artifact, because that one uses
+   The merged unit test XML artifact is not deleted by this entry, because that one uses
    ``artifactNames['unittesting_xml']`` directly, without a postfix. Deleting it too needs a second entry
    ``unittesting_xml`` - which is why both forms appear in the example below.
 
@@ -126,8 +132,9 @@ the pipeline is not a tagged release.
 
 .. attention::
 
-   Give the job an ``if:`` containing a status check function, such as ``!cancelled()``. Without one, a single skipped
-   upstream job skips the cleanup, and the artifacts survive their retention period.
+   The job should be given an ``if:`` expression containing a status check function, such as ``!cancelled()``. If no
+   such function is present, the cleanup is skipped as soon as a single upstream job was skipped, and the artifacts
+   are kept until their retention period expires.
 
 
 .. seealso::

@@ -1,6 +1,7 @@
 .. _JOBTMPL/Package:
 .. index::
    single: build; Package Template
+   single: wheel; Package Template
    single: GitHub Action Reusable Workflow; Package Template
 
 Package
@@ -48,8 +49,7 @@ as an artifact.
    * pip
 
      * :term:`build` (:pypi:`PyPI package <build>`)
-
-     * :pypi:`wheel`
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
 
 .. _JOBTMPL/Package/Instantiation:
 

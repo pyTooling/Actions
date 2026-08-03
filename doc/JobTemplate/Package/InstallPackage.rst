@@ -1,6 +1,7 @@
 .. _JOBTMPL/InstallPackage:
 .. index::
    single: pip; InstallPackage Template
+   single: wheel; InstallPackage Template
    single: GitHub Action Reusable Workflow; InstallPackage Template
 
 InstallPackage (beta)
@@ -48,7 +49,7 @@ the installation is verified. This aims for packaging and dependency mistakes in
    * pip (native systems)
 
      * :term:`pip` (:pypi:`PyPI package <pip>`)
-     * :pypi:`wheel`
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
 
    * pacboy (MSYS2)
 

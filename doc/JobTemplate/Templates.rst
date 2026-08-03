@@ -21,6 +21,7 @@
       * :ref:`JOBTMPL/SphinxDocumentation`
       * :ref:`JOBTMPL/LaTeXDocumentation`
       * :ref:`JOBTMPL/PublishToGitHubPages`
+      * :ref:`JOBTMPL/CheckDocumentation`
 
       .. rubric:: Testing
 
@@ -34,8 +35,7 @@
 
       * :ref:`JOBTMPL/StaticTypeCheck`
       * :ref:`JOBTMPL/CheckCodeQuality`
-      * :ref:`JOBTMPL/CheckDocumentation`
-      * :ref:`JOBTMPL/VerifyDocs`
+      * :ref:`JOBTMPL/VerifyDocs` (on hold)
       * *code formatting (planned)*
 
       .. rubric:: Build and Packaging

@@ -1,6 +1,8 @@
 .. _JOBTMPL/SphinxDocumentation:
 .. index::
    single: Sphinx; SphinxDocumentation Template
+   single: MikTeX; SphinxDocumentation Template
+   single: wheel; SphinxDocumentation Template
    single: GitHub Action Reusable Workflow; SphinxDocumentation Template
 
 SphinxDocumentation
@@ -80,7 +82,7 @@ website and a LaTeX documentation. This LaTeX document can be translated using e
 
    * pip
 
-     * :pypi:`wheel`
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
      * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` parameter. This is where
        :term:`Sphinx` (:pypi:`PyPI package <Sphinx>`), its theme and its extensions come from - the job template
        installs none of them itself.

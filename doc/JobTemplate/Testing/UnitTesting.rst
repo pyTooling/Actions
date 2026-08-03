@@ -2,6 +2,8 @@
 .. index::
    single: pytest; UnitTesting Template
    single: Coverage.py; UnitTesting Template
+   single: pip; UnitTesting Template
+   single: wheel; UnitTesting Template
    single: GitHub Action Reusable Workflow; UnitTesting Template
 
 UnitTesting
@@ -72,7 +74,7 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
    * MSYS2: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/pacboy` parameter.
    * pip
 
-     * :pypi:`wheel`
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
      * Python packages specified via :ref:`JOBTMPL/UnitTesting/Input/requirements` or
        :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
 
@@ -328,6 +330,25 @@ requirements
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'coverage pytest'``.
 :Description:     Python dependencies to be installed through *pip*.
+
+                  A requirements file is looked up in one of two ways, depending on the path:
+
+                  * A path starting with ``./`` is resolved relative to the unit test directory, which is the
+                    concatenation of :ref:`JOBTMPL/UnitTesting/Input/root_directory`,
+                    :ref:`JOBTMPL/UnitTesting/Input/tests_directory` and
+                    :ref:`JOBTMPL/UnitTesting/Input/unittest_directory`. |br|
+                    With the defaults, ``'-r ./requirements.txt'`` refers to :file:`./tests/unit/requirements.txt`.
+                  * Any other path is used as given, thus relative to the repository root.
+
+                  .. attention::
+
+                     The resolved file's existence is checked before the installation. If it is missing, the job is
+                     aborted with a ``FileNotFoundError`` annotation naming the resolved path.
+
+                  .. note::
+
+                     :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` is not resolved this way. Its value is passed
+                     to ``pip install`` unchanged.
 
 
 .. _JOBTMPL/UnitTesting/Input/mingw_requirements:

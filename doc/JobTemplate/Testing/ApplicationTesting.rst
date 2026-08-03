@@ -1,6 +1,7 @@
 .. _JOBTMPL/ApplicationTesting:
 .. index::
    single: pytest; ApplicationTesting Template
+   single: pip; ApplicationTesting Template
    single: GitHub Action Reusable Workflow; ApplicationTesting Template
 
 ApplicationTesting
@@ -263,7 +264,16 @@ requirements
 :Default Value:   ``'-r ./requirements.txt'``
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
-                  packages can be specified using a space separated list.
+                  packages can be specified using a space separated list. |br|
+                  A path starting with ``./`` is resolved relative to the application test directory, which is the
+                  concatenation of :ref:`JOBTMPL/ApplicationTesting/Input/root_directory`,
+                  :ref:`JOBTMPL/ApplicationTesting/Input/tests_directory` and
+                  :ref:`JOBTMPL/ApplicationTesting/Input/apptest_directory`; with the defaults
+                  ``'-r ./requirements.txt'`` refers to :file:`tests/app/requirements.txt`. Any other path is used as
+                  given, thus relative to the repository root. |br|
+                  A missing file aborts the job with a ``FileNotFoundError`` annotation naming the resolved path.
+                  :ref:`JOBTMPL/ApplicationTesting/Input/mingw_requirements` is not resolved this way; its value is
+                  passed to ``pip install`` unchanged.
 :Description:     Python dependencies needed to *run* the application tests, installed through *pip*. |br|
                   The package under test is not installed from here - it comes from
                   :ref:`JOBTMPL/ApplicationTesting/Input/wheel`.

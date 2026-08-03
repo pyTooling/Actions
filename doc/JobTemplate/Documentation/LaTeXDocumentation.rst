@@ -1,13 +1,14 @@
 .. _JOBTMPL/LaTeXDocumentation:
 .. index::
    single: MikTeX; LaTeXDocumentation Template
+   single: Sphinx; LaTeXDocumentation Template
    single: GitHub Action Reusable Workflow; LaTeXDocumentation Template
 
 LaTeXDocumentation
 ##################
 
 The ``LaTeXDocumentation`` job template downloads an artifact containing a LaTeX document and translates to a PDF file
-using MikTeX.
+using :term:`MikTeX`.
 
 The translation process uses ``latexmk`` for handling multiple passes. The default LaTeX processor is ``lualatex``, but
 can be switched by a parameter.
@@ -19,8 +20,8 @@ can be switched by a parameter.
 .. topic:: Behavior
 
    1. Download the LaTeX artifact (:ref:`JOBTMPL/LaTeXDocumentation/Input/latex_artifact`).
-   2. Optionally update the MiKTeX packages in the container (:ref:`JOBTMPL/LaTeXDocumentation/Input/update`).
-   3. Build the PDF using ``latexmk`` inside the MiKTeX container
+   2. Optionally update the :term:`MikTeX` packages in the container (:ref:`JOBTMPL/LaTeXDocumentation/Input/update`).
+   3. Build the PDF using ``latexmk`` inside the :term:`MikTeX` container
       (:ref:`JOBTMPL/LaTeXDocumentation/Input/miktex_image`, :ref:`JOBTMPL/LaTeXDocumentation/Input/document`,
       :ref:`JOBTMPL/LaTeXDocumentation/Input/processor`,
       :ref:`JOBTMPL/LaTeXDocumentation/Input/halt-on-error`).
@@ -38,7 +39,7 @@ can be switched by a parameter.
 
      * :gh:`actions/upload-artifact`
 
-   * The job runs inside the MiKTeX container given by
+   * The job runs inside the :term:`MikTeX` container given by
      :ref:`JOBTMPL/LaTeXDocumentation/Input/miktex_image`, which provides ``latexmk``.
 
 .. _JOBTMPL/LaTeXDocumentation/Instantiation:
@@ -154,7 +155,7 @@ processor
 :Type:            string
 :Required:        no
 :Default Value:   ``'lualatex'``
-:Possible Values: Any supported LaTeX processor supported by MikTeX and ``latexmk``.
+:Possible Values: Any supported LaTeX processor supported by :term:`MikTeX` and ``latexmk``.
 :Description:     Name of the used LaTeX processor.
 
 
@@ -181,7 +182,8 @@ miktex_image
 :Type:            string
 :Required:        no
 :Default Value:   ``'pytooling/miktex:sphinx'``
-:Possible Values: Any Docker image providing a MiKTeX installation with ``latexmk``.
+:Possible Values: Any Docker image providing a :term:`MikTeX` installation with ``latexmk``, e.g. an image of
+                  :term:`pyTooling/MiKTeX`.
 :Description:     Docker image used to translate the LaTeX sources to PDF.
 
                   .. hint::
@@ -198,9 +200,9 @@ update
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'`` - update the MiKTeX packages inside the container before building.
+:Possible Values: ``'true'`` - update the :term:`MikTeX` packages inside the container before building.
                   ``'false'`` - use the packages shipped with the image.
-:Description:     Update MiKTeX packages before the document is built. |br|
+:Description:     Update :term:`MikTeX` packages before the document is built. |br|
                   Updating costs runtime on every run, so this is meant as an escape hatch when the image lags behind
                   a LaTeX package needs.
 
