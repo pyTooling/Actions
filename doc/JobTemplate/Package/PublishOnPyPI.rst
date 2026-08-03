@@ -2,6 +2,8 @@
 .. index::
    single: PyPI; PublishOnPyPI Template
    single: twine; PublishOnPyPI Template
+   single: delete-artifact; PublishOnPyPI Template
+   single: wheel; PublishOnPyPI Template
    single: GitHub Action Reusable Workflow; PublishOnPyPI Template
 
 PublishOnPyPI
@@ -15,10 +17,12 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
 
 .. topic:: Behavior
 
-   1. Download package artifact
-   2. Publish source package(s) (``*.tar.gz``)
-   3. Publish wheel package(s) (``*.whl``)
-   4. Delete the artifact
+   1. Download the package artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/artifact`).
+   2. Setup Python (:ref:`JOBTMPL/PublishOnPyPI/Input/python_version`) and install dependencies
+      (:ref:`JOBTMPL/PublishOnPyPI/Input/requirements`), which must provide :term:`twine`.
+   3. Publish the wheel package(s) (:file:`*.whl`).
+   4. Publish the source package(s) (:file:`*.tar.gz`).
+   5. Delete the artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`).
 
 .. topic:: Preconditions
 
@@ -34,17 +38,16 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
 
 .. topic:: Dependencies
 
+   * :gh:`actions/setup-python`
    * :gh:`pyTooling/download-artifact`
 
      * :gh:`actions/download-artifact`
-   * :gh:`actions/setup-python`
-   * :gh:`geekyeggo/delete-artifact`
 
+   * :gh:`geekyeggo/delete-artifact`
    * pip
 
-     * :pypi:`wheel`
-     * :pypi:`twine`
-
+     * :term:`twine` (:pypi:`PyPI package <twine>`)
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
 
 .. _JOBTMPL/PublishOnPyPI/Instantiation:
 
@@ -63,7 +66,7 @@ by a Git tag. A secret is forwarded from GitHub secrets to a job secret.
      # ...
 
      PublishOnPyPI:
-       uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r7
        if: startsWith(github.ref, 'refs/tags')
        with:
          artifact: Package
@@ -87,7 +90,7 @@ by that job. Finally, the list of requirements is overwritten to load a list of 
        # ...
 
      PublishOnPyPI:
-       uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r7
        if: startsWith(github.ref, 'refs/tags')
        needs:
          - Params
@@ -111,17 +114,19 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishOnPyPI/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                                           |
-+=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/ubuntu_image_version`             | no       | string   | ``'24.04'``                                                       |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/python_version`                   | no       | string   | ``'3.14'``                                                        |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/requirements`                     | no       | string   | ``'wheel twine'``                                                 |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/artifact`                         | yes      | string   | — — — —                                                           |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++---------------------------------------------------------+----------+--------+-------------------+
+| Parameter Name                                          | Required | Type   | Default           |
++=========================================================+==========+========+===================+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/ubuntu_image_version` | no       | string | ``'26.04'``       |
++---------------------------------------------------------+----------+--------+-------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/python_version`       | no       | string | ``'3.14'``        |
++---------------------------------------------------------+----------+--------+-------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/requirements`         | no       | string | ``'wheel twine'`` |
++---------------------------------------------------------+----------+--------+-------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/artifact`             | yes      | string | — — — —           |
++---------------------------------------------------------+----------+--------+-------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`              | no       | string | ``'true'``        |
++---------------------------------------------------------+----------+--------+-------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishOnPyPI/Secrets>`
 
@@ -158,7 +163,7 @@ requirements
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'wheel twine'``
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'wheel twine'``.
@@ -175,6 +180,22 @@ artifact
 :Default Value:   — — — —
 :Possible Values: Any valid artifact name.
 :Description:     Name of the artifact containing the packaged Python package(s).
+
+
+.. _JOBTMPL/PublishOnPyPI/Input/cleanup:
+
+cleanup
+=======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Delete the artifact named by :ref:`JOBTMPL/PublishOnPyPI/Input/artifact` after the packages were
+                  uploaded. |br|
+                  This job consumes the artifact, so a pipeline usually has no further use for it. |br|
+                  ``'true'`` - delete the package artifact. |br|
+                  ``'false'`` - keep it.
 
 
 .. _JOBTMPL/PublishOnPyPI/Secrets:

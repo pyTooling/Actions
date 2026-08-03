@@ -1,4 +1,5 @@
 name: Verification Pipeline for Parameters
+run-name: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
 
 on:
   push:

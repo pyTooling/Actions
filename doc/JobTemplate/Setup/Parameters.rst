@@ -26,8 +26,21 @@ It generates output parameters containing a list of artifact names and a job mat
 .. topic:: Behavior
 
    1. Delay job execution by :ref:`JOBTMPL/Parameters/Input/pipeline-delay` seconds.
-   2. Compute job matrix using an embedded Python script.
-   3. Assemble artifact names using a common prefix derived from Python namespace and package name.
+   2. Checkout repository.
+   3. Compute the Python version to be used by non-matrix jobs
+      (:ref:`JOBTMPL/Parameters/Input/python_version`).
+   4. Assemble artifact names using a common prefix derived from Python namespace and package name
+      (:ref:`JOBTMPL/Parameters/Input/name`, :ref:`JOBTMPL/Parameters/Input/package_namespace`,
+      :ref:`JOBTMPL/Parameters/Input/package_name`).
+
+      Artifact names of disabled steps are set to an empty string, which is how
+      :ref:`JOBTMPL/Parameters/Input/documentation_steps` disables documentation jobs downstream.
+
+   5. Compute the job matrix using an embedded Python script
+      (:ref:`JOBTMPL/Parameters/Input/python_version_list`, :ref:`JOBTMPL/Parameters/Input/system_list`,
+      :ref:`JOBTMPL/Parameters/Input/include_list`, :ref:`JOBTMPL/Parameters/Input/exclude_list`,
+      :ref:`JOBTMPL/Parameters/Input/disable_list`).
+   6. Verify the generated output parameters and fail on inconsistencies.
 
 .. topic:: Job Execution
 
@@ -36,8 +49,7 @@ It generates output parameters containing a list of artifact names and a job mat
 
 .. topic:: Dependencies
 
-   * Python from base-system.
-
+   * :gh:`actions/checkout`
 
 .. _JOBTMPL/Parameters/Instantiation:
 
@@ -53,7 +65,7 @@ Simple Example
       :columns: 5
 
       The following instantiation example creates a ``Params`` job derived from job template ``Parameters`` version
-      ``@r6``. It only requires a :ref:`JOBTMPL/Parameters/Input/package_name` parameter to create the artifact names.
+      ``@r7``. It only requires a :ref:`JOBTMPL/Parameters/Input/package_name` parameter to create the artifact names.
 
    .. grid-item::
       :columns: 7
@@ -62,12 +74,12 @@ Simple Example
 
          jobs:
            Params:
-             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
              with:
                package_name: myPackage
 
            UnitTesting:
-             uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+             uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
              needs:
                - Params
              with:
@@ -101,7 +113,7 @@ Complex Example
 
          jobs:
            UnitTestingParams:
-             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
              with:
                package_namespace:   myFramework
                package_name:        Extension
@@ -111,7 +123,7 @@ Complex Example
                exclude_list:        'windows:pypy-3.10 windows:pypy-3.11'
 
            PerformanceTestingParams:
-             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
              with:
                package_namespace:   myFramework
                package_name:        Extension
@@ -119,7 +131,7 @@ Complex Example
                system_list:         'ubuntu windows macos macos-arm'
 
            PlatformTestingParams:
-             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+             uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
              with:
                package_namespace:   myFramework
                package_name:        Extension
@@ -158,43 +170,47 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/Parameters/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                                           |
-+=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/Parameters/Input/ubuntu_image_version`                | no       | string   | ``'24.04'``                                                       |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/name`                                | no       | string   | ``''``                                                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/package_namespace`                   | no       | string   | ``''``                                                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/package_name`                        | no       | string   | ``''``                                                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/python_version`                      | no       | string   | ``'3.14'``                                                        |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/python_version_list`                 | no       | string   | ``'3.10 3.11 3.12 3.13 3.14'``                                    |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/system_list`                         | no       | string   | ``'ubuntu windows macos macos-arm mingw64 ucrt64'``               |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/include_list`                        | no       | string   | ``''``                                                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/exclude_list`                        | no       | string   | ``'windows-arm:3.9 windows-arm:3.10'``                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/disable_list`                        | no       | string   | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                 |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/ubuntu_image`                        | no       | string   | ``'ubuntu-24.04'``                                                |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/ubuntu_arm_image`                    | no       | string   | ``'ubuntu-24.04-arm'``                                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/windows_image`                       | no       | string   | ``'windows-2025'``                                                |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/windows_arm_image`                   | no       | string   | ``'windows-11-arm'``                                              |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/macos_intel_image`                   | no       | string   | ``'macos-13'``                                                    |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/macos_arm_image`                     | no       | string   | ``'macos-15'``                                                    |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/pipeline-delay`                      | no       | number   | ``0``                                                             |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| Parameter Name                                       | Required | Type   | Default                                                                    |
++======================================================+==========+========+============================================================================+
+| :ref:`JOBTMPL/Parameters/Input/ubuntu_image_version` | no       | string | ``'26.04'``                                                                |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/pipeline-delay`       | no       | number | ``0``                                                                      |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/name`                 | no       | string | ``''``                                                                     |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/package_namespace`    | no       | string | ``''``                                                                     |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/package_name`         | no       | string | ``''``                                                                     |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/python_version`       | no       | string | ``'3.14'``                                                                 |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/python_version_list`  | no       | string | ``'3.10 3.11 3.12 3.13 3.14'``                                             |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/system_list`          | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'`` |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/include_list`         | no       | string | ``''``                                                                     |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/exclude_list`         | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/disable_list`         | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                          |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/ubuntu_image`         | no       | string | ``'ubuntu-26.04'``                                                         |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/ubuntu_arm_image`     | no       | string | ``'ubuntu-26.04-arm'``                                                     |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/windows_image`        | no       | string | ``'windows-2025'``                                                         |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/windows_arm_image`    | no       | string | ``'windows-11-arm'``                                                       |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/macos_intel_image`    | no       | string | ``'macos-15-intel'``                                                       |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/macos_arm_image`      | no       | string | ``'macos-15'``                                                             |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/version_file`         | no       | string | ``'__init__.py'``                                                          |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Input/documentation_steps`  | no       | string | ``'all'``                                                                  |
++------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/Parameters/Secrets>`
 
@@ -223,6 +239,18 @@ This job template needs no secrets.
 
 Input Parameters
 ****************
+
+.. _JOBTMPL/Parameters/Input/pipeline-delay:
+
+pipeline-delay
+==============
+
+:Type:            number
+:Required:        no
+:Default Value:   ``0``
+:Possible Values: Any non-negative number of seconds. ``0`` disables the delay.
+:Description:     Delay this job's start by the given number of seconds. |br|
+                  See :ref:`JOBTMPL/PrepareJob/Input/pipeline-delay` for the rationale.
 
 .. _JOBTMPL/Parameters/Input/ubuntu_image_version:
 
@@ -272,7 +300,7 @@ package_namespace
 
                            jobs:
                              ConfigParams:
-                               uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                               uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                                with:
                                  package_namespace: myFramework
                                  package_name:      Extension
@@ -321,7 +349,7 @@ package_name
 
                            jobs:
                              ConfigParams:
-                               uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                               uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                                with:
                                  package_name: myPackage
 
@@ -381,7 +409,7 @@ system_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'ubuntu windows macos macos-arm mingw64 ucrt64'``
+:Default Value:   ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'``
 :Possible Values: A space separated list of system names.
 :Description:     The list of space-separated systems used for application testing.
 
@@ -404,7 +432,7 @@ include_list
 
                      jobs:
                        ConfigParams:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            package_name: myPackage
                            include_list: "ubuntu:3.11 macos:3.11"
@@ -426,7 +454,7 @@ exclude_list
 
                      jobs:
                        ConfigParams:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            package_name: myPackage
                            exclude_list: "windows:pypy-3.8 windows:pypy-3.9"
@@ -449,7 +477,7 @@ disable_list
 
                      jobs:
                        ConfigParams:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            package_name: myPackage
                            disable_list: "windows:3.10 windows:3.11"
@@ -465,7 +493,7 @@ ubuntu_image
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'ubuntu-24.04'``
+:Default Value:   ``'ubuntu-26.04'``
 :Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
                   for available Ubuntu image versions.
 :Description:     Name of the Ubuntu x86-64 image and version used to run a Ubuntu jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
@@ -478,7 +506,7 @@ ubuntu_arm_image
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'ubuntu-24.04-arm'``
+:Default Value:   ``'ubuntu-26.04-arm'``
 :Possible Values: See `actions/partner-runner-images - Available Images <https://github.com/actions/partner-runner-images?tab=readme-ov-file#available-images>`__
                   for available Ubuntu ARM image versions.
 :Description:     Name of the Ubuntu aarch64 image and version used to run a Ubuntu ARM jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
@@ -515,7 +543,7 @@ macos_intel_image
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'macos-13'``
+:Default Value:   ``'macos-15-intel'``
 :Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
 :Description:     Name of the macOS x86-64 image and version used to run a macOS Intel jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
 
@@ -532,17 +560,32 @@ macos_arm_image
 :Description:     Name of the macOS aarch64 image and version used to run a macOS ARM jobs when selected via :ref:`JOBTMPL/Parameters/Input/system_list`.
 
 
-.. _JOBTMPL/Parameters/Input/pipeline-delay:
+.. _JOBTMPL/Parameters/Input/version_file:
 
-pipeline-delay
-==============
+version_file
+============
 
-:Type:            number
+:Type:            string
 :Required:        no
-:Default Value:   ``0``
-:Possible Values: Any integer number.
-:Description:     Slow down this job, to delay the startup of the GitHub Action pipline.
+:Default Value:   ``'__init__.py'``
+:Possible Values: Any path relative to the package directory.
+:Description:     Module inside the package that carries the ``__version__`` variable. |br|
+                  Reported back as :ref:`JOBTMPL/Parameters/Output/package_version_file` and used by the version check
+                  of :ref:`JOBTMPL/CompletePipeline`.
 
+.. _JOBTMPL/Parameters/Input/documentation_steps:
+
+documentation_steps
+===================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'all'``
+:Possible Values: A space separated list of ``none``, ``html``, ``latex``, ``pdf``, ``pages``, ``asset`` or ``all``.
+:Description:     Documentation steps the pipeline will run. |br|
+                  This parameter does not run anything itself - it decides which documentation artifact names are
+                  generated. A step that is not listed gets an empty artifact name, which disables the corresponding
+                  job. ``none`` clears the whole set.
 
 .. _JOBTMPL/Parameters/Secrets:
 
@@ -577,12 +620,12 @@ python_version
 
                      jobs:
                        Params:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            name: pyTooling
 
                        CodeCoverage:
-                         uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/CoverageCollection.yml@r7
                          needs:
                            - Params
                          with:
@@ -658,12 +701,12 @@ artifact_names
 
                      jobs:
                        Params:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            name: pyTooling
 
                        Coverage:
-                         uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
                          needs:
                            - Params
                          with:
@@ -692,12 +735,12 @@ python_jobs
 
                      jobs:
                        Params:
-                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
                          with:
                            name: pyDummy
 
                        UnitTesting:
-                         uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+                         uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
                          needs:
                            - Params
                          with:
@@ -762,6 +805,16 @@ python_jobs
                        {"sysicon": "🪟🟨", "system": "msys2",    "runs-on": "windows-2025", "runtime": "UCRT64",  "shell": "msys2 {0}", "pyicon": "🟢", "python": "3.12", "envname": "Windows+MSYS2 (x86-64) - UCRT64" }
                      ]
 
+
+.. _JOBTMPL/Parameters/Output/package_version_file:
+
+package_version_file
+====================
+
+:Type:            string
+:Possible Values: A path such as ``'pyTooling/__init__.py'``.
+:Description:     Path to the package module carrying the ``__version__`` variable, assembled from the package
+                  directory and :ref:`JOBTMPL/Parameters/Input/version_file`.
 
 .. _JOBTMPL/Parameters/Optimizations:
 

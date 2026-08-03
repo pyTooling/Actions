@@ -27,18 +27,36 @@ This template creates a GitHub Release Page and uploads assets to that page.
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Install dependencies.
-   3. Check if it's a full release or nightly release (rolling release).
-   4. Delete old release.
-   5. Assemble release notes.
-   6. Create a new or recreate the release page as draft.
-   7. Attach files from artifacts as assets:
+   2. Install dependencies (``zstd``).
+   3. Determine whether this is a full release or a nightly release (rolling release)
+      (:ref:`JOBTMPL/PublishReleaseNotes/Input/mode`, :ref:`JOBTMPL/PublishReleaseNotes/Input/tag`).
+   4. For a nightly release, delete the previous release page.
+   5. Create the release page as a draft - a new page for a release, a recreated page for a nightly
+      (:ref:`JOBTMPL/PublishReleaseNotes/Input/title`, :ref:`JOBTMPL/PublishReleaseNotes/Input/prerelease`,
+      :ref:`JOBTMPL/PublishReleaseNotes/Input/latest`).
+   6. Attach files from artifacts as assets (:ref:`JOBTMPL/PublishReleaseNotes/Input/assets`):
 
-      1. Download artifact
-      2. Optionally, create compressed archives of that content.
-      3. Upload assets to release page.
+      1. Download the artifact.
+      2. Unpack the tarball created by :gh:`pyTooling/upload-artifact`
+         (:ref:`JOBTMPL/PublishReleaseNotes/Input/tarball-name`).
+      3. Optionally create compressed archives of that content.
+      4. Upload the assets to the release page.
+      5. Optionally record the asset in the JSON inventory
+         (:ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`,
+         :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-version`,
+         :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-categories`).
 
-   8. Remove draft state from new release page.
+   7. Assemble the release notes and update the release page with them
+      (:ref:`JOBTMPL/PublishReleaseNotes/Input/description`,
+      :ref:`JOBTMPL/PublishReleaseNotes/Input/description_file`,
+      :ref:`JOBTMPL/PublishReleaseNotes/Input/description_footer`,
+      :ref:`JOBTMPL/PublishReleaseNotes/Input/replacements`).
+   8. Remove the draft state from the release page (:ref:`JOBTMPL/PublishReleaseNotes/Input/draft`).
+
+   .. note::
+
+      The page is created *before* the assets are attached and the notes are written, so a failure while
+      uploading assets leaves a draft page behind rather than a published, incomplete release.
 
 .. topic:: Job Execution
 
@@ -48,12 +66,10 @@ This template creates a GitHub Release Page and uploads assets to that page.
 .. topic:: Dependencies
 
    * :gh:`actions/checkout`
-   * ``gh`` (GitHub command line interface)
-   * ``jq`` (JSON processing)
+   * :gh:`GitHub command line tool 'gh' <cli/cli>`
    * apt
 
-     * zstd
-
+     * ``zstd``
 
 .. _JOBTMPL/PublishReleaseNotes/Instantiation:
 
@@ -64,10 +80,10 @@ Instantiation
 
    jobs:
      Prepare:
-       uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r7
 
      Release:
-       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r6
+       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r7
        needs:
          - Prepare
        if: needs.Prepare.outputs.is_release_tag == 'true'
@@ -221,45 +237,45 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishReleaseNotes/Inputs>`
 
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                          | Required | Type     | Default                                                           |
-+=========================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/ubuntu_image`                   | no       | string   | ``'ubuntu-24.04'``                                                |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/release_branch`                 | no       | string   | ``'main'``                                                        |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/mode`                           | no       | string   | ``'release'``                                                     |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/tag`                            | yes      | string   | — — — —                                                           |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/title`                          | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/description`                    | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/description_file`               | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/description_footer`             | no       | string   | see parameter details                                             |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/draft`                          | no       | boolean  | ``false``                                                         |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/prerelease`                     | no       | boolean  | ``false``                                                         |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/latest`                         | no       | boolean  | ``false``                                                         |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/replacements`                   | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/assets`                         | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`                 | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-version`              | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-categories`           | no       | string   | ``''``                                                            |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/tarball-name`                   | no       | string   | ``'__pyTooling_upload_artifact__.tar'``                           |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishReleaseNotes/Input/can-fail`                       | no       | boolean  | ``false``                                                         |
-+-------------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| Parameter Name                                                | Required | Type    | Default                                 |
++===============================================================+==========+=========+=========================================+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/ubuntu_image`         | no       | string  | ``'ubuntu-26.04'``                      |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/release_branch`       | no       | string  | ``'main'``                              |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/mode`                 | no       | string  | ``'release'``                           |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/tag`                  | yes      | string  | — — — —                                 |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/title`                | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/description`          | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/description_file`     | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/description_footer`   | no       | string  | see parameter details                   |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/draft`                | no       | boolean | ``false``                               |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/prerelease`           | no       | boolean | ``false``                               |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/latest`               | no       | boolean | ``true``                                |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/replacements`         | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/assets`               | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`       | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-version`    | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-categories` | no       | string  | ``''``                                  |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/tarball-name`         | no       | string  | ``'__pyTooling_upload_artifact__.tar'`` |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
+| :ref:`JOBTMPL/PublishReleaseNotes/Input/can-fail`             | no       | boolean | ``false``                               |
++---------------------------------------------------------------+----------+---------+-----------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishReleaseNotes/Secrets>`
 
@@ -282,7 +298,7 @@ ubuntu_image
 
 :Type:            string
 :Required:        usually no
-:Default Value:   ``'ubuntu-24.04'``
+:Default Value:   ``'ubuntu-26.04'``
 :Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
                   for available Ubuntu image versions.
 :Description:     Name of the Ubuntu image used to run a job.
@@ -390,11 +406,13 @@ description_footer
 draft
 =====
 
-:Type:            :red:`boolean`
+:Type:            boolean
 :Required:        no
 :Default Value:   ``false``
-:Possible Values: ``false``, ``true``
-:Description:     If *true*, the release is kept in *draft* state.
+:Possible Values: ``true`` / ``false``
+:Description:     Keep the release page in *draft* state. |br|
+                  ``true`` - the release stays a draft. |br|
+                  ``false`` - the release is published.
 
                   .. note::
 
@@ -406,11 +424,13 @@ draft
 prerelease
 ==========
 
-:Type:            :red:`boolean`
+:Type:            boolean
 :Required:        no
 :Default Value:   ``false``
-:Possible Values: ``false``, ``true``
-:Description:     If *true*, the release is marked as a *pre-release*.
+:Possible Values: ``true`` / ``false``
+:Description:     Mark the release as a *pre-release*. |br|
+                  ``true`` - the release is marked as a pre-release. |br|
+                  ``false`` - the release is a regular release.
 
 
 .. _JOBTMPL/PublishReleaseNotes/Input/latest:
@@ -418,11 +438,13 @@ prerelease
 latest
 ======
 
-:Type:            :red:`boolean`
+:Type:            boolean
 :Required:        no
-:Default Value:   ``false``
-:Possible Values: ``false``, ``true``
-:Description:     If *true*, the release is marked as *latest release*.
+:Default Value:   ``true``
+:Possible Values: ``true`` / ``false``
+:Description:     Mark the release as *latest release*. |br|
+                  ``true`` - the release becomes the latest release. |br|
+                  ``false`` - the latest release is left unchanged.
 
 
 .. _JOBTMPL/PublishReleaseNotes/Input/replacements:
@@ -443,7 +465,7 @@ replacements
                   .. code-block:: yaml
 
                      ReleasePage:
-                       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r6
+                       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r7
                        needs:
                          - Prepare
                        if: needs.Prepare.outputs.is_release_tag == 'true'
@@ -519,7 +541,7 @@ inventory-categories
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: A colon separated list of identifiers used as category names in an inventory JSON.
+:Possible Values: A comma separated list of identifiers used as category names in an inventory JSON.
 :Description:     For decoding hierarchy levels (categories) in an inventory JSON, the hierarchy of categories can be
                   added to the inventoy JSON. |br|
                   See :ref:`JOBTMPL/PublishReleaseNotes/Inventory` for more details.
@@ -533,22 +555,23 @@ tarball-name
 :Type:            string
 :Required:        no
 :Default Value:   ``'__pyTooling_upload_artifact__.tar'``
-:Possible Values: Any valid name for a tarball file.
-:Description:
-                  .. todo:: PublishReleaseNotes::tarball-name Needs documentation.
-
+:Possible Values: Any valid file name.
+:Description:     Name of the tarball inside an artifact uploaded by :gh:`pyTooling/upload-artifact`. |br|
+                  That action packs the uploaded files into a tarball to preserve file modes and symlinks. When an
+                  asset is attached to the release page, the tarball is unpacked again.
 
 .. _JOBTMPL/PublishReleaseNotes/Input/can-fail:
 
 can-fail
 ========
 
-:Type:            :red:`boolean`
+:Type:            boolean
 :Required:        no
 :Default Value:   ``false``
-:Possible Values: ``false``, ``true``
-:Description:
-                  .. todo:: PublishReleaseNotes::can-fail Needs documentation.
+:Possible Values: ``true`` / ``false``
+:Description:     Set ``continue-on-error`` on the job. |br|
+                  ``true`` - a failed release page does not fail the pipeline. |br|
+                  ``false`` - a failure fails the job.
 
 
 .. _JOBTMPL/PublishReleaseNotes/Secrets:
@@ -571,7 +594,7 @@ release-page
 
 :Type:            string
 :Description:     Returns the URL to the release page.
-:Example:         ``tbd``
+:Example:         ``https://github.com/pyTooling/Actions/releases/tag/v7.14.2``
 
 
 .. _JOBTMPL/PublishReleaseNotes/Optimizations:

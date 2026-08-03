@@ -1,6 +1,7 @@
 .. _JOBTMPL/PublishToGitHubPages:
 .. index::
    single: GitHub Pages; PublishToGitHubPages Template
+   single: delete-artifact; PublishToGitHubPages Template
    single: GitHub Action Reusable Workflow; PublishToGitHubPages Template
 
 PublishToGitHubPages
@@ -10,14 +11,36 @@ This job template publishes HTML content from artifacts of other jobs to GitHub 
 
 .. topic:: Features
 
-   tbd
+   * Merge up to three artifacts into a single website: the documentation at the root, the code coverage report at
+     :file:`/coverage` and the static typing report at :file:`/typing`.
+   * Deploy the result to GitHub Pages using GitHub's deployment actions.
+   * Skip the deployment for ``pull_request`` events, so a pull-request cannot overwrite the published site.
+   * Optionally delete the GitHub Pages artifact afterwards.
 
 
 .. topic:: Behavior
 
-   1. Checkout repository.
-   2. Download artifacts.
-   3. Push HTML files to branch ``gh-pages``.
+   1. Download the HTML documentation artifact (:ref:`JOBTMPL/PublishToGitHubPages/Input/doc`).
+   2. Optionally download the code coverage report artifact into :file:`coverage/`
+      (:ref:`JOBTMPL/PublishToGitHubPages/Input/coverage`).
+   3. Optionally download the static typing report artifact into :file:`typing/`
+      (:ref:`JOBTMPL/PublishToGitHubPages/Input/typing`).
+   4. Delete a left-over GitHub Pages artifact from a previous run
+      (:ref:`JOBTMPL/PublishToGitHubPages/Input/pages`).
+   5. Upload the merged directory as a GitHub Pages artifact
+      (:ref:`JOBTMPL/PublishToGitHubPages/Input/pages`).
+   6. Deploy that artifact to GitHub Pages.
+   7. Delete the GitHub Pages artifact (:ref:`JOBTMPL/PublishToGitHubPages/Input/cleanup`).
+
+   .. note::
+
+      The job merges up to three artifacts into a single website: the documentation at the root, the code
+      coverage report at :file:`/coverage` and the static typing report at :file:`/typing`.
+
+   .. attention::
+
+      Steps 5 to 7 are skipped for ``pull_request`` events, because a pull-request must not overwrite the
+      published site. The repository's GitHub Pages source has to be set to *GitHub Actions*.
 
 .. topic:: Job Execution
 
@@ -26,11 +49,13 @@ This job template publishes HTML content from artifacts of other jobs to GitHub 
 
 .. topic:: Dependencies
 
-   * :gh:`actions/checkout`
    * :gh:`pyTooling/download-artifact`
 
      * :gh:`actions/download-artifact`
 
+   * :gh:`actions/upload-pages-artifact`
+   * :gh:`actions/deploy-pages`
+   * :gh:`geekyeggo/delete-artifact`
 
 .. _JOBTMPL/PublishToGitHubPages/Instantiation:
 
@@ -51,7 +76,7 @@ Instantiation
              # ...
 
            PublishToGitHubPages:
-             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r6
+             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r7
              needs:
                - BuildTheDocs
              with:
@@ -66,7 +91,7 @@ Instantiation
 
          jobs:
            PublishToGitHubPages:
-             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r6
+             uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r7
              needs:
                - Params
                - BuildTheDocs
@@ -85,17 +110,21 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishToGitHubPages/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                                           |
-+=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/PublishToGitHubPages/Input/ubuntu_image_version`      | no       | string   | ``'24.04'``                                                       |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishToGitHubPages/Input/doc`                       | yes      | string   | — — — —                                                           |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishToGitHubPages/Input/coverage`                  | no       | string   | ``''``                                                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/PublishToGitHubPages/Input/typing`                    | no       | string   | ``''``                                                            |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++----------------------------------------------------------------+----------+--------+--------------------+
+| Parameter Name                                                 | Required | Type   | Default            |
++================================================================+==========+========+====================+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/ubuntu_image_version` | no       | string | ``'26.04'``        |
++----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/doc`                  | yes      | string | — — — —            |
++----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/coverage`             | no       | string | ``''``             |
++----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/typing`               | no       | string | ``''``             |
++----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/pages`                | no       | string | ``'github-pages'`` |
++----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/PublishToGitHubPages/Input/cleanup`              | no       | string | ``'true'``         |
++----------------------------------------------------------------+----------+--------+--------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishToGitHubPages/Secrets>`
 
@@ -103,7 +132,11 @@ This job template needs no secrets.
 
 .. rubric:: Goto :ref:`output parameters <JOBTMPL/PublishToGitHubPages/Outputs>`
 
-This job template has no output parameters.
++---------------------------------------------------------------+--------+
+| Parameter Name                                                | Type   |
++===============================================================+========+
+| :ref:`JOBTMPL/PublishToGitHubPages/Output/github_pages_url`   | string |
++---------------------------------------------------------------+--------+
 
 
 .. _JOBTMPL/PublishToGitHubPages/Inputs:
@@ -154,6 +187,33 @@ typing
                   as a subdirectory.
 
 
+.. _JOBTMPL/PublishToGitHubPages/Input/pages:
+
+pages
+=====
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'github-pages'``
+:Possible Values: Any valid artifact name.
+:Description:     Name of the artifact handed to :gh:`actions/deploy-pages`. |br|
+                  ``'github-pages'`` is the name GitHub's Pages deployment expects and should only be changed if
+                  the artifact is consumed by something else.
+
+.. _JOBTMPL/PublishToGitHubPages/Input/cleanup:
+
+cleanup
+=======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Delete the artifact named by :ref:`JOBTMPL/PublishToGitHubPages/Input/pages` after deployment. |br|
+                  ``'true'`` - delete the GitHub Pages artifact. |br|
+                  ``'false'`` - keep it.
+
+
 .. _JOBTMPL/PublishToGitHubPages/Secrets:
 
 Secrets
@@ -167,8 +227,14 @@ This job template needs no secrets.
 Outputs
 *******
 
-This job template has no output parameters.
+.. _JOBTMPL/PublishToGitHubPages/Output/github_pages_url:
 
+github_pages_url
+================
+
+:Type:            string
+:Possible Values: A URL, e.g. ``https://pytooling.github.io/Actions/``.
+:Description:     URL of the deployed GitHub Pages site, as returned by :gh:`actions/deploy-pages`.
 
 .. _JOBTMPL/PublishToGitHubPages/Optimizations:
 

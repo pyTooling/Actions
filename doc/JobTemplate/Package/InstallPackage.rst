@@ -1,6 +1,7 @@
 .. _JOBTMPL/InstallPackage:
 .. index::
    single: pip; InstallPackage Template
+   single: wheel; InstallPackage Template
    single: GitHub Action Reusable Workflow; InstallPackage Template
 
 InstallPackage (beta)
@@ -16,10 +17,21 @@ the installation is verified. This aims for packaging and dependency mistakes in
 
 .. topic:: Behavior
 
-   * Download Python package as artifact.
-   * Prepare the Python environment.
-   * Install the Python package using :term:`pip`.
-   * Read out and verify the package version.
+   1. Download the Python package artifact containing the wheel
+      (:ref:`JOBTMPL/InstallPackage/Input/wheel`).
+   2. Prepare the Python environment as described by the matrix entry
+      (:ref:`JOBTMPL/InstallPackage/Input/jobs`): |br|
+      on MSYS2, Python and its packages are installed via ``pacboy``/``pacman``, on all other systems via
+      :gh:`actions/setup-python`.
+   3. Install the Python dependencies using :term:`pip`.
+   4. Install the Python package from the downloaded wheel using :term:`pip`.
+   5. Read out the installed package's version and verify it matches the expected version
+      (:ref:`JOBTMPL/InstallPackage/Input/package_name`).
+
+   .. note::
+
+      There is no checkout. The job deliberately works from the wheel alone, so an import succeeding by accident from
+      the repository's sources cannot mask a packaging mistake.
 
 .. topic:: Job Execution
 
@@ -28,17 +40,22 @@ the installation is verified. This aims for packaging and dependency mistakes in
 
 .. topic:: Dependencies
 
-   * :gh:`actions/checkout`
+   * :gh:`actions/setup-python`
+   * :gh:`msys2/setup-msys2`
    * :gh:`pyTooling/download-artifact`
 
      * :gh:`actions/download-artifact`
 
-   * :gh:`msys2/setup-msys2`
-   * :gh:`actions/setup-python`
-   * pip
+   * pip (native systems)
 
-     * :pypi:`pip`
-     * :pypi:`wheel`
+     * :term:`pip` (:pypi:`PyPI package <pip>`)
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
+
+   * pacboy (MSYS2)
+
+     * ``python-pip``, ``python-wheel``
+     * ``python-lxml``, ``python-markupsafe``, ``python-pyaml``, ``python-types-pyyaml``, ``python-ruamel-yaml``,
+       ``python-ruamel.yaml.clib``
 
 
 .. _JOBTMPL/InstallPackage/Instantiation:
@@ -47,7 +64,7 @@ Instantiation
 *************
 
 The following instantiation example creates a ``Install`` job derived from job template ``InstallPackage`` version
-`@r6`. It installs the Python package on various platforms using a precomputed job-matrix created by job
+`@r7`. It installs the Python package on various platforms using a precomputed job-matrix created by job
 ``InstallParams``. This job uses the same ``Parameters`` job template as job ``UnitTestingParams``, which was used to
 define parameters for the packaging job ``Package``.
 
@@ -55,25 +72,25 @@ define parameters for the packaging job ``Package``.
 
    jobs:
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
        with:
          package_name: myPackage
 
      InstallParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r6
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
        with:
          package_name:        myPackage
          python_version_list: ''
 
      Package:
-       uses: pyTooling/Actions/.github/workflows/Package.yml@r6
+       uses: pyTooling/Actions/.github/workflows/Package.yml@r7
        needs:
          - UnitTestingParams
        with:
          artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
 
      Install:
-       uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@r6
+       uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@r7
        needs:
          - UnitTestingParams
          - InstallParams

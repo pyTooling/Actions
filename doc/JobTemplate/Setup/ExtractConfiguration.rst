@@ -1,5 +1,10 @@
 .. _JOBTMPL/ExtractConfiguration:
 .. index::
+   single: Coverage.py; ExtractConfiguration Template
+   single: mypy; ExtractConfiguration Template
+   single: pyEDAA.Reports; ExtractConfiguration Template
+   single: pytest; ExtractConfiguration Template
+   single: wheel; ExtractConfiguration Template
    single: GitHub Action Reusable Workflow; ExtractConfiguration Template
 
 ExtractConfiguration
@@ -29,14 +34,16 @@ duplications within jobs.
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Install Python dependencies.
-   3. Compute the full package name and the package source directory.
-   4. Read :file:`pyproject.toml` and extract settings for:
+   2. Setup Python (:ref:`JOBTMPL/ExtractConfiguration/Input/python_version`) and install Python dependencies.
+   3. Read :file:`pyproject.toml` and extract settings for:
 
       * :term:`Coverage.py`
       * :term:`mypy`
       * :term:`pyEDAA.Reports`
       * :term:`pytest`
+
+      Each setting is emitted as a JSON object with ``directory``, ``filename`` and ``fullpath`` fields, so a consuming
+      job can pick whichever form it needs.
 
 .. topic:: Job Execution
 
@@ -48,8 +55,7 @@ duplications within jobs.
    * :gh:`actions/checkout`
    * :gh:`actions/setup-python`
 
-     * :pypi:`wheel`
-
+     * :term:`wheel` (:pypi:`PyPI package <wheel>`)
 
 .. _JOBTMPL/ExtractConfiguration/Instantiation:
 
@@ -57,17 +63,17 @@ Instantiation
 *************
 
 The following instantiation example creates a ``ConfigParams`` job derived from job template ``ExtractConfiguration``
-version ``@r6``. It requires no special parameters to extract unit test (pytest) and code coverage (Coverage.py)
+version ``@r7``. It requires no special parameters to extract unit test (pytest) and code coverage (Coverage.py)
 settings.
 
 .. code-block:: yaml
 
    jobs:
      ConfigParams:
-       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
      UnitTesting:
-       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r6
+       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
        needs:
          - ConfigParams
        with:
@@ -104,7 +110,7 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | Parameter Name                                                      | Required | Type     | Default                                                           |
 +=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/ExtractConfiguration/Input/ubuntu_image_version`      | no       | string   | ``'24.04'``                                                       |
+| :ref:`JOBTMPL/ExtractConfiguration/Input/ubuntu_image_version`      | no       | string   | ``'26.04'``                                                       |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/ExtractConfiguration/Input/python_version`            | no       | string   | ``'3.14'``                                                        |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
@@ -236,9 +242,9 @@ unittest_report_xml
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/unit",
+                     { "directory": "report/unit",
                        "filename":  "UnittestReportSummary.xml",
-                       "fullpath":  "reports/unit/UnittestReportSummary.xml"
+                       "fullpath":  "report/unit/UnittestReportSummary.xml"
                      }
 :Usage:
                   .. tab-set::
@@ -249,10 +255,10 @@ unittest_report_xml
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -264,10 +270,10 @@ unittest_report_xml
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -282,10 +288,10 @@ unittest_report_xml
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -319,9 +325,9 @@ unittest_merged_report_xml
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/unit",
+                     { "directory": "report/unit",
                        "filename":  "unittest.xml",
-                       "fullpath":  "reports/unit/unittest.xml"
+                       "fullpath":  "report/unit/unittest.xml"
                      }
 :Usage:
                   .. tab-set::
@@ -332,10 +338,10 @@ unittest_merged_report_xml
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -347,10 +353,10 @@ unittest_merged_report_xml
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -365,10 +371,10 @@ unittest_merged_report_xml
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -413,10 +419,10 @@ coverage_report_html
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -428,10 +434,10 @@ coverage_report_html
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -446,10 +452,10 @@ coverage_report_html
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -483,9 +489,9 @@ coverage_report_xml
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/coverage",
+                     { "directory": "report/coverage",
                        "filename":  "coverage.xml",
-                       "fullpath":  "reports/coverage/coverage.xml"
+                       "fullpath":  "report/coverage/coverage.xml"
                      }
 :Usage:
                   .. tab-set::
@@ -496,10 +502,10 @@ coverage_report_xml
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -511,10 +517,10 @@ coverage_report_xml
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -529,10 +535,10 @@ coverage_report_xml
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -566,9 +572,9 @@ coverage_report_json
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/coverage",
+                     { "directory": "report/coverage",
                        "filename":  "coverage.json",
-                       "fullpath":  "reports/coverage/coverage.json"
+                       "fullpath":  "report/coverage/coverage.json"
                      }
 :Usage:
                   .. tab-set::
@@ -579,10 +585,10 @@ coverage_report_json
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -594,10 +600,10 @@ coverage_report_json
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -612,10 +618,10 @@ coverage_report_json
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -649,9 +655,9 @@ typing_report_cobertura
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/typing",
+                     { "directory": "report/typing",
                        "filename":  "cobertura.xml",
-                       "fullpath":  "reports/typing/cobertura.xml"
+                       "fullpath":  "report/typing/cobertura.xml"
                      }
 :Usage:
                   .. tab-set::
@@ -662,10 +668,10 @@ typing_report_cobertura
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -677,10 +683,10 @@ typing_report_cobertura
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -695,10 +701,10 @@ typing_report_cobertura
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -732,9 +738,9 @@ typing_report_junit
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/typing",
+                     { "directory": "report/typing",
                        "filename":  "StaticTypingSummary.xml",
-                       "fullpath":  "reports/typing/StaticTypingSummary.xml"
+                       "fullpath":  "report/typing/StaticTypingSummary.xml"
                      }
 :Usage:
                   .. tab-set::
@@ -745,10 +751,10 @@ typing_report_junit
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -760,10 +766,10 @@ typing_report_junit
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -778,10 +784,10 @@ typing_report_junit
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -813,8 +819,8 @@ typing_report_html
 :Example:
                   .. code-block:: json
 
-                     { "directory": "reports/typing/html",
-                       "fullpath":  "reports/typing/html"
+                     { "directory": "report/typing/html",
+                       "fullpath":  "report/typing/html"
                      }
 :Usage:
                   .. tab-set::
@@ -825,10 +831,10 @@ typing_report_html
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -840,10 +846,10 @@ typing_report_html
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:
@@ -858,10 +864,10 @@ typing_report_html
                         .. code-block:: yaml
 
                            ConfigParams:
-                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r6
+                             uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
 
                            OtherJob:
-                             uses: some/path/to/a/template@r6
+                             uses: some/path/to/a/template@r7
                              needs:
                                - ConfigParams
                              with:

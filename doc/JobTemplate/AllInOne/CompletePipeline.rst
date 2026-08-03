@@ -11,6 +11,11 @@
    single: MikTeX; CompletePipeline Template
    single: mypy; CompletePipeline Template
    single: PyPI; CompletePipeline Template
+   single: pip; CompletePipeline Template
+   single: pylint; CompletePipeline Template
+   single: radon; CompletePipeline Template
+   single: wheel; CompletePipeline Template
+   single: delete-artifact; CompletePipeline Template
    single: pytest; CompletePipeline Template
    single: pyEDAA.Reports; CompletePipeline Template
    single: Sphinx; CompletePipeline Template
@@ -95,9 +100,6 @@ It can be used for simple Python packages as well as namespace packages.
 
    .. include:: _Behavior.rst
 
-   Steps 6, 12 and 14 are optional and controlled by ``apptest`` and ``documentation_steps``. Disabling one of them
-   disables that step only, all remaining steps are executed as usual.
-
    .. seealso::
 
       :ref:`DEV/ConditionalJobs`
@@ -131,7 +133,7 @@ It can be used for simple Python packages as well as namespace packages.
               * :gh:`actions/checkout`
               * :gh:`actions/setup-python`
 
-                * :pypi:`wheel`
+                * :term:`wheel` (:pypi:`PyPI package <wheel>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/UnitTesting.yml <JOBTMPL/UnitTesting>`
 
@@ -151,21 +153,55 @@ It can be used for simple Python packages as well as namespace packages.
               * MSYS2: Packages specified via :ref:`JOBTMPL/UnitTesting/Input/pacboy` parameter.
               * pip
 
-                * :pypi:`wheel`
+                * :term:`wheel` (:pypi:`PyPI package <wheel>`)
                 * Python packages specified via :ref:`JOBTMPL/UnitTesting/Input/requirements` or
                   :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` parameter.
 
             * :ref:`pyTooling/Actions/.github/workflows/ApplicationTesting.yml <JOBTMPL/ApplicationTesting>`
+
+              * :gh:`actions/checkout`
+              * :gh:`msys2/setup-msys2`
+              * :gh:`actions/setup-python`
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+
+              * :gh:`pyTooling/upload-artifact`
+
+                * :gh:`actions/upload-artifact`
+
             * :ref:`pyTooling/Actions/.github/workflows/CheckDocumentation.yml <JOBTMPL/CheckDocumentation>`
 
               * :gh:`actions/checkout`
               * :gh:`actions/setup-python`
               * pip
 
-                * :pypi:`docstr_coverage`
-                * :pypi:`interrogate`
+                * :term:`docstr_coverage` (:pypi:`PyPI package <docstr_coverage>`)
+                * :term:`interrogate` (:pypi:`PyPI package <interrogate>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`
+
+              * :gh:`actions/checkout`
+              * :gh:`actions/setup-python`
+              * :gh:`pyTooling/upload-artifact`
+
+                * :gh:`actions/upload-artifact`
+
+              * pip
+
+                * :term:`mypy` (:pypi:`PyPI package <mypy>`)
+
+            * :ref:`pyTooling/Actions/.github/workflows/CheckCodeQuality.yml <JOBTMPL/CheckCodeQuality>`
+
+              * :gh:`actions/checkout`
+              * :gh:`actions/setup-python`
+              * :gh:`dorny/test-reporter`
+              * pip
+
+                * :term:`bandit` (:pypi:`PyPI package <bandit>`)
+                * :term:`radon` (:pypi:`PyPI package <radon>`)
+                * :term:`pylint` (:pypi:`PyPI package <pylint>`)
+
             * :ref:`pyTooling/Actions/.github/workflows/Package.yml <JOBTMPL/Package>`
 
               * :gh:`actions/checkout`
@@ -176,8 +212,16 @@ It can be used for simple Python packages as well as namespace packages.
 
               * pip
 
-                * :pypi:`build`
-                * :pypi:`wheel`
+                * :term:`build` (:pypi:`PyPI package <build>`)
+                * :term:`wheel` (:pypi:`PyPI package <wheel>`)
+
+            * :ref:`pyTooling/Actions/.github/workflows/InstallPackage.yml <JOBTMPL/InstallPackage>`
+
+              * :gh:`actions/setup-python`
+              * :gh:`msys2/setup-msys2`
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
 
             * :ref:`pyTooling/Actions/.github/workflows/PublishTestResults.yml <JOBTMPL/PublishTestResults>`
 
@@ -188,10 +232,10 @@ It can be used for simple Python packages as well as namespace packages.
 
               * pip
 
-                * :pypi:`pyEDAA.Reports`
+                * :term:`pyEDAA.Reports` (:pypi:`PyPI package <pyEDAA.Reports>`)
 
               * :gh:`dorny/test-reporter`
-              * :gh:`codecov/test-results-action`
+              * :gh:`codecov/codecov-action`
               * :gh:`pyTooling/upload-artifact`
 
                 * :gh:`actions/upload-artifact`
@@ -208,7 +252,7 @@ It can be used for simple Python packages as well as namespace packages.
 
               * pip
 
-                * :pypi:`coverage`
+                * :term:`Coverage.py` (:pypi:`PyPI package <coverage>`)
 
               * :gh:`pyTooling/upload-artifact`
 
@@ -235,7 +279,7 @@ It can be used for simple Python packages as well as namespace packages.
 
               * pip
 
-                * :pypi:`wheel`
+                * :term:`wheel` (:pypi:`PyPI package <wheel>`)
                 * Python packages specified via :ref:`JOBTMPL/SphinxDocumentation/Input/requirements` parameter.
 
             * :ref:`pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml <JOBTMPL/LaTeXDocumentation>`
@@ -248,11 +292,18 @@ It can be used for simple Python packages as well as namespace packages.
 
                 * :gh:`actions/upload-artifact`
 
-              * :gh:`addnab/docker-run-action`
-
-                * :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>`
+              * runs inside :term:`pyTooling/MiKTeX` (:dockerhub:`Docker image <pytooling/miktex>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml <JOBTMPL/PublishToGitHubPages>`
+
+              * :gh:`pyTooling/download-artifact`
+
+                * :gh:`actions/download-artifact`
+
+              * :gh:`actions/upload-pages-artifact`
+              * :gh:`actions/deploy-pages`
+              * :gh:`geekyeggo/delete-artifact`
+
             * :ref:`pyTooling/Actions/.github/workflows/PublishOnPyPI.yml <JOBTMPL/PublishOnPyPI>`
 
               * :gh:`pyTooling/download-artifact`
@@ -260,11 +311,10 @@ It can be used for simple Python packages as well as namespace packages.
                 * :gh:`actions/download-artifact`
               * :gh:`actions/setup-python`
               * :gh:`geekyeggo/delete-artifact`
-
               * pip
 
-                * :pypi:`wheel`
-                * :pypi:`twine`
+                * :term:`wheel` (:pypi:`PyPI package <wheel>`)
+                * :term:`twine` (:pypi:`PyPI package <twine>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/TagReleaseCommit.yml <JOBTMPL/TagReleaseCommit>`
 
@@ -279,11 +329,8 @@ It can be used for simple Python packages as well as namespace packages.
 
                 * zstd
 
-            * :ref:`pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml <JOBTMPL/IntermediateCleanUp>`
-
-              * :gh:`geekyeggo/delete-artifact`
-
-            * :ref:`pyTooling/Actions/.github/workflows/ArtifactCleanUp.yml <JOBTMPL/ArtifactCleanUp>`
+            * :ref:`pyTooling/Actions/.github/workflows/CleanupArtifacts.yml <JOBTMPL/CleanupArtifacts>`
+              (instantiated twice: intermediate and final cleanup)
 
               * :gh:`geekyeggo/delete-artifact`
 
@@ -294,7 +341,7 @@ Instantiation
 *************
 
 The following instantiation example creates a ``SimplePackage`` job derived from job template ``CompletePipeline``
-version ``@r6``. It only requires the `package_name` parameter to run a full pipeline suitable for a Python project.
+version ``@r7``. It only requires the `package_name` parameter to run a full pipeline suitable for a Python project.
 
    .. grid:: 2
 
@@ -312,7 +359,7 @@ version ``@r6``. It only requires the `package_name` parameter to run a full pip
 
                   jobs:
                     SimplePackage:
-                      uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
+                      uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r7
                       with:
 
                         package_name: myPackage
@@ -326,7 +373,7 @@ version ``@r6``. It only requires the `package_name` parameter to run a full pip
 
                   jobs:
                     NamespacePackage:
-                      uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
+                      uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r7
                       with:
                         package_namespace: myFramework
                         package_name:      Extension
@@ -373,45 +420,59 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/CompletePipeline/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                           |
-+=====================================================================+==========+==========+===================================================+
-| :ref:`JOBTMPL/CompletePipeline/Input/package_namespace`             | no       | string   | ``''``                                            |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/package_name`                  | yes      | string   | — — — —                                           |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`       | no       | string   | ``'3.14'``                                        |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list`  | no       | string   | ``'3.10 3.11 3.12 3.13 3.14'``                    |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`          | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``       |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_include_list`         | no       | string   | ``''``                                            |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`         | no       | string   | ``'windows-arm:3.9 windows-arm:3.10'``            |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`         | no       | string   | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'`` |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`        | no       | string   | ``'3.14'``                                        |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`   | no       | string   | ``''``                                            |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_system_list`           | no       | string   | ``'ubuntu windows macos macos-arm ucrt64'``       |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_include_list`          | no       | string   | ``''``                                            |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`          | no       | string   | ``'windows-arm:3.9 windows-arm:3.10'``            |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`          | no       | string   | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'`` |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/codecov`                       | no       | string   | ``'false'``                                       |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/codacy`                        | no       | string   | ``'false'``                                       |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/dorny`                         | no       | string   | ``'false'``                                       |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                       | no       | string   | ``'true'``                                        |
-+---------------------------------------------------------------------+----------+----------+---------------------------------------------------+
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| Parameter Name                                                     | Required | Type   | Default                                                                    |
++====================================================================+==========+========+============================================================================+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_namespace`            | no       | string | ``''``                                                                     |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_name`                 | yes      | string | — — — —                                                                    |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`      | no       | string | ``'3.14'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list` | no       | string | ``'3.10 3.11 3.12 3.13 3.14'``                                             |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`         | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'`` |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_include_list`        | no       | string | ``''``                                                                     |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`        | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`        | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                          |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`       | no       | string | ``'3.14'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/bandit`                       | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/pylint`                       | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/documentation_steps`          | no       | string | ``'html pages'``                                                           |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/miktex_image`                 | no       | string | ``'pytooling/miktex:sphinx'``                                              |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/miktex_update`                | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/auto_tag`                     | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`  | no       | string | ``''``                                                                     |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_system_list`          | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``         |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_include_list`         | no       | string | ``''``                                                                     |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`         | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`         | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                          |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest`                      | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/codecov`                      | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/codacy`                       | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/dorny`                        | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                      | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/CompletePipeline/Secrets>`
 
@@ -462,7 +523,7 @@ package_namespace
 
                            jobs:
                              NamespacePackage:
-                               uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
+                               uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r7
                                with:
                                  package_namespace: myFramework
                                  package_name:      Extension
@@ -510,7 +571,7 @@ package_name
 
                            jobs:
                              SimplePackage:
-                               uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
+                               uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r7
                                with:
                                  package_name: myPackage
 
@@ -570,7 +631,7 @@ unittest_system_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'ubuntu windows macos macos-arm mingw64 ucrt64'``
+:Default Value:   ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'``
 :Possible Values: A space separated list of system names.
 :Description:     The list of space-separated systems used for unit testing.
 
@@ -666,7 +727,7 @@ apptest_system_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'ubuntu windows macos macos-arm mingw64 ucrt64'``
+:Default Value:   ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``
 :Possible Values: A space separated list of system names.
 :Description:     The list of space-separated systems used for application testing.
 
@@ -719,6 +780,50 @@ apptest_disable_list
                   For more details see :ref:`JOBTMPL/Parameters/Input/disable_list`.
 
 
+.. _JOBTMPL/CompletePipeline/Input/apptest:
+
+apptest
+=======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Run application tests via :ref:`JOBTMPL/ApplicationTesting`. |br|
+                  Application testing installs the built wheel and exercises the package as an installed package,
+                  so it needs a packaging step to have run first. |br|
+                  ``'true'`` - run the application tests. |br|
+                  ``'false'`` - skip the application testing jobs.
+
+
+.. _JOBTMPL/CompletePipeline/Input/bandit:
+
+bandit
+======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Run Static Application Security Testing (SAST) using :term:`bandit`. |br|
+                  ``'true'`` - run the *Bandit* job. |br|
+                  ``'false'`` - skip it.
+
+
+.. _JOBTMPL/CompletePipeline/Input/pylint:
+
+pylint
+======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Run Python linting using :term:`pylint`. |br|
+                  ``'true'`` - run the *PyLint* job. |br|
+                  ``'false'`` - skip it.
+
+
 .. _JOBTMPL/CompletePipeline/Input/codecov:
 
 codecov
@@ -727,9 +832,10 @@ codecov
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'``, ``'false'``
-:Description:     If *true*, publish merged code coverage results and a merged unit test summary to CodeCov. |br|
-                  Secret :ref:`JOBTMPL/CompletePipeline/Secret/CODECOV_TOKEN` must be set.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish merged code coverage results and a merged unit test summary to :term:`CodeCov`. |br|
+                  ``'true'`` - publish; secret :ref:`JOBTMPL/CompletePipeline/Secret/CODECOV_TOKEN` must be set. |br|
+                  ``'false'`` - do not publish.
 
 
 .. _JOBTMPL/CompletePipeline/Input/codacy:
@@ -740,9 +846,10 @@ codacy
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'``, ``'false'``
-:Description:     If *true*, publish merged code coverage results to Codacy. |br|
-                  Secret :ref:`JOBTMPL/CompletePipeline/Secret/CODACY_TOKEN` must be set.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish merged code coverage results to :term:`Codacy`. |br|
+                  ``'true'`` - publish; secret :ref:`JOBTMPL/CompletePipeline/Secret/CODACY_TOKEN` must be set. |br|
+                  ``'false'`` - do not publish.
 
 
 .. _JOBTMPL/CompletePipeline/Input/dorny:
@@ -753,8 +860,76 @@ dorny
 :Type:            string
 :Required:        no
 :Default Value:   ``'false'``
-:Possible Values: ``'true'``, ``'false'``
-:Description:     If *true*, publish a merged unit test summary as pipeline result.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish a merged unit test summary as pipeline result using :term:`Test Reporter`. |br|
+                  ``'true'`` - create the report page. |br|
+                  ``'false'`` - do not create it.
+
+
+.. _JOBTMPL/CompletePipeline/Input/documentation_steps:
+
+documentation_steps
+===================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'html pages'``
+:Possible Values: A space separated list of ``none``, ``html``, ``latex``, ``pdf``, ``pages``, ``asset`` or ``all``.
+:Description:     Documentation steps to run.
+
+                  :html:  Build the HTML documentation using :term:`Sphinx`.
+                  :latex: Build the LaTeX documentation using :term:`Sphinx`.
+                  :pdf:   Translate the LaTeX documentation to PDF using :term:`MikTeX`. Requires ``latex``.
+                  :pages: Publish the HTML documentation to :term:`GitHub Pages`. Requires ``html``.
+                  :asset: Attach the documentation to the release page.
+                  :all:   All of the above.
+                  :none:  No documentation at all.
+
+                  A step that is not listed is skipped and its artifact is not produced.
+
+.. _JOBTMPL/CompletePipeline/Input/miktex_image:
+
+miktex_image
+============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'pytooling/miktex:sphinx'``
+:Possible Values: Any Docker image providing a :term:`MikTeX` installation with ``latexmk``, e.g. an image of
+                  :term:`pyTooling/MiKTeX`.
+:Description:     Docker image used to translate LaTeX to PDF. |br|
+                  Forwarded to :ref:`JOBTMPL/LaTeXDocumentation/Input/miktex_image`.
+
+.. _JOBTMPL/CompletePipeline/Input/miktex_update:
+
+miktex_update
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Update the :term:`MikTeX` packages before building the PDF. |br|
+                  Forwarded to :ref:`JOBTMPL/LaTeXDocumentation/Input/update`. |br|
+                  ``'true'`` - update the packages inside the container first. |br|
+                  ``'false'`` - use the packages shipped with the image.
+
+
+.. _JOBTMPL/CompletePipeline/Input/auto_tag:
+
+auto_tag
+========
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Create a release tag when a pull-request was merged into the release branch and its title
+                  matches the release tag pattern. |br|
+                  The new tag triggers a second, tagged pipeline run which publishes the release. Forwarded to
+                  :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag`. |br|
+                  ``'true'`` - tag the release commit. |br|
+                  ``'false'`` - never tag automatically.
 
 
 .. _JOBTMPL/CompletePipeline/Input/cleanup:
@@ -765,9 +940,10 @@ cleanup
 :Type:            string
 :Required:        no
 :Default Value:   ``'true'``
-:Possible Values: ``'true'``, ``'false'``
-:Description:     If *false*, do not remove intermediate artifacts. |br|
-                  This might help debugging artifact handovers between jobs.
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Remove intermediate artifacts once they were merged or consumed. |br|
+                  ``'true'`` - delete them. |br|
+                  ``'false'`` - keep them, which helps debugging artifact handovers between jobs.
 
 
 .. _JOBTMPL/CompletePipeline/Secrets:

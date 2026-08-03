@@ -58,12 +58,14 @@ Example Pipelines
    .. grid-item::
       :columns: 6
 
-      ``ExamplePipeline.yml`` is an example Workflow which uses all of the Reusable Workflows.
-      Python package/tool developers can copy it into their repos, in order to use al the reusable workflows straightaway.
-      Minimal required modifications are the following:
+      :ref:`JOBTMPL/CompletePipeline` combines almost all job templates into a single workflow template.
+      Python package/tool developers can instantiate it in their repository to get a full pipeline straight away.
+      The minimal required modification is:
 
-      * Set the ``name`` input of job ``Parameters``.
-      * Specify the ``commands`` input of job ``StaticTypeCheck``.
+      * Set the :ref:`JOBTMPL/CompletePipeline/Input/package_name` input.
+
+      Everything else - Python versions, systems, documentation steps, code quality checks and the release
+      path - is configurable and has a default.
 
       .. rubric:: Behavior
 
@@ -121,7 +123,7 @@ Example Pipelines
 
                jobs:
                  SimplePackage:
-                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
+                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r7
                    with:
                      package_name: myPackage
                      codecov:      true
@@ -147,7 +149,7 @@ Example Pipelines
 
                jobs:
                  NamespacePackage:
-                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r6
+                   uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r7
                    with:
                      package_namespace: myFramework
                      package_name:      Extension
