@@ -30,10 +30,15 @@ triggers a new pipeline run for that tag, a.k.a *tag pipeline* or *release pipel
    .. code-block:: yaml
 
       name: Pipeline
-      run-name: ${{ github.ref_type == 'tag' && github.ref_name || github.workflow }}
+      run-name: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+
+   An empty ``run-name`` falls back to the title GitHub derives from the event, so only tag runs are renamed and a
+   push keeps its commit message as the title.
 
    This changes the displayed title only. It does not turn the ``workflow_dispatch`` event into a ``push`` event, so
-   anything keying off ``github.event_name`` is unaffected.
+   anything keying off ``github.event_name`` is unaffected. ``run-name`` is evaluated when the run is queued, so only
+   the ``github``, ``inputs`` and ``vars`` contexts are available - a value computed inside the pipeline, such as the
+   version extracted by :ref:`JOBTMPL/PrepareJob`, cannot appear in the title.
 
 .. topic:: Features
 
