@@ -12,20 +12,24 @@ This job template publishes HTML content from artifacts of other jobs to GitHub 
 
    * Merge up to three artifacts into a single website: the documentation at the root, the code coverage report at
      :file:`/coverage` and the static typing report at :file:`/typing`.
-   * Deploy the result to GitHub Pages using GitHub's own deployment actions, so no ``gh-pages`` branch is needed.
+   * Deploy the result to GitHub Pages using GitHub's deployment actions.
    * Skip the deployment for ``pull_request`` events, so a pull-request cannot overwrite the published site.
    * Optionally delete the GitHub Pages artifact afterwards.
 
 
 .. topic:: Behavior
 
-   1. Download the HTML documentation artifact.
-   2. Optionally download the code coverage report artifact into :file:`coverage/`.
-   3. Optionally download the static typing report artifact into :file:`typing/`.
-   4. Delete a left-over GitHub Pages artifact from a previous run.
-   5. Upload the merged directory as a GitHub Pages artifact.
+   1. Download the HTML documentation artifact (:ref:`JOBTMPL/PublishToGitHubPages/Input/doc`).
+   2. Optionally download the code coverage report artifact into :file:`coverage/`
+      (:ref:`JOBTMPL/PublishToGitHubPages/Input/coverage`).
+   3. Optionally download the static typing report artifact into :file:`typing/`
+      (:ref:`JOBTMPL/PublishToGitHubPages/Input/typing`).
+   4. Delete a left-over GitHub Pages artifact from a previous run
+      (:ref:`JOBTMPL/PublishToGitHubPages/Input/pages`).
+   5. Upload the merged directory as a GitHub Pages artifact
+      (:ref:`JOBTMPL/PublishToGitHubPages/Input/pages`).
    6. Deploy that artifact to GitHub Pages.
-   7. Delete the GitHub Pages artifact - see :ref:`JOBTMPL/PublishToGitHubPages/Input/cleanup`.
+   7. Delete the GitHub Pages artifact (:ref:`JOBTMPL/PublishToGitHubPages/Input/cleanup`).
 
    .. note::
 
@@ -127,7 +131,11 @@ This job template needs no secrets.
 
 .. rubric:: Goto :ref:`output parameters <JOBTMPL/PublishToGitHubPages/Outputs>`
 
-This job template has no output parameters.
++---------------------------------------------------------------+--------+
+| Parameter Name                                                | Type   |
++===============================================================+========+
+| :ref:`JOBTMPL/PublishToGitHubPages/Output/github_pages_url`   | string |
++---------------------------------------------------------------+--------+
 
 
 .. _JOBTMPL/PublishToGitHubPages/Inputs:
@@ -216,9 +224,6 @@ This job template needs no secrets.
 Outputs
 *******
 
-This job template has no output parameters.
-
-
 .. _JOBTMPL/PublishToGitHubPages/Output/github_pages_url:
 
 github_pages_url
@@ -226,7 +231,7 @@ github_pages_url
 
 :Type:            string
 :Possible Values: A URL, e.g. ``https://pytooling.github.io/Actions/``.
-:Description:     URL of the deployed GitHub Pages site, as reported by :gh:`actions/deploy-pages`.
+:Description:     URL of the deployed GitHub Pages site, as returned by :gh:`actions/deploy-pages`.
 
 .. _JOBTMPL/PublishToGitHubPages/Optimizations:
 

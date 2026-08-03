@@ -175,8 +175,9 @@ It can be used for simple Python packages as well as namespace packages.
               * :gh:`actions/setup-python`
               * pip
 
-                * :pypi:`docstr_coverage`
-                * :pypi:`interrogate`
+                * :term:`docstr_coverage` (:pypi:`PyPI package <docstr_coverage>`)
+
+                * :term:`interrogate` (:pypi:`PyPI package <interrogate>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`
 
@@ -188,7 +189,7 @@ It can be used for simple Python packages as well as namespace packages.
 
               * pip
 
-                * :pypi:`mypy`
+                * :term:`mypy` (:pypi:`PyPI package <mypy>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/CheckCodeQuality.yml <JOBTMPL/CheckCodeQuality>`
 
@@ -197,9 +198,10 @@ It can be used for simple Python packages as well as namespace packages.
               * :gh:`dorny/test-reporter`
               * pip
 
-                * :pypi:`bandit`
-                * :pypi:`radon`
-                * :pypi:`pylint`
+                * :term:`bandit` (:pypi:`PyPI package <bandit>`)
+
+                * :term:`radon` (:pypi:`PyPI package <radon>`)
+                * :term:`pylint` (:pypi:`PyPI package <pylint>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/Package.yml <JOBTMPL/Package>`
 
@@ -211,7 +213,8 @@ It can be used for simple Python packages as well as namespace packages.
 
               * pip
 
-                * :pypi:`build`
+                * :term:`build` (:pypi:`PyPI package <build>`)
+
                 * :pypi:`wheel`
 
             * :ref:`pyTooling/Actions/.github/workflows/InstallPackage.yml <JOBTMPL/InstallPackage>`
@@ -231,7 +234,7 @@ It can be used for simple Python packages as well as namespace packages.
 
               * pip
 
-                * :pypi:`pyEDAA.Reports`
+                * :term:`pyEDAA.Reports` (:pypi:`PyPI package <pyEDAA.Reports>`)
 
               * :gh:`dorny/test-reporter`
               * :gh:`codecov/codecov-action`
@@ -251,7 +254,7 @@ It can be used for simple Python packages as well as namespace packages.
 
               * pip
 
-                * :pypi:`coverage`
+                * :term:`Coverage.py` (:pypi:`PyPI package <coverage>`)
 
               * :gh:`pyTooling/upload-artifact`
 
@@ -314,7 +317,7 @@ It can be used for simple Python packages as well as namespace packages.
               * pip
 
                 * :pypi:`wheel`
-                * :pypi:`twine`
+                * :term:`twine` (:pypi:`PyPI package <twine>`)
 
             * :ref:`pyTooling/Actions/.github/workflows/TagReleaseCommit.yml <JOBTMPL/TagReleaseCommit>`
 
@@ -329,11 +332,8 @@ It can be used for simple Python packages as well as namespace packages.
 
                 * zstd
 
-            * :ref:`pyTooling/Actions/.github/workflows/IntermediateCleanUp.yml <JOBTMPL/IntermediateCleanUp>`
-
-              * :gh:`geekyeggo/delete-artifact`
-
             * :ref:`pyTooling/Actions/.github/workflows/CleanupArtifacts.yml <JOBTMPL/CleanupArtifacts>`
+              (instantiated twice: intermediate and final cleanup)
 
               * :gh:`geekyeggo/delete-artifact`
 

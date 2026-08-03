@@ -30,13 +30,21 @@ Configuration options for :term:`pytest` should be given via section ``[tool.pyt
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Install system dependencies (``apt``, ``homebrew``, ``pacboy``).
-   3. Setup Python or MSYS2 and install Python dependencies (:term:`pip`).
-   4. Run the instructions given by the ``*_before_script`` parameters of the current system.
-   5. Download the wheel artifact given by :ref:`JOBTMPL/ApplicationTesting/Input/wheel`.
+   2. Install system dependencies (:ref:`JOBTMPL/ApplicationTesting/Input/apt`,
+      :ref:`JOBTMPL/ApplicationTesting/Input/brew`, :ref:`JOBTMPL/ApplicationTesting/Input/pacboy`).
+   3. Prepare the Python environment as described by the matrix entry
+      (:ref:`JOBTMPL/ApplicationTesting/Input/jobs`) and install the Python dependencies using :term:`pip`
+      (:ref:`JOBTMPL/ApplicationTesting/Input/requirements`,
+      :ref:`JOBTMPL/ApplicationTesting/Input/mingw_requirements`).
+   4. Run the instructions given by the ``*_before_script`` parameter of the current system, e.g.
+      :ref:`JOBTMPL/ApplicationTesting/Input/ubuntu_before_script`.
+   5. Download the wheel artifact (:ref:`JOBTMPL/ApplicationTesting/Input/wheel`).
    6. Install the wheel using :term:`pip`.
-   7. Run the application tests using *pytest*.
-   8. Upload the test report summary as an artifact.
+   7. Run the application tests using :term:`pytest` (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_directory`,
+      :ref:`JOBTMPL/ApplicationTesting/Input/tests_directory`,
+      :ref:`JOBTMPL/ApplicationTesting/Input/root_directory`).
+   8. Upload the test report summary as an artifact (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_xml_artifact`,
+      :ref:`JOBTMPL/ApplicationTesting/Input/apptest_report_xml`).
 
    .. note::
 

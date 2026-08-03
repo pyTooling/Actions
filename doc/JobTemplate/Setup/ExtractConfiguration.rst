@@ -29,7 +29,7 @@ duplications within jobs.
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Setup Python and install Python dependencies.
+   2. Setup Python (:ref:`JOBTMPL/ExtractConfiguration/Input/python_version`) and install Python dependencies.
    3. Read :file:`pyproject.toml` and extract settings for:
 
       * :term:`Coverage.py`

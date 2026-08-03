@@ -12,7 +12,7 @@ as an artifact.
 .. topic:: Features
 
    * Package source code as wheel and source distribution.
-   * Support packaging using :pypi:`build` (recommended) or :pypi:`setuptools`.
+   * Support packaging using :term:`build` (recommended) or :pypi:`setuptools`.
 
 .. topic:: Behavior
 
@@ -20,16 +20,17 @@ as an artifact.
    2. Setup Python and install dependencies.
    3. Package the Python sources:
 
-      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is empty, use :pypi:`build` for packaging and execute
+      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is empty, use :term:`build` for packaging and execute
         ``python -m build ...``.
-      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is ``no-isolation``, use :pypi:`build` for packaging in
+      * If parameter :ref:`JOBTMPL/Package/Input/requirements` is ``no-isolation``, use :term:`build` for packaging in
         *no-isolation* mode executing ``python -m build --no-isolation ...``.
       * If parameter :ref:`JOBTMPL/Package/Input/requirements` is non-empty, use :pypi:`setuptools` for packaging and
         execute ``python setup.py ...``.
 
       Both a source distribution and a wheel are built.
 
-   4. Upload both packages as a single artifact.
+   4. Upload both packages in a single artifact
+      (:ref:`JOBTMPL/Package/Input/artifact`).
 
 .. topic:: Job Execution
 
@@ -46,7 +47,8 @@ as an artifact.
 
    * pip
 
-     * :pypi:`build`
+     * :term:`build` (:pypi:`PyPI package <build>`)
+
      * :pypi:`wheel`
 
 .. _JOBTMPL/Package/Instantiation:
@@ -136,8 +138,8 @@ requirements
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'build wheel'``.
-:Behavior:        If the value is an empty string, :pypi:`build` is used for packaging. |br|
-                  if the value is ``no-isolation``, :pypi:`build` is used in *no-isolation* mode for packaging. |br|
+:Behavior:        If the value is an empty string, :term:`build` is used for packaging. |br|
+                  if the value is ``no-isolation``, :term:`build` is used in *no-isolation* mode for packaging. |br|
                   otherwise, a list of requirements is assumed and :pypi:`setuptools` is used for packaging.
 :Description:     Python dependencies to be installed through *pip*.
 

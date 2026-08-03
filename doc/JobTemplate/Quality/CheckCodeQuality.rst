@@ -8,8 +8,11 @@
 CheckCodeQuality
 ################
 
-The ``CheckCodeQuality`` job template runs three independent code quality checks on the package sources: security
-scanning with :term:`bandit`, code metrics and complexity with :term:`radon`, and linting with :term:`pylint`.
+The ``CheckCodeQuality`` job template runs three independent code quality checks on the package sources:
+
+* security scanning with :term:`bandit`,
+* code metrics and complexity with :term:`radon`, and
+* linting with :term:`pylint`.
 
 Each check is a separate job with its own enable parameter, so a repository can adopt them one at a time. All three are
 disabled by default in :ref:`JOBTMPL/CompletePipeline`, because an established code base rarely passes linting on the
@@ -31,29 +34,31 @@ first run.
    ``Bandit`` - enabled by :ref:`JOBTMPL/CheckCodeQuality/Input/bandit`
 
    1. Checkout repository.
-   2. Setup Python and install :term:`bandit`.
+   2. Setup Python (:ref:`JOBTMPL/CheckCodeQuality/Input/python_version`) and install :term:`bandit`.
    3. Run the security scan over :ref:`JOBTMPL/CheckCodeQuality/Input/package_directory`.
    4. Publish the findings as a report page using :term:`Test Reporter` - only when the scan found something.
 
    ``Radon`` - enabled by :ref:`JOBTMPL/CheckCodeQuality/Input/radon`
 
    1. Checkout repository.
-   2. Setup Python and install :term:`radon`.
+   2. Setup Python (:ref:`JOBTMPL/CheckCodeQuality/Input/python_version`) and install :term:`radon`.
    3. Report raw code metrics.
    4. Report cyclomatic complexity.
    5. Report Halstead complexity metrics.
    6. Report the maintainability index.
 
-   ``PyLint`` - enabled by :ref:`JOBTMPL/CheckCodeQuality/Input/pylint`
-
-   1. Checkout repository.
-   2. Setup Python and install :term:`pylint`.
-   3. Run the linter over :ref:`JOBTMPL/CheckCodeQuality/Input/package_directory`.
-
    .. note::
 
       The *Radon* job writes its results into the job log only. There is no artifact and no threshold, so the job
       cannot fail on a bad metric - it is informational.
+
+   ``PyLint`` - enabled by :ref:`JOBTMPL/CheckCodeQuality/Input/pylint`
+
+   1. Checkout repository.
+   2. Setup Python (:ref:`JOBTMPL/CheckCodeQuality/Input/python_version`) and install :term:`pylint` as well as the
+      package's own dependencies (:ref:`JOBTMPL/CheckCodeQuality/Input/requirements`), because the linter imports the
+      code it checks.
+   3. Run the linter over :ref:`JOBTMPL/CheckCodeQuality/Input/package_directory`.
 
 .. topic:: Dependencies
 
@@ -62,9 +67,11 @@ first run.
    * :gh:`dorny/test-reporter`
    * pip
 
-     * :pypi:`bandit`
-     * :pypi:`radon`
-     * :pypi:`pylint`
+     * :term:`bandit` (:pypi:`PyPI package <bandit>`)
+     * :term:`radon` (:pypi:`PyPI package <radon>`)
+     * :term:`pylint` (:pypi:`PyPI package <pylint>`)
+     * Python packages specified via :ref:`JOBTMPL/CheckCodeQuality/Input/requirements` parameter (``PyLint`` job
+       only).
 
 
 .. _JOBTMPL/CheckCodeQuality/Instantiation:

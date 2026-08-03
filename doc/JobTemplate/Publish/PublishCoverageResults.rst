@@ -27,20 +27,28 @@ cloud services like :term:`CodeCov` or :term:`Codacy`.
 
    1. Checkout repository.
    2. Download all artifacts matching :ref:`JOBTMPL/PublishCoverageResults/Input/coverage_artifacts_pattern`.
-   3. Install Python dependencies, especially :pypi:`coverage`.
-   4. Rename the SQLite database files in the download directory to the filename pattern Coverage.py's
+   3. Install Python dependencies, especially :term:`Coverage.py`.
+   4. Rename the SQLite database files in the download directory to the filename pattern :term:`Coverage.py`'s
       combine operation expects, and move them into a common directory.
-   5. Combine the SQLite databases into a single database using Coverage.py.
+   5. Combine the SQLite databases into a single database using :term:`Coverage.py`
+      (:ref:`JOBTMPL/PublishCoverageResults/Input/coverage_config`).
    6. Report code coverage as a table into the job log.
-   7. Convert the code coverage to Cobertura XML format.
-   8. Convert the code coverage to JSON format.
-   9. Convert the code coverage to an HTML report (website).
-   10. Upload the combined SQLite database as an artifact.
-   11. Upload the Cobertura XML file as an artifact.
-   12. Upload the JSON file as an artifact.
-   13. Upload the HTML report as an artifact.
-   14. Publish the Cobertura report to CodeCov.
-   15. Publish the Cobertura report to Codacy.
+   7. Convert the code coverage to Cobertura XML format
+      (:ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_xml`).
+   8. Convert the code coverage to JSON format
+      (:ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_json`).
+   9. Convert the code coverage to an HTML report (website)
+      (:ref:`JOBTMPL/PublishCoverageResults/Input/coverage_report_html`).
+   10. Upload the combined SQLite database as an artifact
+       (:ref:`JOBTMPL/PublishCoverageResults/Input/coverage_sqlite_artifact`).
+   11. Upload the Cobertura XML file as an artifact
+       (:ref:`JOBTMPL/PublishCoverageResults/Input/coverage_xml_artifact`).
+   12. Upload the JSON file as an artifact
+       (:ref:`JOBTMPL/PublishCoverageResults/Input/coverage_json_artifact`).
+   13. Upload the HTML report as an artifact
+       (:ref:`JOBTMPL/PublishCoverageResults/Input/coverage_html_artifact`).
+   14. Publish the Cobertura report to :term:`CodeCov` (:ref:`JOBTMPL/PublishCoverageResults/Input/codecov`).
+   15. Publish the Cobertura report to :term:`Codacy` (:ref:`JOBTMPL/PublishCoverageResults/Input/codacy`).
 
    Each conversion and upload runs only if the corresponding artifact parameter is non-empty.
 
@@ -64,7 +72,7 @@ cloud services like :term:`CodeCov` or :term:`Codacy`.
 
    * pip
 
-     * :pypi:`coverage`
+     * :term:`Coverage.py` (:pypi:`PyPI package <coverage>`)
 
 .. _JOBTMPL/PublishCoverageResults/Instantiation:
 

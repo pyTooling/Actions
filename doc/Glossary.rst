@@ -94,6 +94,13 @@ Glossary
      :Package:       `pypi.org/project/pip/ <https://pypi.org/project/pip/>`__
      :Documentation: `pip.pypa.io/ <https://pip.pypa.io/>`__
 
+   pylint
+     It's not just a linter that annoys you!
+
+     :Source Code:   `github.com/pylint-dev/pylint/ <https://github.com/pylint-dev/pylint/>`__
+     :Package:       `pypi.org/project/pylint/ <https://pypi.org/project/pylint/>`__
+     :Documentation: `pylint.readthedocs.io/ <https://pylint.readthedocs.io/>`__
+
    PyPI
      Find, install and publish Python packages with the Python Package Index.
 
@@ -105,6 +112,13 @@ Glossary
      :Source Code:   `github.com/pytest-dev/pytest/ <https://github.com/pytest-dev/pytest/>`__
      :Package:       `pypi.org/project/pytest/ <https://pypi.org/project/pytest/>`__
      :Documentation: `pytest.org/ <https://pytest.org/>`__
+
+   radon
+     Various code metrics for Python code.
+
+     :Source Code:   `github.com/rubik/radon/ <https://github.com/rubik/radon/>`__
+     :Package:       `pypi.org/project/radon/ <https://pypi.org/project/radon/>`__
+     :Documentation: `radon.readthedocs.io/ <https://radon.readthedocs.io/>`__
 
    Sphinx
      The Sphinx documentation generator.

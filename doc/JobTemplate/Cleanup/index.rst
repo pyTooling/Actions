@@ -11,18 +11,15 @@ consumes pipeline storage which can be freed up. Moreover, it's unclear which ar
 code coverage reports. Thus, it's benefitial, to remove intermediate artifacts after merging reports into one summary
 report.
 
-.. topic:: Intermediate cleanups
+.. topic:: Artifact Cleanups
 
-   * :ref:`JOBTMPL/IntermediateCleanUp` - remove intermediate artifacts after merging reports into one summary report.
-
-
-.. topic:: Final cleanups
-
-   * :ref:`JOBTMPL/CleanupArtifacts` - remove artifacts after publishing results and creating release assets.
+   * :ref:`JOBTMPL/CleanupArtifacts` - remove artifacts by key into an artifact-name dictionary, in the middle of a
+     pipeline as well as at its end.
 
 
 .. topic:: Deprecated
 
+   * :ref:`JOBTMPL/IntermediateCleanUp` - replaced by :ref:`JOBTMPL/CleanupArtifacts`.
    * :ref:`JOBTMPL/ArtifactCleanup` - replaced by :ref:`JOBTMPL/CleanupArtifacts`.
 
 

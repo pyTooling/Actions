@@ -29,12 +29,27 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Install system dependencies (``apt``, ``homebrew``, ``pacboy``).
-   3. Setup MSYS2 or Python, depending on the matrix entry, and install Python dependencies (:term:`pip`).
-   4. Run the instructions given by the ``*_before_script`` parameter of the current system.
-   5. Run the unit tests using *pytest*, in combination with :term:`Coverage.py` if code coverage is enabled.
-   6. Convert the collected code coverage to Cobertura XML, JSON and HTML format.
-   7. Upload the test report and the code coverage reports as artifacts.
+   2. Install system dependencies (:ref:`JOBTMPL/UnitTesting/Input/apt`, :ref:`JOBTMPL/UnitTesting/Input/brew`,
+      :ref:`JOBTMPL/UnitTesting/Input/pacboy`).
+   3. Prepare the Python environment as described by the matrix entry (:ref:`JOBTMPL/UnitTesting/Input/jobs`) and
+      install the Python dependencies using :term:`pip` (:ref:`JOBTMPL/UnitTesting/Input/requirements`,
+      :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements`).
+   4. Run the instructions given by the ``*_before_script`` parameter of the current system, e.g.
+      :ref:`JOBTMPL/UnitTesting/Input/ubuntu_before_script`.
+   5. Run the unit tests using :term:`pytest` (:ref:`JOBTMPL/UnitTesting/Input/unittest_directory`,
+      :ref:`JOBTMPL/UnitTesting/Input/tests_directory`, :ref:`JOBTMPL/UnitTesting/Input/root_directory`), in
+      combination with :term:`Coverage.py` if code coverage is enabled
+      (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`).
+   6. Convert the collected code coverage to Cobertura XML, JSON and HTML format
+      (:ref:`JOBTMPL/UnitTesting/Input/coverage_report_xml`, :ref:`JOBTMPL/UnitTesting/Input/coverage_report_json`,
+      :ref:`JOBTMPL/UnitTesting/Input/coverage_report_html`).
+   7. Upload the test report and the code coverage reports as artifacts
+      (:ref:`JOBTMPL/UnitTesting/Input/unittest_xml_artifact`,
+      :ref:`JOBTMPL/UnitTesting/Input/unittest_html_artifact`,
+      :ref:`JOBTMPL/UnitTesting/Input/coverage_sqlite_artifact`,
+      :ref:`JOBTMPL/UnitTesting/Input/coverage_xml_artifact`,
+      :ref:`JOBTMPL/UnitTesting/Input/coverage_json_artifact`,
+      :ref:`JOBTMPL/UnitTesting/Input/coverage_html_artifact`).
 
    Each conversion and upload runs only if the corresponding artifact parameter is non-empty.
 

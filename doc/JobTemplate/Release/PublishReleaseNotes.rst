@@ -28,21 +28,30 @@ This template creates a GitHub Release Page and uploads assets to that page.
 
    1. Checkout repository.
    2. Install dependencies (``zstd``).
-   3. Determine whether this is a full release or a nightly release (rolling release).
+   3. Determine whether this is a full release or a nightly release (rolling release)
+      (:ref:`JOBTMPL/PublishReleaseNotes/Input/mode`, :ref:`JOBTMPL/PublishReleaseNotes/Input/tag`).
    4. For a nightly release, delete the previous release page.
-   5. Create the release page as a draft - a new page for a release, a recreated page for a nightly.
-   6. Attach files from artifacts as assets:
+   5. Create the release page as a draft - a new page for a release, a recreated page for a nightly
+      (:ref:`JOBTMPL/PublishReleaseNotes/Input/title`, :ref:`JOBTMPL/PublishReleaseNotes/Input/prerelease`,
+      :ref:`JOBTMPL/PublishReleaseNotes/Input/latest`).
+   6. Attach files from artifacts as assets (:ref:`JOBTMPL/PublishReleaseNotes/Input/assets`):
 
       1. Download the artifact.
-      2. Unpack the tarball created by :gh:`pyTooling/upload-artifact` - see
-         :ref:`JOBTMPL/PublishReleaseNotes/Input/tarball-name`.
+      2. Unpack the tarball created by :gh:`pyTooling/upload-artifact`
+         (:ref:`JOBTMPL/PublishReleaseNotes/Input/tarball-name`).
       3. Optionally create compressed archives of that content.
       4. Upload the assets to the release page.
-      5. Optionally record the asset in the JSON inventory - see
-         :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`.
+      5. Optionally record the asset in the JSON inventory
+         (:ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-json`,
+         :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-version`,
+         :ref:`JOBTMPL/PublishReleaseNotes/Input/inventory-categories`).
 
-   7. Assemble the release notes and update the release page with them.
-   8. Remove the draft state from the release page.
+   7. Assemble the release notes and update the release page with them
+      (:ref:`JOBTMPL/PublishReleaseNotes/Input/description`,
+      :ref:`JOBTMPL/PublishReleaseNotes/Input/description_file`,
+      :ref:`JOBTMPL/PublishReleaseNotes/Input/description_footer`,
+      :ref:`JOBTMPL/PublishReleaseNotes/Input/replacements`).
+   8. Remove the draft state from the release page (:ref:`JOBTMPL/PublishReleaseNotes/Input/draft`).
 
    .. note::
 

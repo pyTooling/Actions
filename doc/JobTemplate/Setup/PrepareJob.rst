@@ -46,7 +46,10 @@ The job template generates various output parameters derived from
    1. Delay job execution by :ref:`JOBTMPL/PrepareJob/Input/pipeline-delay` seconds.
    2. Checkout repository.
    3. Dump the ``${{ github }}`` context into the job log.
-   4. Classify ``${{ github.ref }}`` into branch, tag or pull-request and compute all output parameters.
+   4. Classify ``${{ github.ref }}`` into branch, tag or pull-request and compute all output parameters
+      (:ref:`JOBTMPL/PrepareJob/Input/main_branch`, :ref:`JOBTMPL/PrepareJob/Input/development_branch`,
+      :ref:`JOBTMPL/PrepareJob/Input/release_branch`, :ref:`JOBTMPL/PrepareJob/Input/nightly_tag_pattern`,
+      :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`).
    5. Find the associated pull-request.
 
       Runs for :ref:`release commits <JOBTMPL/PrepareJob/Output/is_release_commit>` only - a merge commit on the
@@ -109,23 +112,23 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PrepareJob/Inputs>`
 
-+-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
-| Parameter Name                                      | Required | Type   | Default            |                                |       |      |                  |
-+=====================================================+==========+========+====================+================================+=======+======+==================+
-| :ref:`JOBTMPL/PrepareJob/Input/ubuntu_image`        | no       | string | ``'ubuntu-26.04'`` |                                |       |      |                  |
-+-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/pipeline-delay`      | no       | number | ``0``              |                                |       |      |                  |
-+-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/main_branch`         | no       | string | ``'main'``         |                                |       |      |                  |
-+-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/development_branch`  | no       | string | ``'dev'``          |                                |       |      |                  |
-+-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/release_branch`      | no       | string | ``'main'``         |                                |       |      |                  |
-+-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/nightly_tag_pattern` | no       | string | ``'nightly'``      |                                |       |      |                  |
-+-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern` | no       | string | ``'(v              | r)?[0-9]+(\.[0-9]+){0,2}(-(dev | alpha | beta | rc)([0-9]*))?'`` |
-+-----------------------------------------------------+----------+--------+--------------------+--------------------------------+-------+------+------------------+
++-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| Parameter Name                                      | Required | Type   | Default                                                          |
++=====================================================+==========+========+==================================================================+
+| :ref:`JOBTMPL/PrepareJob/Input/ubuntu_image`        | no       | string | ``'ubuntu-26.04'``                                               |
++-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/pipeline-delay`      | no       | number | ``0``                                                            |
++-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/main_branch`         | no       | string | ``'main'``                                                       |
++-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/development_branch`  | no       | string | ``'dev'``                                                        |
++-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/release_branch`      | no       | string | ``'main'``                                                       |
++-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/nightly_tag_pattern` | no       | string | ``'nightly'``                                                    |
++-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern` | no       | string | ``'(v|r)?[0-9]+(\.[0-9]+){0,2}(-(dev|alpha|beta|rc)([0-9]*))?'`` |
++-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PrepareJob/Secrets>`
 

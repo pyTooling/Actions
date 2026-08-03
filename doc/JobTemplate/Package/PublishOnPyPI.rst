@@ -15,11 +15,12 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
 
 .. topic:: Behavior
 
-   1. Download the package artifact.
-   2. Setup Python and install dependencies (:term:`twine`).
+   1. Download the package artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/artifact`).
+   2. Setup Python (:ref:`JOBTMPL/PublishOnPyPI/Input/python_version`) and install dependencies
+      (:ref:`JOBTMPL/PublishOnPyPI/Input/requirements`), which must provide :term:`twine`.
    3. Publish the wheel package(s) (:file:`*.whl`).
    4. Publish the source package(s) (:file:`*.tar.gz`).
-   5. Delete the artifact - see :ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`.
+   5. Delete the artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`).
 
 .. topic:: Preconditions
 
@@ -43,7 +44,8 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
    * :gh:`geekyeggo/delete-artifact`
    * pip
 
-     * :pypi:`twine`
+     * :term:`twine` (:pypi:`PyPI package <twine>`)
+
      * :pypi:`wheel`
 
 .. _JOBTMPL/PublishOnPyPI/Instantiation:

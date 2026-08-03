@@ -18,11 +18,13 @@ can be switched by a parameter.
 
 .. topic:: Behavior
 
-   1. Download the LaTeX artifact.
-   2. Optionally update the MiKTeX packages in the container - see
-      :ref:`JOBTMPL/LaTeXDocumentation/Input/update`.
-   3. Build the PDF using ``latexmk`` inside the MiKTeX container.
-   4. Upload the generated PDF as an artifact.
+   1. Download the LaTeX artifact (:ref:`JOBTMPL/LaTeXDocumentation/Input/latex_artifact`).
+   2. Optionally update the MiKTeX packages in the container (:ref:`JOBTMPL/LaTeXDocumentation/Input/update`).
+   3. Build the PDF using ``latexmk`` inside the MiKTeX container
+      (:ref:`JOBTMPL/LaTeXDocumentation/Input/miktex_image`, :ref:`JOBTMPL/LaTeXDocumentation/Input/document`,
+      :ref:`JOBTMPL/LaTeXDocumentation/Input/processor`,
+      :ref:`JOBTMPL/LaTeXDocumentation/Input/halt-on-error`).
+   4. Upload the generated PDF as an artifact (:ref:`JOBTMPL/LaTeXDocumentation/Input/pdf_artifact`).
 
    Steps 3 and 4 are skipped if :ref:`JOBTMPL/LaTeXDocumentation/Input/pdf_artifact` is empty.
 
@@ -180,8 +182,13 @@ miktex_image
 :Required:        no
 :Default Value:   ``'pytooling/miktex:sphinx'``
 :Possible Values: Any Docker image providing a MiKTeX installation with ``latexmk``.
-:Description:     Docker image used to translate the LaTeX sources to PDF. |br|
-                  The default image ships the LaTeX packages Sphinx emits.
+:Description:     Docker image used to translate the LaTeX sources to PDF.
+
+                  .. hint::
+
+                     The job template accepts any LaTeX artifact, whatever produced it. When the LaTeX code was
+                     emitted by :term:`Sphinx`, an image with the Sphinx specific LaTeX packages preinstalled is
+                     recommended - the default image ``pytooling/miktex:sphinx`` is such an image.
 
 .. _JOBTMPL/LaTeXDocumentation/Input/update:
 
@@ -195,7 +202,7 @@ update
                   ``'false'`` - use the packages shipped with the image.
 :Description:     Update MiKTeX packages before the document is built. |br|
                   Updating costs runtime on every run, so this is meant as an escape hatch when the image lags behind
-                  a LaTeX package Sphinx needs.
+                  a LaTeX package needs.
 
 .. _JOBTMPL/LaTeXDocumentation/Input/halt-on-error:
 

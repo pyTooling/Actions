@@ -6,6 +6,28 @@
 IntermediateCleanUp
 ###################
 
+.. attention::
+
+   This job template is **deprecated** and will be removed in ``r8``. Use :ref:`JOBTMPL/CleanupArtifacts` instead,
+   which covers the intermediate cleanup as well as the final cleanup. :ref:`JOBTMPL/CompletePipeline` already
+   instantiates ``CleanupArtifacts.yml`` for both of its cleanup jobs.
+
+   Migration: the two prefix parameters become entries of
+   :ref:`JOBTMPL/CleanupArtifacts/Input/artifact-json-ids` using the postfix form, so the artifact names no longer
+   need to be assembled by the caller.
+
+   .. code-block:: yaml
+
+      # before
+      sqlite_coverage_artifacts_prefix: ${{ fromJson(needs.Params.outputs.artifact_names).codecoverage_sqlite }}-
+      xml_unittest_artifacts_prefix:    ${{ fromJson(needs.Params.outputs.artifact_names).unittesting_xml }}-
+
+      # after
+      json: ${{ needs.Params.outputs.artifact_names }}
+      artifact-json-ids: >-
+        codecoverage_sqlite:-*
+        unittesting_xml:-*
+
 The ``IntermediateCleanUp`` job template is used to remove intermediate artifacts like unit test artifacts for each job
 variant after test results have been merged into a single file.
 
@@ -15,8 +37,10 @@ variant after test results have been merged into a single file.
 
 .. topic:: Behavior
 
-   1. Delete all SQLite code coverage artifacts, if a prefix was given.
-   2. Delete all JUnit XML report artifacts, if a prefix was given.
+   1. Delete all SQLite code coverage artifacts, if a prefix was given
+      (:ref:`JOBTMPL/IntermediateCleanUp/Input/sqlite_coverage_artifacts_prefix`).
+   2. Delete all JUnit XML report artifacts, if a prefix was given
+      (:ref:`JOBTMPL/IntermediateCleanUp/Input/xml_unittest_artifacts_prefix`).
 
    The job removes the per-matrix-job artifacts once they have been merged, so they don't count against the
    repository's artifact storage for the retention period.
@@ -54,9 +78,11 @@ requires a `name` parameter to create the artifact names.
 
 .. seealso::
 
+   :ref:`JOBTMPL/CleanupArtifacts`
+     The replacement for this template.
    :ref:`JOBTMPL/ArtifactCleanup`
      ``ArtifactCleanup`` is used to remove artifacts like unit test report artifacts after artifact's content has been
-     (post-)processed or published.
+     (post-)processed or published. Deprecated as well.
 
 
 .. _JOBTMPL/IntermediateCleanUp/Parameters:

@@ -67,15 +67,24 @@ is resolved against the JSON dictionary given by ``json`` / ``json2``:
 | ``#key``               | ignored - used to comment out an entry        |
 +------------------------+-----------------------------------------------+
 
-The postfix form is what makes the per-matrix-job artifacts deletable: a matrix job uploads its report as
-``<name>-Ubuntu-3.14``, so the entry ``codecoverage_xml:-*`` deletes every such artifact, while the plain entry
-``codecoverage_xml`` deletes only the merged one.
+.. hint::
+
+   Assume a matrix creating multiple artifacts sharing the same prefix. That prefix is taken from the JSON dictionary,
+   e.g. ``artifactNames['unittesting_xml']`` (= ``'myProject-UnitTestReportSummary-XML'``). Each matrix job then adds a
+   postfix specific to its matrix combination like operating system, platform details or Python version (=
+   ``'-ubuntu-3.14'``). |br|
+   The resulting artifact name is ``myProject-UnitTestReportSummary-XML-ubuntu-3.14``.
+
+   To delete all these variants, ``unittesting_xml:-*`` can be used. |br|
+   This won't delete the merged unit test XML artifact, because that one uses
+   ``artifactNames['unittesting_xml']`` directly, without a postfix. Deleting it too needs a second entry
+   ``unittesting_xml`` - which is why both forms appear in the example below.
 
 .. code-block:: yaml
 
    artifact-json-ids: >-
-     codecoverage_xml:-*
-     codecoverage_xml
+     unittesting_xml:-*
+     unittesting_xml
      statictyping_html
      #documentation_latex
 
@@ -124,9 +133,10 @@ the pipeline is not a tagged release.
 .. seealso::
 
    :ref:`JOBTMPL/IntermediateCleanUp`
-     Deletes the per-matrix-job artifacts in the middle of a pipeline, so they don't pile up while later jobs run.
+     Deprecated. Deleted the per-matrix-job artifacts in the middle of a pipeline; this template does the same job
+     with a ``json`` dictionary instead of two hard-coded prefixes.
    :ref:`JOBTMPL/ArtifactCleanup`
-     The deprecated predecessor of this template.
+     Deprecated predecessor of this template.
    :ref:`DEV/ConditionalJobs`
      Why an ``if:`` without a status check function skips the cleanup.
 

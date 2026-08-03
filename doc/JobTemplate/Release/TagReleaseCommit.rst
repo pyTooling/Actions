@@ -29,7 +29,7 @@ triggers a new pipeline run for that tag, a.k.a *tag pipeline* or *release pipel
 .. topic:: Behavior
 
    1. Tag the current commit with a tag named like :ref:`JOBTMPL/TagReleaseCommit/Input/version`.
-   2. Trigger a pipeline run for the new tag.
+   2. Trigger a pipeline run for the new tag (:ref:`JOBTMPL/TagReleaseCommit/Input/workflow`).
 
    The job is skipped unless :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag` is ``'true'``. Tagging from a workflow does
    not trigger a tag pipeline by itself, which is why the second step dispatches the run explicitly.

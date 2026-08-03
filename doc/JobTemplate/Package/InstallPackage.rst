@@ -16,11 +16,21 @@ the installation is verified. This aims for packaging and dependency mistakes in
 
 .. topic:: Behavior
 
-   1. Download the wheel package artifact.
-   2. Setup MSYS2 or Python, depending on the matrix entry.
-   3. Install Python dependencies (:term:`pip`).
-   4. Install the Python package from the downloaded wheel.
-   5. Read out the installed package's version and verify it matches the expected version.
+   1. Download the Python package artifact containing the wheel
+      (:ref:`JOBTMPL/InstallPackage/Input/wheel`).
+   2. Prepare the Python environment as described by the matrix entry
+      (:ref:`JOBTMPL/InstallPackage/Input/jobs`): |br|
+      on MSYS2, Python and its packages are installed via ``pacboy``/``pacman``, on all other systems via
+      :gh:`actions/setup-python`.
+   3. Install the Python dependencies using :term:`pip`.
+   4. Install the Python package from the downloaded wheel using :term:`pip`.
+   5. Read out the installed package's version and verify it matches the expected version
+      (:ref:`JOBTMPL/InstallPackage/Input/package_name`).
+
+   .. note::
+
+      There is no checkout. The job deliberately works from the wheel alone, so an import succeeding by accident from
+      the repository's sources cannot mask a packaging mistake.
 
 .. topic:: Job Execution
 
@@ -34,6 +44,17 @@ the installation is verified. This aims for packaging and dependency mistakes in
    * :gh:`pyTooling/download-artifact`
 
      * :gh:`actions/download-artifact`
+
+   * pip (native systems)
+
+     * :term:`pip` (:pypi:`PyPI package <pip>`)
+     * :pypi:`wheel`
+
+   * pacboy (MSYS2)
+
+     * ``python-pip``, ``python-wheel``
+     * ``python-lxml``, ``python-markupsafe``, ``python-pyaml``, ``python-types-pyyaml``, ``python-ruamel-yaml``,
+       ``python-ruamel.yaml.clib``
 
 
 .. _JOBTMPL/InstallPackage/Instantiation:

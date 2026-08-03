@@ -62,9 +62,9 @@
 
       .. rubric:: Cleanup
 
-      * :ref:`JOBTMPL/IntermediateCleanUp`
       * :ref:`JOBTMPL/CleanupArtifacts`
 
       .. rubric:: :ref:`JOBTMPL/Deprecated`
 
+      * :ref:`JOBTMPL/IntermediateCleanUp`
       * :ref:`JOBTMPL/ArtifactCleanup`

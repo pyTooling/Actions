@@ -34,6 +34,32 @@ This is a summary of dependencies used by the provided job templates. For more d
     :ref:`JOBTMPL/PrepareJob` and :ref:`JOBTMPL/PublishReleaseNotes`.
   * :dockerhub:`pytooling/miktex <pytooling/miktex:sphinx>` - the container :ref:`JOBTMPL/LaTeXDocumentation` runs in.
 
-Python packages installed through *pip* - :pypi:`bandit`, :pypi:`build`, :pypi:`coverage`,
-:pypi:`docstr_coverage`, :pypi:`interrogate`, :pypi:`mypy`, :pypi:`pyEDAA.Reports`, :pypi:`pylint`, :pypi:`radon`,
-:pypi:`Sphinx`, :pypi:`twine`, :pypi:`wheel` - are listed with the job template that installs them.
+* System packages installed through ``apt``
+
+  * `graphviz <https://graphviz.org/>`__ - used by :ref:`JOBTMPL/SphinxDocumentation` to render diagrams.
+  * `zstd <https://facebook.github.io/zstd/>`__ - used by :ref:`JOBTMPL/PublishReleaseNotes` to compress release
+    assets.
+  * Further packages specified by the caller via the ``apt``, ``brew`` and ``pacboy`` parameters of
+    :ref:`JOBTMPL/UnitTesting` and :ref:`JOBTMPL/ApplicationTesting`.
+
+* Python packages installed through :term:`pip`
+
+  * :term:`bandit` (:pypi:`PyPI package <bandit>`) - :ref:`JOBTMPL/CheckCodeQuality`
+  * :term:`build` (:pypi:`PyPI package <build>`) - :ref:`JOBTMPL/Package`
+  * :term:`Coverage.py` (:pypi:`PyPI package <coverage>`) - :ref:`JOBTMPL/PublishCoverageResults`
+  * :term:`docstr_coverage` (:pypi:`PyPI package <docstr_coverage>`) - :ref:`JOBTMPL/CheckDocumentation`
+  * :term:`interrogate` (:pypi:`PyPI package <interrogate>`) - :ref:`JOBTMPL/CheckDocumentation`
+  * :term:`pyEDAA.Reports` (:pypi:`PyPI package <pyEDAA.Reports>`) - :ref:`JOBTMPL/PublishTestResults`
+  * :term:`pylint` (:pypi:`PyPI package <pylint>`) - :ref:`JOBTMPL/CheckCodeQuality`
+  * :term:`radon` (:pypi:`PyPI package <radon>`) - :ref:`JOBTMPL/CheckCodeQuality`
+  * :term:`twine` (:pypi:`PyPI package <twine>`) - :ref:`JOBTMPL/PublishOnPyPI`
+  * :pypi:`wheel` - installed by most job templates before the caller's requirements.
+
+* Python packages installed through the caller's requirements file
+
+  These are *not* installed by the job templates. The templates only run the tools, so the caller decides the version:
+
+  * :term:`mypy` (:pypi:`PyPI package <mypy>`) - :ref:`JOBTMPL/StaticTypeCheck`
+  * :term:`pytest` (:pypi:`PyPI package <pytest>`) and :term:`Coverage.py` (:pypi:`PyPI package <coverage>`) -
+    :ref:`JOBTMPL/UnitTesting`, :ref:`JOBTMPL/ApplicationTesting`
+  * :term:`Sphinx` (:pypi:`PyPI package <Sphinx>`), its theme and extensions - :ref:`JOBTMPL/SphinxDocumentation`

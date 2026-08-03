@@ -27,13 +27,19 @@ It generates output parameters containing a list of artifact names and a job mat
 
    1. Delay job execution by :ref:`JOBTMPL/Parameters/Input/pipeline-delay` seconds.
    2. Checkout repository.
-   3. Compute the Python version to be used by non-matrix jobs.
-   4. Assemble artifact names using a common prefix derived from Python namespace and package name.
+   3. Compute the Python version to be used by non-matrix jobs
+      (:ref:`JOBTMPL/Parameters/Input/python_version`).
+   4. Assemble artifact names using a common prefix derived from Python namespace and package name
+      (:ref:`JOBTMPL/Parameters/Input/name`, :ref:`JOBTMPL/Parameters/Input/package_namespace`,
+      :ref:`JOBTMPL/Parameters/Input/package_name`).
 
       Artifact names of disabled steps are set to an empty string, which is how
       :ref:`JOBTMPL/Parameters/Input/documentation_steps` disables documentation jobs downstream.
 
-   5. Compute the job matrix using an embedded Python script.
+   5. Compute the job matrix using an embedded Python script
+      (:ref:`JOBTMPL/Parameters/Input/python_version_list`, :ref:`JOBTMPL/Parameters/Input/system_list`,
+      :ref:`JOBTMPL/Parameters/Input/include_list`, :ref:`JOBTMPL/Parameters/Input/exclude_list`,
+      :ref:`JOBTMPL/Parameters/Input/disable_list`).
    6. Verify the generated output parameters and fail on inconsistencies.
 
 .. topic:: Job Execution

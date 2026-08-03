@@ -16,11 +16,15 @@ to a HTML report and uploaded as an artifact.
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Setup Python and install dependencies (:term:`mypy`).
-   3. Run the static type check.
-   4. Upload the HTML report as an artifact.
-   5. Upload the JUnit XML report as an artifact.
-   6. Upload the Cobertura XML report as an artifact.
+   2. Setup Python (:ref:`JOBTMPL/StaticTypeCheck/Input/python_version`) and install the Python dependencies
+      (:ref:`JOBTMPL/StaticTypeCheck/Input/requirements`), which must provide :term:`mypy`.
+   3. Run the static type check (:ref:`JOBTMPL/StaticTypeCheck/Input/mypy_options`).
+   4. Upload the HTML report as an artifact (:ref:`JOBTMPL/StaticTypeCheck/Input/html_artifact`,
+      :ref:`JOBTMPL/StaticTypeCheck/Input/html_report`).
+   5. Upload the JUnit XML report as an artifact (:ref:`JOBTMPL/StaticTypeCheck/Input/junit_artifact`,
+      :ref:`JOBTMPL/StaticTypeCheck/Input/junit_report`).
+   6. Upload the Cobertura XML report as an artifact (:ref:`JOBTMPL/StaticTypeCheck/Input/cobertura_artifact`,
+      :ref:`JOBTMPL/StaticTypeCheck/Input/cobertura_report`).
 
    Each upload runs only if the corresponding artifact parameter is non-empty.
 
@@ -39,7 +43,8 @@ to a HTML report and uploaded as an artifact.
 
    * pip
 
-     * :pypi:`mypy`
+     * Python packages specified via :ref:`JOBTMPL/StaticTypeCheck/Input/requirements` parameter. This is where
+       :term:`mypy` (:pypi:`PyPI package <mypy>`) comes from - the job template installs nothing itself.
 
 .. _JOBTMPL/StaticTypeCheck/Instantiation:
 

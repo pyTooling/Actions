@@ -19,7 +19,7 @@ Markdown and is never imported by the tests.
 .. topic:: Behavior
 
    1. Checkout repository.
-   2. Setup Python.
+   2. Setup Python (:ref:`JOBTMPL/VerifyDocs/Input/python_version`).
    3. Install the package from the checked out sources using ``pip3 install .``.
    4. Extract the first Python code block from :file:`README.md` and write it to :file:`tests/docs/example.py`.
    5. Print the extracted snippet into the job log, so a failure can be understood without reproducing it locally.

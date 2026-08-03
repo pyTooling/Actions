@@ -30,12 +30,20 @@ Supported services are:
       downloaded artifacts and thereby the generated traffic.
    3. Install :term:`pyEDAA.Reports`.
    4. Rename the found JUnit XML files and move them into a common directory.
-   5. Merge all found JUnit XML files into a new JUnit XML file. |br|
-      Optionally, apply transformation and cleanup operations to the report structure - see
-      :ref:`JOBTMPL/PublishTestResults/Input/additional_merge_args`.
-   6. Publish the test results as a Markdown report page to GitHub Actions using :term:`Test Reporter`.
-   7. Publish the test results to :term:`Codecov`.
-   8. Upload the merged JUnit XML file as an artifact.
+   5. Merge all found JUnit XML files into a new JUnit XML file
+      (:ref:`JOBTMPL/PublishTestResults/Input/merge-input-dialect`,
+      :ref:`JOBTMPL/PublishTestResults/Input/merge-output-dialect`,
+      :ref:`JOBTMPL/PublishTestResults/Input/merged_junit_filename`,
+      :ref:`JOBTMPL/PublishTestResults/Input/testsuite-summary-name`). |br|
+      Optionally, apply transformation and cleanup operations to the report structure
+      (:ref:`JOBTMPL/PublishTestResults/Input/additional_merge_args`).
+   6. Publish the test results as a Markdown report page to GitHub Actions using :term:`Test Reporter`
+      (:ref:`JOBTMPL/PublishTestResults/Input/dorny`, :ref:`JOBTMPL/PublishTestResults/Input/publish`,
+      :ref:`JOBTMPL/PublishTestResults/Input/report_title`).
+   7. Publish the test results to :term:`Codecov` (:ref:`JOBTMPL/PublishTestResults/Input/codecov`,
+      :ref:`JOBTMPL/PublishTestResults/Input/codecov_flags`).
+   8. Upload the merged JUnit XML file as an artifact
+      (:ref:`JOBTMPL/PublishTestResults/Input/merged_junit_artifact`).
 
 .. topic:: Job Execution
 
@@ -72,7 +80,7 @@ Supported services are:
 
    * pip
 
-     * :pypi:`pyEDAA.Reports`
+     * :term:`pyEDAA.Reports` (:pypi:`PyPI package <pyEDAA.Reports>`)
 
 .. _JOBTMPL/PublishTestResults/Instantiation:
 
@@ -218,7 +226,8 @@ merge-input-dialect
 :Required:        no
 :Default Value:   ``'pyTest-JUnit'``
 :Possible Values: Any JUnit dialect supported by :term:`pyEDAA.Reports`, e.g. ``'pyTest-JUnit'``, ``'Ant-JUnit'``,
-                  ``'CTest-JUnit'`` or ``'GoogleTest-JUnit'``.
+                  ``'CTest-JUnit'`` or ``'GoogleTest-JUnit'``. |br|
+                  See :external+pyEDAARpt:ref:`unittest/specificdatamodel/junit/dialects` for the complete list.
 :Description:     JUnit dialect used to read and parse the downloaded reports. |br|
                   *JUnit XML* has no single specification - test frameworks emit structurally different files, so the
                   dialect must match the framework that produced them.
@@ -231,7 +240,8 @@ merge-output-dialect
 :Type:            string
 :Required:        no
 :Default Value:   ``'pyTest-JUnit'``
-:Possible Values: Any JUnit dialect supported by :term:`pyEDAA.Reports`.
+:Possible Values: Any JUnit dialect supported by :term:`pyEDAA.Reports`. |br|
+                  See :external+pyEDAARpt:ref:`unittest/specificdatamodel/junit/dialects` for the complete list.
 :Description:     JUnit dialect used to write the merged report. |br|
                   Choose the dialect understood by the service consuming the merged file.
 
@@ -244,7 +254,10 @@ merged_junit_artifact
 :Required:        no
 :Default Value:   ``''``
 :Possible Values: Any valid artifact name.
-:Description:
+:Description:     Name of the artifact receiving the merged JUnit XML file. |br|
+                  If empty, the merged report is published to the configured services, but not kept as an artifact -
+                  so no later job can consume it. :ref:`JOBTMPL/SphinxDocumentation` downloads this artifact to embed
+                  the unit test report into the documentation.
 
 
 .. _JOBTMPL/PublishTestResults/Input/additional_merge_args:
@@ -255,7 +268,9 @@ additional_merge_args
 :Type:            string
 :Required:        no
 :Default Value:   ``'"--pytest=rewrite-dunder-init;reduce-depth:pytest.tests.unit"'``
-:Possible Values: Any additional command line arguments accepted by ``pyedaa-reports unittest``.
+:Possible Values: Any additional command line arguments accepted by ``pyedaa-reports unittest``. |br|
+                  See :external+pyEDAARpt:ref:`unittest/feature/transform` and
+                  :external+pyEDAARpt:ref:`unittest/feature/transform/pytest` for the available transformations.
 :Description:     Additional arguments passed to the merge operation. |br|
                   The default rewrites the dunder ``__init__`` test suites and reduces the hierarchy depth, so the merged
                   report is not dominated by the directory structure of the test suite.
