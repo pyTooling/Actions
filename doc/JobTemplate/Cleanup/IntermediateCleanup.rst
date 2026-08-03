@@ -12,6 +12,8 @@ IntermediateCleanUp
    which covers the intermediate cleanup as well as the final cleanup. :ref:`JOBTMPL/CompletePipeline` already
    instantiates ``CleanupArtifacts.yml`` for both of its cleanup jobs.
 
+   The job template emits the same warning at runtime.
+
    Migration: the two prefix parameters become entries of
    :ref:`JOBTMPL/CleanupArtifacts/Input/artifact-json-ids` using the postfix form, so the artifact names no longer
    need to be assembled by the caller.
