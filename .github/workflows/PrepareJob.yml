@@ -418,18 +418,18 @@ jobs:
           export GH_TOKEN=${{ github.token }}
 
           printf "Read second parent of current SHA (%s) ... " "${{ github.ref }}"
-          FATHER_SHA=$(git rev-parse ${{ github.ref }}^2 2> /dev/null)
-          if [[ $? -ne 0 || "{FATHER_SHA}" == "" ]]; then
+          SECOND_PARENT_SHA=$(git rev-parse ${{ github.ref }}^2 2> /dev/null)
+          if [[ $? -ne 0 || "${SECOND_PARENT_SHA}" == "" ]]; then
             printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
             printf "${ANSI_LIGHT_RED}Couldn't read second parent (father) of '%s'.${ANSI_NOCOLOR}\n" "${{ github.ref }}^2"
-            printf "::error title=GitCommitHistoryError::Couldn't read second parent (father) of '%s'. -> %s\n" "${{ github.ref }}^2" "${FATHER_SHA}"
+            printf "::error title=GitCommitHistoryError::Couldn't read second parent (father) of '%s'. -> %s\n" "${{ github.ref }}^2" "${SECOND_PARENT_SHA}"
             exit 1
           else
             printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           fi
 
-          printf "Search Pull Request to '%s' and branch containing SHA %s ... " "${{ inputs.release_branch }}" "${FATHER_SHA}"
-          PULL_REQUESTS=$(gh pr list --base "${{ inputs.release_branch }}" --search "${FATHER_SHA}" --state "merged" --json "title,number,headRefOid,mergedBy,mergedAt")
+          printf "Search Pull Request to '%s' and branch containing SHA %s ... " "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
+          PULL_REQUESTS=$(gh pr list --base "${{ inputs.release_branch }}" --search "${SECOND_PARENT_SHA}" --state "merged" --json "title,number,headRefOid,mergedBy,mergedAt")
           if [[ $? -ne 0 ]]; then
             printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
             printf "${ANSI_LIGHT_RED}Couldn't search Pull Requests to '%s'. -> %s${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
@@ -442,19 +442,19 @@ jobs:
           # an older release Pull Request built from an ancestor. The second parent (father) of a merge commit is the
           # head commit of the merged branch, so a Pull Request whose 'headRefOid' equals it is the one that created
           # this merge commit. Newest first, in case a Pull Request was closed and redone from the same branch.
-          MATCHES=$(printf "%s\n" "${PULL_REQUESTS}" | jq --arg sha "${FATHER_SHA}" '[.[] | select(.headRefOid == $sha)] | sort_by(.mergedAt) | reverse')
+          MATCHES=$(printf "%s\n" "${PULL_REQUESTS}" | jq --arg sha "${SECOND_PARENT_SHA}" '[.[] | select(.headRefOid == $sha)] | sort_by(.mergedAt) | reverse')
           MATCH_COUNT=$(printf "%s\n" "${MATCHES}" | jq 'length')
 
-          printf "Select Pull Request with head commit %s ... " "${FATHER_SHA}"
+          printf "Select Pull Request with head commit %s ... " "${SECOND_PARENT_SHA}"
           if [[ "${MATCH_COUNT}" -eq 0 ]]; then
             printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "${ANSI_LIGHT_RED}No merged Pull Request to '%s' has head commit '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${FATHER_SHA}"
+            printf "${ANSI_LIGHT_RED}No merged Pull Request to '%s' has head commit '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
             if [[ "$(printf "%s\n" "${PULL_REQUESTS}" | jq 'length')" -eq 0 ]]; then
               printf "${ANSI_LIGHT_RED}The search returned no candidates at all.${ANSI_NOCOLOR}\n"
             else
               printf "${ANSI_LIGHT_RED}Candidates returned by the search: %s${ANSI_NOCOLOR}\n" "$(printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output '[.[] | "#\(.number) (\(.headRefOid[0:7]))"] | join(", ")')"
             fi
-            printf "::error title=PullRequest::No merged Pull Request to '%s' has head commit '%s'.\n" "${{ inputs.release_branch }}" "${FATHER_SHA}"
+            printf "::error title=PullRequest::No merged Pull Request to '%s' has head commit '%s'.\n" "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
             exit 1
           fi
           printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
@@ -462,7 +462,7 @@ jobs:
           if [[ "${MATCH_COUNT}" -gt 1 ]]; then
             # Rare, but possible: a Pull Request was closed and recreated from the same branch, so both share a head
             # commit. The most recently merged one describes this release.
-            printf "${ANSI_LIGHT_YELLOW}%s Pull Requests share head commit '%s': %s${ANSI_NOCOLOR}\n" "${MATCH_COUNT}" "${FATHER_SHA}" "$(printf "%s\n" "${MATCHES}" | jq --raw-output '[.[] | "#\(.number)"] | join(", ")')"
+            printf "${ANSI_LIGHT_YELLOW}%s Pull Requests share head commit '%s': %s${ANSI_NOCOLOR}\n" "${MATCH_COUNT}" "${SECOND_PARENT_SHA}" "$(printf "%s\n" "${MATCHES}" | jq --raw-output '[.[] | "#\(.number)"] | join(", ")')"
             printf "${ANSI_LIGHT_YELLOW}Using the most recently merged one.${ANSI_NOCOLOR}\n"
           fi
 
