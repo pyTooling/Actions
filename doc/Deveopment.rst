@@ -102,6 +102,34 @@ Which function to choose:
    Do not use ``success() || failure()`` as a substitute for ``!cancelled()``. It is ``false`` if a dependency was
    *skipped*, because a skipped dependency is neither a success nor a failure.
 
+A status check function tolerates a *skipped* dependency, which is exactly what it is for. A job downloading an
+artifact must additionally demand that the job **producing** that artifact succeeded, because a tolerated skip leaves
+the artifact missing:
+
+.. code-block:: yaml
+
+   if: >-
+     ${{ !failure() && !cancelled()
+      && needs.Documentation.result == 'success'
+      && contains(inputs.documentation_steps, 'pages')
+     }}
+
+Without the ``needs.<job>.result`` term the job starts and fails while downloading:
+
+.. code-block:: text
+
+   Unable to download artifact(s): Artifact not found for name: documentation-HTML
+
+.. important::
+
+   The distinction is between an *unrelated* dependency and a *producing* one. ``AppTesting``, skipped by
+   ``apptest: 'false'``, has nothing to do with the documentation and must not suppress it - that is the reason the
+   status check function is there. ``Documentation`` uploads what :ref:`JOBTMPL/PublishToGitHubPages` downloads, so
+   its skip has to suppress it.
+
+   Observed on a real pipeline: three packaging jobs were cancelled by GitHub, the cascade skipped the documentation
+   job, and the publishing job ran anyway on the strength of ``!failure() && !cancelled()`` alone.
+
 Conditions combining a status check function with further terms are written as a folded block scalar, one term per
 line, so a condition can be read - and reviewed - without horizontal scrolling:
 
