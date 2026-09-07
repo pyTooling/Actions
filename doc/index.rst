@@ -255,7 +255,7 @@ The accompanying documentation is licensed under :ref:`Creative Commons - Attrib
    Background
    RepositoryStructure
    Instantiation
-   Deveopment
+   Development
    Dependency
    Releases
 
