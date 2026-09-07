@@ -1,5 +1,5 @@
-Instantiantion
-##############
+Instantiation
+#############
 
 The job templates (GitHub Action *Reusable Workflows*) need to be stored in the same directory where normal pipelines
 (GitHub Action *Workflows*) are located: ``.github/workflows/<template>.yml``. These template files are distinguished
