@@ -76,8 +76,9 @@ runs:
         else:
           dependencies = [req.strip() for req in requirements.split(" ") if req.strip() != ""]
 
-        # This table is the single source of truth for the pip to pacman/pacboy translation. It used to be
-        # maintained twice - once per job template - and drifted twice.
+        # An entry is *transitive*: it names every MSYS2 package a requirement needs, including the ones its own
+        # dependencies pull in.
+        # 'pyedaa.reports' lists 'python-lxml:p' even though the compiled code belongs to lxml, not to pyEDAA.Reports.
         packages = {
           "aiohttp":             "python-aiohttp:p",
           "coverage":            "python-coverage:p",
@@ -94,15 +95,29 @@ runs:
           "sphinx":              "python-markupsafe:p",
           "tomli":               "python-tomli:p",        # outdated, now part of Python as tomllib
           "wheel":               "python-wheel:p",
-          "pyedaa.projectmodel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
+          # pyEDAA.CLITool, pyEDAA.Launcher, pyEDAA.ProjectModel, pySVModel, pySystemRDLModel and pyVHDLModel need
+          # no entry: nothing they depend on has compiled code. Only 'pyEDAA.ProjectModel[osvvm]' does - below.
+          "pyedaa.ipxact":       "python-lxml:p",
+          "pyedaa.osvvm":        "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-types-pyyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "pyedaa.outputfilter": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           "pyedaa.reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
-          "sphinx_reports":      "python-markupsafe:p python-pyaml:p python-types-pyyaml:p",
+          "pyedaa.toolsetup":    "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "pyedaa.ucis":         "python-lxml:p",
+          "pyedaa.workflow":     "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "pyversioning":        "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "sphinx_reports":      "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-types-pyyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
         }
         subPackages = {
-          "pytooling": {
-            "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-            "pypi":              "python-aiohttp:p",
+          "pyedaa.projectmodel": {
+            "osvvm":             "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p python-types-pyyaml:p",
           },
+          "pytooling": {
+            "pypi":              "python-aiohttp:p",
+            "sphinx":            "python-markupsafe:p",
+            "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          },
+          # pyTooling's 'packaging', 'terminal' and 'testing' extras add setuptools, colorama and pytest, which
+          # are pure Python and install from PyPI on MSYS2 without help.
         }
 
         regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:\s*,\s*\w+)*)\])?(?:\s*(?P<Comperator>[<>~=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
