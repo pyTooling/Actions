@@ -290,6 +290,7 @@ jobs:
             "docstr_coverage":     "python-pyaml:p python-types-pyyaml:p",
             "igraph":              "igraph:p",
             "jinja2":              "python-markupsafe:p",
+            "jsonschema":          "python-jsonschema:p",
             "lxml":                "python-lxml:p",
             "numpy":               "python-numpy:p",
             "markupsafe":          "python-markupsafe:p",
