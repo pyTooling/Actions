@@ -239,6 +239,7 @@ jobs:
             "docstr_coverage":     "python-pyaml:p python-types-pyyaml:p",
             "igraph":              "igraph:p",
             "jinja2":              "python-markupsafe:p",
+            "jsonschema":          "python-jsonschema:p",
             "lxml":                "python-lxml:p",
             "numpy":               "python-numpy:p",
             "markupsafe":          "python-markupsafe:p",
@@ -248,8 +249,8 @@ jobs:
             "sphinx":              "python-markupsafe:p",
             "tomli":               "python-tomli:p",        # outdated, now part of Python as tomllib
             "wheel":               "python-wheel:p",
-            "pyEDAA.ProjectModel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
-            "pyEDAA.Reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
+            "pyedaa.projectmodel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
+            "pyedaa.reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
             "sphinx_reports":      "python-markupsafe:p python-pyaml:p python-types-pyyaml:p",
           }
           subPackages = {
