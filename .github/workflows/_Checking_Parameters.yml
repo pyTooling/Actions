@@ -248,12 +248,23 @@ jobs:
         with:
           requirements: ${{ steps.requirements.outputs.requirements }}
 
+      # 'StaticTypeCheck.yml' changed its default from '-r tests/typing/requirements.txt' to '-r ./requirements.txt'.
+      # This resolves that new default against this repository's own layout, so the claim that both name the same
+      # file is checked rather than asserted - including the existence check, on a file that really is there.
+      - name: Computing the StaticTypeCheck default against this repository's layout
+        id: typing
+        uses: ./.github/actions/ComputeRequirements
+        with:
+          requirements:   '-r ./requirements.txt'
+          base_directory: './tests/typing'
+
       - name: Checking computed requirements and pacboy packages
         shell: python
         env:
           REQUIREMENTS:       ${{ steps.requirements.outputs.requirements }}
           MINGW_REQUIREMENTS: ${{ steps.requirements.outputs.mingw_requirements }}
           PACBOY_PACKAGES:    ${{ steps.pacboy.outputs.pacboy_packages }}
+          TYPING_REQUIREMENTS: ${{ steps.typing.outputs.requirements }}
         run: |
           from os  import getenv
           from sys import exit
@@ -294,6 +305,9 @@ jobs:
               "python-wheel:p",               # always
             }
           )
+
+          # The old literal default of 'StaticTypeCheck.yml', spelled out.
+          check("StaticTypeCheck requirements", getenv("TYPING_REQUIREMENTS"), "-r tests/typing/requirements.txt")
 
           if errors == 0:
             print("✅ All checks PASSED.")
