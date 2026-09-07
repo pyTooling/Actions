@@ -64,6 +64,9 @@ jobs:
         with:
           msystem: ${{ matrix.runtime }}
           update: true
+          # This job template installs the package under test, so it has no requirements file to translate. The
+          # list below is therefore hand-written; keep it in sync with the rewrite table in
+          # '.github/actions/ComputePacboyPackages/action.yml'.
           pacboy: >-
             python-pip:p python-wheel:p
             python-lxml:p
