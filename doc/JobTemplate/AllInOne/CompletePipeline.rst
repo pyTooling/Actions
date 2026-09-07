@@ -471,6 +471,8 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/dorny`                        | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/pypi_dry_run`                 | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                      | no       | string | ``'true'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 
@@ -930,6 +932,23 @@ auto_tag
                   :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag`. |br|
                   ``'true'`` - tag the release commit. |br|
                   ``'false'`` - never tag automatically.
+
+
+.. _JOBTMPL/CompletePipeline/Input/pypi_dry_run:
+
+pypi_dry_run
+============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Validate the built packages with ``twine check`` instead of uploading them to :term:`PyPI`.
+                  Forwarded to :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run`. |br|
+                  Intended for a pipeline that builds a package which is never published - a fixture used to
+                  exercise the job templates, or a fork that must not push to the upstream project's PyPI name. |br|
+                  ``'true'`` - check the packages and publish nothing. |br|
+                  ``'false'`` - publish the packages.
 
 
 .. _JOBTMPL/CompletePipeline/Input/cleanup:

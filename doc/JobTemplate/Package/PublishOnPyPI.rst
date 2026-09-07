@@ -22,6 +22,9 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
       (:ref:`JOBTMPL/PublishOnPyPI/Input/requirements`), which must provide :term:`twine`.
    3. Publish the wheel package(s) (:file:`*.whl`).
    4. Publish the source package(s) (:file:`*.tar.gz`).
+
+      Steps 3 and 4 are replaced by a ``twine check`` of both package kinds if
+      :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run` is enabled.
    5. Delete the artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`).
 
 .. topic:: Preconditions
@@ -125,6 +128,8 @@ Parameter Summary
 +---------------------------------------------------------+----------+--------+-------------------+
 | :ref:`JOBTMPL/PublishOnPyPI/Input/artifact`             | yes      | string | — — — —           |
 +---------------------------------------------------------+----------+--------+-------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run`              | no       | string | ``'false'``       |
++---------------------------------------------------------+----------+--------+-------------------+
 | :ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`              | no       | string | ``'true'``        |
 +---------------------------------------------------------+----------+--------+-------------------+
 
@@ -180,6 +185,22 @@ artifact
 :Default Value:   — — — —
 :Possible Values: Any valid artifact name.
 :Description:     Name of the artifact containing the packaged Python package(s).
+
+
+.. _JOBTMPL/PublishOnPyPI/Input/dry_run:
+
+dry_run
+=======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Validate the packages with ``twine check`` instead of uploading them to :term:`PyPI`. |br|
+                  Everything up to the upload still runs, so the artifact download, the Python setup and the package
+                  metadata are exercised - only the two ``twine upload`` calls are skipped. |br|
+                  ``'true'`` - check the packages and publish nothing. |br|
+                  ``'false'`` - publish the packages.
 
 
 .. _JOBTMPL/PublishOnPyPI/Input/cleanup:

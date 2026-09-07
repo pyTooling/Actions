@@ -44,6 +44,11 @@ on:
         description: 'Name of the package artifact.'
         required: true
         type: string
+      dry_run:
+        description: 'Validate the packages with twine, but do not upload them to PyPI.'
+        required: false
+        default: 'false'
+        type: string
       cleanup:
         description: 'Cleanup artifacts afterwards.'
         required: false
@@ -74,13 +79,19 @@ jobs:
       - name: ⚙ Install dependencies for packaging and release
         run: python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
+      - name: 🔎 Check Python packages instead of publishing them
+        if: inputs.dry_run == 'true'
+        run: twine check dist/*.whl dist/*.tar.gz
+
       - name: ⤴ Publish Python wheel package to PyPI
+        if: inputs.dry_run != 'true'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: twine upload dist/*.whl
 
       - name: ⤴ Publish Python source package to PyPI
+        if: inputs.dry_run != 'true'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
