@@ -202,6 +202,7 @@ jobs:
           is_release_tag="false"
           has_submodules="false"
           ref_kind="unknown"
+          tag_kind="unknown"
           default_branch=""
           branch=""
           tag=""
@@ -293,18 +294,6 @@ jobs:
             ref_kind="tag"
             tag="${ref:10}"
 
-            printf "Tag checks:\n"
-            printf "  Check if tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
-            git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
-            if [[ $? -eq 0 ]]; then
-              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
-            else
-              printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-              printf "${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
-              printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
-              exit 1
-            fi
-
             NIGHTLY_TAG_PATTERN='^${{ inputs.nightly_tag_pattern }}$'
             RELEASE_TAG_PATTERN='^${{ inputs.release_tag_pattern }}$'
 
@@ -314,10 +303,12 @@ jobs:
             if [[ "${tag}" =~ ${NIGHTLY_TAG_PATTERN} ]]; then
               printf "${ANSI_LIGHT_GREEN}[NIGHTLY]${ANSI_NOCOLOR}\n"
               is_nightly_tag="true"
+              tag_kind="nightly"
             elif [[ "${tag}" =~ ${RELEASE_TAG_PATTERN} ]]; then
               printf "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
               version="${tag}"
               is_release_tag="true"
+              tag_kind="release"
             else
               printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
               printf "${ANSI_LIGHT_RED}Tag name '%s' doesn't conform to regexp${ANSI_NOCOLOR}\n" "${tag}"
@@ -327,28 +318,15 @@ jobs:
               exit 1
             fi
 
-            if [[ "${is_nightly_tag}" == "true" ]]; then
-              printf "  Check if nightly tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
-              git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
-              if [[ $? -eq 0 ]]; then
-                printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
-              else
-                printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-                printf "    ${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
-                printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
-                exit 1
-              fi
-            elif [[ "${is_release_tag}" == "true" ]]; then
-              printf "  Check if release tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
-              git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
-              if [[ $? -eq 0 ]]; then
-                printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
-              else
-                printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-                printf "    ${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
-                printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
-                exit 1
-              fi
+            printf "  Check if %s tag is on main branch '%s' ... " "${tag_kind}" "${{ inputs.main_branch }}"
+            git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
+            if [[ $? -eq 0 ]]; then
+              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            else
+              printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+              printf "    ${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
+              printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
+              exit 1
             fi
           elif [[ "${ref:0:10}" == "refs/pull/" ]]; then
             printf "${ANSI_LIGHT_YELLOW}[PULL REQUEST]\n"

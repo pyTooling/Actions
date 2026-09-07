@@ -209,7 +209,9 @@ main_branch
 :Required:        no
 :Default Value:   ``'main'``
 :Possible Values: Any valid branch name.
-:Description:     Name of the main branch.
+:Description:     Name of the main branch. |br|
+                  A tag is checked against this branch: a nightly or release tag that is not reachable from
+                  ``origin/<main_branch>`` aborts the job with a ``TagCheck`` annotation.
 
 
 .. _JOBTMPL/PrepareJob/Input/development_branch:
