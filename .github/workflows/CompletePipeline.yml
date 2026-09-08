@@ -469,7 +469,9 @@ jobs:
        && needs.PublishCoverageResults.result == 'success'
        && needs.StaticTypeCheck.result == 'success'
        && contains(inputs.documentation_steps, 'pages')
-       && (github.ref_name == github.event.repository.default_branch || github.ref_name == 'dev')
+       && (github.ref_type == 'tag'
+        || github.ref_name == github.event.repository.default_branch
+        || github.ref_name == 'dev')
       }}
     with:
       doc:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}

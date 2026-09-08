@@ -887,6 +887,13 @@ documentation_steps
 
                   A step that is not listed is skipped and its artifact is not produced.
 
+                  .. note::
+
+                     ``pages`` additionally depends on the ref being one the ``github-pages`` environment admits:
+                     a **tag**, the repository's default branch, or ``dev``. On any other branch the deployment is
+                     rejected by the environment's protection rules before a runner is assigned, so the job is
+                     skipped instead of failing after one second with no log.
+
 .. _JOBTMPL/CompletePipeline/Input/miktex_image:
 
 miktex_image
