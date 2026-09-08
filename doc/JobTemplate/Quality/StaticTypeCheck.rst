@@ -18,7 +18,8 @@ to a HTML report and uploaded as an artifact.
    1. Checkout repository.
    2. Setup Python (:ref:`JOBTMPL/StaticTypeCheck/Input/python_version`) and install the Python dependencies
       (:ref:`JOBTMPL/StaticTypeCheck/Input/requirements`), which must provide :term:`mypy`.
-   3. Run the static type check (:ref:`JOBTMPL/StaticTypeCheck/Input/mypy_options`).
+   3. Run the static type check (:ref:`JOBTMPL/StaticTypeCheck/Input/mypy_options`) in
+      :ref:`JOBTMPL/StaticTypeCheck/Input/root_directory`.
    4. Upload the HTML report as an artifact (:ref:`JOBTMPL/StaticTypeCheck/Input/html_artifact`,
       :ref:`JOBTMPL/StaticTypeCheck/Input/html_report`).
    5. Upload the JUnit XML report as an artifact (:ref:`JOBTMPL/StaticTypeCheck/Input/junit_artifact`,
@@ -133,9 +134,15 @@ Parameter Summary
 +-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/StaticTypeCheck/Input/python_version`       | no       | string        | ``'3.14'``                                                                                                                             |
 +-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`         | no       | string        | ``'-r tests/typing/requirements.txt'``                                                                                                 |
+| :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`         | no       | string        | ``'-r ./requirements.txt'``                                                                                                            |
 +-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/StaticTypeCheck/Input/mypy_options`         | no       | string        | ``''``                                                                                                                                 |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/root_directory`       | no       | string        | ``'.'``                                                                                                                                |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/tests_directory`      | no       | string        | ``'tests'``                                                                                                                            |
++-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/StaticTypeCheck/Input/typing_directory`     | no       | string        | ``'typing'``                                                                                                                           |
 +-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/StaticTypeCheck/Input/cobertura_report`     | no       | string (JSON) | :jsoncode:`{"fullpath": "report/typing/cobertura.xml", "directory": "report/typing", "filename": "cobertura.xml"}`                     |
 +-----------------------------------------------------------+----------+---------------+----------------------------------------------------------------------------------------------------------------------------------------+
@@ -181,11 +188,25 @@ requirements
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'-r tests/typing/requirements.txt'``
+:Default Value:   ``'-r ./requirements.txt'``
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'mypy lxml'``.
 :Description:     Python dependencies to be installed through *pip*.
+
+                  A requirements file is looked up in one of two ways, depending on the path:
+
+                  * A path starting with ``./`` is resolved relative to the static typing directory, which is the
+                    concatenation of :ref:`JOBTMPL/StaticTypeCheck/Input/root_directory`,
+                    :ref:`JOBTMPL/StaticTypeCheck/Input/tests_directory` and
+                    :ref:`JOBTMPL/StaticTypeCheck/Input/typing_directory`. |br|
+                    With the defaults, ``'-r ./requirements.txt'`` refers to :file:`./tests/typing/requirements.txt`.
+                  * Any other path is used as given, thus relative to the repository root.
+
+                  .. attention::
+
+                     The resolved file's existence is checked before the installation. If it is missing, the job is
+                     aborted with a ``FileNotFoundError`` annotation naming the resolved path.
 
 
 .. _JOBTMPL/StaticTypeCheck/Input/mypy_options:
@@ -198,6 +219,56 @@ mypy_options
 :Default Value:   ``''``
 :Possible Values: Any valid command line options for :term:`mypy`.
 :Description:     Additional options handed over to mypy as ``mypy ${mypy_options}``.
+
+
+.. _JOBTMPL/StaticTypeCheck/Input/root_directory:
+
+root_directory
+==============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'.'``
+:Possible Values: Any valid directory path relative to the repository root.
+:Description:     Working directory for running :term:`mypy`. |br|
+                  It is also the first part of the directory a ``./``-prefixed
+                  :ref:`JOBTMPL/StaticTypeCheck/Input/requirements` is resolved against.
+
+                  .. attention::
+
+                     The report paths (:ref:`JOBTMPL/StaticTypeCheck/Input/cobertura_report`,
+                     :ref:`JOBTMPL/StaticTypeCheck/Input/junit_report`,
+                     :ref:`JOBTMPL/StaticTypeCheck/Input/html_report`) are written by mypy relative to this
+                     directory, but uploaded relative to the repository root. With a non-default value, both have
+                     to account for it.
+
+
+.. _JOBTMPL/StaticTypeCheck/Input/tests_directory:
+
+tests_directory
+===============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'tests'``
+:Possible Values: Any valid directory path relative to
+                  :ref:`JOBTMPL/StaticTypeCheck/Input/root_directory`.
+:Description:     Path to the directory containing tests. |br|
+                  Used only to resolve a ``./``-prefixed :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`.
+
+
+.. _JOBTMPL/StaticTypeCheck/Input/typing_directory:
+
+typing_directory
+================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'typing'``
+:Possible Values: Any valid directory path relative to
+                  :ref:`JOBTMPL/StaticTypeCheck/Input/tests_directory`.
+:Description:     Path to the directory containing the static type checking tests. |br|
+                  Used only to resolve a ``./``-prefixed :ref:`JOBTMPL/StaticTypeCheck/Input/requirements`.
 
 
 .. _JOBTMPL/StaticTypeCheck/Input/cobertura_report:
