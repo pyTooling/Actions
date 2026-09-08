@@ -51,12 +51,12 @@ Instantiation
 
    jobs:
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
        with:
          package_name: myPackage
 
      Documentation:
-       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r7
+       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r8
        needs:
          - UnitTestingParams
        with:
@@ -65,7 +65,7 @@ Instantiation
          latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
      PDFDocumentation:
-       uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@r7
+       uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@r8
        needs:
          - UnitTestingParams
          - Documentation

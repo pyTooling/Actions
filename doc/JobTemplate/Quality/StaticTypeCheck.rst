@@ -68,7 +68,7 @@ directory ``report/typing``.
 
          jobs:
            StaticTypeCheck:
-             uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
+             uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r8
              with:
                cobertura_artifact: 'TypeChecking-Cobertura'
                junit_artifact:     'TypeChecking-JUnit'
@@ -100,17 +100,17 @@ precompute the artifact's name.
 
    jobs:
      ConfigParams:
-       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
        with:
          package_name: myPackage
 
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
        with:
          package_name: myPackage
 
      StaticTypeCheck:
-       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
+       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r8
        needs:
          - ConfigParams
          - Params
@@ -300,10 +300,10 @@ cobertura_report
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r8
                        needs:
                          - ConfigParams
                        with:
@@ -340,10 +340,10 @@ junit_report
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r8
                        needs:
                          - ConfigParams
                        with:
@@ -373,10 +373,10 @@ html_report
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r8
                        needs:
                          - ConfigParams
                        with:

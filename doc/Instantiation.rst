@@ -42,7 +42,7 @@ to handover input parameters to the template.
 
    jobs:
      <InstanceName>:
-       uses: <GitHubOrganization>/<Repository>/.github/workflows/<Template>.yml@r7
+       uses: <GitHubOrganization>/<Repository>/.github/workflows/<Template>.yml@r8
        with:
          <Param1>: <Value>
 
@@ -66,19 +66,19 @@ Documentation Only (Sphinx)
 
    jobs:
      Documentation:
-       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r7
+       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r8
        with:
          html_artifact: Documentation
 
      PublishToGitHubPages:
-       uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r7
+       uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r8
        needs:
          - Documentation
        with:
          doc: Documentation
 
      ArtifactCleanUp:
-       uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r7
+       uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r8
        needs:
          - Documentation
          - PublishToGitHubPages

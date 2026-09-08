@@ -96,12 +96,12 @@ Instantiation
 
    jobs:
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
        with:
          package_name: myPackage
 
      Documentation:
-       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r7
+       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r8
        needs:
          - UnitTestingParams
        with:
@@ -231,10 +231,10 @@ coverage_report_json
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      Documentation:
-                       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r8
                        needs:
                          - ConfigParams
                        with:
@@ -277,10 +277,10 @@ unittest_xml
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      Documentation:
-                       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r8
                        needs:
                          - ConfigParams
                        with:

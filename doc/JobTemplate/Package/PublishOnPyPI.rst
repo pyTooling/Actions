@@ -66,7 +66,7 @@ by a Git tag. A secret is forwarded from GitHub secrets to a job secret.
      # ...
 
      PublishOnPyPI:
-       uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r7
+       uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r8
        if: startsWith(github.ref, 'refs/tags')
        with:
          artifact: Package
@@ -90,7 +90,7 @@ by that job. Finally, the list of requirements is overwritten to load a list of 
        # ...
 
      PublishOnPyPI:
-       uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r7
+       uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r8
        if: startsWith(github.ref, 'refs/tags')
        needs:
          - Params

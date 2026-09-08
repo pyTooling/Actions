@@ -80,26 +80,26 @@ Instantiation
 *************
 
 The following instantiation example creates an ``AppTesting`` job derived from job template ``ApplicationTesting``
-version ``@r7``. The job matrix comes from :ref:`JOBTMPL/Parameters` and the wheel from :ref:`JOBTMPL/Package`, so both
+version ``@r8``. The job matrix comes from :ref:`JOBTMPL/Parameters` and the wheel from :ref:`JOBTMPL/Package`, so both
 jobs must be listed as dependencies.
 
 .. code-block:: yaml
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
        with:
          package_name: myPackage
 
      Package:
-       uses: pyTooling/Actions/.github/workflows/Package.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Package.yml@r8
        needs:
          - Params
        with:
          artifact: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
 
      AppTesting:
-       uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@r7
+       uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@r8
        needs:
          - Params
          - Package

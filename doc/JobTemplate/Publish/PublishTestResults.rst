@@ -92,7 +92,7 @@ Simple Example
 
    jobs:
      PublishTestResults:
-       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r7
+       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r8
 
 Complex Example
 ===============
@@ -107,7 +107,7 @@ Complex Example
        # ...
 
      PublishTestResults:
-       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r7
+       uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r8
        needs:
          - CodeCoverage
          - UnitTesting
