@@ -63,7 +63,7 @@ Simple Example
 
    jobs:
      Package:
-       uses: pyTooling/Actions/.github/workflows/Package.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Package.yml@r8
        with:
          artifact: Package
 
@@ -75,7 +75,7 @@ Complex Example
 
    jobs:
      Package:
-       uses: pyTooling/Actions/.github/workflows/Package.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Package.yml@r8
        needs:
          - Params
        with:

@@ -85,17 +85,17 @@ The following
 
    jobs:
      ConfigParams:
-       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
        with:
          package_name: myPackage
 
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
        with:
          package_name: myPackage
 
      UnitTesting:
-       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
+       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r8
        needs:
          - ConfigParams
          - UnitTestingParams
@@ -104,7 +104,7 @@ The following
          coverage_sqlite_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_sqlite }}
 
      PublishCoverageResults:
-       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r7
+       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r8
        needs:
          - ConfigParams
          - UnitTestingParams
@@ -263,10 +263,10 @@ coverage_report_xml
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      PublishCoverageResults:
-                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r8
                        needs:
                          - ConfigParams
                        with:
@@ -303,10 +303,10 @@ coverage_report_json
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      PublishCoverageResults:
-                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r8
                        needs:
                          - ConfigParams
                        with:
@@ -336,10 +336,10 @@ coverage_report_html
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      PublishCoverageResults:
-                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r8
                        needs:
                          - ConfigParams
                        with:

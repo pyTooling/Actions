@@ -84,7 +84,7 @@ Instantiation
 *************
 
 The following instantiation example creates a ``UnitTesting`` job derived from job template ``UnitTesting`` version
-`@r7`. For providing the job matrix as a JSON string, the :ref:`JOBTMPL/Parameters` job template is used. Additionally,
+`@r8`. For providing the job matrix as a JSON string, the :ref:`JOBTMPL/Parameters` job template is used. Additionally,
 the job needs configuration settings, which are stored in :file:`pyproject.toml`. Instead of duplicating these settings,
 the :ref:`JOBTMPL/ExtractConfiguration` job template is used to extract these settings.
 
@@ -92,15 +92,15 @@ the :ref:`JOBTMPL/ExtractConfiguration` job template is used to extract these se
 
    jobs:
      ConfigParams:
-       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
      UnitTestingParams:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
        with:
          package_name: myPackage
 
      UnitTesting:
-       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
+       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r8
        needs:
          - ConfigParams
          - UnitTestingParams
@@ -347,8 +347,8 @@ requirements
 
                   .. note::
 
-                     :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` is not resolved this way. Its value is passed
-                     to ``pip install`` unchanged.
+                     :ref:`JOBTMPL/UnitTesting/Input/mingw_requirements` is resolved and checked the same way, so
+                     ``./`` addresses the same directory in both parameters.
 
 
 .. _JOBTMPL/UnitTesting/Input/mingw_requirements:
@@ -362,7 +362,10 @@ mingw_requirements
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'coverage pytest'``.
-:Description:     Override Python dependencies to be installed through *pip* in MSYS2 (MinGW64/UCRT64) only.
+:Description:     Override Python dependencies to be installed through *pip* in MSYS2 (MinGW64/UCRT64) only. |br|
+                  The value is resolved and its existence checked exactly like
+                  :ref:`JOBTMPL/UnitTesting/Input/requirements`. |br|
+                  If left empty, :ref:`JOBTMPL/UnitTesting/Input/requirements` is installed on MSYS2 as well.
 
 
 .. _JOBTMPL/UnitTesting/Input/macos_before_script:
@@ -572,10 +575,10 @@ unittest_report_xml
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r8
                        needs:
                          - ConfigParams
                        with:
@@ -623,10 +626,10 @@ coverage_report_xml
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r8
                        needs:
                          - ConfigParams
                        with:
@@ -663,10 +666,10 @@ coverage_report_json
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r8
                        needs:
                          - ConfigParams
                        with:
@@ -696,10 +699,10 @@ coverage_report_html
                   .. code-block:: yaml
 
                      ConfigParams:
-                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
 
                      UnitTesting:
-                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r7
+                       uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r8
                        needs:
                          - ConfigParams
                        with:

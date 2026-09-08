@@ -81,18 +81,18 @@ Instantiation
 *************
 
 The following instantiation example creates a ``CodeQuality`` job derived from job template ``CheckCodeQuality``
-version ``@r7``. The package directory comes from :ref:`JOBTMPL/Parameters`, so that job is a dependency.
+version ``@r8``. The package directory comes from :ref:`JOBTMPL/Parameters`, so that job is a dependency.
 
 .. code-block:: yaml
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
        with:
          package_name: myPackage
 
      CodeQuality:
-       uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@r7
+       uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@r8
        needs:
          - Params
        with:

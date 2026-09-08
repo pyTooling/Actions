@@ -443,6 +443,7 @@ jobs:
       - Documentation
     if: >-
       ${{ !failure() && !cancelled()
+       && needs.Documentation.result == 'success'
        && contains(inputs.documentation_steps, 'latex')
        && contains(inputs.documentation_steps, 'pdf')
       }}
@@ -464,7 +465,11 @@ jobs:
       - StaticTypeCheck
     if: >-
       ${{ !failure() && !cancelled()
+       && needs.Documentation.result == 'success'
+       && needs.PublishCoverageResults.result == 'success'
+       && needs.StaticTypeCheck.result == 'success'
        && contains(inputs.documentation_steps, 'pages')
+       && (github.ref_name == github.event.repository.default_branch || github.ref_name == 'dev')
       }}
     with:
       doc:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
@@ -525,6 +530,7 @@ jobs:
       - ReleasePage
     if: >-
       ${{ !failure() && !cancelled()
+       && needs.Package.result == 'success'
        && needs.Prepare.outputs.is_release_tag == 'true'
       }}
     with:

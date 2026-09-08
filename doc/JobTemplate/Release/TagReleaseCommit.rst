@@ -74,21 +74,21 @@ Instantiation
 *************
 
 The following instantiation example depicts three jobs within a bigger pipeline. The ``prepare`` job derived from job
-template ``PrepareJob`` version ``@r7`` figures out if a pipeline runs for a release merge-commit, for a tag or any
+template ``PrepareJob`` version ``@r8`` figures out if a pipeline runs for a release merge-commit, for a tag or any
 other reason. Its outputs are used to either run a ``TriggerTaggedRelease`` job derived from job template
-``TagReleaseCommit`` version ``@r7``, or alternatively run the ``ReleasePage`` job derived from job template
-``PublishReleaseNotes`` version ``@r7``.
+``TagReleaseCommit`` version ``@r8``, or alternatively run the ``ReleasePage`` job derived from job template
+``PublishReleaseNotes`` version ``@r8``.
 
 .. code-block:: yaml
 
    jobs:
      Prepare:
-       uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r7
+       uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r8
 
      # Other pipeline jobs
 
      TriggerTaggedRelease:
-       uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@r7
+       uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@r8
        needs:
          - Prepare
        if: needs.Prepare.outputs.is_release_commit == 'true' && github.event_name != 'schedule'
@@ -101,7 +101,7 @@ other reason. Its outputs are used to either run a ``TriggerTaggedRelease`` job 
        secrets: inherit
 
      ReleasePage:
-       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r7
+       uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r8
        needs:
          - Prepare
        if: needs.Prepare.outputs.is_release_tag == 'true'
