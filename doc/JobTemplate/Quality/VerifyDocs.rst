@@ -49,13 +49,13 @@ Instantiation
 *************
 
 The following instantiation example creates a ``VerifyDocs`` job derived from job template ``VerifyDocs`` version
-``@r7``.
+``@r8``.
 
 .. code-block:: yaml
 
    jobs:
      VerifyDocs:
-       uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@r7
+       uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@r8
        with:
          python_version: '3.14'
 

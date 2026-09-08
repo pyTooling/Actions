@@ -1,0 +1,153 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2020-2026 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Compute pacman/pacboy packages
+branding:
+  icon: package
+  color: green
+description: Translate pip requirements to the MSYS2 packages (pacboy syntax) that satisfy them.
+author: Patrick Lehmann (@Paebbels)
+
+inputs:
+  requirements:
+    description: "Python dependencies to scan. Either '-r <path>' or a space separated list of dependencies."
+    required: true
+    type: string
+
+outputs:
+  pacboy_packages:
+    description: 'Space separated list of MSYS2 packages in pacboy syntax.'
+    value: ${{ steps.compute.outputs.pacboy_packages }}
+
+runs:
+  using: composite
+  steps:
+    - name: Compute pacman/pacboy packages
+      id: compute
+      shell: python
+      run: |
+        from os      import getenv
+        from pathlib import Path
+        from re      import compile
+        from sys     import version
+
+        print(f"Python: {version}")
+
+        def loadRequirementsFile(requirementsFile: Path):
+          requirements = []
+          with requirementsFile.open("r") as file:
+            for line in file.readlines():
+              line = line.strip()
+              if line.startswith("#") or line.startswith("https") or line == "":
+                continue
+              elif line.startswith("-r"):
+                # Remove the first word/argument (-r)
+                requirements += loadRequirementsFile(requirementsFile.parent / line[2:].lstrip())
+              else:
+                requirements.append(line)
+
+          return requirements
+
+        requirements = """${{ inputs.requirements }}""".strip()
+        if requirements.startswith("-r"):
+          try:
+            dependencies = loadRequirementsFile(Path(requirements[2:].lstrip()))
+          except FileNotFoundError as ex:
+            print(f"::error title=FileNotFoundError::{ex}")
+            exit(1)
+        else:
+          dependencies = [req.strip() for req in requirements.split(" ") if req.strip() != ""]
+
+        # An entry is *transitive*: it names every MSYS2 package a requirement needs, including the ones its own
+        # dependencies pull in.
+        # 'pyedaa.reports' lists 'python-lxml:p' even though the compiled code belongs to lxml, not to pyEDAA.Reports.
+        packages = {
+          "aiohttp":             "python-aiohttp:p",
+          "coverage":            "python-coverage:p",
+          "docstr_coverage":     "python-pyaml:p python-types-pyyaml:p",
+          "igraph":              "igraph:p",
+          "jinja2":              "python-markupsafe:p",
+          "jsonschema":          "python-jsonschema:p",
+          "lxml":                "python-lxml:p",
+          "numpy":               "python-numpy:p",
+          "markupsafe":          "python-markupsafe:p",
+          "pip":                 "python-pip:p",
+          "pyyaml":              "python-pyaml:p python-types-pyyaml:p",
+          "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "sphinx":              "python-markupsafe:p",
+          "tomli":               "python-tomli:p",        # outdated, now part of Python as tomllib
+          "wheel":               "python-wheel:p",
+          # pyEDAA.CLITool, pyEDAA.Launcher, pyEDAA.ProjectModel, pySVModel, pySystemRDLModel and pyVHDLModel need
+          # no entry: nothing they depend on has compiled code. Only 'pyEDAA.ProjectModel[osvvm]' does - below.
+          "pyedaa.ipxact":       "python-lxml:p",
+          "pyedaa.osvvm":        "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-types-pyyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "pyedaa.outputfilter": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "pyedaa.reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
+          "pyedaa.toolsetup":    "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "pyedaa.ucis":         "python-lxml:p",
+          "pyedaa.workflow":     "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "pyversioning":        "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "sphinx_reports":      "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-types-pyyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+        }
+        subPackages = {
+          "pyedaa.projectmodel": {
+            "osvvm":             "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p python-types-pyyaml:p",
+          },
+          "pytooling": {
+            "pypi":              "python-aiohttp:p",
+            "sphinx":            "python-markupsafe:p",
+            "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          },
+          # pyTooling's 'packaging', 'terminal' and 'testing' extras add setuptools, colorama and pytest, which
+          # are pure Python and install from PyPI on MSYS2 without help.
+        }
+
+        regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:\s*,\s*\w+)*)\])?(?:\s*(?P<Comperator>[<>~=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
+
+        pacboyPackages = set(("python-pip:p", "python-wheel:p", "python-tomli:p"))
+        print(f"Processing dependencies ({len(dependencies)}):")
+        for dependency in dependencies:
+          print(f"  {dependency}")
+
+          match = regExp.match(dependency.lower())
+          if not match:
+            print(f"    Wrong format: {dependency}")
+            print(f"::error title=Identifying Pacboy Packages::Unrecognized dependency format '{dependency}'")
+            continue
+
+          package = match["PackageName"]
+          if package in packages:
+            rewrite = packages[package]
+            print(f"    Found rewrite rule for '{package}': {rewrite}")
+            pacboyPackages.add(rewrite)
+
+          if match["SubPackages"] and package in subPackages:
+            for subPackage in match["SubPackages"].split(","):
+              if subPackage in subPackages[package]:
+                rewrite = subPackages[package][subPackage]
+                print(f"    Found rewrite rule for '{package}[..., {subPackage}, ...]': {rewrite}")
+                pacboyPackages.add(rewrite)
+
+        # Write jobs to special file
+        github_output = Path(getenv("GITHUB_OUTPUT"))
+        print(f"GITHUB_OUTPUT: {github_output}")
+        with github_output.open("a+") as f:
+          f.write(f"pacboy_packages={' '.join(sorted(pacboyPackages))}\n")

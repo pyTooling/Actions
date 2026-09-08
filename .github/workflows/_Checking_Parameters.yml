@@ -11,24 +11,24 @@ concurrency:
 
 jobs:
   Params_Default:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
     with:
       name: Example
 
   Params_PythonVersions:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
     with:
       name: Example
       python_version_list: "3.12 3.13 pypy-3.10 pypy-3.11"       # py-2, py-1, pypy-1, pypy-0
 
   Params_Systems:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
     with:
       name: Example
       system_list: "windows mingw32 mingw64"
 
   Params_Include:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
     with:
       name: Example
       python_version_list: "3.12"                                # py-2
@@ -36,7 +36,7 @@ jobs:
       include_list: "ubuntu:3.13 ubuntu:3.14 ubuntu-arm:3.12"
 
   Params_Exclude:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
     with:
       name: Example
       python_version_list: "3.13"                                # py-1
@@ -44,7 +44,7 @@ jobs:
       exclude_list: "windows:3.13 windows:3.14"
 
   Params_Disable:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
     with:
       name: Example
       python_version_list: "3.13"                                # py-1
@@ -52,7 +52,7 @@ jobs:
       disable_list: "windows:3.13 windows:3.14"
 
   Params_All:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
     with:
       name: Example
       python_version_list: "3.12 3.13"                           # py-2, py-1
@@ -219,3 +219,95 @@ jobs:
           expected-include-jobs:    '["windows:3.10", "windows:3.11", "windows:3.13"]'
           generated-default-version: ${{ needs.Params_All.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_All.outputs.python_jobs }}
+
+  Requirements_Check:
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repository to access local Action
+        uses: actions/checkout@v7
+
+      - name: Create requirements files to resolve
+        shell: bash
+        run: |
+          mkdir -p checking-requirements
+          printf -- 'pytest ~= 8.0\nruamel.yaml ~= 0.19.1\n-r ./more.txt\n'                       > checking-requirements/requirements.txt
+          printf -- 'jsonschema ~= 4.26\npyEDAA.Reports ~= 0.18\npyTooling[yaml,pypi,sphinx] ~= 9.0\nsphinx_reports ~= 0.11\n' > checking-requirements/more.txt
+          printf -- 'lxml ~= 6.0\n'                                                              > checking-requirements/mingw.txt
+
+      - name: Computing requirements paths
+        id: requirements
+        uses: ./.github/actions/ComputeRequirements
+        with:
+          requirements:       '-r ./requirements.txt'
+          mingw_requirements: '-r ./mingw.txt'
+          base_directory:     './checking-requirements'
+
+      - name: Computing pacboy packages
+        id: pacboy
+        uses: ./.github/actions/ComputePacboyPackages
+        with:
+          requirements: ${{ steps.requirements.outputs.requirements }}
+
+      - name: Computing the StaticTypeCheck default against this repository's layout
+        id: typing
+        uses: ./.github/actions/ComputeRequirements
+        with:
+          requirements:   '-r ./requirements.txt'
+          base_directory: './tests/typing'
+
+      - name: Checking computed requirements and pacboy packages
+        shell: python
+        env:
+          REQUIREMENTS:        ${{ steps.requirements.outputs.requirements }}
+          MINGW_REQUIREMENTS:  ${{ steps.requirements.outputs.mingw_requirements }}
+          PACBOY_PACKAGES:     ${{ steps.pacboy.outputs.pacboy_packages }}
+          TYPING_REQUIREMENTS: ${{ steps.typing.outputs.requirements }}
+        run: |
+          from os  import getenv
+          from sys import exit
+
+          errors = 0
+
+          def check(name: str, actual, expected) -> None:
+            global errors
+            if actual != expected:
+              print(f"❌ {name} does not match: {actual} != {expected}.")
+              errors += 1
+            else:
+              print(f"☑ {name} as expected: {actual}.")
+
+          # A './'-prefixed path is resolved against the base directory ...
+          check("requirements", getenv("REQUIREMENTS"), "-r checking-requirements/requirements.txt")
+          # ... and 'mingw_requirements' is resolved the same way, instead of being passed through unchanged.
+          check("mingw_requirements", getenv("MINGW_REQUIREMENTS"), "-r checking-requirements/mingw.txt")
+
+          # 'pyEDAA.Reports' is looked up in lower-case, 'pyTooling[yaml,pypi,sphinx]' contributes through its
+          # sub-packages, and the nested '-r ./more.txt' is followed. Compare the packages as a set: the rewrite
+          # rules are multi-word strings, so the joined output repeats a package that two rules name.
+          check(
+            "pacboy_packages",
+            set(getenv("PACBOY_PACKAGES").split()),
+            {
+              "python-aiohttp:p",             # pyTooling[pypi]
+              "python-coverage:p",            # sphinx_reports
+              "python-jsonschema:p",          # jsonschema
+              "python-lxml:p",                # pyEDAA.Reports, sphinx_reports
+              "python-markupsafe:p",          # pyTooling[sphinx], sphinx_reports
+              "python-pip:p",                 # always
+              "python-pyaml:p",               # sphinx_reports
+              "python-ruamel-yaml:p",         # ruamel.yaml, pyEDAA.Reports, pyTooling[yaml], sphinx_reports
+              "python-ruamel.yaml.clib:p",    # ruamel.yaml, pyEDAA.Reports, pyTooling[yaml], sphinx_reports
+              "python-tomli:p",               # always
+              "python-types-pyyaml:p",        # sphinx_reports
+              "python-wheel:p",               # always
+            }
+          )
+
+          # The old literal default of 'StaticTypeCheck.yml', spelled out.
+          check("StaticTypeCheck requirements", getenv("TYPING_REQUIREMENTS"), "-r tests/typing/requirements.txt")
+
+          if errors == 0:
+            print("✅ All checks PASSED.")
+          else:
+            print(f"❌ Counted {errors} errors.")
+            exit(errors)

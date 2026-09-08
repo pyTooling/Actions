@@ -161,135 +161,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ${{ inputs.apt }}
 
-      # TODO: extract step to an Action so package, so code can be shared with UnitTesting.yml
       - name: Compute path to requirements file
         id: requirements
-        shell: python
-        run: |
-          from os      import getenv
-          from pathlib import Path
-          from sys     import version
+        uses: pyTooling/Actions/.github/actions/ComputeRequirements@r8
+        with:
+          requirements:       ${{ inputs.requirements }}
+          mingw_requirements: ${{ inputs.mingw_requirements }}
+          base_directory:     ${{ inputs.root_directory || '.' }}/${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory || '.' }}
 
-          print(f"Python: {version}")
-
-          requirements = "${{ inputs.requirements }}"
-          if requirements.startswith("-r"):
-            requirements = requirements[2:].lstrip()
-            if requirements.startswith("./"):
-              requirementsFile = Path("${{ inputs.root_directory || '.' }}") / Path("${{ inputs.tests_directory || '.' }}") / Path("${{ inputs.apptest_directory || '.' }}") / Path(requirements[2:])
-            else:
-              requirementsFile = Path(requirements)
-
-            if not requirementsFile.exists():
-              print(f"::error title=FileNotFoundError::Requirements file '{requirementsFile}' doesn't exist.")
-              exit(1)
-
-            print(f"requirements file: {requirementsFile.as_posix()}")
-
-            # Write requirements path to special file
-            github_output = Path(getenv("GITHUB_OUTPUT"))
-            print(f"GITHUB_OUTPUT: {github_output}")
-            with github_output.open("a+") as f:
-              f.write(f"requirements=-r {requirementsFile.as_posix()}\n")
-          else:
-            print(f"requirements list: {requirements}")
-
-      # TODO: extract step to an Action so package lists are shared with UnitTesting (and GHDL?)
       - name: Compute pacman/pacboy packages
         id: pacboy
         if: matrix.system == 'msys2'
-        shell: python
-        run: |
-          from os      import getenv
-          from pathlib import Path
-          from re      import compile
-          from sys     import version
-
-          print(f"Python: {version}")
-
-          def loadRequirementsFile(requirementsFile: Path):
-            requirements = []
-            with requirementsFile.open("r") as file:
-              for line in file.readlines():
-                line = line.strip()
-                if line.startswith("#") or line.startswith("https") or line == "":
-                  continue
-                elif line.startswith("-r"):
-                  # Remove the first word/argument (-r)
-                  requirements += loadRequirementsFile(requirementsFile.parent / line[2:].lstrip())
-                else:
-                  requirements.append(line)
-
-            return requirements
-
-          requirements = "${{ steps.requirements.outputs.requirements }}"
-          if requirements.startswith("-r"):
-            requirementsFile = Path(requirements[2:].lstrip())
-            try:
-              dependencies = loadRequirementsFile(requirementsFile)
-            except FileNotFoundError as ex:
-              print(f"::error title=FileNotFoundError::{ex}")
-              exit(1)
-          else:
-            dependencies = [req.strip() for req in requirements.split(" ")]
-
-          packages = {
-            "aiohttp":             "python-aiohttp:p",
-            "coverage":            "python-coverage:p",
-            "docstr_coverage":     "python-pyaml:p python-types-pyyaml:p",
-            "igraph":              "igraph:p",
-            "jinja2":              "python-markupsafe:p",
-            "lxml":                "python-lxml:p",
-            "numpy":               "python-numpy:p",
-            "markupsafe":          "python-markupsafe:p",
-            "pip":                 "python-pip:p",
-            "pyyaml":              "python-pyaml:p python-types-pyyaml:p",
-            "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-            "sphinx":              "python-markupsafe:p",
-            "tomli":               "python-tomli:p",        # outdated, now part of Python as tomllib
-            "wheel":               "python-wheel:p",
-            "pyEDAA.ProjectModel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
-            "pyEDAA.Reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
-            "sphinx_reports":      "python-markupsafe:p python-pyaml:p python-types-pyyaml:p",
-          }
-          subPackages = {
-            "pytooling": {
-              "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-              "pypi":              "python-aiohttp:p",
-            }
-          }
-
-          regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:\s*,\s*\w+)*)\])?(?:\s*(?P<Comperator>[<>~=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
-
-          pacboyPackages = set(("python-pip:p", "python-wheel:p", "python-tomli:p"))
-          print(f"Processing dependencies ({len(dependencies)}):")
-          for dependency in dependencies:
-            print(f"  {dependency}")
-
-            match = regExp.match(dependency.lower())
-            if not match:
-              print(f"    Wrong format: {dependency}")
-              print(f"::error title=Identifying Pacboy Packages::Unrecognized dependency format '{dependency}'")
-              continue
-
-            package = match["PackageName"]
-            if package in packages:
-              rewrite = packages[package]
-              print(f"    Found rewrite rule for '{package}': {rewrite}")
-              pacboyPackages.add(rewrite)
-
-            if match["SubPackages"] and package in subPackages:
-              for subPackage in match["SubPackages"].split(","):
-                if subPackage in subPackages[package]:
-                  rewrite = subPackages[package][subPackage]
-                  print(f"    Found rewrite rule for '{package}[..., {subPackage}, ...]': {rewrite}")
-                  pacboyPackages.add(rewrite)
-
-          # Write jobs to special file
-          github_output = Path(getenv("GITHUB_OUTPUT"))
-          print(f"GITHUB_OUTPUT: {github_output}")
-          with github_output.open("a+") as f:
-            f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
+        uses: pyTooling/Actions/.github/actions/ComputePacboyPackages@r8
+        with:
+          requirements: ${{ steps.requirements.outputs.mingw_requirements }}
 
 # Python setup
 
@@ -320,11 +205,7 @@ jobs:
       - name: 🔧 Install pip dependencies (MSYS2)
         if: matrix.system == 'msys2'
         run: |
-          if [ -n '${{ inputs.mingw_requirements }}' ]; then
-            python -m pip install --disable-pip-version-check --break-system-packages ${{ inputs.mingw_requirements }}
-          else
-            python -m pip install --disable-pip-version-check --break-system-packages ${{ steps.requirements.outputs.requirements }}
-          fi
+          python -m pip install --disable-pip-version-check --break-system-packages ${{ steps.requirements.outputs.mingw_requirements }}
 
 # Before scripts
 

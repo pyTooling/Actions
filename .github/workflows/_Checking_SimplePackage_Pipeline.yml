@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   SimplePackage:
-    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r7
+    uses: pyTooling/Actions/.github/workflows/CompletePipeline.yml@r8
     with:
       package_name:        'myPackage'
       unittest_python_version_list: '3.14'               # NamespacePackage covers Python 3.11, so both pipelines together still test the version range's ends.

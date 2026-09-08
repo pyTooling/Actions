@@ -38,12 +38,27 @@ on:
       requirements:
         description: 'Python dependencies to be installed through pip.'
         required: false
-        default: '-r tests/typing/requirements.txt'
+        default: '-r ./requirements.txt'
         type: string
       mypy_options:
         description: 'Additional mypy options.'
         required: false
         default: ''
+        type: string
+      root_directory:
+        description: 'Working directory for running mypy.'
+        required: false
+        default: '.'
+        type: string
+      tests_directory:
+        description: 'Path to the directory containing tests (relative from root_directory).'
+        required: false
+        default: 'tests'
+        type: string
+      typing_directory:
+        description: 'Path to the directory containing static type checking tests (relative from tests_directory).'
+        required: false
+        default: 'typing'
         type: string
       cobertura_report:
         description: 'Cobertura file to upload as an artifact.'
@@ -101,11 +116,19 @@ jobs:
         with:
           python-version: ${{ inputs.python_version }}
 
+      - name: Compute path to requirements file
+        id: requirements
+        uses: pyTooling/Actions/.github/actions/ComputeRequirements@r8
+        with:
+          requirements:   ${{ inputs.requirements }}
+          base_directory: ${{ inputs.root_directory || '.' }}/${{ inputs.tests_directory || '.' }}/${{ inputs.typing_directory || '.' }}
+
       - name: 🗂 Install dependencies
-        run: python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
+        run: python -m pip install --disable-pip-version-check ${{ steps.requirements.outputs.requirements }}
 
       - name: Check Static Typing
         continue-on-error: true
+        working-directory: ${{ inputs.root_directory || '.' }}
         run: mypy ${{ inputs.mypy_options }}
 
       - name: Debug output directories

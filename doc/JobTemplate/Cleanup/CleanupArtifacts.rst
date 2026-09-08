@@ -103,14 +103,14 @@ Instantiation
 *************
 
 The following instantiation example creates an ``ArtifactCleanUp`` job derived from job template
-``CleanupArtifacts`` version ``@r7``. It deletes the report artifacts on every run, and the package artifact only when
+``CleanupArtifacts`` version ``@r8``. It deletes the report artifacts on every run, and the package artifact only when
 the pipeline is not a tagged release.
 
 .. code-block:: yaml
 
    jobs:
      ArtifactCleanUp:
-       uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r7
+       uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r8
        needs:
          - Prepare
          - Params

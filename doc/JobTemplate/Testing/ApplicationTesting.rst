@@ -80,26 +80,26 @@ Instantiation
 *************
 
 The following instantiation example creates an ``AppTesting`` job derived from job template ``ApplicationTesting``
-version ``@r7``. The job matrix comes from :ref:`JOBTMPL/Parameters` and the wheel from :ref:`JOBTMPL/Package`, so both
+version ``@r8``. The job matrix comes from :ref:`JOBTMPL/Parameters` and the wheel from :ref:`JOBTMPL/Package`, so both
 jobs must be listed as dependencies.
 
 .. code-block:: yaml
 
    jobs:
      Params:
-       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
        with:
          package_name: myPackage
 
      Package:
-       uses: pyTooling/Actions/.github/workflows/Package.yml@r7
+       uses: pyTooling/Actions/.github/workflows/Package.yml@r8
        needs:
          - Params
        with:
          artifact: ${{ fromJson(needs.Params.outputs.artifact_names).package_all }}
 
      AppTesting:
-       uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@r7
+       uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@r8
        needs:
          - Params
          - Package
@@ -272,8 +272,8 @@ requirements
                   ``'-r ./requirements.txt'`` refers to :file:`tests/app/requirements.txt`. Any other path is used as
                   given, thus relative to the repository root. |br|
                   A missing file aborts the job with a ``FileNotFoundError`` annotation naming the resolved path.
-                  :ref:`JOBTMPL/ApplicationTesting/Input/mingw_requirements` is not resolved this way; its value is
-                  passed to ``pip install`` unchanged.
+                  :ref:`JOBTMPL/ApplicationTesting/Input/mingw_requirements` is resolved and checked the same way,
+                  so ``./`` addresses the same directory in both parameters.
 :Description:     Python dependencies needed to *run* the application tests, installed through *pip*. |br|
                   The package under test is not installed from here - it comes from
                   :ref:`JOBTMPL/ApplicationTesting/Input/wheel`.
@@ -288,7 +288,10 @@ mingw_requirements
 :Default Value:   ``''``
 :Possible Values: Any valid list of parameters for ``pip install``.
 :Description:     Overrides :ref:`JOBTMPL/ApplicationTesting/Input/requirements` on MSYS2 (MinGW64, UCRT64) only. |br|
-                  MSYS2 provides some Python packages through *pacboy*, so the pip requirements often differ there.
+                  MSYS2 provides some Python packages through *pacboy*, so the pip requirements often differ there. |br|
+                  The value is resolved and its existence checked exactly like
+                  :ref:`JOBTMPL/ApplicationTesting/Input/requirements`. |br|
+                  If left empty, :ref:`JOBTMPL/ApplicationTesting/Input/requirements` is installed on MSYS2 as well.
 
 .. _JOBTMPL/ApplicationTesting/Input/macos_before_script:
 
