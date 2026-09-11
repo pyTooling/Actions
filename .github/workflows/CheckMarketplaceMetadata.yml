@@ -1,0 +1,182 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2020-2026 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Check Marketplace Metadata
+
+on:
+  workflow_call:
+    inputs:
+      action_file:
+        description: |
+          Action metadata file. GitHub Marketplace requires it at the repository root.
+        type: string
+        required: false
+        default: 'action.yml'
+      description_limit:
+        description: |
+          Maximum length of the action's description. The Marketplace form rejects 'description' with
+          "Description must be less than 125 characters.", so the limit is exclusive.
+        type: number
+        required: false
+        default: 125
+      ubuntu_image:
+        description: 'Name of the Ubuntu image.'
+        type: string
+        required: false
+        default: 'ubuntu-26.04'
+
+jobs:
+  CheckMarketplaceMetadata:
+    name: 🛒 Check Marketplace metadata
+    runs-on: ${{ inputs.ubuntu_image || 'ubuntu-26.04' }}
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v7
+
+      - name: 🛒 Check the action's metadata against the Marketplace rules
+        id: check
+        shell: bash
+        env:
+          ACTION_FILE:        ${{ inputs.action_file || 'action.yml' }}
+          DESCRIPTION_LIMIT:  ${{ inputs.description_limit || 125 }}
+          REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+        run: |
+          # 🛒 Check the action's metadata against the Marketplace rules
+          set +e
+
+          ANSI_CYAN=$'\x1b[36m'
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          errors=0
+
+          fail() {
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "  ↪ %s\n" "${ANSI_LIGHT_RED}${1}${ANSI_NOCOLOR}"
+            printf "::error title=%s::%s\n" "Marketplace" "${1}"
+            errors=$((errors + 1))
+          }
+
+          printf "%s\n" "${ANSI_CYAN}Checking '${ACTION_FILE}' against the GitHub Marketplace rules ...${ANSI_NOCOLOR}"
+
+          printf "%s" "Metadata file at the repository root ... "
+          if [[ ! -f "${ACTION_FILE}" ]]; then
+            fail "GitHub Marketplace requires an 'action.yml' or 'action.yaml' at the repository root; '${ACTION_FILE}' doesn't exist."
+            printf "::error title=%s::%s\n" "Marketplace" "Aborting: no metadata file to check."
+            exit 1
+          fi
+          printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+
+          # 'name', 'description' and 'branding' are read with the YAML parser rather than with grep, so a folded or
+          # quoted value is measured as the Marketplace sees it.
+          read -r -d '' script <<'PYTHON'
+          import sys, yaml
+          action = yaml.safe_load(open(sys.argv[1], encoding="utf-8")) or {}
+          branding = action.get("branding") or {}
+          # 'or ""' rather than a default: a key present with an empty value parses as None, and str(None) is the
+          # four-character string "None", which would pass every check below.
+          for key, value in (
+              ("name",        action.get("name") or ""),
+              ("description", action.get("description") or ""),
+              ("icon",        branding.get("icon") or ""),
+              ("color",       branding.get("color") or ""),
+          ):
+              print(f"{key}={str(value).strip()}")
+          PYTHON
+          metadata="$(python3 -c "${script}" "${ACTION_FILE}" 2>&1)"
+          if [[ $? -ne 0 ]]; then
+            fail "'${ACTION_FILE}' isn't valid YAML: ${metadata//$'\n'/ }"
+            exit 1
+          fi
+
+          name="$(       sed -n 's/^name=//p'        <<< "${metadata}")"
+          description="$(sed -n 's/^description=//p' <<< "${metadata}")"
+          icon="$(       sed -n 's/^icon=//p'        <<< "${metadata}")"
+          color="$(      sed -n 's/^color=//p'       <<< "${metadata}")"
+
+          printf "%s\n" ""
+          printf "  %-14s%s\n" "name:"        "${name}"
+          printf "  %-14s%s\n" "description:" "${description}"
+          printf "  %-14s%s\n" "icon:"        "${icon}"
+          printf "  %-14s%s\n" "color:"       "${color}"
+          printf "%s\n" ""
+
+          printf "%s" "Action name is set ... "
+          if [[ -z "${name}" ]]; then
+            fail "'name' is required. It also has to be unique across GitHub Marketplace, which can't be checked here."
+          else
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          fi
+
+          printf "%s" "Description is set ... "
+          if [[ -z "${description}" ]]; then
+            fail "'description' is required."
+          else
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+
+            printf "%s" "Description is shorter than ${DESCRIPTION_LIMIT} characters ... "
+            length="$(printf "%s" "${description}" | wc -m)"
+            if [[ ${length} -ge ${DESCRIPTION_LIMIT} ]]; then
+              fail "'description' is ${length} characters; the Marketplace requires fewer than ${DESCRIPTION_LIMIT}."
+            else
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR} (${length} characters)"
+            fi
+          fi
+
+          printf "%s" "Branding icon is set ... "
+          if [[ -z "${icon}" ]]; then
+            fail "'branding.icon' is required to list an action on the Marketplace."
+          elif [[ ! "${icon}" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+            fail "'branding.icon' is '${icon}', which isn't a Feather icon name."
+          else
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            # The accepted set is a subset of Feather, too long and too changeable to hard-code here, so the name is
+            # only checked for shape. A name that isn't in the set is rejected by the Marketplace form.
+            printf "  ↪ %s\n" "${ANSI_LIGHT_YELLOW}not verified against the Feather set — see https://feathericons.com${ANSI_NOCOLOR}"
+          fi
+
+          printf "%s" "Branding colour is one of the accepted values ... "
+          case "${color}" in
+            white|yellow|blue|green|orange|red|purple|gray-dark)
+              printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}" ;;
+            "")
+              fail "'branding.color' is required to list an action on the Marketplace." ;;
+            *)
+              fail "'branding.color' is '${color}'; accepted are white, yellow, blue, green, orange, red, purple and gray-dark." ;;
+          esac
+
+          printf "%s" "Repository is public ... "
+          if [[ "${REPOSITORY_PRIVATE}" == "true" ]]; then
+            fail "The Marketplace only lists actions from public repositories."
+          else
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          fi
+
+          printf "%s\n" ""
+          if [[ ${errors} -ne 0 ]]; then
+            printf "%s\n" "${ANSI_LIGHT_RED}Counted ${errors} errors.${ANSI_NOCOLOR}"
+            exit 1
+          fi
+          printf "%s\n" "${ANSI_LIGHT_GREEN}No errors found.${ANSI_NOCOLOR}"
+          printf "%s\n" "${ANSI_LIGHT_YELLOW}Publishing itself is a checkbox when editing the release — there is no API for it.${ANSI_NOCOLOR}"

@@ -9,6 +9,7 @@ The category *quality* provides workflow templates implementing
 * :ref:`JOBTMPL/CheckDocumentation` - Check documentation coverage in Python modules.
 * :ref:`JOBTMPL/StaticTypeCheck` - Check type annotations using mypy.
 * :ref:`JOBTMPL/CheckCodeQuality` - Check code quality using bandit, radon and pylint.
+* :ref:`JOBTMPL/CheckMarketplaceMetadata` - Check an action's metadata against the GitHub Marketplace rules.
 
 .. toctree::
    :hidden:
@@ -17,3 +18,4 @@ The category *quality* provides workflow templates implementing
    StaticTypeCheck
    CheckDocumentation
    CheckCodeQuality
+   CheckMarketplaceMetadata
