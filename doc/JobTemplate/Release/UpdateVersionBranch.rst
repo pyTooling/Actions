@@ -29,8 +29,9 @@ It is intended to run in the *tag pipeline*, beside :ref:`JOBTMPL/PublishRelease
 
 .. topic:: Behavior
 
-   1. Derive the branch name from :ref:`JOBTMPL/UpdateVersionBranch/Input/prefix` and the major number of
-      :ref:`JOBTMPL/UpdateVersionBranch/Input/version`. A version without a major number is an error.
+   1. Derive the branch name from :ref:`JOBTMPL/UpdateVersionBranch/Input/prefix` and either
+      :ref:`JOBTMPL/UpdateVersionBranch/Input/major` or the major number of
+      :ref:`JOBTMPL/UpdateVersionBranch/Input/version`. A major that isn't a number is an error.
    2. Create the branch if it is missing, from the highest existing lower major, or from
       :ref:`JOBTMPL/UpdateVersionBranch/Input/main_branch` when there is none.
    3. Rewrite references to this repository - ``<owner>/<repository>[/<path>]@<ref>`` and the ``branch=`` parameter of
@@ -106,6 +107,8 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/UpdateVersionBranch/Input/prefix`                     | no       | string   | ``'v'``                                                           |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/UpdateVersionBranch/Input/major`                      | no       | string   | ``''``                                                            |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/UpdateVersionBranch/Input/main_branch`                | no       | string   | ``'main'``                                                        |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/UpdateVersionBranch/Input/update_branch_prefix`       | no       | string   | ``'update/'``                                                     |
@@ -165,6 +168,22 @@ prefix
 :Possible Values: Usually ``'v'`` or ``'r'``.
 :Description:     Prefix of the version branch name. It is independent of the version's own prefix, so a repository
                   tagging ``v8.1.0`` while publishing ``r8`` branches sets ``'r'`` here.
+
+
+.. _JOBTMPL/UpdateVersionBranch/Input/major:
+
+major
+=====
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: A non-negative integer, or empty.
+:Description:     Major version number selecting the version branch. When empty, the major number of
+                  :ref:`JOBTMPL/UpdateVersionBranch/Input/version` is used. |br|
+                  Set it where the version branch doesn't follow the released version's major at all -
+                  :gh:`pyTooling/download-artifact` tags ``v1.10.0`` while publishing a ``v8`` branch, so it passes
+                  ``major: '8'``.
 
 
 .. _JOBTMPL/UpdateVersionBranch/Input/main_branch:

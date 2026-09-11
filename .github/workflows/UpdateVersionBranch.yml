@@ -36,6 +36,14 @@ on:
         type: string
         required: false
         default: 'v'
+      major:
+        description: |
+          Major version number selecting the version branch. When empty, the major number of 'version' is used.
+          Set it where the version branch doesn't follow the released version's major - a repository tagging
+          'v1.11.0' while publishing a 'v7' branch, for instance.
+        type: string
+        required: false
+        default: ''
       main_branch:
         description: |
           Branch the version branch is updated from.
@@ -107,6 +115,7 @@ jobs:
           REPOSITORY: ${{ github.repository }}
           VERSION:    ${{ inputs.version }}
           PREFIX:     ${{ inputs.prefix }}
+          MAJOR:      ${{ inputs.major }}
           MAIN_BRANCH: ${{ inputs.main_branch }}
         run: |
           # 🔢 Resolve and create the version branch
@@ -119,21 +128,28 @@ jobs:
           ANSI_NOCOLOR=$'\x1b[0m'
 
           # The version may be tagged with or without a prefix of its own ('v1.2.3' as well as '1.2.3'), and the
-          # branch prefix is independent of it: 'v1.2.3' with prefix 'r' is branch 'r1'.
-          core="${VERSION#[vr]}"
-          major="${core%%.*}"
+          # branch prefix is independent of it: 'v1.2.3' with prefix 'r' is branch 'r1'. Where the version branch
+          # doesn't follow the released version's major at all, 'major' states it.
+          if [[ -n "${MAJOR}" ]]; then
+            major="${MAJOR}"
+            majorSource="the 'major' parameter"
+          else
+            core="${VERSION#[vr]}"
+            major="${core%%.*}"
+            majorSource="'${VERSION}'"
+          fi
 
           printf "%s\n"        "${ANSI_CYAN}Updating the version branch for '${VERSION}' ...${ANSI_NOCOLOR}"
           printf "  %-16s%s\n" "Repository:"  "${REPOSITORY}"
           printf "  %-16s%s\n" "Version:"     "${VERSION}"
-          printf "  %-16s%s\n" "Major:"       "${major}"
+          printf "  %-16s%s\n" "Major:"       "${major} (from ${majorSource})"
           printf "  %-16s%s\n" "Prefix:"      "${PREFIX}"
           printf "  %-16s%s\n" "Main branch:" "${MAIN_BRANCH}"
           printf "%s\n" ""
 
           if [[ ! "${major}" =~ ^[0-9]+$ ]]; then
-            printf "%s\n" "${ANSI_LIGHT_RED}No major version number in '${VERSION}'.${ANSI_NOCOLOR}"
-            printf "::error title=%s::%s\n" "UpdateVersionBranch" "No major version number in '${VERSION}'."
+            printf "%s\n" "${ANSI_LIGHT_RED}No major version number in ${majorSource}.${ANSI_NOCOLOR}"
+            printf "::error title=%s::%s\n" "UpdateVersionBranch" "No major version number in ${majorSource}."
             exit 1
           fi
 
