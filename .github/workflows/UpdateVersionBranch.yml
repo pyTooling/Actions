@@ -24,6 +24,11 @@ name: Update Version Branch
 on:
   workflow_call:
     inputs:
+      ubuntu_image:
+        description: 'Name of the Ubuntu image.'
+        type: string
+        required: false
+        default: 'ubuntu-26.04'
       version:
         description: |
           Released version, as tagged. Its major number selects the version branch: 'v1.2.3' with prefix 'r' targets
@@ -56,11 +61,7 @@ on:
         type: string
         required: false
         default: 'update/'
-      ubuntu_image:
-        description: 'Name of the Ubuntu image.'
-        type: string
-        required: false
-        default: 'ubuntu-26.04'
+
     outputs:
       branch:
         description: |
@@ -111,11 +112,11 @@ jobs:
         id: version
         shell: bash
         env:
-          GH_TOKEN:   ${{ github.token }}
-          REPOSITORY: ${{ github.repository }}
-          VERSION:    ${{ inputs.version }}
-          PREFIX:     ${{ inputs.prefix }}
-          MAJOR:      ${{ inputs.major }}
+          GH_TOKEN:    ${{ github.token }}
+          REPOSITORY:  ${{ github.repository }}
+          VERSION:     ${{ inputs.version }}
+          PREFIX:      ${{ inputs.prefix }}
+          MAJOR:       ${{ inputs.major }}
           MAIN_BRANCH: ${{ inputs.main_branch }}
         run: |
           # 🔢 Resolve and create the version branch

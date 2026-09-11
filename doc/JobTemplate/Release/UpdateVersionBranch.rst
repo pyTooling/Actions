@@ -103,6 +103,8 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | Parameter Name                                                      | Required | Type     | Default                                                           |
 +=====================================================================+==========+==========+===================================================================+
+| :ref:`JOBTMPL/UpdateVersionBranch/Input/ubuntu_image`               | no       | string   | ``'ubuntu-26.04'``                                                |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/UpdateVersionBranch/Input/version`                    | yes      | string   | — — — —                                                           |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/UpdateVersionBranch/Input/prefix`                     | no       | string   | ``'v'``                                                           |
@@ -112,8 +114,6 @@ Parameter Summary
 | :ref:`JOBTMPL/UpdateVersionBranch/Input/main_branch`                | no       | string   | ``'main'``                                                        |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/UpdateVersionBranch/Input/update_branch_prefix`       | no       | string   | ``'update/'``                                                     |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/UpdateVersionBranch/Input/ubuntu_image`               | no       | string   | ``'ubuntu-26.04'``                                                |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/UpdateVersionBranch/Secrets>`
@@ -141,6 +141,19 @@ This job template needs no secrets.
 
 Input Parameters
 ****************
+
+.. _JOBTMPL/UpdateVersionBranch/Input/ubuntu_image:
+
+ubuntu_image
+============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'ubuntu-26.04'``
+:Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
+                  for available Ubuntu image versions.
+:Description:     Name of the Ubuntu image used to run this job.
+
 
 .. _JOBTMPL/UpdateVersionBranch/Input/version:
 
@@ -209,19 +222,6 @@ update_branch_prefix
 :Possible Values: Any branch name prefix.
 :Description:     Prefix of the branch carrying the rewritten references. It is used only when a rewrite is needed,
                   and is force-pushed on every release, so nothing should pin it.
-
-
-.. _JOBTMPL/UpdateVersionBranch/Input/ubuntu_image:
-
-ubuntu_image
-============
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'ubuntu-26.04'``
-:Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
-                  for available Ubuntu image versions.
-:Description:     Name of the Ubuntu image used to run this job.
 
 
 .. _JOBTMPL/UpdateVersionBranch/Secrets:

@@ -55,6 +55,8 @@ than a rejection months later.
 .. topic:: Dependencies
 
    * :gh:`actions/checkout`
+   * :gh:`actions/setup-python`
+   * `ruamel.yaml <https://pypi.org/project/ruamel.yaml/>`__
 
 .. _JOBTMPL/CheckMarketplaceMetadata/Instantiation:
 
@@ -67,7 +69,7 @@ the release jobs depend on it keeps a release from being tagged with metadata th
 .. code-block:: yaml
 
    jobs:
-     Marketplace:
+     CheckMarketplace:
        uses: pyTooling/Actions/.github/workflows/CheckMarketplaceMetadata.yml@r8
 
      # Other pipeline jobs
@@ -76,7 +78,7 @@ the release jobs depend on it keeps a release from being tagged with metadata th
        uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@r8
        needs:
          - Prepare
-         - Marketplace
+         - CheckMarketplace
        if: needs.Prepare.outputs.is_release_commit == 'true'
        permissions:
          contents: write
@@ -94,15 +96,17 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/CheckMarketplaceMetadata/Inputs>`
 
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| Parameter Name                                                      | Required | Type     | Default                                                           |
-+=====================================================================+==========+==========+===================================================================+
-| :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/action_file`           | no       | string   | ``'action.yml'``                                                  |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/description_limit`     | no       | number   | ``125``                                                           |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
-| :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/ubuntu_image`          | no       | string   | ``'ubuntu-26.04'``                                                |
-+---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
++-----------------------------------------------------------------+----------+--------+--------------------+
+| Parameter Name                                                  | Required | Type   | Default            |
++=================================================================+==========+========+====================+
+| :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/ubuntu_image`      | no       | string | ``'ubuntu-26.04'`` |
++-----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/python_version`    | no       | string | ``'3.14'``         |
++-----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/action_file`       | no       | string | ``'action.yml'``   |
++-----------------------------------------------------------------+----------+--------+--------------------+
+| :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/description_limit` | no       | number | ``125``            |
++-----------------------------------------------------------------+----------+--------+--------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/CheckMarketplaceMetadata/Secrets>`
 
@@ -117,6 +121,31 @@ This job template has no output parameters.
 
 Input Parameters
 ****************
+
+.. _JOBTMPL/CheckMarketplaceMetadata/Input/ubuntu_image:
+
+ubuntu_image
+============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'ubuntu-26.04'``
+:Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
+                  for available Ubuntu image versions.
+:Description:     Name of the Ubuntu image used to run this job.
+
+
+.. _JOBTMPL/CheckMarketplaceMetadata/Input/python_version:
+
+python_version
+==============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'3.14'``
+:Possible Values: Any Python version supported by :gh:`actions/setup-python`.
+:Description:     Python version used to read and check the metadata file.
+
 
 .. _JOBTMPL/CheckMarketplaceMetadata/Input/action_file:
 
@@ -143,19 +172,6 @@ description_limit
 :Description:     Maximum length of the action's description, **exclusive**. The Marketplace form rejects a longer
                   description with *"Description must be less than 125 characters."*, so a description of exactly
                   this length is already too long.
-
-
-.. _JOBTMPL/CheckMarketplaceMetadata/Input/ubuntu_image:
-
-ubuntu_image
-============
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'ubuntu-26.04'``
-:Possible Values: See `actions/runner-images - Available Images <https://github.com/actions/runner-images?tab=readme-ov-file#available-images>`__
-                  for available Ubuntu image versions.
-:Description:     Name of the Ubuntu image used to run this job.
 
 
 .. _JOBTMPL/CheckMarketplaceMetadata/Secrets:
