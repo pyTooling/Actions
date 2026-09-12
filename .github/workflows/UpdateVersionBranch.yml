@@ -1,0 +1,362 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2020-2026 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Update Version Branch
+
+on:
+  workflow_call:
+    inputs:
+      ubuntu_image:
+        description: 'Name of the Ubuntu image.'
+        type: string
+        required: false
+        default: 'ubuntu-26.04'
+      version:
+        description: |
+          Released version, as tagged. Its major number selects the version branch: 'v1.2.3' with prefix 'r' targets
+          branch 'r1'.
+        type: string
+        required: true
+      prefix:
+        description: |
+          Prefix of the version branch name, usually 'v' or 'r'.
+        type: string
+        required: false
+        default: 'v'
+      major:
+        description: |
+          Major version number selecting the version branch. When empty, the major number of 'version' is used.
+          Set it where the version branch doesn't follow the released version's major - a repository tagging
+          'v1.11.0' while publishing a 'v7' branch, for instance.
+        type: string
+        required: false
+        default: ''
+      main_branch:
+        description: |
+          Branch the version branch is updated from.
+        type: string
+        required: false
+        default: 'main'
+      update_branch_prefix:
+        description: |
+          Prefix of the branch carrying the rewritten references, when a rewrite is needed.
+        type: string
+        required: false
+        default: 'update/'
+
+    outputs:
+      branch:
+        description: |
+          Name of the version branch.
+        value: ${{ jobs.UpdateVersionBranch.outputs.branch }}
+      branch-created:
+        description: |
+          'true' if the version branch didn't exist and was created by this run.
+        value: ${{ jobs.UpdateVersionBranch.outputs.branch-created }}
+      head:
+        description: |
+          Branch the pull-request is opened from: the main branch, or the update branch when references were
+          rewritten.
+        value: ${{ jobs.UpdateVersionBranch.outputs.head }}
+      rewritten:
+        description: |
+          'true' if references to this repository had to be rewritten for the version branch.
+        value: ${{ jobs.UpdateVersionBranch.outputs.rewritten }}
+      pull-request:
+        description: |
+          URL of the created or updated pull-request, empty if none was needed.
+        value: ${{ jobs.UpdateVersionBranch.outputs.pull-request }}
+
+jobs:
+  UpdateVersionBranch:
+    name: 🔀 Update version branch from '${{ inputs.main_branch }}'
+    runs-on: ${{ inputs.ubuntu_image || 'ubuntu-26.04' }}
+
+    permissions:
+      contents:      write   # required to create the version branch and push the update branch
+      pull-requests: write   # required to open the pull-request
+
+    outputs:
+      branch:         ${{ steps.version.outputs.branch }}
+      branch-created: ${{ steps.version.outputs.branch-created }}
+      head:           ${{ steps.rewrite.outputs.head }}
+      rewritten:      ${{ steps.rewrite.outputs.rewritten }}
+      pull-request:   ${{ steps.pullrequest.outputs.pull-request }}
+
+    steps:
+      - name: ⏬ Checkout the main branch
+        uses: actions/checkout@v7
+        with:
+          ref:         ${{ inputs.main_branch }}
+          fetch-depth: 0
+
+      - name: 🔢 Resolve and create the version branch
+        id: version
+        shell: bash
+        env:
+          GH_TOKEN:    ${{ github.token }}
+          REPOSITORY:  ${{ github.repository }}
+          VERSION:     ${{ inputs.version }}
+          PREFIX:      ${{ inputs.prefix }}
+          MAJOR:       ${{ inputs.major }}
+          MAIN_BRANCH: ${{ inputs.main_branch }}
+        run: |
+          # 🔢 Resolve and create the version branch
+          set +e
+
+          ANSI_CYAN=$'\x1b[36m'
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          # The version may be tagged with or without a prefix of its own ('v1.2.3' as well as '1.2.3'), and the
+          # branch prefix is independent of it: 'v1.2.3' with prefix 'r' is branch 'r1'. Where the version branch
+          # doesn't follow the released version's major at all, 'major' states it.
+          if [[ -n "${MAJOR}" ]]; then
+            major="${MAJOR}"
+            majorSource="the 'major' parameter"
+          else
+            core="${VERSION#[vr]}"
+            major="${core%%.*}"
+            majorSource="'${VERSION}'"
+          fi
+
+          printf "%s\n"        "${ANSI_CYAN}Updating the version branch for '${VERSION}' ...${ANSI_NOCOLOR}"
+          printf "  %-16s%s\n" "Repository:"  "${REPOSITORY}"
+          printf "  %-16s%s\n" "Version:"     "${VERSION}"
+          printf "  %-16s%s\n" "Major:"       "${major} (from ${majorSource})"
+          printf "  %-16s%s\n" "Prefix:"      "${PREFIX}"
+          printf "  %-16s%s\n" "Main branch:" "${MAIN_BRANCH}"
+          printf "%s\n" ""
+
+          if [[ ! "${major}" =~ ^[0-9]+$ ]]; then
+            printf "%s\n" "${ANSI_LIGHT_RED}No major version number in ${majorSource}.${ANSI_NOCOLOR}"
+            printf "::error title=%s::%s\n" "UpdateVersionBranch" "No major version number in ${majorSource}."
+            exit 1
+          fi
+
+          branch="${PREFIX}${major}"
+          printf "branch=%s\n"         "${branch}" >> "${GITHUB_OUTPUT}"
+          printf "branch-created=%s\n" "false"     >> "${GITHUB_OUTPUT}"
+
+          printf "%s" "Checking version branch '${branch}' ... "
+          if gh api "repos/${REPOSITORY}/git/ref/heads/${branch}" > /dev/null 2>&1; then
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[FOUND]${ANSI_NOCOLOR}"
+            exit 0
+          fi
+          printf "%s\n" "${ANSI_LIGHT_YELLOW}[MISSING]${ANSI_NOCOLOR}"
+
+          # A new major branches off the previous major, not off the main branch: it has to stay *behind* the main
+          # branch, otherwise there is nothing to open a pull-request about.
+          previous=""
+          previousMajor=-1
+          while read -r candidate; do
+            [[ "${candidate}" =~ ^${PREFIX}([0-9]+)$ ]] || continue
+            candidateMajor="${BASH_REMATCH[1]}"
+            if [[ ${candidateMajor} -lt ${major} && ${candidateMajor} -gt ${previousMajor} ]]; then
+              previousMajor="${candidateMajor}"
+              previous="${candidate}"
+            fi
+          done < <(gh api "repos/${REPOSITORY}/branches" --paginate --jq '.[].name' 2> /dev/null)
+
+          if [[ -n "${previous}" ]]; then
+            printf "  %s\n" "Previous version branch: ${ANSI_LIGHT_GREEN}${previous}${ANSI_NOCOLOR}"
+            source="heads/${previous}"
+          else
+            printf "  %s\n" "${ANSI_LIGHT_YELLOW}No previous version branch — branching off '${MAIN_BRANCH}'.${ANSI_NOCOLOR}"
+            source="heads/${MAIN_BRANCH}"
+          fi
+
+          sha="$(gh api "repos/${REPOSITORY}/git/ref/${source}" --jq '.object.sha' 2>&1)"
+          if [[ $? -ne 0 ]]; then
+            printf "%s\n" "${ANSI_LIGHT_RED}Couldn't read '${source}'.${ANSI_NOCOLOR}"
+            printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${sha}")"
+            printf "::error title=%s::%s\n" "UpdateVersionBranch" "Couldn't read '${source}': ${sha//$'\n'/%0A}"
+            exit 1
+          fi
+
+          printf "%s" "Creating branch '${branch}' at ${sha:0:7} ... "
+          messages="$(gh api --method POST "repos/${REPOSITORY}/git/refs" --field "ref=refs/heads/${branch}" --field "sha=${sha}" 2>&1)"
+          if [[ $? -ne 0 ]]; then
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${messages}")"
+            printf "::error title=%s::%s\n" "UpdateVersionBranch" "Couldn't create branch '${branch}': ${messages//$'\n'/%0A}"
+            exit 1
+          fi
+          printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          printf "branch-created=%s\n" "true" >> "${GITHUB_OUTPUT}"
+
+      - name: ✏ Rewrite references to this repository
+        id: rewrite
+        shell: bash
+        env:
+          REPOSITORY:  ${{ github.repository }}
+          BRANCH:      ${{ steps.version.outputs.branch }}
+          MAIN_BRANCH: ${{ inputs.main_branch }}
+          UPDATE_PREFIX: ${{ inputs.update_branch_prefix || 'update/' }}
+        run: |
+          # ✏ Rewrite references to this repository
+          set +e
+
+          ANSI_CYAN=$'\x1b[36m'
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          # A workflow, action or badge on the version branch has to reference *that* branch. Only self-references
+          # are rewritten - a reference to another repository ('pyTooling/Actions@r8', 'actions/checkout@v7') is a
+          # separate decision and is left alone.
+          repoPattern="${REPOSITORY//./\\.}"
+
+          printf "%s\n" "${ANSI_CYAN}Rewriting references to '${REPOSITORY}' to '${BRANCH}' ...${ANSI_NOCOLOR}"
+
+          changedFiles=()
+          while IFS= read -r file; do
+            [[ -f "${file}" ]] || continue
+            sed -E --in-place \
+              -e "s|(${repoPattern}(/[^@[:space:]\"'\`)]*)?)@[A-Za-z0-9._/-]+|\1@${BRANCH}|g" \
+              -e "s|(actions/workflow/status/${repoPattern}/[^?]*\?branch=)[A-Za-z0-9._%/-]+|\1${BRANCH}|g" \
+              "${file}"
+            if ! git diff --quiet -- "${file}"; then
+              changedFiles+=("${file}")
+              printf "  ✏ %s\n" "${file}"
+            fi
+          done < <(git ls-files '*.yml' '*.yaml' '*.md')
+
+          if [[ ${#changedFiles[@]} -eq 0 ]]; then
+            printf "%s\n" "${ANSI_LIGHT_GREEN}No reference had to be rewritten — the pull-request is a plain merge.${ANSI_NOCOLOR}"
+            printf "head=%s\n"      "${MAIN_BRANCH}" >> "${GITHUB_OUTPUT}"
+            printf "rewritten=%s\n" "false"          >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          printf "%s\n" ""
+          git --no-pager diff --unified=0 -- "${changedFiles[@]}"
+          printf "%s\n" ""
+
+          updateBranch="${UPDATE_PREFIX}${BRANCH}"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -B "${updateBranch}"
+          git add -- "${changedFiles[@]}"
+          git commit -q -m "Rewrite references to '${BRANCH}' for the ${BRANCH} branch." -m "Automatically written by the 'UpdateVersionBranch' workflow."
+
+          printf "%s" "Pushing '${updateBranch}' ... "
+          messages="$(git push --force origin "HEAD:refs/heads/${updateBranch}" 2>&1)"
+          if [[ $? -ne 0 ]]; then
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${messages}")"
+            printf "::error title=%s::%s\n" "UpdateVersionBranch" "Couldn't push '${updateBranch}': ${messages//$'\n'/%0A}"
+            exit 1
+          fi
+          printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+
+          printf "head=%s\n"      "${updateBranch}" >> "${GITHUB_OUTPUT}"
+          printf "rewritten=%s\n" "true"            >> "${GITHUB_OUTPUT}"
+
+      - name: 🔀 Open the pull-request
+        id: pullrequest
+        shell: bash
+        env:
+          GH_TOKEN:    ${{ github.token }}
+          REPOSITORY:  ${{ github.repository }}
+          VERSION:     ${{ inputs.version }}
+          BRANCH:      ${{ steps.version.outputs.branch }}
+          HEAD:        ${{ steps.rewrite.outputs.head }}
+          REWRITTEN:   ${{ steps.rewrite.outputs.rewritten }}
+          MAIN_BRANCH: ${{ inputs.main_branch }}
+        run: |
+          # 🔀 Open the pull-request
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          printf "pull-request=%s\n" "" >> "${GITHUB_OUTPUT}"
+
+          printf "%s" "Comparing '${BRANCH}' with '${HEAD}' ... "
+          ahead="$(gh api "repos/${REPOSITORY}/compare/${BRANCH}...${HEAD}" --jq '.ahead_by' 2>&1)"
+          if [[ $? -ne 0 ]]; then
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${ahead}")"
+            printf "::error title=%s::%s\n" "UpdateVersionBranch" "Couldn't compare '${BRANCH}' with '${HEAD}': ${ahead//$'\n'/%0A}"
+            exit 1
+          fi
+          printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR} (${ahead} commit(s) ahead)"
+
+          if [[ "${ahead}" == "0" ]]; then
+            printf "%s\n" ""
+            printf "%s\n" "${ANSI_LIGHT_GREEN}'${BRANCH}' already matches '${HEAD}' — nothing to update.${ANSI_NOCOLOR}"
+            exit 0
+          fi
+
+          if [[ "${REWRITTEN}" == "true" ]]; then
+            rewriteNote="* References to this repository were rewritten to \`${BRANCH}\` in a commit on \`${HEAD}\`."
+          else
+            rewriteNote="* No reference to this repository had to be rewritten, so this is a plain merge of \`${MAIN_BRANCH}\`."
+          fi
+
+          title="Updating ${BRANCH} from ${VERSION}"
+          # Built line by line rather than from a here-document: a here-document's terminator has to start at column
+          # zero, which would end this YAML block scalar.
+          body="$(printf "%s\n" \
+            "This pull-request advances the \`${BRANCH}\` branch to the **${VERSION}** release." \
+            "" \
+            "Consumers pin \`${REPOSITORY}@${BRANCH}\`, so merging this makes that reference point at \`${VERSION}\`." \
+            "" \
+            "${rewriteNote}" \
+            "* Release: https://github.com/${REPOSITORY}/releases/tag/${VERSION}" \
+            "* Changes: https://github.com/${REPOSITORY}/compare/${BRANCH}...${HEAD}" \
+            "" \
+            "Opened automatically by the \`UpdateVersionBranch\` workflow.")"
+
+          # A patch release on an existing version branch finds the pull-request from the previous one still open.
+          existing="$(gh pr list --repo "${REPOSITORY}" --base "${BRANCH}" --head "${HEAD}" --state open --json number --jq '.[0].number' 2> /dev/null)"
+          if [[ -n "${existing}" ]]; then
+            printf "%s" "Updating pull-request #${existing} ... "
+            messages="$(gh api --method PATCH "repos/${REPOSITORY}/pulls/${existing}" --field "title=${title}" --field "body=${body}" --jq '.html_url' 2>&1)"
+            if [[ $? -ne 0 ]]; then
+              printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+              printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${messages}")"
+              printf "::error title=%s::%s\n" "UpdateVersionBranch" "Couldn't update pull-request #${existing}: ${messages//$'\n'/%0A}"
+              exit 1
+            fi
+            printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+            printf "  %s\n" "${messages}"
+            printf "pull-request=%s\n" "${messages}" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          printf "%s" "Creating pull-request '${title}' ... "
+          messages="$(gh pr create --repo "${REPOSITORY}" --base "${BRANCH}" --head "${HEAD}" --title "${title}" --body "${body}" 2>&1)"
+          if [[ $? -ne 0 ]]; then
+            printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
+            printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${messages}")"
+            printf "::error title=%s::%s\n" "UpdateVersionBranch" "Couldn't create the pull-request: ${messages//$'\n'/%0A}"
+            exit 1
+          fi
+          printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          printf "  %s\n" "${messages}"
+          printf "pull-request=%s\n" "${messages}" >> "${GITHUB_OUTPUT}"

@@ -1,0 +1,189 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2020-2026 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Check Marketplace Metadata
+
+on:
+  workflow_call:
+    inputs:
+      ubuntu_image:
+        description: 'Name of the Ubuntu image.'
+        type: string
+        required: false
+        default: 'ubuntu-26.04'
+      python_version:
+        description: 'Python version.'
+        type: string
+        required: false
+        default: '3.14'
+      action_file:
+        description: |
+          Action metadata file. GitHub Marketplace requires it at the repository root.
+        type: string
+        required: false
+        default: 'action.yml'
+      description_limit:
+        description: |
+          Maximum length of the action's description. The Marketplace form rejects 'description' with
+          "Description must be less than 125 characters.", so the limit is exclusive.
+        type: number
+        required: false
+        default: 125
+
+jobs:
+  CheckMarketplaceMetadata:
+    name: 🛒 Check Marketplace metadata
+    runs-on: ${{ inputs.ubuntu_image || 'ubuntu-26.04' }}
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v7
+
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: 🔧 Install ruamel.yaml
+        run: |
+          python -m pip install --disable-pip-version-check -U ruamel.yaml
+
+      - name: 🛒 Check the action's metadata against the Marketplace rules
+        id: check
+        shell: python
+        env:
+          ACTION_FILE:        ${{ inputs.action_file || 'action.yml' }}
+          DESCRIPTION_LIMIT:  ${{ inputs.description_limit || 125 }}
+          REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+        run: |
+          from os      import environ
+          from pathlib import Path
+          from re      import fullmatch
+          from sys     import exit
+
+          from ruamel.yaml import YAML, YAMLError
+
+          ANSI_CYAN         = "\x1b[36m"
+          ANSI_LIGHT_RED    = "\x1b[91m"
+          ANSI_LIGHT_GREEN  = "\x1b[92m"
+          ANSI_LIGHT_YELLOW = "\x1b[93m"
+          ANSI_NOCOLOR      = "\x1b[0m"
+
+          # The eight values GitHub Marketplace accepts for 'branding.color'.
+          ACCEPTED_COLORS = ("white", "yellow", "blue", "green", "orange", "red", "purple", "gray-dark")
+
+          actionFile       = environ["ACTION_FILE"]
+          descriptionLimit = int(environ["DESCRIPTION_LIMIT"])
+          isPrivate        = environ.get("REPOSITORY_PRIVATE", "") == "true"
+
+          errorCount = 0
+
+          def check(rule: str, isValid: bool, message: str, detail: str = "") -> bool:
+            """Report one Marketplace rule, count it when violated and return whether it held."""
+            global errorCount
+
+            print(f"{rule} ... ", end="")
+            if isValid:
+              print(f"{ANSI_LIGHT_GREEN}[OK]{ANSI_NOCOLOR}{detail}")
+              return True
+
+            print(f"{ANSI_LIGHT_RED}[FAILED]{ANSI_NOCOLOR}")
+            print(f"  ↪ {ANSI_LIGHT_RED}{message}{ANSI_NOCOLOR}")
+            print(f"::error title=Marketplace::{message}")
+            errorCount += 1
+            return False
+
+          print(f"{ANSI_CYAN}Checking '{actionFile}' against the GitHub Marketplace rules ...{ANSI_NOCOLOR}")
+
+          path = Path(actionFile)
+          if not check(
+            "Metadata file at the repository root",
+            path.is_file(),
+            f"GitHub Marketplace requires an 'action.yml' or 'action.yaml' at the repository root; '{actionFile}' doesn't exist."
+          ):
+            print("::error title=Marketplace::Aborting: no metadata file to check.")
+            exit(1)
+
+          try:
+            action = YAML(typ="safe").load(path) or {}
+          except YAMLError as ex:
+            print(f"{ANSI_LIGHT_RED}'{actionFile}' isn't valid YAML.{ANSI_NOCOLOR}")
+            print(f"::error title=Marketplace::'{actionFile}' isn't valid YAML: {str(ex)!s}")
+            exit(1)
+
+          # A key present with an empty value parses as None, so every value is normalized before it is measured.
+          branding    = action.get("branding") or {}
+          name        = str(action.get("name") or "").strip()
+          description = str(action.get("description") or "").strip()
+          icon        = str(branding.get("icon") or "").strip()
+          color       = str(branding.get("color") or "").strip()
+
+          print()
+          print(f"  {'name:':<14}{name}")
+          print(f"  {'description:':<14}{description}")
+          print(f"  {'icon:':<14}{icon}")
+          print(f"  {'color:':<14}{color}")
+          print()
+
+          check(
+            "Action name is set",
+            name != "",
+            "'name' is required. It also has to be unique across GitHub Marketplace, which can't be checked here."
+          )
+
+          if check("Description is set", description != "", "'description' is required."):
+            check(
+              f"Description is shorter than {descriptionLimit} characters",
+              len(description) < descriptionLimit,
+              f"'description' is {len(description)} characters; the Marketplace requires fewer than {descriptionLimit}.",
+              f" ({len(description)} characters)"
+            )
+
+          if check("Branding icon is set", icon != "", "'branding.icon' is required to list an action on the Marketplace."):
+            if check(
+              "Branding icon is shaped like a Feather icon name",
+              fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", icon) is not None,
+              f"'branding.icon' is '{icon}', which isn't a Feather icon name."
+            ):
+              # The accepted set is a subset of Feather, too long and too changeable to hard-code here, so the name is
+              # only checked for shape. A name that isn't in the set is rejected by the Marketplace form.
+              print(f"  ↪ {ANSI_LIGHT_YELLOW}not verified against the Feather set — see https://feathericons.com{ANSI_NOCOLOR}")
+
+          check(
+            "Branding colour is one of the accepted values",
+            color in ACCEPTED_COLORS,
+            "'branding.color' is required to list an action on the Marketplace." if color == "" else
+            f"'branding.color' is '{color}'; accepted are {', '.join(ACCEPTED_COLORS[:-1])} and {ACCEPTED_COLORS[-1]}."
+          )
+
+          check(
+            "Repository is public",
+            not isPrivate,
+            "The Marketplace only lists actions from public repositories."
+          )
+
+          print()
+          if errorCount != 0:
+            print(f"{ANSI_LIGHT_RED}Counted {errorCount} errors.{ANSI_NOCOLOR}")
+            exit(1)
+
+          print(f"{ANSI_LIGHT_GREEN}No errors found.{ANSI_NOCOLOR}")
+          print(f"{ANSI_LIGHT_YELLOW}Publishing itself is a checkbox when editing the release — there is no API for it.{ANSI_NOCOLOR}")
