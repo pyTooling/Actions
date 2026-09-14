@@ -128,15 +128,6 @@ on:
         required: false
         default: 'html pages'   # none, html, latex, pdf, pages, asset, all
         type: string
-      publish_pages_on:
-        description: 'Newline separated, or-ed conditions on the ref under which GitHub Pages are published.'
-        required: false
-        default: |
-          default-branch
-          development-branch
-          release-tag
-          nightly-tag
-        type: string
       miktex_image:
         description: 'Name of MiKTeX docker image.'
         required: false
@@ -146,6 +137,15 @@ on:
         description: 'Update MiKTeX packages.'
         required: false
         default: 'false'
+        type: string
+      publish_pages_on:
+        description: 'Newline separated, or-ed conditions on the ref under which GitHub Pages are published.'
+        required: false
+        default: |
+          default-branch
+          development-branch
+          release-tag
+          nightly-tag
         type: string
       auto_tag:
         description: 'Auto tag if a branch was merged to the release branch and an associated pull-request with matching version name was found.'
@@ -177,8 +177,8 @@ jobs:
   Prepare:
     uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@dev
     with:
-      pipeline-delay:   10
       publish_pages_on: ${{ inputs.publish_pages_on }}
+      pipeline-delay:   10
 
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@dev

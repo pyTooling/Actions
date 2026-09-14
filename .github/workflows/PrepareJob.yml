@@ -412,17 +412,6 @@ jobs:
 
       - name: 📖 Evaluate conditions for publishing GitHub Pages
         id: PagesConditions
-        env:
-          CONDITIONS:        ${{ inputs.publish_pages_on }}
-          REF_KIND:          ${{ steps.Classify.outputs.ref_kind }}
-          BRANCH:            ${{ steps.Classify.outputs.branch }}
-          TAG:               ${{ steps.Classify.outputs.tag }}
-          ON_DEFAULT_BRANCH: ${{ steps.Classify.outputs.on_default_branch }}
-          ON_MAIN_BRANCH:    ${{ steps.Classify.outputs.on_main_branch }}
-          ON_RELEASE_BRANCH: ${{ steps.Classify.outputs.on_release_branch }}
-          ON_DEV_BRANCH:     ${{ steps.Classify.outputs.on_dev_branch }}
-          IS_RELEASE_TAG:    ${{ steps.Classify.outputs.is_release_tag }}
-          IS_NIGHTLY_TAG:    ${{ steps.Classify.outputs.is_nightly_tag }}
         run: |
           set +e
 
@@ -432,10 +421,13 @@ jobs:
           ANSI_LIGHT_BLUE=$'\x1b[94m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
+          refKind="${{ steps.Classify.outputs.ref_kind }}"
+          branch="${GITHUB_REF#refs/heads/}"
+          tag="${GITHUB_REF#refs/tags/}"
           publish_pages="false"
           errorCount=0
 
-          printf "Evaluate conditions for publishing GitHub Pages on %s '%s':\n" "${REF_KIND}" "${BRANCH}${TAG}"
+          printf "Evaluate conditions for publishing GitHub Pages on %s '%s':\n" "${refKind}" "${GITHUB_REF}"
           while IFS= read -r line; do
             # trim leading and trailing whitespace
             line="${line#"${line%%[![:space:]]*}"}"
@@ -446,12 +438,12 @@ jobs:
 
             result="false"
             case "${line}" in
-              default-branch)     result="${ON_DEFAULT_BRANCH}" ;;
-              main-branch)        result="${ON_MAIN_BRANCH}" ;;
-              development-branch) result="${ON_DEV_BRANCH}" ;;
-              release-branch)     result="${ON_RELEASE_BRANCH}" ;;
-              release-tag)        result="${IS_RELEASE_TAG}" ;;
-              nightly-tag)        result="${IS_NIGHTLY_TAG}" ;;
+              default-branch)     result="${{ steps.Classify.outputs.on_default_branch }}" ;;
+              main-branch)        result="${{ steps.Classify.outputs.on_main_branch }}" ;;
+              development-branch) result="${{ steps.Classify.outputs.on_dev_branch }}" ;;
+              release-branch)     result="${{ steps.Classify.outputs.on_release_branch }}" ;;
+              release-tag)        result="${{ steps.Classify.outputs.is_release_tag }}" ;;
+              nightly-tag)        result="${{ steps.Classify.outputs.is_nightly_tag }}" ;;
               branch=?*|tag=?*)
                 kind="${line%%=*}"
                 pattern="^${line#*=}$"
@@ -465,9 +457,9 @@ jobs:
                   continue
                 fi
 
-                if [[ "${kind}" == "branch" && "${REF_KIND}" == "branch" && "${BRANCH}" =~ ${pattern} ]]; then
+                if [[ "${kind}" == "branch" && "${refKind}" == "branch" && "${branch}" =~ ${pattern} ]]; then
                   result="true"
-                elif [[ "${kind}" == "tag" && "${REF_KIND}" == "tag" && "${TAG}" =~ ${pattern} ]]; then
+                elif [[ "${kind}" == "tag" && "${refKind}" == "tag" && "${tag}" =~ ${pattern} ]]; then
                   result="true"
                 fi
                 ;;
@@ -485,7 +477,9 @@ jobs:
             else
               printf "  %-40s ${ANSI_LIGHT_YELLOW}[NO MATCH]${ANSI_NOCOLOR}\n" "${line}"
             fi
-          done <<< "${CONDITIONS}"
+          done <<'CONDITIONS'
+          ${{ inputs.publish_pages_on }}
+          CONDITIONS
 
           if [[ ${errorCount} -ne 0 ]]; then
             printf "${ANSI_LIGHT_RED}%d invalid condition(s) in 'publish_pages_on'.${ANSI_NOCOLOR}\n" "${errorCount}"
