@@ -21,8 +21,7 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
    2. Setup Python (:ref:`JOBTMPL/PublishOnPyPI/Input/python_version`) and install dependencies
       (:ref:`JOBTMPL/PublishOnPyPI/Input/requirements`), which must provide :term:`twine`.
    3. Publish the wheel package(s) (:file:`*.whl`).
-   4. Publish the source package(s) (:file:`*.tar.gz`).
-
+   4. Publish the source package(s) (:file:`*.tar.gz`). |br|
       Steps 3 and 4 are replaced by a ``twine check`` of both package kinds if
       :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run` is enabled.
    5. Delete the artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`).
