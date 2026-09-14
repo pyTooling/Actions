@@ -143,6 +143,11 @@ on:
         required: false
         default: 'true'
         type: string
+      pypi_dry_run:
+        description: 'Validate the packages with twine, but do not upload them to PyPI.'
+        required: false
+        default: 'false'
+        type: string
       cleanup:
         description: 'Cleanup artifacts afterwards.'
         required: false
@@ -537,6 +542,7 @@ jobs:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       requirements:   '-r dist/requirements.txt'
       artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      dry_run:        ${{ inputs.pypi_dry_run }}
       cleanup:        ${{ inputs.cleanup }}
     secrets:
       PYPI_TOKEN:     ${{ secrets.PYPI_TOKEN }}
