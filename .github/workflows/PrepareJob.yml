@@ -54,6 +54,15 @@ on:
         required: false
         default: '(v|r)?[0-9]+(\.[0-9]+){0,2}(-(dev|alpha|beta|rc)([0-9]*))?'
         type: string
+      publish_pages_on:
+        description: 'Newline separated, or-ed conditions on the ref under which GitHub Pages are published.'
+        required: false
+        default: |
+          default-branch
+          development-branch
+          release-tag
+          nightly-tag
+        type: string
       pipeline-delay:
         description: 'Slow down this job, to delay the startup of the GitHub Action pipline.'
         required: false
@@ -127,6 +136,9 @@ on:
       git_submodule_paths:
         description: ""
         value: ${{ jobs.Prepare.outputs.git_submodule_paths }}
+      publish_pages:
+        description: "The ref matches at least one condition of 'publish_pages_on'."
+        value: ${{ jobs.Prepare.outputs.publish_pages }}
 
 jobs:
   Prepare:
@@ -154,6 +166,7 @@ jobs:
       git_submodule_count: ${{ steps.Classify.outputs.git_submodule_count }}
       git_submodule_names: ${{ steps.Classify.outputs.git_submodule_names }}
       git_submodule_paths: ${{ steps.Classify.outputs.git_submodule_paths }}
+      publish_pages:       ${{ steps.PagesConditions.outputs.publish_pages }}
 
     steps:
       - name: ⌛ Generate a startup delay of ${{ inputs.pipeline-delay }} seconds
@@ -397,6 +410,95 @@ jobs:
           git_submodule_paths=${git_submodule_paths}
           EOF
 
+      - name: 📖 Evaluate conditions for publishing GitHub Pages
+        id: PagesConditions
+        env:
+          CONDITIONS:        ${{ inputs.publish_pages_on }}
+          REF_KIND:          ${{ steps.Classify.outputs.ref_kind }}
+          BRANCH:            ${{ steps.Classify.outputs.branch }}
+          TAG:               ${{ steps.Classify.outputs.tag }}
+          ON_DEFAULT_BRANCH: ${{ steps.Classify.outputs.on_default_branch }}
+          ON_MAIN_BRANCH:    ${{ steps.Classify.outputs.on_main_branch }}
+          ON_RELEASE_BRANCH: ${{ steps.Classify.outputs.on_release_branch }}
+          ON_DEV_BRANCH:     ${{ steps.Classify.outputs.on_dev_branch }}
+          IS_RELEASE_TAG:    ${{ steps.Classify.outputs.is_release_tag }}
+          IS_NIGHTLY_TAG:    ${{ steps.Classify.outputs.is_nightly_tag }}
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_LIGHT_BLUE=$'\x1b[94m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          publish_pages="false"
+          errorCount=0
+
+          printf "Evaluate conditions for publishing GitHub Pages on %s '%s':\n" "${REF_KIND}" "${BRANCH}${TAG}"
+          while IFS= read -r line; do
+            # trim leading and trailing whitespace
+            line="${line#"${line%%[![:space:]]*}"}"
+            line="${line%"${line##*[![:space:]]}"}"
+            if [[ -z "${line}" || "${line:0:1}" == "#" ]]; then
+              continue
+            fi
+
+            result="false"
+            case "${line}" in
+              default-branch)     result="${ON_DEFAULT_BRANCH}" ;;
+              main-branch)        result="${ON_MAIN_BRANCH}" ;;
+              development-branch) result="${ON_DEV_BRANCH}" ;;
+              release-branch)     result="${ON_RELEASE_BRANCH}" ;;
+              release-tag)        result="${IS_RELEASE_TAG}" ;;
+              nightly-tag)        result="${IS_NIGHTLY_TAG}" ;;
+              branch=?*|tag=?*)
+                kind="${line%%=*}"
+                pattern="^${line#*=}$"
+
+                # exit code 2 means the regular expression doesn't compile
+                [[ "" =~ ${pattern} ]]
+                if [[ $? -eq 2 ]]; then
+                  printf "  %-40s ${ANSI_LIGHT_RED}[INVALID]${ANSI_NOCOLOR}\n" "${line}"
+                  printf "::error title=PagesConditions::'%s' is not a valid regular expression.\n" "${line}"
+                  errorCount=$((errorCount + 1))
+                  continue
+                fi
+
+                if [[ "${kind}" == "branch" && "${REF_KIND}" == "branch" && "${BRANCH}" =~ ${pattern} ]]; then
+                  result="true"
+                elif [[ "${kind}" == "tag" && "${REF_KIND}" == "tag" && "${TAG}" =~ ${pattern} ]]; then
+                  result="true"
+                fi
+                ;;
+              *)
+                printf "  %-40s ${ANSI_LIGHT_RED}[UNKNOWN]${ANSI_NOCOLOR}\n" "${line}"
+                printf "::error title=PagesConditions::'%s' is not a condition of 'publish_pages_on'.\n" "${line}"
+                errorCount=$((errorCount + 1))
+                continue
+                ;;
+            esac
+
+            if [[ "${result}" == "true" ]]; then
+              publish_pages="true"
+              printf "  %-40s ${ANSI_LIGHT_GREEN}[MATCH]${ANSI_NOCOLOR}\n" "${line}"
+            else
+              printf "  %-40s ${ANSI_LIGHT_YELLOW}[NO MATCH]${ANSI_NOCOLOR}\n" "${line}"
+            fi
+          done <<< "${CONDITIONS}"
+
+          if [[ ${errorCount} -ne 0 ]]; then
+            printf "${ANSI_LIGHT_RED}%d invalid condition(s) in 'publish_pages_on'.${ANSI_NOCOLOR}\n" "${errorCount}"
+            exit 1
+          fi
+
+          printf "Publish GitHub Pages: ${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "${publish_pages}"
+
+          printf "\nWriting output variables ...\n"
+          tee --append "${GITHUB_OUTPUT}" <<EOF
+          publish_pages=${publish_pages}
+          EOF
+
 # TODO: how to support version branches and hotfix releases on version branches?
 
       # This step searches a merged Pull Request whose base is the release branch, so it must only run for merge
@@ -525,3 +627,4 @@ jobs:
           printf "  *_count_:           %s\n" "${{ steps.FindPullRequest.outputs.git_submodule_count }}"
           printf "  *_names:            %s\n" "${{ steps.FindPullRequest.outputs.git_submodule_names }}"
           printf "  *_paths:            %s\n" "${{ steps.FindPullRequest.outputs.git_submodule_paths }}"
+          printf "publish_pages:        %s\n" "${{ steps.PagesConditions.outputs.publish_pages }}"

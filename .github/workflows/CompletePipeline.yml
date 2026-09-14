@@ -128,6 +128,15 @@ on:
         required: false
         default: 'html pages'   # none, html, latex, pdf, pages, asset, all
         type: string
+      publish_pages_on:
+        description: 'Newline separated, or-ed conditions on the ref under which GitHub Pages are published.'
+        required: false
+        default: |
+          default-branch
+          development-branch
+          release-tag
+          nightly-tag
+        type: string
       miktex_image:
         description: 'Name of MiKTeX docker image.'
         required: false
@@ -168,7 +177,8 @@ jobs:
   Prepare:
     uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@dev
     with:
-      pipeline-delay: 10
+      pipeline-delay:   10
+      publish_pages_on: ${{ inputs.publish_pages_on }}
 
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@dev
@@ -463,6 +473,7 @@ jobs:
   PublishToGitHubPages:
     uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@dev
     needs:
+      - Prepare
       - UnitTestingParams
       - Documentation
 #      - PDFDocumentation
@@ -474,9 +485,7 @@ jobs:
        && needs.PublishCoverageResults.result == 'success'
        && needs.StaticTypeCheck.result == 'success'
        && contains(inputs.documentation_steps, 'pages')
-       && (github.ref_type == 'tag'
-        || github.ref_name == github.event.repository.default_branch
-        || github.ref_name == 'dev')
+       && needs.Prepare.outputs.publish_pages == 'true'
       }}
     with:
       doc:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}

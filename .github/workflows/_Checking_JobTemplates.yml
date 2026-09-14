@@ -13,6 +13,37 @@ jobs:
   Prepare:
     uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@dev
 
+  PagesConditions:
+    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@dev
+    with:
+      publish_pages_on: |
+        # a comment line and an empty line
+
+        default-branch
+        main-branch
+        development-branch
+        release-branch
+        release-tag
+        nightly-tag
+        branch=.+
+        tag=.+
+
+  CheckPagesConditions:
+    name: 🔍 Check 'publish_pages' of PrepareJob
+    runs-on: ubuntu-26.04
+    needs:
+      - PagesConditions
+    steps:
+      - name: Check that 'branch=.+' and 'tag=.+' match every pipeline
+        env:
+          PUBLISH_PAGES: ${{ needs.PagesConditions.outputs.publish_pages }}
+        run: |
+          printf "publish_pages: %s\n" "${PUBLISH_PAGES}"
+          if [[ "${PUBLISH_PAGES}" != "true" ]]; then
+            printf "::error title=PagesConditions::Expected 'true', got '%s'.\n" "${PUBLISH_PAGES}"
+            exit 1
+          fi
+
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@dev
 

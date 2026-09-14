@@ -130,10 +130,12 @@ Without the ``needs.<job>.result`` term the job starts and fails while downloadi
    Observed on a real pipeline: three packaging jobs were cancelled by GitHub, the cascade skipped the documentation
    job, and the publishing job ran anyway on the strength of ``!failure() && !cancelled()`` alone.
 
-A condition that gates a job on the **ref** is a blocklist of the refs that cannot work, never an allowlist of the
-refs that have been seen to work. A deployment environment rejects some refs and admits the rest; observing one
-rejection says nothing about which of the others are admitted, so an allowlist built from that observation silently
-drops every ref that was simply never tried - and it drops it by *skipping* the job, which no pipeline reports.
+A condition hard-coded in a job template that gates a job on the **ref** is a blocklist of the refs that cannot work,
+never an allowlist of the refs that have been seen to work. A deployment environment rejects some refs and admits the
+rest; observing one rejection says nothing about which of the others are admitted, so an allowlist built from that
+observation silently drops every ref that was simply never tried - and it drops it by *skipping* the job, which no
+pipeline reports. Where the admitted refs are per-repository configuration, the condition belongs into an input set
+by the caller, like :ref:`JOBTMPL/CompletePipeline/Input/publish_pages_on`.
 
 .. attention::
 

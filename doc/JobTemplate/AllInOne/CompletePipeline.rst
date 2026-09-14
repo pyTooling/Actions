@@ -447,6 +447,8 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/documentation_steps`          | no       | string | ``'html pages'``                                                           |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/publish_pages_on`             | no       | string | four conditions - see description                                          |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/miktex_image`                 | no       | string | ``'pytooling/miktex:sphinx'``                                              |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/miktex_update`                | no       | string | ``'false'``                                                                |
@@ -891,10 +893,25 @@ documentation_steps
 
                   .. note::
 
-                     ``pages`` additionally depends on the ref being one the ``github-pages`` environment admits:
-                     a **tag**, the repository's default branch, or ``dev``. On any other branch the deployment is
-                     rejected by the environment's protection rules before a runner is assigned, so the job is
-                     skipped instead of failing after one second with no log.
+                     ``pages`` additionally requires the pipeline's ref to match
+                     :ref:`JOBTMPL/CompletePipeline/Input/publish_pages_on`.
+
+
+.. _JOBTMPL/CompletePipeline/Input/publish_pages_on:
+
+publish_pages_on
+================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``default-branch``, ``development-branch``, ``release-tag`` and ``nightly-tag``, one per line.
+:Possible Values: A newline separated list of conditions, see :ref:`JOBTMPL/PrepareJob/Input/publish_pages_on`.
+:Description:     Conditions on the pipeline's ref under which the documentation is published to
+                  :term:`GitHub Pages`, if :ref:`JOBTMPL/CompletePipeline/Input/documentation_steps` contains
+                  ``pages``. Forwarded to :ref:`JOBTMPL/PrepareJob/Input/publish_pages_on`. |br|
+                  A ``github-pages`` environment restricted to selected branches or tags rejects a deployment from
+                  any other ref before a runner is assigned, so the job fails after one second without a log. The
+                  conditions should not admit more refs than the environment does.
 
 .. _JOBTMPL/CompletePipeline/Input/miktex_image:
 
