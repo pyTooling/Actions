@@ -236,79 +236,17 @@ jobs:
       documentation_steps: 'none'
 
   VersionCheck:
-    name: 🔍 Check version
-    runs-on: 'ubuntu-26.04'
-    needs:
-      - Prepare
-      - UnitTestingParams
-    if: needs.Prepare.outputs.version != ''
-    steps:
-      - name: 🐍 Setup Python ${{ needs.UnitTestingParams.outputs.python_version }}
-        uses: actions/setup-python@v7
-        with:
-          python-version: ${{ needs.UnitTestingParams.outputs.python_version }}
-
-      - name: 🔧 Install pyTooling dependencies (native)
-        run: |
-          python -m pip install --disable-pip-version-check -U pyTooling packaging
-
-      - name: 🔍 Compare the release version with the version in Python code
-        shell: python
-        run: |
-          from sys                  import exit
-          from packaging.version    import InvalidVersion, Version
-          from pyTooling.Versioning import SemanticVersion
-
-          expectedVersion = "${{ needs.Prepare.outputs.version }}".strip()
-          versionFile =     "${{ needs.UnitTestingParams.outputs.package_version_file }}".strip()
-          codeVersion =     "${{ needs.UnitTestingParams.outputs.package_version }}".strip()
-
-          print(f"expected:  {expectedVersion}")
-          print(f"from code: {codeVersion} ({versionFile})")
-
-          if versionFile == "":
-            print(
-              f"::error title=VersionCheck::No version file found to check '{expectedVersion}' against, so the "
-              "release will be refused. Set 'version_file' if '__version__' isn't in the package's '__init__.py'."
-            )
-            exit(1)
-          elif codeVersion == "":
-            print(f"::error title=VersionCheck::'{versionFile}' has no '__version__', so the release will be refused.")
-            exit(1)
-
-          # The expected version is derived from the tag or pull-request title, so it may carry a 'v' or 'r' prefix,
-          # while a version in Python code never does. The versions match, if they are equal as semantic versions or
-          # as PEP 440 versions - '1.2.8.dev0' in code is PEP 440's spelling of 'v1.2.8-dev'.
-          def semanticEqual() -> bool:
-            try:
-              return SemanticVersion.Parse(expectedVersion) == SemanticVersion.Parse(codeVersion)
-            except Exception:
-              return False
-
-          def pep440Equal() -> bool:
-            try:
-              return Version(expectedVersion.removeprefix("r")) == Version(codeVersion)
-            except InvalidVersion:
-              return False
-
-          if not (semanticEqual() or pep440Equal()):
-            print(
-              f"::error title=VersionCheck::Version '{expectedVersion}' doesn't match '__version__' = '{codeVersion}' "
-              f"in '{versionFile}', so the release will be refused."
-            )
-            exit(1)
-
-          print("Versions match.")
-
-  ReleaseCheck:
     uses: pyTooling/Actions/.github/workflows/CheckReleaseVersion.yml@dev
     needs:
       - Prepare
       - UnitTestingParams
-    if: needs.Prepare.outputs.is_release_commit == 'true'
+    if: needs.Prepare.outputs.version != ''
     with:
+      python_version:       ${{ needs.UnitTestingParams.outputs.python_version }}
       version:              ${{ needs.Prepare.outputs.version }}
-      check_pypi_duplicate: ${{ inputs.check_pypi_duplicate }}
+      package_version:      ${{ needs.UnitTestingParams.outputs.package_version }}
+      package_version_file: ${{ needs.UnitTestingParams.outputs.package_version_file }}
+      check_pypi_duplicate: ${{ needs.Prepare.outputs.is_release_commit == 'true' && inputs.check_pypi_duplicate || 'false' }}
       pypi_package:         ${{ needs.UnitTestingParams.outputs.package_fullname }}
 
   UnitTesting:
@@ -524,7 +462,6 @@ jobs:
     needs:
       - Prepare
       - VersionCheck
-      - ReleaseCheck
       - UnitTesting
 #      - AppTesting
 #      - StaticTypeCheck
@@ -535,7 +472,6 @@ jobs:
       ${{ !failure() && !cancelled()
        && needs.Prepare.outputs.is_release_commit == 'true'
        && needs.VersionCheck.result == 'success'
-       && needs.ReleaseCheck.result == 'success'
        && github.event_name != 'schedule'
       }}
     permissions:

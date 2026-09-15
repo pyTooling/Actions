@@ -282,6 +282,8 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/CheckReleaseVersion.yml@dev
     with:
       version:              'v99.0.0'
+      package_version:      '99.0.0'
+      package_version_file: 'myPackage/__init__.py'
       check_pypi_duplicate: 'true'
       pypi_package:         'pyTooling'
 
