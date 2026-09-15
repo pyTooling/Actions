@@ -162,10 +162,38 @@ Verification
 ============
 
 A skipped job cannot be detected by looking at a green pipeline, so each combination needs a verification pipeline that
-actually exercises it. The templates in :file:`.github/workflows/_Checking_*.yml` cover the relevant combinations:
+actually exercises it. The workflows in :file:`.github/workflows/_Checking_*.yml` are called by this repository's own
+pipeline (see :ref:`DEV/Pipeline`) and cover the relevant combinations:
 :file:`_Checking_SimplePackage_Pipeline.yml` runs with application testing enabled, while
 :file:`_Checking_NamespacePackage_Pipeline.yml` disables it and requests ``html latex pdf``, so it combines a skipped
 job with jobs conditioned on ``documentation_steps``.
 
 When a new switch is added to a job template, add a combination disabling it to one of these pipelines and check the
 list of executed jobs of the resulting run, not only its conclusion.
+
+
+.. _DEV/Pipeline:
+
+This Repository's Pipeline
+##########################
+
+:file:`.github/workflows/Pipeline.yml` is the pipeline of ``pyTooling/Actions`` itself. It runs on every push and
+decides what a release does, so the verification workflows stay checks and don't publish anything.
+
+1. ``Prepare`` (:ref:`JOBTMPL/PrepareJob`) classifies the ref: a branch, a release commit on the main branch, or a
+   release tag.
+2. The verification workflows are called: ``Parameters``, ``JobTemplates``, ``SimplePackage``, ``NamespacePackage``
+   and ``AvailableRunners`` (see :ref:`DEV/ConditionalJobs/Verification`). Each is a reusable workflow with
+   ``workflow_call`` and ``workflow_dispatch``, so it can still be started by hand.
+3. ``TriggerTaggedRelease`` (:ref:`JOBTMPL/TagReleaseCommit`) tags a **release commit** - a merge commit on the main
+   branch whose pull-request title is a version - but only when all five verification workflows succeeded.
+4. The new tag starts this pipeline again. On that run ``ReleasePage`` (:ref:`JOBTMPL/PublishReleaseNotes`) publishes
+   the release notes from the pull-request's description, and ``UpdateVersionBranch``
+   (:ref:`JOBTMPL/UpdateVersionBranch`) opens the pull-request moving the major-version branch, e.g.
+   ``Updating r8 from v8.1.0``.
+
+.. note::
+
+   A reusable workflow called from here counts against GitHub's limits: at most 50 unique reusable workflows in the
+   whole tree and at most 10 nesting levels. This pipeline reaches 28 workflows and 3 levels, since the fixture
+   pipelines call :ref:`JOBTMPL/CompletePipeline`, which calls the job templates.

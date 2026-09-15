@@ -61,7 +61,13 @@ Tagging
 
 See context in :ghissue:`#5 Tagging/versioning of this repo <5>`.
 
-Tag new releases in the ``main`` branch using a semver compatible value, starting with ``v``:
+Tagging is done by this repository's pipeline (see :ref:`DEV/Pipeline`): when a release pull-request is merged into
+``main``, its title provides the version, and the merge commit is tagged once every verification workflow succeeded.
+The tag's pipeline run then publishes the release page and opens a pull-request moving the release branch, e.g.
+``Updating r8 from v8.1.0``.
+
+If the pipeline couldn't tag - a failing verification workflow, for example - the same is done by hand. Tag new
+releases in the ``main`` branch using a semver compatible value, starting with ``v``:
 
 .. code-block:: bash
 
