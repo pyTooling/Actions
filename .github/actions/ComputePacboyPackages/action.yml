@@ -113,12 +113,14 @@ runs:
             "osvvm":             "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p python-types-pyyaml:p",
           },
           "pytooling": {
+            "matplotlib":        "python-matplotlib:p",
             "pypi":              "python-aiohttp:p",
             "sphinx":            "python-markupsafe:p",
             "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           },
           # pyTooling's 'packaging', 'terminal' and 'testing' extras add setuptools, colorama and pytest, which
-          # are pure Python and install from PyPI on MSYS2 without help.
+          # are pure Python and install from PyPI on MSYS2 without help. So would a 'plotly' extra: plotly needs
+          # only narwhals and packaging.
         }
 
         regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:\s*,\s*\w+)*)\])?(?:\s*(?P<Comperator>[<>~=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
