@@ -111,13 +111,6 @@ jobs:
       - name: 🔢 Resolve and create the version branch
         id: version
         shell: bash
-        env:
-          GH_TOKEN:    ${{ github.token }}
-          REPOSITORY:  ${{ github.repository }}
-          VERSION:     ${{ inputs.version }}
-          PREFIX:      ${{ inputs.prefix }}
-          MAJOR:       ${{ inputs.major }}
-          MAIN_BRANCH: ${{ inputs.main_branch }}
         run: |
           # 🔢 Resolve and create the version branch
           set +e
@@ -128,24 +121,27 @@ jobs:
           ANSI_LIGHT_YELLOW=$'\x1b[93m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
+          export GH_TOKEN=${{ github.token }}
+
           # The version may be tagged with or without a prefix of its own ('v1.2.3' as well as '1.2.3'), and the
           # branch prefix is independent of it: 'v1.2.3' with prefix 'r' is branch 'r1'. Where the version branch
           # doesn't follow the released version's major at all, 'major' states it.
-          if [[ -n "${MAJOR}" ]]; then
-            major="${MAJOR}"
+          if [[ -n "${{ inputs.major }}" ]]; then
+            major="${{ inputs.major }}"
             majorSource="the 'major' parameter"
           else
-            core="${VERSION#[vr]}"
+            core="${{ inputs.version }}"
+            core="${core#[vr]}"
             major="${core%%.*}"
-            majorSource="'${VERSION}'"
+            majorSource="'${{ inputs.version }}'"
           fi
 
-          printf "%s\n"        "${ANSI_CYAN}Updating the version branch for '${VERSION}' ...${ANSI_NOCOLOR}"
-          printf "  %-16s%s\n" "Repository:"  "${REPOSITORY}"
-          printf "  %-16s%s\n" "Version:"     "${VERSION}"
+          printf "%s\n"        "${ANSI_CYAN}Updating the version branch for '${{ inputs.version }}' ...${ANSI_NOCOLOR}"
+          printf "  %-16s%s\n" "Repository:"  "${{ github.repository }}"
+          printf "  %-16s%s\n" "Version:"     "${{ inputs.version }}"
           printf "  %-16s%s\n" "Major:"       "${major} (from ${majorSource})"
-          printf "  %-16s%s\n" "Prefix:"      "${PREFIX}"
-          printf "  %-16s%s\n" "Main branch:" "${MAIN_BRANCH}"
+          printf "  %-16s%s\n" "Prefix:"      "${{ inputs.prefix }}"
+          printf "  %-16s%s\n" "Main branch:" "${{ inputs.main_branch }}"
           printf "%s\n" ""
 
           if [[ ! "${major}" =~ ^[0-9]+$ ]]; then
@@ -154,12 +150,12 @@ jobs:
             exit 1
           fi
 
-          branch="${PREFIX}${major}"
+          branch="${{ inputs.prefix }}${major}"
           printf "branch=%s\n"         "${branch}" >> "${GITHUB_OUTPUT}"
           printf "branch-created=%s\n" "false"     >> "${GITHUB_OUTPUT}"
 
           printf "%s" "Checking version branch '${branch}' ... "
-          if gh api "repos/${REPOSITORY}/git/ref/heads/${branch}" > /dev/null 2>&1; then
+          if gh api "repos/${{ github.repository }}/git/ref/heads/${branch}" > /dev/null 2>&1; then
             printf "%s\n" "${ANSI_LIGHT_GREEN}[FOUND]${ANSI_NOCOLOR}"
             exit 0
           fi
@@ -170,23 +166,23 @@ jobs:
           previous=""
           previousMajor=-1
           while read -r candidate; do
-            [[ "${candidate}" =~ ^${PREFIX}([0-9]+)$ ]] || continue
+            [[ "${candidate}" =~ ^${{ inputs.prefix }}([0-9]+)$ ]] || continue
             candidateMajor="${BASH_REMATCH[1]}"
             if [[ ${candidateMajor} -lt ${major} && ${candidateMajor} -gt ${previousMajor} ]]; then
               previousMajor="${candidateMajor}"
               previous="${candidate}"
             fi
-          done < <(gh api "repos/${REPOSITORY}/branches" --paginate --jq '.[].name' 2> /dev/null)
+          done < <(gh api "repos/${{ github.repository }}/branches" --paginate --jq '.[].name' 2> /dev/null)
 
           if [[ -n "${previous}" ]]; then
             printf "  %s\n" "Previous version branch: ${ANSI_LIGHT_GREEN}${previous}${ANSI_NOCOLOR}"
             source="heads/${previous}"
           else
-            printf "  %s\n" "${ANSI_LIGHT_YELLOW}No previous version branch — branching off '${MAIN_BRANCH}'.${ANSI_NOCOLOR}"
-            source="heads/${MAIN_BRANCH}"
+            printf "  %s\n" "${ANSI_LIGHT_YELLOW}No previous version branch — branching off '${{ inputs.main_branch }}'.${ANSI_NOCOLOR}"
+            source="heads/${{ inputs.main_branch }}"
           fi
 
-          sha="$(gh api "repos/${REPOSITORY}/git/ref/${source}" --jq '.object.sha' 2>&1)"
+          sha="$(gh api "repos/${{ github.repository }}/git/ref/${source}" --jq '.object.sha' 2>&1)"
           if [[ $? -ne 0 ]]; then
             printf "%s\n" "${ANSI_LIGHT_RED}Couldn't read '${source}'.${ANSI_NOCOLOR}"
             printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${sha}")"
@@ -195,7 +191,7 @@ jobs:
           fi
 
           printf "%s" "Creating branch '${branch}' at ${sha:0:7} ... "
-          messages="$(gh api --method POST "repos/${REPOSITORY}/git/refs" --field "ref=refs/heads/${branch}" --field "sha=${sha}" 2>&1)"
+          messages="$(gh api --method POST "repos/${{ github.repository }}/git/refs" --field "ref=refs/heads/${branch}" --field "sha=${sha}" 2>&1)"
           if [[ $? -ne 0 ]]; then
             printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
             printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${messages}")"
@@ -208,11 +204,6 @@ jobs:
       - name: ✏ Rewrite references to this repository
         id: rewrite
         shell: bash
-        env:
-          REPOSITORY:  ${{ github.repository }}
-          BRANCH:      ${{ steps.version.outputs.branch }}
-          MAIN_BRANCH: ${{ inputs.main_branch }}
-          UPDATE_PREFIX: ${{ inputs.update_branch_prefix || 'update/' }}
         run: |
           # ✏ Rewrite references to this repository
           set +e
@@ -226,16 +217,17 @@ jobs:
           # A workflow, action or badge on the version branch has to reference *that* branch. Only self-references
           # are rewritten - a reference to another repository ('pyTooling/Actions@r8', 'actions/checkout@v7') is a
           # separate decision and is left alone.
-          repoPattern="${REPOSITORY//./\\.}"
+          repoPattern="${{ github.repository }}"
+          repoPattern="${repoPattern//./\\.}"
 
-          printf "%s\n" "${ANSI_CYAN}Rewriting references to '${REPOSITORY}' to '${BRANCH}' ...${ANSI_NOCOLOR}"
+          printf "%s\n" "${ANSI_CYAN}Rewriting references to '${{ github.repository }}' to '${{ steps.version.outputs.branch }}' ...${ANSI_NOCOLOR}"
 
           changedFiles=()
           while IFS= read -r file; do
             [[ -f "${file}" ]] || continue
             sed -E --in-place \
-              -e "s|(${repoPattern}(/[^@[:space:]\"'\`)]*)?)@[A-Za-z0-9._/-]+|\1@${BRANCH}|g" \
-              -e "s|(actions/workflow/status/${repoPattern}/[^?]*\?branch=)[A-Za-z0-9._%/-]+|\1${BRANCH}|g" \
+              -e "s|(${repoPattern}(/[^@[:space:]\"'\`)]*)?)@[A-Za-z0-9._/-]+|\1@${{ steps.version.outputs.branch }}|g" \
+              -e "s|(actions/workflow/status/${repoPattern}/[^?]*\?branch=)[A-Za-z0-9._%/-]+|\1${{ steps.version.outputs.branch }}|g" \
               "${file}"
             if ! git diff --quiet -- "${file}"; then
               changedFiles+=("${file}")
@@ -245,7 +237,7 @@ jobs:
 
           if [[ ${#changedFiles[@]} -eq 0 ]]; then
             printf "%s\n" "${ANSI_LIGHT_GREEN}No reference had to be rewritten — the pull-request is a plain merge.${ANSI_NOCOLOR}"
-            printf "head=%s\n"      "${MAIN_BRANCH}" >> "${GITHUB_OUTPUT}"
+            printf "head=%s\n"      "${{ inputs.main_branch }}" >> "${GITHUB_OUTPUT}"
             printf "rewritten=%s\n" "false"          >> "${GITHUB_OUTPUT}"
             exit 0
           fi
@@ -254,13 +246,13 @@ jobs:
           git --no-pager diff --unified=0 -- "${changedFiles[@]}"
           printf "%s\n" ""
 
-          updateBranch="${UPDATE_PREFIX}${BRANCH}"
+          updateBranch="${{ inputs.update_branch_prefix || 'update/' }}${{ steps.version.outputs.branch }}"
 
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -q -B "${updateBranch}"
           git add -- "${changedFiles[@]}"
-          git commit -q -m "Rewrite references to '${BRANCH}' for the ${BRANCH} branch." -m "Automatically written by the 'UpdateVersionBranch' workflow."
+          git commit -q -m "Rewrite references to '${{ steps.version.outputs.branch }}' for the ${{ steps.version.outputs.branch }} branch." -m "Automatically written by the 'UpdateVersionBranch' workflow."
 
           printf "%s" "Pushing '${updateBranch}' ... "
           messages="$(git push --force origin "HEAD:refs/heads/${updateBranch}" 2>&1)"
@@ -278,14 +270,6 @@ jobs:
       - name: 🔀 Open the pull-request
         id: pullrequest
         shell: bash
-        env:
-          GH_TOKEN:    ${{ github.token }}
-          REPOSITORY:  ${{ github.repository }}
-          VERSION:     ${{ inputs.version }}
-          BRANCH:      ${{ steps.version.outputs.branch }}
-          HEAD:        ${{ steps.rewrite.outputs.head }}
-          REWRITTEN:   ${{ steps.rewrite.outputs.rewritten }}
-          MAIN_BRANCH: ${{ inputs.main_branch }}
         run: |
           # 🔀 Open the pull-request
           set +e
@@ -294,49 +278,51 @@ jobs:
           ANSI_LIGHT_GREEN=$'\x1b[92m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
+          export GH_TOKEN=${{ github.token }}
+
           printf "pull-request=%s\n" "" >> "${GITHUB_OUTPUT}"
 
-          printf "%s" "Comparing '${BRANCH}' with '${HEAD}' ... "
-          ahead="$(gh api "repos/${REPOSITORY}/compare/${BRANCH}...${HEAD}" --jq '.ahead_by' 2>&1)"
+          printf "%s" "Comparing '${{ steps.version.outputs.branch }}' with '${{ steps.rewrite.outputs.head }}' ... "
+          ahead="$(gh api "repos/${{ github.repository }}/compare/${{ steps.version.outputs.branch }}...${{ steps.rewrite.outputs.head }}" --jq '.ahead_by' 2>&1)"
           if [[ $? -ne 0 ]]; then
             printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
             printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${ahead}")"
-            printf "::error title=%s::%s\n" "UpdateVersionBranch" "Couldn't compare '${BRANCH}' with '${HEAD}': ${ahead//$'\n'/%0A}"
+            printf "::error title=%s::%s\n" "UpdateVersionBranch" "Couldn't compare '${{ steps.version.outputs.branch }}' with '${{ steps.rewrite.outputs.head }}': ${ahead//$'\n'/%0A}"
             exit 1
           fi
           printf "%s\n" "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR} (${ahead} commit(s) ahead)"
 
           if [[ "${ahead}" == "0" ]]; then
             printf "%s\n" ""
-            printf "%s\n" "${ANSI_LIGHT_GREEN}'${BRANCH}' already matches '${HEAD}' — nothing to update.${ANSI_NOCOLOR}"
+            printf "%s\n" "${ANSI_LIGHT_GREEN}'${{ steps.version.outputs.branch }}' already matches '${{ steps.rewrite.outputs.head }}' — nothing to update.${ANSI_NOCOLOR}"
             exit 0
           fi
 
-          if [[ "${REWRITTEN}" == "true" ]]; then
-            rewriteNote="* References to this repository were rewritten to \`${BRANCH}\` in a commit on \`${HEAD}\`."
+          if [[ "${{ steps.rewrite.outputs.rewritten }}" == "true" ]]; then
+            rewriteNote="* References to this repository were rewritten to \`${{ steps.version.outputs.branch }}\` in a commit on \`${{ steps.rewrite.outputs.head }}\`."
           else
-            rewriteNote="* No reference to this repository had to be rewritten, so this is a plain merge of \`${MAIN_BRANCH}\`."
+            rewriteNote="* No reference to this repository had to be rewritten, so this is a plain merge of \`${{ inputs.main_branch }}\`."
           fi
 
-          title="Updating ${BRANCH} from ${VERSION}"
+          title="Updating ${{ steps.version.outputs.branch }} from ${{ inputs.version }}"
           # Built line by line rather than from a here-document: a here-document's terminator has to start at column
           # zero, which would end this YAML block scalar.
           body="$(printf "%s\n" \
-            "This pull-request advances the \`${BRANCH}\` branch to the **${VERSION}** release." \
+            "This pull-request advances the \`${{ steps.version.outputs.branch }}\` branch to the **${{ inputs.version }}** release." \
             "" \
-            "Consumers pin \`${REPOSITORY}@${BRANCH}\`, so merging this makes that reference point at \`${VERSION}\`." \
+            "Consumers pin \`${{ github.repository }}@${{ steps.version.outputs.branch }}\`, so merging this makes that reference point at \`${{ inputs.version }}\`." \
             "" \
             "${rewriteNote}" \
-            "* Release: https://github.com/${REPOSITORY}/releases/tag/${VERSION}" \
-            "* Changes: https://github.com/${REPOSITORY}/compare/${BRANCH}...${HEAD}" \
+            "* Release: https://github.com/${{ github.repository }}/releases/tag/${{ inputs.version }}" \
+            "* Changes: https://github.com/${{ github.repository }}/compare/${{ steps.version.outputs.branch }}...${{ steps.rewrite.outputs.head }}" \
             "" \
             "Opened automatically by the \`UpdateVersionBranch\` workflow.")"
 
           # A patch release on an existing version branch finds the pull-request from the previous one still open.
-          existing="$(gh pr list --repo "${REPOSITORY}" --base "${BRANCH}" --head "${HEAD}" --state open --json number --jq '.[0].number' 2> /dev/null)"
+          existing="$(gh pr list --repo "${{ github.repository }}" --base "${{ steps.version.outputs.branch }}" --head "${{ steps.rewrite.outputs.head }}" --state open --json number --jq '.[0].number' 2> /dev/null)"
           if [[ -n "${existing}" ]]; then
             printf "%s" "Updating pull-request #${existing} ... "
-            messages="$(gh api --method PATCH "repos/${REPOSITORY}/pulls/${existing}" --field "title=${title}" --field "body=${body}" --jq '.html_url' 2>&1)"
+            messages="$(gh api --method PATCH "repos/${{ github.repository }}/pulls/${existing}" --field "title=${title}" --field "body=${body}" --jq '.html_url' 2>&1)"
             if [[ $? -ne 0 ]]; then
               printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
               printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${messages}")"
@@ -350,7 +336,7 @@ jobs:
           fi
 
           printf "%s" "Creating pull-request '${title}' ... "
-          messages="$(gh pr create --repo "${REPOSITORY}" --base "${BRANCH}" --head "${HEAD}" --title "${title}" --body "${body}" 2>&1)"
+          messages="$(gh pr create --repo "${{ github.repository }}" --base "${{ steps.version.outputs.branch }}" --head "${{ steps.rewrite.outputs.head }}" --title "${title}" --body "${body}" 2>&1)"
           if [[ $? -ne 0 ]]; then
             printf "%s\n" "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}"
             printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${messages}")"
