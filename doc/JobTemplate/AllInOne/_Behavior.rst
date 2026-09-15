@@ -7,7 +7,10 @@
    :ref:`JOBTMPL/CompletePipeline/Input/unittest_include_list`,
    :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`,
    :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`).
-4. Verify that the version in the Python code matches the version derived from the tag or pull-request title.
+4. Verify that the version in the Python code matches the version derived from the tag or pull-request title
+   (:ref:`JOBTMPL/CompletePipeline/Input/version_file`), and on a release commit, that PyPI has no release of this
+   version yet (:ref:`JOBTMPL/CompletePipeline/Input/check_pypi_duplicate`). |br|
+   Both checks run early. If one fails, the pipeline still runs, but steps 17 to 19 are refused.
 5. Run unit tests using pytest and collect code coverage.
 6. Verify type annotations using static typing analysis using mypy.
 7. Check documentation coverage using docstr_coverage and interrogate.
@@ -30,7 +33,7 @@
     :ref:`JOBTMPL/CompletePipeline/Input/miktex_image`, :ref:`JOBTMPL/CompletePipeline/Input/miktex_update`).
 16. Publish documentation to GitHub Pages (:ref:`JOBTMPL/CompletePipeline/Input/documentation_steps`: ``pages``).
 17. Tag a release commit, which triggers a second pipeline run for the new tag
-    (:ref:`JOBTMPL/CompletePipeline/Input/auto_tag`).
+    (:ref:`JOBTMPL/CompletePipeline/Input/auto_tag`). The tag is refused, if the tag or a release page already exists.
 18. Create a GitHub release page with text derived from the pull-request description and upload release assets.
 19. Publish wheel to PyPI.
 20. Delete the remaining artifacts (:ref:`JOBTMPL/CompletePipeline/Input/cleanup`).
