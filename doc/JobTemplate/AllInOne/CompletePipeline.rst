@@ -451,6 +451,8 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/miktex_update`                | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/publish_pages_on`             | no       | string | four conditions - see description                                          |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/auto_tag`                     | no       | string | ``'true'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`  | no       | string | ``''``                                                                     |
@@ -889,6 +891,12 @@ documentation_steps
 
                   A step that is not listed is skipped and its artifact is not produced.
 
+                  .. note::
+
+                     ``pages`` additionally requires the pipeline's ref to match
+                     :ref:`JOBTMPL/CompletePipeline/Input/publish_pages_on`.
+
+
 .. _JOBTMPL/CompletePipeline/Input/miktex_image:
 
 miktex_image
@@ -915,6 +923,23 @@ miktex_update
                   Forwarded to :ref:`JOBTMPL/LaTeXDocumentation/Input/update`. |br|
                   ``'true'`` - update the packages inside the container first. |br|
                   ``'false'`` - use the packages shipped with the image.
+
+
+.. _JOBTMPL/CompletePipeline/Input/publish_pages_on:
+
+publish_pages_on
+================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``default-branch``, ``development-branch``, ``release-tag`` and ``nightly-tag``, one per line.
+:Possible Values: A newline separated list of conditions, see :ref:`JOBTMPL/PrepareJob/Input/publish_pages_on`.
+:Description:     Conditions on the pipeline's ref under which the documentation is published to
+                  :term:`GitHub Pages`, if :ref:`JOBTMPL/CompletePipeline/Input/documentation_steps` contains
+                  ``pages``. Forwarded to :ref:`JOBTMPL/PrepareJob/Input/publish_pages_on`. |br|
+                  A ``github-pages`` environment restricted to selected branches or tags rejects a deployment from
+                  any other ref before a runner is assigned, so the job fails after one second without a log. The
+                  conditions should not admit more refs than the environment does.
 
 
 .. _JOBTMPL/CompletePipeline/Input/auto_tag:
