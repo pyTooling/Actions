@@ -55,6 +55,7 @@
 
       .. rubric:: Releasing
 
+      * :ref:`JOBTMPL/CheckReleaseVersion`
       * :ref:`JOBTMPL/PublishReleaseNotes`
       * :ref:`JOBTMPL/TagReleaseCommit`
       * :ref:`JOBTMPL/UpdateVersionBranch`

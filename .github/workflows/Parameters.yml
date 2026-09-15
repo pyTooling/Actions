@@ -134,6 +134,9 @@ on:
       package_version_file:
         description: "Path to the package's module containing the version ('__version__' variable)."
         value: ${{ jobs.Parameters.outputs.package_version_file }}
+      package_version:
+        description: "Version from the '__version__' variable in 'package_version_file'."
+        value: ${{ jobs.Parameters.outputs.package_version }}
       artifact_basename:
         description: "Artifact base name."
         value: ${{ jobs.Parameters.outputs.artifact_basename }}
@@ -153,6 +156,7 @@ jobs:
       package_fullname:     ${{ steps.variables.outputs.package_fullname }}
       package_directory:    ${{ steps.variables.outputs.package_directory }}
       package_version_file: ${{ steps.variables.outputs.package_version_file }}
+      package_version:      ${{ steps.version.outputs.package_version }}
       artifact_basename:    ${{ steps.variables.outputs.artifact_basename }}
       artifact_names:       ${{ steps.artifacts.outputs.artifact_names }}
       python_jobs:          ${{ steps.jobs.outputs.python_jobs }}
@@ -229,6 +233,45 @@ jobs:
               package_version_file={package_version_file}
               artifact_basename={artifact_basename}
           """))
+
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
+        if: steps.variables.outputs.package_version_file != ''
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: 🔧 Install pyTooling dependencies (native)
+        if: steps.variables.outputs.package_version_file != ''
+        run: |
+          python -m pip install --disable-pip-version-check -U pyTooling
+
+      - name: Generate 'package_version'
+        id: version
+        if: steps.variables.outputs.package_version_file != ''
+        shell: python
+        run: |
+          from os                  import getenv
+          from pathlib             import Path
+          from pyTooling.Packaging import extractVersionInformation
+
+          versionFile = Path("${{ steps.variables.outputs.package_version_file }}")
+          print(f"Extract '__version__' from '{versionFile}' ... ", end="")
+          try:
+            package_version = extractVersionInformation(versionFile).Version or ""
+          except Exception as ex:
+            package_version = ""
+            print("❌")
+            print(f"::warning title=Parameters::Can't extract '__version__' from '{versionFile}': {ex}")
+          else:
+            if package_version == "":
+              print("❌")
+              print(f"::warning title=Parameters::'{versionFile}' has no '__version__'.")
+            else:
+              print(f"✅ {package_version}")
+
+          github_output = Path(getenv("GITHUB_OUTPUT"))
+          with github_output.open("a+", encoding="utf-8") as f:
+            f.write(f"package_version={package_version}\n")
 
       - name: Generate 'artifact_names'
         id: artifacts

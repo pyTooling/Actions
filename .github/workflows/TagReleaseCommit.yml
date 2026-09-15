@@ -57,6 +57,45 @@ jobs:
       actions:  write   # required to start a new pipeline
 
     steps:
+      - name: 🔍 Check that neither tag nor release page '${{ inputs.version }}' exists
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          export GH_TOKEN=${{ github.token }}
+
+          errorCount=0
+
+          checkAbsent() {  # <what> <API path>
+            local what="$1" path="$2" status
+
+            printf "Check that %s '%s' doesn't exist ... " "${what}" "${{ inputs.version }}"
+            status="$(gh api --include "${path}" 2>/dev/null | head -n 1 | cut -d ' ' -f 2)"
+            if [[ "${status}" == "404" ]]; then
+              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            elif [[ "${status}" == "200" ]]; then
+              printf "${ANSI_LIGHT_RED}[EXISTS]${ANSI_NOCOLOR}\n"
+              printf "::error title=TagReleaseCommit::%s '%s' already exists.\n" "${what^}" "${{ inputs.version }}"
+              errorCount=$((errorCount + 1))
+            else
+              printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+              printf "::error title=TagReleaseCommit::Couldn't query %s '%s' (HTTP %s).\n" \
+                "${what}" "${{ inputs.version }}" "${status}"
+              errorCount=$((errorCount + 1))
+            fi
+          }
+
+          checkAbsent "tag"          "repos/${GITHUB_REPOSITORY}/git/ref/tags/${{ inputs.version }}"
+          checkAbsent "release page" "repos/${GITHUB_REPOSITORY}/releases/tags/${{ inputs.version }}"
+
+          if [[ ${errorCount} -ne 0 ]]; then
+            printf "${ANSI_LIGHT_RED}Refusing to tag '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.version }}"
+            exit 1
+          fi
+
       - name: 🏷 Create release tag '${{ steps.FindPullRequest.outputs.version }}'
         uses: actions/github-script@v9
         id: createReleaseTag

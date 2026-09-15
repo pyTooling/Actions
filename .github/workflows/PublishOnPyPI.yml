@@ -44,6 +44,11 @@ on:
         description: 'Name of the package artifact.'
         required: true
         type: string
+      pypi_upload_url:
+        description: 'Upload URL of the package registry.'
+        required: false
+        default: 'https://upload.pypi.org/legacy/'
+        type: string
       dry_run:
         description: 'Validate the packages with twine, but do not upload them to PyPI.'
         required: false
@@ -88,14 +93,14 @@ jobs:
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: twine upload dist/*.whl
+        run: twine upload --repository-url "${{ inputs.pypi_upload_url }}" dist/*.whl
 
       - name: ⤴ Publish Python source package to PyPI
         if: inputs.dry_run != 'true'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: twine upload dist/*.tar.gz
+        run: twine upload --repository-url "${{ inputs.pypi_upload_url }}" dist/*.tar.gz
 
       - name: 🗑️ Delete packaging Artifacts
         uses: geekyeggo/delete-artifact@v6

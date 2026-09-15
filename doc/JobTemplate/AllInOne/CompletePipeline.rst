@@ -427,6 +427,8 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/package_name`                 | yes      | string | — — — —                                                                    |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/version_file`                 | no       | string | ``'__init__.py'``                                                          |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`      | no       | string | ``'3.14'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list` | no       | string | ``'3.10 3.11 3.12 3.13 3.14'``                                             |
@@ -455,6 +457,10 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/auto_tag`                     | no       | string | ``'true'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/check_pypi_duplicate`         | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/pypi_url`                     | no       | string | ``'https://pypi.org'``                                                     |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`  | no       | string | ``''``                                                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_system_list`          | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``         |
@@ -474,6 +480,8 @@ Parameter Summary
 | :ref:`JOBTMPL/CompletePipeline/Input/dorny`                        | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/pypi_dry_run`                 | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/pypi_upload_url`              | no       | string | ``'https://upload.pypi.org/legacy/'``                                      |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                      | no       | string | ``'true'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -593,6 +601,23 @@ package_name
                                  🐍SubModuleA.py
                                🐍__init__.py
                                🐍ModuleB.py
+
+
+.. _JOBTMPL/CompletePipeline/Input/version_file:
+
+version_file
+============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'__init__.py'``
+:Possible Values: Any path relative to the package directory.
+:Description:     Module inside the package that carries the ``__version__`` variable. Forwarded to
+                  :ref:`JOBTMPL/Parameters/Input/version_file`. |br|
+                  A namespace package has no :file:`__init__.py` in its root, so its version is kept in a sub-package,
+                  e.g. ``'Common/__init__.py'`` for ``pyTooling.*``. |br|
+                  On a release commit and in the tag pipeline, this version must match the version derived from the
+                  pull-request title or tag, otherwise the release is refused.
 
 
 .. _JOBTMPL/CompletePipeline/Input/unittest_python_version:
@@ -959,6 +984,39 @@ auto_tag
                   ``'false'`` - never tag automatically.
 
 
+.. _JOBTMPL/CompletePipeline/Input/check_pypi_duplicate:
+
+check_pypi_duplicate
+====================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Refuse to tag a release commit, if :ref:`JOBTMPL/CompletePipeline/Input/pypi_url` - by default
+                  :term:`PyPI` - already has a release of this version. Forwarded to
+                  :ref:`JOBTMPL/CheckReleaseVersion/Input/check_pypi_duplicate`. |br|
+                  PyPI never accepts a version twice, but it refuses the upload only at the end of the tag pipeline -
+                  after the tag was created and the release page was published. |br|
+                  ``'true'`` - query PyPI before tagging. |br|
+                  ``'false'`` - don't query PyPI, e.g. for a package that isn't published there.
+
+
+.. _JOBTMPL/CompletePipeline/Input/pypi_url:
+
+pypi_url
+========
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'https://pypi.org'``
+:Possible Values: Base URL of a package registry offering the PyPI JSON API, e.g. ``'https://test.pypi.org'``.
+:Description:     The package registry checked for an existing release, if
+                  :ref:`JOBTMPL/CompletePipeline/Input/check_pypi_duplicate` is ``'true'``. Forwarded to
+                  :ref:`JOBTMPL/CheckReleaseVersion/Input/pypi_url`. |br|
+                  Set :ref:`JOBTMPL/CompletePipeline/Input/pypi_upload_url` to the same registry.
+
+
 .. _JOBTMPL/CompletePipeline/Input/pypi_dry_run:
 
 pypi_dry_run
@@ -974,6 +1032,20 @@ pypi_dry_run
                   exercise the job templates, or a fork that must not push to the upstream project's PyPI name. |br|
                   ``'true'`` - check the packages and publish nothing. |br|
                   ``'false'`` - publish the packages.
+
+
+.. _JOBTMPL/CompletePipeline/Input/pypi_upload_url:
+
+pypi_upload_url
+===============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'https://upload.pypi.org/legacy/'``
+:Possible Values: Upload URL of a package registry, e.g. ``'https://test.pypi.org/legacy/'``.
+:Description:     The package registry the packages are uploaded to. Forwarded to
+                  :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_upload_url`. |br|
+                  Set :ref:`JOBTMPL/CompletePipeline/Input/pypi_url` to the same registry.
 
 
 .. _JOBTMPL/CompletePipeline/Input/cleanup:
