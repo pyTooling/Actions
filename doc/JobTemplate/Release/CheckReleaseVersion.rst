@@ -19,11 +19,11 @@ and announced.
 
 .. topic:: Behavior
 
-   1. Job ``VersionCheck``: compare :ref:`JOBTMPL/CheckReleaseVersion/Input/version` with :ref:`JOBTMPL/CheckReleaseVersion/Input/package_version`, read from
-      :ref:`JOBTMPL/CheckReleaseVersion/Input/package_version_file`. Both are parsed as ``pyTooling.Versioning.PythonVersion``, so a ``v`` prefix is
-      ignored and ``v1.2.0-rc1`` equals ``1.2.0rc1``. |br|
-      The job fails, if the versions differ, if a version can't be parsed, or if there is no version file or no
-      ``__version__``.
+   1. Job ``VersionCheck``: compare :ref:`JOBTMPL/CheckReleaseVersion/Input/version` with
+      :ref:`JOBTMPL/CheckReleaseVersion/Input/package_version`. Both are parsed as ``pyTooling.Versioning.PythonVersion``,
+      so a ``v`` prefix is ignored and ``v1.2.0-rc1`` equals ``1.2.0rc1``. |br|
+      The job fails, if the versions differ, if a version can't be parsed, or if
+      :ref:`JOBTMPL/CheckReleaseVersion/Input/package_version` is empty.
    2. Job ``RegistryCheck``, if :ref:`JOBTMPL/CheckReleaseVersion/Input/check_pypi_duplicate` is ``'true'``: ask the JSON API of :ref:`JOBTMPL/CheckReleaseVersion/Input/pypi_url`
       for release :ref:`JOBTMPL/CheckReleaseVersion/Input/version` of package :ref:`JOBTMPL/CheckReleaseVersion/Input/pypi_package`. |br|
       PyPI normalizes the package name (``pyEDAA.Reports`` equals ``pyedaa-reports``) and the version (``v1.2.0`` and
@@ -67,7 +67,6 @@ PyPI is only asked on a release commit.
        with:
          version:              ${{ needs.Prepare.outputs.version }}
          package_version:      ${{ needs.UnitTestingParams.outputs.package_version }}
-         package_version_file: ${{ needs.UnitTestingParams.outputs.package_version_file }}
          check_pypi_duplicate: ${{ needs.Prepare.outputs.is_release_commit }}
          pypi_package:         ${{ needs.UnitTestingParams.outputs.package_fullname }}
 
@@ -110,8 +109,6 @@ Parameter Summary
 | :ref:`JOBTMPL/CheckReleaseVersion/Input/version`              | yes      | string | — — — —                |
 +---------------------------------------------------------------+----------+--------+------------------------+
 | :ref:`JOBTMPL/CheckReleaseVersion/Input/package_version`      | no       | string | ``''``                 |
-+---------------------------------------------------------------+----------+--------+------------------------+
-| :ref:`JOBTMPL/CheckReleaseVersion/Input/package_version_file` | no       | string | ``''``                 |
 +---------------------------------------------------------------+----------+--------+------------------------+
 | :ref:`JOBTMPL/CheckReleaseVersion/Input/check_pypi_duplicate` | no       | string | ``'false'``            |
 +---------------------------------------------------------------+----------+--------+------------------------+
@@ -180,23 +177,9 @@ package_version
 :Required:        no
 :Default Value:   ``''``
 :Possible Values: A version as written in Python code, e.g. ``'1.2.3'``.
-:Description:     The value of ``__version__`` in :ref:`JOBTMPL/CheckReleaseVersion/Input/package_version_file`, as
+:Description:     The value of ``__version__`` in the package's version file, as
                   :ref:`JOBTMPL/Parameters/Output/package_version` provides it. |br|
-                  An empty string fails the check.
-
-
-.. _JOBTMPL/CheckReleaseVersion/Input/package_version_file:
-
-package_version_file
-====================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``''``
-:Possible Values: Path to a Python module.
-:Description:     The module carrying ``__version__``, as :ref:`JOBTMPL/Parameters/Output/package_version_file` provides
-                  it. It is named in error messages. |br|
-                  An empty string - no version file was found - fails the check.
+                  An empty string - no version file or no ``__version__`` was found - fails the check.
 
 
 .. _JOBTMPL/CheckReleaseVersion/Input/check_pypi_duplicate:

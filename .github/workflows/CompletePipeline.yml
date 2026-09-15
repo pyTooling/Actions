@@ -255,7 +255,6 @@ jobs:
       python_version:       ${{ needs.UnitTestingParams.outputs.python_version }}
       version:              ${{ needs.Prepare.outputs.version }}
       package_version:      ${{ needs.UnitTestingParams.outputs.package_version }}
-      package_version_file: ${{ needs.UnitTestingParams.outputs.package_version_file }}
       check_pypi_duplicate: ${{ needs.Prepare.outputs.is_release_commit == 'true' && inputs.check_pypi_duplicate || 'false' }}
       pypi_url:             ${{ inputs.pypi_url }}
       pypi_package:         ${{ needs.UnitTestingParams.outputs.package_fullname }}

@@ -39,12 +39,7 @@ on:
         required: true
         type: string
       package_version:
-        description: "Version from the '__version__' variable in 'package_version_file'."
-        required: false
-        default: ''
-        type: string
-      package_version_file:
-        description: "Path to the package's module containing the version ('__version__' variable)."
+        description: "Version from the '__version__' variable in the package's version file."
         required: false
         default: ''
         type: string
@@ -85,20 +80,16 @@ jobs:
           from pyTooling.Versioning import PythonVersion
 
           expectedVersion = "${{ inputs.version }}".strip()
-          versionFile =     "${{ inputs.package_version_file }}".strip()
           codeVersion =     "${{ inputs.package_version }}".strip()
 
           print(f"expected:  {expectedVersion}")
-          print(f"from code: {codeVersion} ({versionFile})")
+          print(f"from code: {codeVersion}")
 
-          if versionFile == "":
+          if codeVersion == "":
             print(
-              f"::error title=VersionCheck::No version file found to check '{expectedVersion}' against, so the "
-              "release will be refused. Set 'version_file' if '__version__' isn't in the package's '__init__.py'."
+              f"::error title=VersionCheck::No '__version__' found to check '{expectedVersion}' against, so the release "
+              "will be refused. Set 'version_file' if '__version__' isn't in the package's '__init__.py'."
             )
-            exit(1)
-          elif codeVersion == "":
-            print(f"::error title=VersionCheck::'{versionFile}' has no '__version__', so the release will be refused.")
             exit(1)
 
           try:
@@ -112,8 +103,8 @@ jobs:
 
           if not match:
             print(
-              f"::error title=VersionCheck::Version '{expectedVersion}' doesn't match '__version__' = '{codeVersion}' "
-              f"in '{versionFile}', so the release will be refused."
+              f"::error title=VersionCheck::Version '{expectedVersion}' doesn't match '__version__' = '{codeVersion}', so "
+              "the release will be refused."
             )
             exit(1)
 
