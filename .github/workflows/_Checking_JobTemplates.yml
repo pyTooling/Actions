@@ -278,6 +278,13 @@ jobs:
       coverage: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
       typing:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
+  ReleaseCheck:
+    uses: pyTooling/Actions/.github/workflows/CheckReleaseVersion.yml@dev
+    with:
+      version:              'v99.0.0'
+      check_pypi_duplicate: 'true'
+      pypi_package:         'pyTooling'
+
   TriggerTaggedRelease:
     uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@dev
     needs:

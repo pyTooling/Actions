@@ -42,16 +42,24 @@ triggers a new pipeline run for that tag, a.k.a *tag pipeline* or *release pipel
 
 .. topic:: Features
 
+   * Refuse to tag, if the tag or a release page for the version already exists.
    * Tag the current pipeline's commit.
    * Trigger a new pipeline run for this new tag.
 
 .. topic:: Behavior
 
-   1. Tag the current commit with a tag named like :ref:`JOBTMPL/TagReleaseCommit/Input/version`.
-   2. Trigger a pipeline run for the new tag (:ref:`JOBTMPL/TagReleaseCommit/Input/workflow`).
+   1. Check that neither a tag nor a release page named like :ref:`JOBTMPL/TagReleaseCommit/Input/version` exists. |br|
+      Otherwise the job fails before anything is tagged.
+   2. Tag the current commit with a tag named like :ref:`JOBTMPL/TagReleaseCommit/Input/version`.
+   3. Trigger a pipeline run for the new tag (:ref:`JOBTMPL/TagReleaseCommit/Input/workflow`).
 
    The job is skipped unless :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag` is ``'true'``. Tagging from a workflow does
-   not trigger a tag pipeline by itself, which is why the second step dispatches the run explicitly.
+   not trigger a tag pipeline by itself, which is why the third step dispatches the run explicitly.
+
+   .. seealso::
+
+      :ref:`JOBTMPL/CheckReleaseVersion`
+        Check early in a pipeline that a package registry has no release of the version yet.
 
    .. note::
 
