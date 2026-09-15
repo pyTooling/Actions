@@ -113,7 +113,7 @@ runs:
             "osvvm":             "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p python-types-pyyaml:p",
           },
           "pytooling": {
-            "matplotlib":        "python-matplotlib:p",
+            "diagram":           "python-matplotlib:p",
             "pypi":              "python-aiohttp:p",
             "sphinx":            "python-markupsafe:p",
             "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
