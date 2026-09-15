@@ -13,14 +13,15 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
 
 .. topic:: Features
 
-   * Publish a Python package to :term:`PyPI`.
+   * Publish a Python package to :term:`PyPI` or another package registry
+     (:ref:`JOBTMPL/PublishOnPyPI/Input/pypi_upload_url`).
 
 .. topic:: Behavior
 
    1. Download the package artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/artifact`).
    2. Setup Python (:ref:`JOBTMPL/PublishOnPyPI/Input/python_version`) and install dependencies
       (:ref:`JOBTMPL/PublishOnPyPI/Input/requirements`), which must provide :term:`twine`.
-   3. Publish the wheel package(s) (:file:`*.whl`).
+   3. Publish the wheel package(s) (:file:`*.whl`) to :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_upload_url`.
    4. Publish the source package(s) (:file:`*.tar.gz`). |br|
       Steps 3 and 4 are replaced by a ``twine check`` of both package kinds if
       :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run` is enabled.
@@ -116,21 +117,23 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PublishOnPyPI/Inputs>`
 
-+---------------------------------------------------------+----------+--------+-------------------+
-| Parameter Name                                          | Required | Type   | Default           |
-+=========================================================+==========+========+===================+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/ubuntu_image_version` | no       | string | ``'26.04'``       |
-+---------------------------------------------------------+----------+--------+-------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/python_version`       | no       | string | ``'3.14'``        |
-+---------------------------------------------------------+----------+--------+-------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/requirements`         | no       | string | ``'wheel twine'`` |
-+---------------------------------------------------------+----------+--------+-------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/artifact`             | yes      | string | — — — —           |
-+---------------------------------------------------------+----------+--------+-------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run`              | no       | string | ``'false'``       |
-+---------------------------------------------------------+----------+--------+-------------------+
-| :ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`              | no       | string | ``'true'``        |
-+---------------------------------------------------------+----------+--------+-------------------+
++---------------------------------------------------------+----------+--------+---------------------------------------+
+| Parameter Name                                          | Required | Type   | Default                               |
++=========================================================+==========+========+=======================================+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/ubuntu_image_version` | no       | string | ``'26.04'``                           |
++---------------------------------------------------------+----------+--------+---------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/python_version`       | no       | string | ``'3.14'``                            |
++---------------------------------------------------------+----------+--------+---------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/requirements`         | no       | string | ``'wheel twine'``                     |
++---------------------------------------------------------+----------+--------+---------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/artifact`             | yes      | string | — — — —                               |
++---------------------------------------------------------+----------+--------+---------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run`              | no       | string | ``'false'``                           |
++---------------------------------------------------------+----------+--------+---------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_upload_url`      | no       | string | ``'https://upload.pypi.org/legacy/'`` |
++---------------------------------------------------------+----------+--------+---------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`              | no       | string | ``'true'``                            |
++---------------------------------------------------------+----------+--------+---------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishOnPyPI/Secrets>`
 
@@ -200,6 +203,21 @@ dry_run
                   metadata are exercised - only the two ``twine upload`` calls are skipped. |br|
                   ``'true'`` - check the packages and publish nothing. |br|
                   ``'false'`` - publish the packages.
+
+
+.. _JOBTMPL/PublishOnPyPI/Input/pypi_upload_url:
+
+pypi_upload_url
+===============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'https://upload.pypi.org/legacy/'``
+:Possible Values: Upload URL of a package registry, as ``twine upload --repository-url`` takes it, e.g.
+                  ``'https://test.pypi.org/legacy/'`` for TestPyPI.
+:Description:     The package registry the packages are uploaded to. |br|
+                  A registry's upload URL isn't its website: :term:`PyPI` is ``https://pypi.org``, but uploads go to
+                  ``https://upload.pypi.org/legacy/``.
 
 
 .. _JOBTMPL/PublishOnPyPI/Input/cleanup:
