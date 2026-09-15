@@ -33,6 +33,11 @@ on:
         description: 'Name of the tool''s package.'
         required: true
         type: string
+      version_file:
+        description: "Module inside the package carrying '__version__', relative to the package directory."
+        required: false
+        default: '__init__.py'
+        type: string
       unittest_python_version:
         description: 'Python version.'
         required: false
@@ -152,6 +157,11 @@ on:
         required: false
         default: 'true'
         type: string
+      check_pypi_duplicate:
+        description: 'Refuse to tag a release commit if PyPI already has a release of this version.'
+        required: false
+        default: 'true'
+        type: string
       pypi_dry_run:
         description: 'Validate the packages with twine, but do not upload them to PyPI.'
         required: false
@@ -188,6 +198,7 @@ jobs:
     with:
       package_namespace:   ${{ inputs.package_namespace }}
       package_name:        ${{ inputs.package_name }}
+      version_file:        ${{ inputs.version_file }}
       python_version:      ${{ inputs.unittest_python_version }}
       python_version_list: ${{ inputs.unittest_python_version_list }}
       system_list:         ${{ inputs.unittest_system_list }}
@@ -202,6 +213,7 @@ jobs:
     with:
       package_namespace:   ${{ inputs.package_namespace }}
       package_name:        ${{ inputs.package_name }}
+      version_file:        ${{ inputs.version_file }}
       python_version:      ${{ inputs.apptest_python_version }}
       python_version_list: ${{ inputs.apptest_python_version_list }}
       system_list:         ${{ inputs.apptest_system_list }}
@@ -214,6 +226,7 @@ jobs:
     with:
       package_namespace:   ${{ inputs.package_namespace }}
       package_name:        ${{ inputs.package_name }}
+      version_file:        ${{ inputs.version_file }}
       python_version:      ${{ inputs.unittest_python_version }}
       python_version_list: ''
       system_list:         ${{ inputs.unittest_system_list }}
@@ -223,67 +236,80 @@ jobs:
       documentation_steps: 'none'
 
   VersionCheck:
+    name: 🔍 Check version
     runs-on: 'ubuntu-26.04'
     needs:
       - Prepare
       - UnitTestingParams
-    if: needs.Prepare.outputs.version != '' && needs.UnitTestingParams.outputs.package_version_file != ''
-    outputs:
-      code_version: ${{ steps.extract.outputs.code_version }}
+    if: needs.Prepare.outputs.version != ''
     steps:
-      - name: ⏬ Checkout repository
-        uses: actions/checkout@v7
+      - name: 🐍 Setup Python ${{ needs.UnitTestingParams.outputs.python_version }}
+        uses: actions/setup-python@v7
         with:
-          # The command 'git describe' (used for version) needs the history.
-          fetch-depth: 0
+          python-version: ${{ needs.UnitTestingParams.outputs.python_version }}
 
       - name: 🔧 Install pyTooling dependencies (native)
         run: |
-          python -m pip install --disable-pip-version-check -U pyTooling
+          python -m pip install --disable-pip-version-check -U pyTooling packaging
 
-      - name: Extract version from Python source file
-        id: extract
-        if: endsWith(needs.UnitTestingParams.outputs.package_version_file, '.py')
+      - name: 🔍 Compare the release version with the version in Python code
         shell: python
         run: |
-          from os                   import getenv
-          from pathlib              import Path
           from sys                  import exit
-          from textwrap             import dedent
-          from pyTooling.Packaging  import extractVersionInformation
+          from packaging.version    import InvalidVersion, Version
           from pyTooling.Versioning import SemanticVersion
 
           expectedVersion = "${{ needs.Prepare.outputs.version }}".strip()
+          versionFile =     "${{ needs.UnitTestingParams.outputs.package_version_file }}".strip()
+          codeVersion =     "${{ needs.UnitTestingParams.outputs.package_version }}".strip()
 
-          versionFile = Path("${{ needs.UnitTestingParams.outputs.package_version_file }}")
-          if not versionFile.exists():
-            print(f"::error title=CompletePipeline::Version file '{versionFile}' doesn't exist.")
+          print(f"expected:  {expectedVersion}")
+          print(f"from code: {codeVersion} ({versionFile})")
+
+          if versionFile == "":
+            print(
+              f"::error title=VersionCheck::No version file found to check '{expectedVersion}' against, so the "
+              "release will be refused. Set 'version_file' if '__version__' isn't in the package's '__init__.py'."
+            )
+            exit(1)
+          elif codeVersion == "":
+            print(f"::error title=VersionCheck::'{versionFile}' has no '__version__', so the release will be refused.")
             exit(1)
 
-          versionInformation = extractVersionInformation(versionFile)
-          print(f"expected:  {expectedVersion}")
-          print(f"from code: {versionInformation.Version}")
+          # The expected version is derived from the tag or pull-request title, so it may carry a 'v' or 'r' prefix,
+          # while a version in Python code never does. The versions match, if they are equal as semantic versions or
+          # as PEP 440 versions - '1.2.8.dev0' in code is PEP 440's spelling of 'v1.2.8-dev'.
+          def semanticEqual() -> bool:
+            try:
+              return SemanticVersion.Parse(expectedVersion) == SemanticVersion.Parse(codeVersion)
+            except Exception:
+              return False
 
-          # The expected version is derived from the tag, so it may carry a 'v' or 'r' prefix, while
-          # a version in Python code never does. Compare the parsed versions, which ignore the prefix.
-          try:
-            expected = SemanticVersion.Parse(expectedVersion)
-            fromCode = SemanticVersion.Parse(versionInformation.Version)
-          except Exception as ex:
-            print(f"::error title=CompletePipeline::Can't parse version ('{expectedVersion}' / '{versionInformation.Version}'): {ex}")
-            exit(2)
+          def pep440Equal() -> bool:
+            try:
+              return Version(expectedVersion.removeprefix("r")) == Version(codeVersion)
+            except InvalidVersion:
+              return False
 
-          if expected != fromCode:
-            print(f"::error title=CompletePipeline::Expected version ({expectedVersion}) doesn't match the version in Python code ({versionInformation.Version}).")
-            exit(2)
+          if not (semanticEqual() or pep440Equal()):
+            print(
+              f"::error title=VersionCheck::Version '{expectedVersion}' doesn't match '__version__' = '{codeVersion}' "
+              f"in '{versionFile}', so the release will be refused."
+            )
+            exit(1)
 
-          # Write jobs to special file
-          github_output = Path(getenv("GITHUB_OUTPUT"))
-          print(f"GITHUB_OUTPUT: {github_output}")
-          with github_output.open("a+", encoding="utf-8") as f:
-            f.write(dedent(f"""\
-              code_version={versionInformation.Version}
-            """))
+          print("Versions match.")
+
+  ReleaseCheck:
+    uses: pyTooling/Actions/.github/workflows/CheckReleaseVersion.yml@dev
+    needs:
+      - Prepare
+      - UnitTestingParams
+    if: needs.Prepare.outputs.is_release_commit == 'true'
+    with:
+      version:              ${{ needs.Prepare.outputs.version }}
+      check_pypi_duplicate: ${{ inputs.check_pypi_duplicate }}
+      pypi_package:         ${{ needs.UnitTestingParams.outputs.package_fullname }}
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@dev
@@ -497,6 +523,8 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@dev
     needs:
       - Prepare
+      - VersionCheck
+      - ReleaseCheck
       - UnitTesting
 #      - AppTesting
 #      - StaticTypeCheck
@@ -506,6 +534,8 @@ jobs:
     if: >-
       ${{ !failure() && !cancelled()
        && needs.Prepare.outputs.is_release_commit == 'true'
+       && needs.VersionCheck.result == 'success'
+       && needs.ReleaseCheck.result == 'success'
        && github.event_name != 'schedule'
       }}
     permissions:
@@ -520,6 +550,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@dev
     needs:
       - Prepare
+      - VersionCheck
       - UnitTesting
 #      - AppTesting
 #      - StaticTypeCheck
@@ -529,6 +560,7 @@ jobs:
     if: >-
       ${{ !failure() && !cancelled()
        && needs.Prepare.outputs.is_release_tag == 'true'
+       && needs.VersionCheck.result == 'success'
       }}
     permissions:
       contents: write
@@ -541,6 +573,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@dev
     needs:
       - Prepare
+      - VersionCheck
       - UnitTestingParams
       - Package
       - ReleasePage
@@ -548,6 +581,7 @@ jobs:
       ${{ !failure() && !cancelled()
        && needs.Package.result == 'success'
        && needs.Prepare.outputs.is_release_tag == 'true'
+       && needs.VersionCheck.result == 'success'
       }}
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
