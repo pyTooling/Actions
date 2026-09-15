@@ -89,6 +89,7 @@ runs:
           "lxml":                "python-lxml:p",
           "numpy":               "python-numpy:p",
           "markupsafe":          "python-markupsafe:p",
+          "matplotlib":          "python-matplotlib:p",
           "pip":                 "python-pip:p",
           "pyyaml":              "python-pyaml:p python-types-pyyaml:p",
           "ruamel.yaml":         "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
