@@ -1,0 +1,132 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  # 'TagReleaseCommit' starts this workflow at the new tag: a tag created with the pipeline's token raises no push
+  # event, so the tag's release steps would never run.
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false   # a release must not be cancelled by the next push
+
+jobs:
+  Prepare:
+    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@dev
+
+  # The verification workflows run on their own push events. A release commit is tagged only after all of them
+  # succeeded for this commit, so this job waits for them instead of duplicating their jobs into this pipeline.
+  Verifications:
+    name: 🔍 Wait for the verification workflows
+    runs-on: ubuntu-26.04
+    if: github.event_name == 'push'
+    timeout-minutes: 120
+
+    steps:
+      - name: 🔍 Wait for the verification workflows of ${{ github.sha }}
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          export GH_TOKEN=${{ github.token }}
+
+          workflows=(
+            "_Checking_Parameters.yml"
+            "_Checking_JobTemplates.yml"
+            "_Checking_SimplePackage_Pipeline.yml"
+            "_Checking_NamespacePackage_Pipeline.yml"
+            "_Checking_AvailableRunners.yml"
+          )
+
+          errorCount=0
+          for workflow in "${workflows[@]}"; do
+            printf "%s" "Waiting for '${workflow}' ... "
+
+            conclusion=""
+            while true; do
+              answer="$(gh api "repos/${{ github.repository }}/actions/workflows/${workflow}/runs?head_sha=${{ github.sha }}&per_page=1" \
+                --jq '.workflow_runs[0] | "\(.status) \(.conclusion)"' 2>&1)"
+              if [[ $? -ne 0 ]]; then
+                printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${answer}")"
+                printf "::error title=Release::Couldn't query the runs of '%s'.\n" "${workflow}"
+                errorCount=$((errorCount + 1))
+                break
+              fi
+
+              status="${answer%% *}"
+              conclusion="${answer##* }"
+              if [[ "${status}" == "completed" ]]; then
+                break
+              fi
+
+              sleep 60
+            done
+
+            if [[ "${conclusion}" == "success" ]]; then
+              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            elif [[ "${conclusion}" == "null" || -z "${conclusion}" ]]; then
+              printf "${ANSI_LIGHT_YELLOW}[NO RUN]${ANSI_NOCOLOR}\n"
+              printf "::error title=Release::'%s' has no run for commit '%s'.\n" "${workflow}" "${{ github.sha }}"
+              errorCount=$((errorCount + 1))
+            else
+              printf "${ANSI_LIGHT_RED}[%s]${ANSI_NOCOLOR}\n" "${conclusion}"
+              printf "::error title=Release::'%s' concluded '%s' for commit '%s'.\n" "${workflow}" "${conclusion}" "${{ github.sha }}"
+              errorCount=$((errorCount + 1))
+            fi
+          done
+
+          if [[ ${errorCount} -ne 0 ]]; then
+            printf "${ANSI_LIGHT_RED}Refusing to release: %s verification workflow(s) didn't succeed.${ANSI_NOCOLOR}\n" "${errorCount}"
+            exit 1
+          fi
+
+          printf "${ANSI_LIGHT_GREEN}Every verification workflow succeeded.${ANSI_NOCOLOR}\n"
+
+  TriggerTaggedRelease:
+    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@dev
+    needs:
+      - Prepare
+      - Verifications
+    if: needs.Prepare.outputs.is_release_commit == 'true'
+    permissions:
+      contents: write  # required for create tag
+      actions:  write  # required for trigger workflow
+    with:
+      version:  ${{ needs.Prepare.outputs.version }}
+      auto_tag: ${{ needs.Prepare.outputs.is_release_commit }}
+      workflow: 'Release.yml'
+    secrets: inherit
+
+  ReleasePage:
+    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@dev
+    needs:
+      - Prepare
+    if: needs.Prepare.outputs.is_release_tag == 'true'
+    permissions:
+      contents: write
+      actions:  write
+    with:
+      tag: ${{ needs.Prepare.outputs.version }}
+    secrets: inherit
+
+  # Consumers pin '@r8', so every release has to move that branch. This opens the pull-request doing it, titled like
+  # 'Updating r8 from v8.1.0'.
+  UpdateVersionBranch:
+    uses: pyTooling/Actions/.github/workflows/UpdateVersionBranch.yml@dev
+    needs:
+      - Prepare
+      - ReleasePage
+    if: needs.Prepare.outputs.is_release_tag == 'true'
+    permissions:
+      contents:      write   # required to create a version branch
+      pull-requests: write   # required to open the pull-request
+    with:
+      version: ${{ needs.Prepare.outputs.version }}
+      prefix:  'r'

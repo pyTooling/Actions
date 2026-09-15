@@ -162,8 +162,8 @@ Verification
 ============
 
 A skipped job cannot be detected by looking at a green pipeline, so each combination needs a verification pipeline that
-actually exercises it. The workflows in :file:`.github/workflows/_Checking_*.yml` are called by this repository's own
-pipeline (see :ref:`DEV/Pipeline`) and cover the relevant combinations:
+actually exercises it. The workflows in :file:`.github/workflows/_Checking_*.yml` run on every push - each as its own
+pipeline, so a failure is read in a list of its own - and cover the relevant combinations:
 :file:`_Checking_SimplePackage_Pipeline.yml` runs with application testing enabled, while
 :file:`_Checking_NamespacePackage_Pipeline.yml` disables it and requests ``html latex pdf``, so it combines a skipped
 job with jobs conditioned on ``documentation_steps``.
@@ -172,28 +172,26 @@ When a new switch is added to a job template, add a combination disabling it to 
 list of executed jobs of the resulting run, not only its conclusion.
 
 
-.. _DEV/Pipeline:
+.. _DEV/Release:
 
-This Repository's Pipeline
-##########################
+Releasing This Repository
+#########################
 
-:file:`.github/workflows/Pipeline.yml` is the pipeline of ``pyTooling/Actions`` itself. It runs on every push and
-decides what a release does, so the verification workflows stay checks and don't publish anything.
+The verification workflows check; :file:`.github/workflows/Release.yml` releases. It holds no test jobs, so a release
+run is short enough to read.
 
-1. ``Prepare`` (:ref:`JOBTMPL/PrepareJob`) classifies the ref: a branch, a release commit on the main branch, or a
-   release tag.
-2. The verification workflows are called: ``Parameters``, ``JobTemplates``, ``SimplePackage``, ``NamespacePackage``
-   and ``AvailableRunners`` (see :ref:`DEV/ConditionalJobs/Verification`). Each is a reusable workflow with
-   ``workflow_call`` and ``workflow_dispatch``, so it can still be started by hand.
-3. ``TriggerTaggedRelease`` (:ref:`JOBTMPL/TagReleaseCommit`) tags a **release commit** - a merge commit on the main
-   branch whose pull-request title is a version - but only when all five verification workflows succeeded.
-4. The new tag starts this pipeline again. On that run ``ReleasePage`` (:ref:`JOBTMPL/PublishReleaseNotes`) publishes
-   the release notes from the pull-request's description, and ``UpdateVersionBranch``
-   (:ref:`JOBTMPL/UpdateVersionBranch`) opens the pull-request moving the major-version branch, e.g.
-   ``Updating r8 from v8.1.0``.
+1. A merge commit on ``main`` starts it. ``Prepare`` (:ref:`JOBTMPL/PrepareJob`) classifies the commit, and
+   ``Verifications`` waits for the runs of the five :file:`_Checking_*.yml` workflows for that commit - they were
+   started by the same push - and fails if one of them didn't succeed.
+2. ``TriggerTaggedRelease`` (:ref:`JOBTMPL/TagReleaseCommit`) tags a release commit, using the version from the
+   pull-request's title.
+3. A tag created with the pipeline's token raises no ``push`` event, so the job template starts this workflow again
+   through ``workflow_dispatch`` at the new tag - that is what its ``workflow`` input names.
+4. In that run ``ReleasePage`` (:ref:`JOBTMPL/PublishReleaseNotes`) publishes the release notes from the
+   pull-request's description, and ``UpdateVersionBranch`` (:ref:`JOBTMPL/UpdateVersionBranch`) opens the
+   pull-request moving the major-version branch, e.g. ``Updating r8 from v8.1.0``.
 
 .. note::
 
-   A reusable workflow called from here counts against GitHub's limits: at most 50 unique reusable workflows in the
-   whole tree and at most 10 nesting levels. This pipeline reaches 28 workflows and 3 levels, since the fixture
-   pipelines call :ref:`JOBTMPL/CompletePipeline`, which calls the job templates.
+   The verification workflows keep their own ``push`` trigger and are **not** called from here. Calling them would
+   collect every job of this repository - about 170 - into one run, where a single failure is hard to find.
