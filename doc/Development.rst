@@ -177,7 +177,7 @@ list of executed jobs of the resulting run, not only its conclusion.
 Releasing This Repository
 #########################
 
-The verification workflows check; :file:`.github/workflows/Release.yml` releases. It holds no test jobs, so a release
+The verification workflows check; :file:`.github/workflows/Pipeline.yml` releases. It holds no test jobs, so a release
 run is short enough to read.
 
 1. A merge commit on ``main`` starts it. ``Prepare`` (:ref:`JOBTMPL/PrepareJob`) classifies the commit, and

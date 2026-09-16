@@ -1,9 +1,7 @@
-name: Release
+name: Pipeline
 
 on:
   push:
-    branches:
-      - main
   # 'TagReleaseCommit' starts this workflow at the new tag: a tag created with the pipeline's token raises no push
   # event, so the tag's release steps would never run.
   workflow_dispatch:
@@ -21,7 +19,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false   # a release must not be cancelled by the next push
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/') }}
 
 jobs:
   Prepare:
@@ -162,7 +160,6 @@ jobs:
     with:
       version:  ${{ needs.Prepare.outputs.version }}
       auto_tag: ${{ needs.Prepare.outputs.is_release_commit }}
-      workflow: 'Release.yml'
     secrets: inherit
 
   ReleasePage:

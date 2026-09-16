@@ -61,7 +61,7 @@ Tagging
 
 See context in :ghissue:`#5 Tagging/versioning of this repo <5>`.
 
-Tagging is done by :file:`.github/workflows/Release.yml` (see :ref:`DEV/Release`): when a release pull-request is
+Tagging is done by :file:`.github/workflows/Pipeline.yml` (see :ref:`DEV/Release`): when a release pull-request is
 merged into ``main``, its title provides the version, and the merge commit is tagged once every verification workflow
 succeeded for it. The tag's run then publishes the release page and opens a pull-request moving the release branch,
 e.g. ``Updating r8 from v8.1.0``.
