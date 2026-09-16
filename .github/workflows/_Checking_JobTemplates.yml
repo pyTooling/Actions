@@ -286,53 +286,17 @@ jobs:
       check_pypi_duplicate: 'true'
       pypi_package:         'pyTooling'
 
-  TriggerTaggedRelease:
-    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@dev
-    needs:
-      - Prepare
-      - UnitTesting
-      - PlatformTesting
-#      - StaticTypeCheck
-      - Package
-      - Install
-      - PublishToGitHubPages
-    permissions:
-      contents: write  # required for create tag
-      actions:  write  # required for trigger workflow
-    with:
-      version:  ${{ needs.Prepare.outputs.version }}
-      auto_tag: ${{ needs.Prepare.outputs.is_release_commit }}
-    secrets: inherit
-
-  ReleasePage:
-    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@dev
-    needs:
-      - Prepare
-      - UnitTesting
-      - PlatformTesting
-#      - StaticTypeCheck
-      - Package
-      - Install
-      - PublishToGitHubPages
-    if: needs.Prepare.outputs.is_release_tag == 'true'
-    permissions:
-      contents: write
-      actions:  write
-    with:
-      tag: ${{ needs.Prepare.outputs.version }}
-    secrets: inherit
-
   PublishOnPyPI:
     uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@dev
     needs:
       - UnitTestingParams
-      - ReleasePage
-#      - Package
-    if: needs.Prepare.outputs.is_release_tag == 'true'
+      - Package
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
-      requirements: -r dist/requirements.txt
-      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      requirements:   -r dist/requirements.txt
+      artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      dry_run:        'true'   # 'myPackage' is a fixture - never publish it
+      cleanup:        'false'  # 'ArtifactCleanUp' deletes it
     secrets: inherit
 
   ArtifactCleanUp:
