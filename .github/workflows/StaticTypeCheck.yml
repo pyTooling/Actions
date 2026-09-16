@@ -118,7 +118,7 @@ jobs:
 
       - name: Compute path to requirements file
         id: requirements
-        uses: pyTooling/Actions/.github/actions/ComputeRequirements@main
+        uses: pyTooling/Actions/.github/actions/ComputeRequirements@r8
         with:
           requirements:   ${{ inputs.requirements }}
           base_directory: ${{ inputs.root_directory || '.' }}/${{ inputs.tests_directory || '.' }}/${{ inputs.typing_directory || '.' }}
