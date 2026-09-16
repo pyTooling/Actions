@@ -227,6 +227,10 @@ This job template needs no secrets.
 +---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Output/package_directory`                  | string         |                                                                   |
 +---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Output/package_version_file`               | string         |                                                                   |
++---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/Parameters/Output/package_version`                    | string         |                                                                   |
++---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Output/artifact_basename`                  | string         |                                                                   |
 +---------------------------------------------------------------------+----------------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Output/artifact_names`                     | string (JSON)  |                                                                   |
@@ -570,8 +574,9 @@ version_file
 :Default Value:   ``'__init__.py'``
 :Possible Values: Any path relative to the package directory.
 :Description:     Module inside the package that carries the ``__version__`` variable. |br|
-                  Reported back as :ref:`JOBTMPL/Parameters/Output/package_version_file` and used by the version check
-                  of :ref:`JOBTMPL/CompletePipeline`.
+                  Reported back as :ref:`JOBTMPL/Parameters/Output/package_version_file`, and the version found there as
+                  :ref:`JOBTMPL/Parameters/Output/package_version`. Both are used by the version check of
+                  :ref:`JOBTMPL/CompletePipeline`.
 
 .. _JOBTMPL/Parameters/Input/documentation_steps:
 
@@ -814,7 +819,19 @@ package_version_file
 :Type:            string
 :Possible Values: A path such as ``'pyTooling/__init__.py'``.
 :Description:     Path to the package module carrying the ``__version__`` variable, assembled from the package
-                  directory and :ref:`JOBTMPL/Parameters/Input/version_file`.
+                  directory and :ref:`JOBTMPL/Parameters/Input/version_file`. |br|
+                  Empty, if that file doesn't exist.
+
+.. _JOBTMPL/Parameters/Output/package_version:
+
+package_version
+===============
+
+:Type:            string
+:Possible Values: A version such as ``'8.0.0'``, or ``''``.
+:Description:     Value of the ``__version__`` variable in :ref:`JOBTMPL/Parameters/Output/package_version_file`,
+                  extracted with :func:`pyTooling.Packaging.extractVersionInformation`. |br|
+                  Empty, if there is no version file or it has no ``__version__`` variable; a warning names the reason.
 
 .. _JOBTMPL/Parameters/Optimizations:
 

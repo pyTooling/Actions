@@ -66,7 +66,7 @@ on:
           --------
           Published from [%%gh_workflow_name%%](%%gh_server%%/%%gh_owner_repo%%/actions/runs/%%gh_runid%%) workflow triggered by %%gh_actor%% on %%datetime%%.
 
-          This automatic release was created by [pyTooling/Actions](http://github.com/pyTooling/Actions)::Release.yml
+          This automatic release was created by [pyTooling/Actions](http://github.com/pyTooling/Actions)::PublishReleaseNotes.yml
         type: string
       draft:
         description: 'Specify if this is a draft.'

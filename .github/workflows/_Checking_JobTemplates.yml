@@ -13,6 +13,37 @@ jobs:
   Prepare:
     uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@main
 
+  PagesConditions:
+    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@main
+    with:
+      publish_pages_on: |
+        # a comment line and an empty line
+
+        default-branch
+        main-branch
+        development-branch
+        release-branch
+        release-tag
+        nightly-tag
+        branch=.+
+        tag=.+
+
+  CheckPagesConditions:
+    name: 🔍 Check 'publish_pages' of PrepareJob
+    runs-on: ubuntu-26.04
+    needs:
+      - PagesConditions
+    steps:
+      - name: Check that 'branch=.+' and 'tag=.+' match every pipeline
+        env:
+          PUBLISH_PAGES: ${{ needs.PagesConditions.outputs.publish_pages }}
+        run: |
+          printf "publish_pages: %s\n" "${PUBLISH_PAGES}"
+          if [[ "${PUBLISH_PAGES}" != "true" ]]; then
+            printf "::error title=PagesConditions::Expected 'true', got '%s'.\n" "${PUBLISH_PAGES}"
+            exit 1
+          fi
+
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@main
 
@@ -247,53 +278,25 @@ jobs:
       coverage: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
       typing:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
-  TriggerTaggedRelease:
-    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@main
-    needs:
-      - Prepare
-      - UnitTesting
-      - PlatformTesting
-#      - StaticTypeCheck
-      - Package
-      - Install
-      - PublishToGitHubPages
-    permissions:
-      contents: write  # required for create tag
-      actions:  write  # required for trigger workflow
+  ReleaseCheck:
+    uses: pyTooling/Actions/.github/workflows/CheckReleaseVersion.yml@main
     with:
-      version:  ${{ needs.Prepare.outputs.version }}
-      auto_tag: ${{ needs.Prepare.outputs.is_release_commit }}
-    secrets: inherit
-
-  ReleasePage:
-    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@main
-    needs:
-      - Prepare
-      - UnitTesting
-      - PlatformTesting
-#      - StaticTypeCheck
-      - Package
-      - Install
-      - PublishToGitHubPages
-    if: needs.Prepare.outputs.is_release_tag == 'true'
-    permissions:
-      contents: write
-      actions:  write
-    with:
-      tag: ${{ needs.Prepare.outputs.version }}
-    secrets: inherit
+      version:              'v99.0.0'
+      package_version:      '99.0.0'
+      check_pypi_duplicate: 'true'
+      pypi_package:         'pyTooling'
 
   PublishOnPyPI:
     uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@main
     needs:
       - UnitTestingParams
-      - ReleasePage
-#      - Package
-    if: needs.Prepare.outputs.is_release_tag == 'true'
+      - Package
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
-      requirements: -r dist/requirements.txt
-      artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      requirements:   -r dist/requirements.txt
+      artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      dry_run:        'true'   # 'myPackage' is a fixture - never publish it
+      cleanup:        'false'  # 'ArtifactCleanUp' deletes it
     secrets: inherit
 
   ArtifactCleanUp:

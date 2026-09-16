@@ -130,6 +130,20 @@ Without the ``needs.<job>.result`` term the job starts and fails while downloadi
    Observed on a real pipeline: three packaging jobs were cancelled by GitHub, the cascade skipped the documentation
    job, and the publishing job ran anyway on the strength of ``!failure() && !cancelled()`` alone.
 
+A condition hard-coded in a job template that gates a job on the **ref** is a blocklist of the refs that cannot work,
+never an allowlist of the refs that have been seen to work. A deployment environment rejects some refs and admits the
+rest; observing one rejection says nothing about which of the others are admitted, so an allowlist built from that
+observation silently drops every ref that was simply never tried - and it drops it by *skipping* the job, which no
+pipeline reports. Where the admitted refs are per-repository configuration, the condition belongs into an input set
+by the caller, like :ref:`JOBTMPL/CompletePipeline/Input/publish_pages_on`.
+
+.. attention::
+
+   :ref:`JOBTMPL/PublishToGitHubPages` was guarded this way after a feature branch was rejected by the
+   ``github-pages`` environment. The condition allowed the default branch and ``dev``, the two refs that had been
+   observed to deploy - which silently stopped publishing on **tags**, i.e. exactly the runs whose documentation
+   matters most.
+
 Conditions combining a status check function with further terms are written as a folded block scalar, one term per
 line, so a condition can be read - and reviewed - without horizontal scrolling:
 
@@ -148,10 +162,36 @@ Verification
 ============
 
 A skipped job cannot be detected by looking at a green pipeline, so each combination needs a verification pipeline that
-actually exercises it. The templates in :file:`.github/workflows/_Checking_*.yml` cover the relevant combinations:
+actually exercises it. The workflows in :file:`.github/workflows/_Checking_*.yml` run on every push - each as its own
+pipeline, so a failure is read in a list of its own - and cover the relevant combinations:
 :file:`_Checking_SimplePackage_Pipeline.yml` runs with application testing enabled, while
 :file:`_Checking_NamespacePackage_Pipeline.yml` disables it and requests ``html latex pdf``, so it combines a skipped
 job with jobs conditioned on ``documentation_steps``.
 
 When a new switch is added to a job template, add a combination disabling it to one of these pipelines and check the
 list of executed jobs of the resulting run, not only its conclusion.
+
+
+.. _DEV/Release:
+
+Releasing This Repository
+#########################
+
+The verification workflows check; :file:`.github/workflows/Pipeline.yml` releases. It holds no test jobs, so a release
+run is short enough to read.
+
+1. A merge commit on ``main`` starts it. ``Prepare`` (:ref:`JOBTMPL/PrepareJob`) classifies the commit, and
+   ``Verifications`` waits for the runs of the five :file:`_Checking_*.yml` workflows for that commit - they were
+   started by the same push - and fails if one of them didn't succeed.
+2. ``TriggerTaggedRelease`` (:ref:`JOBTMPL/TagReleaseCommit`) tags a release commit, using the version from the
+   pull-request's title.
+3. A tag created with the pipeline's token raises no ``push`` event, so the job template starts this workflow again
+   through ``workflow_dispatch`` at the new tag - that is what its ``workflow`` input names.
+4. In that run ``ReleasePage`` (:ref:`JOBTMPL/PublishReleaseNotes`) publishes the release notes from the
+   pull-request's description, and ``UpdateVersionBranch`` (:ref:`JOBTMPL/UpdateVersionBranch`) opens the
+   pull-request moving the major-version branch, e.g. ``Updating r8 from v8.1.0``.
+
+.. note::
+
+   The verification workflows keep their own ``push`` trigger and are **not** called from here. Calling them would
+   collect every job of this repository - about 170 - into one run, where a single failure is hard to find.

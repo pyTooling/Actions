@@ -1,0 +1,190 @@
+name: Pipeline
+
+on:
+  push:
+  # 'TagReleaseCommit' starts this workflow at the new tag: a tag created with the pipeline's token raises no push
+  # event, so the tag's release steps would never run.
+  workflow_dispatch:
+    inputs:
+      poll_interval:
+        description: 'Seconds between two polls of the verification workflow runs.'
+        required:    false
+        default:     '15'
+        type:        string
+      poll_timeout:
+        description: 'Seconds to wait for all verification workflows to complete.'
+        required:    false
+        default:     '6600'
+        type:        string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  Prepare:
+    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@main
+
+  # The verification workflows run on their own push events. A release commit is tagged only after all of them
+  # succeeded for this commit, so this job waits for them instead of duplicating their jobs into this pipeline.
+  Verifications:
+    name: 🔍 Wait for the verification workflows
+    runs-on: ubuntu-26.04
+    if: github.event_name == 'push'
+    timeout-minutes: 120
+
+    steps:
+      - name: 🔍 Wait for the verification workflows of ${{ github.sha }}
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          export GH_TOKEN=${{ github.token }}
+
+          pollInterval=${{ inputs.poll_interval || '15' }}
+          pollTimeout=${{ inputs.poll_timeout || '6600' }}
+          # A run is created by the same push event as this job, so it exists within seconds. This bound keeps a
+          # workflow that produces no run at all (a commented-out 'push:', a path filter) from consuming 'pollTimeout'.
+          noRunTimeout=300
+
+          workflows=(
+            "_Checking_Parameters.yml"
+            "_Checking_JobTemplates.yml"
+            "_Checking_SimplePackage_Pipeline.yml"
+            "_Checking_NamespacePackage_Pipeline.yml"
+            "_Checking_AvailableRunners.yml"
+          )
+
+          # Resolved workflows are removed from the wait: one request per interval reports every run of this commit,
+          # and a workflow that has concluded is neither queried nor printed again.
+          declare -A conclusions=()
+          waited=0
+          errorCount=0
+
+          printf "Waiting for %s verification workflows of commit %s (every %ss, at most %ss):\n" \
+                 "${#workflows[@]}" "${{ github.sha }}" "${pollInterval}" "${pollTimeout}"
+
+          while true; do
+            answer="$(gh api "repos/${{ github.repository }}/actions/runs?head_sha=${{ github.sha }}&per_page=100" \
+              --jq '.workflow_runs[] | "\(.path)|\(.status)|\(.conclusion)"' 2>&1)"
+            if [[ $? -ne 0 ]]; then
+              printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+              printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${answer}")"
+              printf "::error title=Release::Couldn't query the workflow runs of commit '%s'.\n" "${{ github.sha }}"
+              exit 1
+            fi
+
+            # The API lists the runs of a commit newest first, so the first line for a workflow is its current run and
+            # every later line is a superseded re-run.
+            unset -v status result
+            declare -A status=() result=()
+            while IFS='|' read -r path runStatus runConclusion; do
+              [[ -z "${path}" ]] && continue
+              name="${path##*/}"
+              [[ -n "${status[${name}]:-}" ]] && continue
+              status["${name}"]="${runStatus}"
+              result["${name}"]="${runConclusion}"
+            done <<< "${answer}"
+
+            pendingCount=0
+            for workflow in "${workflows[@]}"; do
+              if [[ -n "${conclusions[${workflow}]:-}" ]]; then
+                continue
+              fi
+
+              printf -v line "  %-45s " "${workflow}"
+              if [[ "${status[${workflow}]:-}" == "completed" ]]; then
+                conclusions["${workflow}"]="${result[${workflow}]}"
+                if [[ "${result[${workflow}]}" == "success" ]]; then
+                  printf "%s${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n" "${line}"
+                else
+                  printf "%s${ANSI_LIGHT_RED}[%s]${ANSI_NOCOLOR}\n" "${line}" "${result[${workflow}]}"
+                  printf "::error title=Release::'%s' concluded '%s' for commit '%s'.\n" \
+                         "${workflow}" "${result[${workflow}]}" "${{ github.sha }}"
+                  errorCount=$((errorCount + 1))
+                fi
+              elif [[ -z "${status[${workflow}]:-}" && ${waited} -ge ${noRunTimeout} ]]; then
+                conclusions["${workflow}"]="no-run"
+                printf "%s${ANSI_LIGHT_YELLOW}[NO RUN]${ANSI_NOCOLOR}\n" "${line}"
+                printf "::error title=Release::'%s' has no run for commit '%s'.\n" "${workflow}" "${{ github.sha }}"
+                errorCount=$((errorCount + 1))
+              else
+                pendingCount=$((pendingCount + 1))
+              fi
+            done
+
+            if [[ ${pendingCount} -eq 0 ]]; then
+              break
+            fi
+
+            if [[ ${waited} -ge ${pollTimeout} ]]; then
+              for workflow in "${workflows[@]}"; do
+                [[ -n "${conclusions[${workflow}]:-}" ]] && continue
+                printf "  %-45s ${ANSI_LIGHT_RED}[%s]${ANSI_NOCOLOR}\n" \
+                       "${workflow}" "${status[${workflow}]:-unknown}"
+                printf "::error title=Release::'%s' didn't complete within %s seconds.\n" "${workflow}" "${pollTimeout}"
+                errorCount=$((errorCount + 1))
+              done
+              break
+            fi
+
+            sleep "${pollInterval}"
+            waited=$((waited + pollInterval))
+          done
+
+          if [[ ${errorCount} -ne 0 ]]; then
+            message="Refusing to release: %s verification workflow(s) didn't succeed."
+            printf "${ANSI_LIGHT_RED}${message}${ANSI_NOCOLOR}\n" "${errorCount}"
+            exit 1
+          fi
+
+          printf "${ANSI_LIGHT_GREEN}Every verification workflow succeeded.${ANSI_NOCOLOR}\n"
+
+  TriggerTaggedRelease:
+    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@main
+    needs:
+      - Prepare
+      - Verifications
+    # 'is_release_commit' is only 'true' for a merge commit on the main branch, so this job cannot tag from a topic
+    # branch. The ref is compared a second time anyway - creating a tag is the one irreversible step here.
+    # 'ReleasePage' and 'UpdateVersionBranch' must NOT get this condition: they run at the tag's ref, where
+    # 'github.ref' is 'refs/tags/<version>'.
+    if: needs.Prepare.outputs.is_release_commit == 'true' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write  # required for create tag
+      actions:  write  # required for trigger workflow
+    with:
+      version:  ${{ needs.Prepare.outputs.version }}
+      auto_tag: ${{ needs.Prepare.outputs.is_release_commit }}
+    secrets: inherit
+
+  ReleasePage:
+    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@main
+    needs:
+      - Prepare
+    if: needs.Prepare.outputs.is_release_tag == 'true'
+    permissions:
+      contents: write
+      actions:  write
+    with:
+      tag: ${{ needs.Prepare.outputs.version }}
+    secrets: inherit
+
+  # Consumers pin '@r8', so every release has to move that branch. This opens the pull-request doing it, titled like
+  # 'Updating r8 from v8.1.0'.
+  UpdateVersionBranch:
+    uses: pyTooling/Actions/.github/workflows/UpdateVersionBranch.yml@main
+    needs:
+      - Prepare
+      - ReleasePage
+    if: needs.Prepare.outputs.is_release_tag == 'true'
+    permissions:
+      contents:      write   # required to create a version branch
+      pull-requests: write   # required to open the pull-request
+    with:
+      version: ${{ needs.Prepare.outputs.version }}
+      prefix:  'r'
