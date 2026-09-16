@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-      # TEST SCAFFOLD - remove before merging. Proves 'Prepare' -> 'Verifications' against the real verification runs
-      # of a commit while this workflow isn't on 'main' yet (and can't be 'workflow_dispatch'ed, because it isn't on
-      # the default branch either). The release jobs below stay skipped: they need a merge commit on 'main'.
-      - claude/actions-pipeline
   # 'TagReleaseCommit' starts this workflow at the new tag: a tag created with the pipeline's token raises no push
   # event, so the tag's release steps would never run.
   workflow_dispatch:
