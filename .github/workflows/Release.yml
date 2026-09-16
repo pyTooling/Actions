@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+      # TEST SCAFFOLD - remove before merging. Proves 'Prepare' -> 'Verifications' against the real verification runs
+      # of a commit while this workflow isn't on 'main' yet (and can't be 'workflow_dispatch'ed, because it isn't on
+      # the default branch either). The release jobs below stay skipped: they need a merge commit on 'main'.
+      - claude/actions-pipeline
   # 'TagReleaseCommit' starts this workflow at the new tag: a tag created with the pipeline's token raises no push
   # event, so the tag's release steps would never run.
   workflow_dispatch:
@@ -45,10 +49,16 @@ jobs:
           )
 
           errorCount=0
+          # How long a workflow may have no run at all for this commit. The runs are created by the same push event,
+          # so they exist within seconds; without this bound a workflow that never runs (a commented-out 'push:',
+          # a path filter) would keep the loop below polling until the job's 120 minute timeout.
+          noRunTimeout=300
+
           for workflow in "${workflows[@]}"; do
             printf "%s" "Waiting for '${workflow}' ... "
 
             conclusion=""
+            waited=0
             while true; do
               answer="$(gh api "repos/${{ github.repository }}/actions/workflows/${workflow}/runs?head_sha=${{ github.sha }}&per_page=1" \
                 --jq '.workflow_runs[0] | "\(.status) \(.conclusion)"' 2>&1)"
@@ -66,7 +76,14 @@ jobs:
                 break
               fi
 
+              # No run exists for this commit: the API reports 'null', which is never 'completed'. Leave the loop so
+              # the 'NO RUN' case below is reached instead of waiting out the job's timeout.
+              if [[ "${status}" == "null" && ${waited} -ge ${noRunTimeout} ]]; then
+                break
+              fi
+
               sleep 60
+              waited=$((waited + 60))
             done
 
             if [[ "${conclusion}" == "success" ]]; then
@@ -94,7 +111,11 @@ jobs:
     needs:
       - Prepare
       - Verifications
-    if: needs.Prepare.outputs.is_release_commit == 'true'
+    # 'is_release_commit' is only 'true' for a merge commit on the main branch, so this job cannot tag from a topic
+    # branch. The ref is compared a second time anyway - creating a tag is the one irreversible step here.
+    # 'ReleasePage' and 'UpdateVersionBranch' must NOT get this condition: they run at the tag's ref, where
+    # 'github.ref' is 'refs/tags/<version>'.
+    if: needs.Prepare.outputs.is_release_commit == 'true' && github.ref == 'refs/heads/main'
     permissions:
       contents: write  # required for create tag
       actions:  write  # required for trigger workflow
