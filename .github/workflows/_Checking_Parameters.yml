@@ -60,6 +60,17 @@ jobs:
       include_list: "windows:3.10 windows:3.11 windows:3.13"
       exclude_list: "macos:3.12 macos:3.13"
 
+  Params_SimplePackage:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
+    with:
+      package_name: 'myPackage'
+
+  Params_NamespacePackage:
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
+    with:
+      package_namespace: 'myFramework'
+      package_name:      'Extension'
+
   Params_Check_Default:
     needs:
       - Params_Default
@@ -197,6 +208,43 @@ jobs:
           expected-include-jobs:    '[]'
           generated-default-version: ${{ needs.Params_Disable.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_Disable.outputs.python_jobs }}
+
+  Params_Check_Version:
+    needs:
+      - Params_SimplePackage
+      - Params_NamespacePackage
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repository to read the expected versions
+        uses: actions/checkout@v7
+
+      - name: Checking 'package_version_file' and 'package_version'
+        run: |
+          errorCount=0
+
+          check() {  # <output> <expected> <generated>
+            if [[ "$3" == "$2" ]]; then
+              printf "  %-50s OK '%s'\n" "$1" "$3"
+            else
+              printf "::error title=Params_Check_Version::%s: expected '%s', got '%s'.\n" "$1" "$2" "$3"
+              errorCount=$((errorCount + 1))
+            fi
+          }
+
+          versionOf() {  # <file>
+            sed -nE 's/^__version__\s*=\s*"([^"]+)".*/\1/p' "$1"
+          }
+
+          check "Params_SimplePackage.package_version_file"    "myPackage/__init__.py" \
+                "${{ needs.Params_SimplePackage.outputs.package_version_file }}"
+          check "Params_SimplePackage.package_version"         "$(versionOf myPackage/__init__.py)" \
+                "${{ needs.Params_SimplePackage.outputs.package_version }}"
+          check "Params_NamespacePackage.package_version_file" "myFramework/Extension/__init__.py" \
+                "${{ needs.Params_NamespacePackage.outputs.package_version_file }}"
+          check "Params_NamespacePackage.package_version"      "$(versionOf myFramework/Extension/__init__.py)" \
+                "${{ needs.Params_NamespacePackage.outputs.package_version }}"
+
+          exit ${errorCount}
 
   Params_Check_All:
     needs:

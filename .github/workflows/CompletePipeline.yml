@@ -33,6 +33,11 @@ on:
         description: 'Name of the tool''s package.'
         required: true
         type: string
+      version_file:
+        description: "Module inside the package carrying '__version__', relative to the package directory."
+        required: false
+        default: '__init__.py'
+        type: string
       unittest_python_version:
         description: 'Python version.'
         required: false
@@ -138,10 +143,39 @@ on:
         required: false
         default: 'false'
         type: string
+      publish_pages_on:
+        description: 'Newline separated, or-ed conditions on the ref under which GitHub Pages are published.'
+        required: false
+        default: |
+          default-branch
+          development-branch
+          release-tag
+          nightly-tag
+        type: string
       auto_tag:
         description: 'Auto tag if a branch was merged to the release branch and an associated pull-request with matching version name was found.'
         required: false
         default: 'true'
+        type: string
+      check_pypi_duplicate:
+        description: 'Refuse to tag a release commit if PyPI already has a release of this version.'
+        required: false
+        default: 'true'
+        type: string
+      pypi_url:
+        description: 'Base URL of the package registry, which is checked for an existing release.'
+        required: false
+        default: 'https://pypi.org'
+        type: string
+      pypi_upload_url:
+        description: 'Upload URL of the package registry.'
+        required: false
+        default: 'https://upload.pypi.org/legacy/'
+        type: string
+      pypi_dry_run:
+        description: 'Validate the packages with twine, but do not upload them to PyPI.'
+        required: false
+        default: 'false'
         type: string
       cleanup:
         description: 'Cleanup artifacts afterwards.'
@@ -163,7 +197,8 @@ jobs:
   Prepare:
     uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r8
     with:
-      pipeline-delay: 10
+      publish_pages_on: ${{ inputs.publish_pages_on }}
+      pipeline-delay:   10
 
   ConfigParams:
     uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
@@ -173,6 +208,7 @@ jobs:
     with:
       package_namespace:   ${{ inputs.package_namespace }}
       package_name:        ${{ inputs.package_name }}
+      version_file:        ${{ inputs.version_file }}
       python_version:      ${{ inputs.unittest_python_version }}
       python_version_list: ${{ inputs.unittest_python_version_list }}
       system_list:         ${{ inputs.unittest_system_list }}
@@ -187,6 +223,7 @@ jobs:
     with:
       package_namespace:   ${{ inputs.package_namespace }}
       package_name:        ${{ inputs.package_name }}
+      version_file:        ${{ inputs.version_file }}
       python_version:      ${{ inputs.apptest_python_version }}
       python_version_list: ${{ inputs.apptest_python_version_list }}
       system_list:         ${{ inputs.apptest_system_list }}
@@ -199,6 +236,7 @@ jobs:
     with:
       package_namespace:   ${{ inputs.package_namespace }}
       package_name:        ${{ inputs.package_name }}
+      version_file:        ${{ inputs.version_file }}
       python_version:      ${{ inputs.unittest_python_version }}
       python_version_list: ''
       system_list:         ${{ inputs.unittest_system_list }}
@@ -208,67 +246,18 @@ jobs:
       documentation_steps: 'none'
 
   VersionCheck:
-    runs-on: 'ubuntu-26.04'
+    uses: pyTooling/Actions/.github/workflows/CheckReleaseVersion.yml@r8
     needs:
       - Prepare
       - UnitTestingParams
-    if: needs.Prepare.outputs.version != '' && needs.UnitTestingParams.outputs.package_version_file != ''
-    outputs:
-      code_version: ${{ steps.extract.outputs.code_version }}
-    steps:
-      - name: ⏬ Checkout repository
-        uses: actions/checkout@v7
-        with:
-          # The command 'git describe' (used for version) needs the history.
-          fetch-depth: 0
-
-      - name: 🔧 Install pyTooling dependencies (native)
-        run: |
-          python -m pip install --disable-pip-version-check -U pyTooling
-
-      - name: Extract version from Python source file
-        id: extract
-        if: endsWith(needs.UnitTestingParams.outputs.package_version_file, '.py')
-        shell: python
-        run: |
-          from os                   import getenv
-          from pathlib              import Path
-          from sys                  import exit
-          from textwrap             import dedent
-          from pyTooling.Packaging  import extractVersionInformation
-          from pyTooling.Versioning import SemanticVersion
-
-          expectedVersion = "${{ needs.Prepare.outputs.version }}".strip()
-
-          versionFile = Path("${{ needs.UnitTestingParams.outputs.package_version_file }}")
-          if not versionFile.exists():
-            print(f"::error title=CompletePipeline::Version file '{versionFile}' doesn't exist.")
-            exit(1)
-
-          versionInformation = extractVersionInformation(versionFile)
-          print(f"expected:  {expectedVersion}")
-          print(f"from code: {versionInformation.Version}")
-
-          # The expected version is derived from the tag, so it may carry a 'v' or 'r' prefix, while
-          # a version in Python code never does. Compare the parsed versions, which ignore the prefix.
-          try:
-            expected = SemanticVersion.Parse(expectedVersion)
-            fromCode = SemanticVersion.Parse(versionInformation.Version)
-          except Exception as ex:
-            print(f"::error title=CompletePipeline::Can't parse version ('{expectedVersion}' / '{versionInformation.Version}'): {ex}")
-            exit(2)
-
-          if expected != fromCode:
-            print(f"::error title=CompletePipeline::Expected version ({expectedVersion}) doesn't match the version in Python code ({versionInformation.Version}).")
-            exit(2)
-
-          # Write jobs to special file
-          github_output = Path(getenv("GITHUB_OUTPUT"))
-          print(f"GITHUB_OUTPUT: {github_output}")
-          with github_output.open("a+", encoding="utf-8") as f:
-            f.write(dedent(f"""\
-              code_version={versionInformation.Version}
-            """))
+    if: needs.Prepare.outputs.version != ''
+    with:
+      python_version:       ${{ needs.UnitTestingParams.outputs.python_version }}
+      version:              ${{ needs.Prepare.outputs.version }}
+      package_version:      ${{ needs.UnitTestingParams.outputs.package_version }}
+      check_pypi_duplicate: ${{ needs.Prepare.outputs.is_release_commit == 'true' && inputs.check_pypi_duplicate || 'false' }}
+      pypi_url:             ${{ inputs.pypi_url }}
+      pypi_package:         ${{ needs.UnitTestingParams.outputs.package_fullname }}
 
   UnitTesting:
     uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r8
@@ -458,6 +447,7 @@ jobs:
   PublishToGitHubPages:
     uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r8
     needs:
+      - Prepare
       - UnitTestingParams
       - Documentation
 #      - PDFDocumentation
@@ -469,7 +459,7 @@ jobs:
        && needs.PublishCoverageResults.result == 'success'
        && needs.StaticTypeCheck.result == 'success'
        && contains(inputs.documentation_steps, 'pages')
-       && (github.ref_name == github.event.repository.default_branch || github.ref_name == 'dev')
+       && needs.Prepare.outputs.publish_pages == 'true'
       }}
     with:
       doc:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
@@ -481,6 +471,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@r8
     needs:
       - Prepare
+      - VersionCheck
       - UnitTesting
 #      - AppTesting
 #      - StaticTypeCheck
@@ -490,6 +481,7 @@ jobs:
     if: >-
       ${{ !failure() && !cancelled()
        && needs.Prepare.outputs.is_release_commit == 'true'
+       && needs.VersionCheck.result == 'success'
        && github.event_name != 'schedule'
       }}
     permissions:
@@ -504,6 +496,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r8
     needs:
       - Prepare
+      - VersionCheck
       - UnitTesting
 #      - AppTesting
 #      - StaticTypeCheck
@@ -513,6 +506,7 @@ jobs:
     if: >-
       ${{ !failure() && !cancelled()
        && needs.Prepare.outputs.is_release_tag == 'true'
+       && needs.VersionCheck.result == 'success'
       }}
     permissions:
       contents: write
@@ -525,6 +519,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r8
     needs:
       - Prepare
+      - VersionCheck
       - UnitTestingParams
       - Package
       - ReleasePage
@@ -532,14 +527,17 @@ jobs:
       ${{ !failure() && !cancelled()
        && needs.Package.result == 'success'
        && needs.Prepare.outputs.is_release_tag == 'true'
+       && needs.VersionCheck.result == 'success'
       }}
     with:
-      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
-      requirements:   '-r dist/requirements.txt'
-      artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
-      cleanup:        ${{ inputs.cleanup }}
+      python_version:  ${{ needs.UnitTestingParams.outputs.python_version }}
+      requirements:    '-r dist/requirements.txt'
+      artifact:        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      dry_run:         ${{ inputs.pypi_dry_run }}
+      pypi_upload_url: ${{ inputs.pypi_upload_url }}
+      cleanup:         ${{ inputs.cleanup }}
     secrets:
-      PYPI_TOKEN:     ${{ secrets.PYPI_TOKEN }}
+      PYPI_TOKEN:      ${{ secrets.PYPI_TOKEN }}
 
   ArtifactCleanUp:
     uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r8

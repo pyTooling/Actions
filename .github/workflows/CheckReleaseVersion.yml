@@ -1,0 +1,149 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2026-2026 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Check Release Version
+
+on:
+  workflow_call:
+    inputs:
+      ubuntu_image:
+        description: 'Name of the Ubuntu image.'
+        required: false
+        default: 'ubuntu-26.04'
+        type: string
+      python_version:
+        description: 'Python version.'
+        required: false
+        default: '3.14'
+        type: string
+      version:
+        description: 'Version to be released, e.g. v1.2.3.'
+        required: true
+        type: string
+      package_version:
+        description: "Version from the '__version__' variable in the package's version file."
+        required: false
+        default: ''
+        type: string
+      check_pypi_duplicate:
+        description: "Fail if the package registry already has a release of 'version' for 'pypi_package'."
+        required: false
+        default: 'false'
+        type: string
+      pypi_url:
+        description: 'Base URL of a package registry offering the PyPI JSON API.'
+        required: false
+        default: 'https://pypi.org'
+        type: string
+      pypi_package:
+        description: 'Name of the package in the package registry.'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  VersionCheck:
+    name: 🔍 Check that '${{ inputs.version }}' matches the version in Python code
+    runs-on: ${{ inputs.ubuntu_image }}
+
+    steps:
+      - name: 🐍 Setup Python ${{ inputs.python_version }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ inputs.python_version }}
+
+      - name: 🔧 Install pyTooling
+        run: python -m pip install --disable-pip-version-check -U pyTooling
+
+      - name: 🔍 Compare '${{ inputs.version }}' with the version in Python code
+        shell: python
+        run: |
+          from sys                  import exit
+          from pyTooling.Versioning import PythonVersion
+
+          expectedVersion = "${{ inputs.version }}".strip()
+          codeVersion =     "${{ inputs.package_version }}".strip()
+
+          print(f"expected:  {expectedVersion}")
+          print(f"from code: {codeVersion}")
+
+          if codeVersion == "":
+            print(
+              f"::error title=VersionCheck::No '__version__' found to check '{expectedVersion}' against, so the release "
+              "will be refused. Set 'version_file' if '__version__' isn't in the package's '__init__.py'."
+            )
+            exit(1)
+
+          try:
+            match = PythonVersion.Parse(expectedVersion) == PythonVersion.Parse(codeVersion)
+          except ValueError as ex:
+            print(
+              f"::error title=VersionCheck::Version '{expectedVersion}' or '{codeVersion}' can't be parsed, so the "
+              f"release will be refused. {ex}"
+            )
+            exit(1)
+
+          if not match:
+            print(
+              f"::error title=VersionCheck::Version '{expectedVersion}' doesn't match '__version__' = '{codeVersion}', so "
+              "the release will be refused."
+            )
+            exit(1)
+
+          print("Versions match.")
+
+  RegistryCheck:
+    name: 🔍 Check that '${{ inputs.version }}' isn't released yet
+    runs-on: ${{ inputs.ubuntu_image }}
+    if: inputs.check_pypi_duplicate == 'true'
+
+    steps:
+      - name: 🔍 Check '${{ inputs.pypi_url }}' for release '${{ inputs.version }}' of '${{ inputs.pypi_package }}'
+        run: |
+          set +e
+
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          if [[ -z "${{ inputs.pypi_package }}" ]]; then
+            printf "::error title=CheckReleaseVersion::'check_pypi_duplicate' requires 'pypi_package'.\n"
+            exit 1
+          fi
+
+          registry="${{ inputs.pypi_url }}"
+          registry="${registry%/}"
+
+          printf "Check if '%s' has release '%s' of package '%s' ... " "${registry}" "${{ inputs.version }}" "${{ inputs.pypi_package }}"
+          status="$(curl --silent --output /dev/null --write-out '%{http_code}' --retry 3 --retry-delay 5 \
+            "${registry}/pypi/${{ inputs.pypi_package }}/${{ inputs.version }}/json")"
+          if [[ "${status}" == "404" ]]; then
+            printf "${ANSI_LIGHT_GREEN}[NOT RELEASED]${ANSI_NOCOLOR}\n"
+          elif [[ "${status}" == "200" ]]; then
+            printf "${ANSI_LIGHT_RED}[RELEASED]${ANSI_NOCOLOR}\n"
+            printf "  ${ANSI_LIGHT_RED}%s/project/%s/%s/${ANSI_NOCOLOR}\n" "${registry}" "${{ inputs.pypi_package }}" "${{ inputs.version }}"
+            printf "::error title=CheckReleaseVersion::'%s' already has release '%s' of '%s'.\n" "${registry}" "${{ inputs.version }}" "${{ inputs.pypi_package }}"
+            exit 1
+          else
+            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf "::error title=CheckReleaseVersion::Couldn't query '%s' (HTTP status '%s').\n" "${registry}" "${status}"
+            exit 1
+          fi

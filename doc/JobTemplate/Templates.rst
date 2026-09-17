@@ -36,6 +36,7 @@
       * :ref:`JOBTMPL/StaticTypeCheck`
       * :ref:`JOBTMPL/CheckCodeQuality`
       * :ref:`JOBTMPL/VerifyDocs` (on hold)
+      * :ref:`JOBTMPL/CheckMarketplaceMetadata`
       * *code formatting (planned)*
 
       .. rubric:: Build and Packaging
@@ -54,8 +55,10 @@
 
       .. rubric:: Releasing
 
+      * :ref:`JOBTMPL/CheckReleaseVersion`
       * :ref:`JOBTMPL/PublishReleaseNotes`
       * :ref:`JOBTMPL/TagReleaseCommit`
+      * :ref:`JOBTMPL/UpdateVersionBranch`
 
    .. grid-item::
       :columns: 2

@@ -49,7 +49,7 @@ variant after test results have been merged into a single file.
 
 .. topic:: Job Execution
 
-   .. image:: ../../_static/pyTooling-Actions-IntermediateCleanUp.png
+   .. image:: ../../_static/pyTooling-Actions-IntermediateCleanup.png
       :width: 400px
 
 .. topic:: Dependencies

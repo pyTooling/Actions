@@ -23,6 +23,7 @@ The job template generates various output parameters derived from
    * Check if a tag is a release tag.
    * Find associated pull-request (PR) for a merge commit/release commit.
    * Provide a version from tag name or pull-request name.
+   * Decide from a list of conditions on the ref whether GitHub Pages are published.
 
    .. note::
 
@@ -51,7 +52,8 @@ The job template generates various output parameters derived from
       (:ref:`JOBTMPL/PrepareJob/Input/main_branch`, :ref:`JOBTMPL/PrepareJob/Input/development_branch`,
       :ref:`JOBTMPL/PrepareJob/Input/release_branch`, :ref:`JOBTMPL/PrepareJob/Input/nightly_tag_pattern`,
       :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`).
-   5. Find the associated pull-request.
+   5. Evaluate :ref:`JOBTMPL/PrepareJob/Input/publish_pages_on` into :ref:`JOBTMPL/PrepareJob/Output/publish_pages`.
+   6. Find the associated pull-request.
 
       Runs for :ref:`release commits <JOBTMPL/PrepareJob/Output/is_release_commit>` only - a merge commit on the
       main-branch or a version-branch. A merge commit on the development-branch originates from a pull-request based on
@@ -130,6 +132,8 @@ Parameter Summary
 +-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
 | :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern` | no       | string | ``'(v|r)?[0-9]+(\.[0-9]+){0,2}(-(dev|alpha|beta|rc)([0-9]*))?'`` |
 +-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/publish_pages_on`    | no       | string | four conditions - see description                                |
++-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PrepareJob/Secrets>`
 
@@ -179,6 +183,8 @@ This job template needs no secrets.
 | :ref:`JOBTMPL/PrepareJob/Output/git_submodule_names` | string | Names of the registered Git submodules.                               |
 +------------------------------------------------------+--------+-----------------------------------------------------------------------+
 | :ref:`JOBTMPL/PrepareJob/Output/git_submodule_paths` | string | Paths of the registered Git submodules.                               |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/publish_pages`       | string | The ref matches a condition of ``publish_pages_on``.                  |
 +------------------------------------------------------+--------+-----------------------------------------------------------------------+
 
 
@@ -287,6 +293,46 @@ release_tag_pattern
                   * ``v3.13.5-alpha2``
                   * ``v4.7.22-beta3``
                   * ``v10.2-rc1``
+
+
+.. _JOBTMPL/PrepareJob/Input/publish_pages_on:
+
+publish_pages_on
+================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``default-branch``, ``development-branch``, ``release-tag`` and ``nightly-tag``, one per line.
+:Possible Values: A newline separated list of the conditions below. Empty lines and lines starting with ``#`` are
+                  ignored.
+:Description:     Conditions on the pipeline's ref under which :ref:`JOBTMPL/PrepareJob/Output/publish_pages` returns
+                  ``'true'``. The conditions are or-ed, so one matching condition is sufficient. An unknown condition
+                  or an invalid regular expression fails the job on every pipeline, not only on those that would
+                  publish.
+
+                  :default-branch:     The pipeline runs on the repository's default branch.
+                  :main-branch:        The pipeline runs on :ref:`JOBTMPL/PrepareJob/Input/main_branch`.
+                  :development-branch: The pipeline runs on :ref:`JOBTMPL/PrepareJob/Input/development_branch`.
+                  :release-branch:     The pipeline runs on :ref:`JOBTMPL/PrepareJob/Input/release_branch`.
+                  :release-tag:        The tag matches :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`.
+                  :nightly-tag:        The tag matches :ref:`JOBTMPL/PrepareJob/Input/nightly_tag_pattern`.
+                  :branch=<regexp>:    The branch name matches ``<regexp>``.
+                  :tag=<regexp>:       The tag name matches ``<regexp>``.
+
+                  ``<regexp>`` is a POSIX extended regular expression, as evaluated by Bash's ``=~`` operator, and
+                  is anchored at both ends. Character class shortcuts like ``\d`` are not supported, use ``[0-9]``
+                  instead. |br|
+                  A pull-request pipeline matches no condition.
+
+                  **Example:**
+
+                  .. code-block:: yaml
+
+                     publish_pages_on: |
+                       default-branch
+                       release-tag
+                       branch=release/[0-9]+\.[0-9]+
+
 
 .. _JOBTMPL/PrepareJob/Secrets:
 
@@ -551,6 +597,17 @@ git_submodule_paths
 :Type:            string
 :Possible Values: A colon separated list of paths, e.g. ``'deps/libA:deps/libB'``.
 :Description:     Paths of the Git submodules registered in the repository.
+
+.. _JOBTMPL/PrepareJob/Output/publish_pages:
+
+publish_pages
+=============
+
+:Type:            string
+:Default Value:   ``'false'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Returns ``'true'`` if at least one condition of :ref:`JOBTMPL/PrepareJob/Input/publish_pages_on`
+                  matches the pipeline's ref, otherwise returns ``'false'``.
 
 .. _JOBTMPL/PrepareJob/Optimizations:
 

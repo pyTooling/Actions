@@ -395,7 +395,7 @@ description_footer
                      --------
                      Published from [%%gh_workflow_name%%](%%gh_server%%/%%gh_owner_repo%%/actions/runs/%%gh_runid%%) workflow triggered by %%gh_actor%% on %%datetime%%.
 
-                     This automatic release was created by [pyTooling/Actions](http://github.com/pyTooling/Actions)::Release.yml
+                     This automatic release was created by [pyTooling/Actions](http://github.com/pyTooling/Actions)::PublishReleaseNotes.yml
 :Possible Values: Any valid (multi-line) Markdown text.
 :Description:     A footer added to the description. |br|
                   See :ref:`JOBTMPL/PublishReleaseNotes/ReleaseNotes` for more details.

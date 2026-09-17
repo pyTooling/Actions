@@ -121,6 +121,9 @@ modindex_common_prefix = [
 # ==============================================================================
 latex_engine = "lualatex"
 latex_use_xindy = False
+# Without dropping 'colorrows' from the default, colortbl's '\CT@everycr' and '\everycr' expand into each other
+# until TeX's input stack is full, and the PDF build dies in the first table.
+latex_table_style = ["booktabs"]
 latex_elements = {
 	"papersize":   "a4paper",      # The paper size ('letterpaper' or 'a4paper').
 	"pointsize":   "10pt",         # The font size ('10pt', '11pt' or '12pt').

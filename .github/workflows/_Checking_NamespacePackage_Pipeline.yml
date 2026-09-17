@@ -24,6 +24,7 @@ jobs:
       dorny:               'true'
       documentation_steps: 'html latex pdf'
       auto_tag:            'false'
+      pypi_dry_run:        'true'   # 'myPackage'/'myFramework' are fixtures - never publish them
     secrets:
       PYPI_TOKEN:    ${{ secrets.PYPI_TOKEN }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
