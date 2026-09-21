@@ -217,7 +217,7 @@ jobs:
 
       - name: Compute path to requirements file
         id: requirements
-        uses: pyTooling/Actions/.github/actions/ComputeRequirements@main
+        uses: pyTooling/Actions/.github/actions/ComputeRequirements@r8
         with:
           requirements:       ${{ inputs.requirements }}
           mingw_requirements: ${{ inputs.mingw_requirements }}
@@ -226,7 +226,7 @@ jobs:
       - name: Compute pacman/pacboy packages
         id: pacboy
         if: matrix.system == 'msys2'
-        uses: pyTooling/Actions/.github/actions/ComputePacboyPackages@main
+        uses: pyTooling/Actions/.github/actions/ComputePacboyPackages@r8
         with:
           requirements: ${{ steps.requirements.outputs.mingw_requirements }}
 

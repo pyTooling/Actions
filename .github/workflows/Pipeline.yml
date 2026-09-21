@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   Prepare:
-    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@main
+    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r8
 
   # The verification workflows run on their own push events. A release commit is tagged only after all of them
   # succeeded for this commit, so this job waits for them instead of duplicating their jobs into this pipeline.
@@ -145,7 +145,7 @@ jobs:
           printf "${ANSI_LIGHT_GREEN}Every verification workflow succeeded.${ANSI_NOCOLOR}\n"
 
   TriggerTaggedRelease:
-    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@main
+    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@r8
     needs:
       - Prepare
       - Verifications
@@ -163,7 +163,7 @@ jobs:
     secrets: inherit
 
   ReleasePage:
-    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@main
+    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r8
     needs:
       - Prepare
     if: needs.Prepare.outputs.is_release_tag == 'true'
@@ -177,7 +177,7 @@ jobs:
   # Consumers pin '@r8', so every release has to move that branch. This opens the pull-request doing it, titled like
   # 'Updating r8 from v8.1.0'.
   UpdateVersionBranch:
-    uses: pyTooling/Actions/.github/workflows/UpdateVersionBranch.yml@main
+    uses: pyTooling/Actions/.github/workflows/UpdateVersionBranch.yml@r8
     needs:
       - Prepare
       - ReleasePage
