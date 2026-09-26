@@ -109,6 +109,11 @@ on:
         required: false
         default: 'app'
         type: string
+      parallel:
+        description: 'Number of pytest-xdist workers: ''auto'', a number, or ''false'' to run the tests serially.'
+        required: false
+        default: 'auto'
+        type: string
       apptest_report_xml:
         description: 'JSON object describing the path where to save the application test summary report XML.'
         required: false
@@ -264,9 +269,27 @@ jobs:
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
-          [ -n '${{ inputs.apptest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}' || unset PYTEST_ARGS
-          printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
-          python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
+
+          if [[ "${{ inputs.parallel }}" == "false" ]]; then
+            PARALLEL_JOBS=""
+          elif [[ "$(python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)")" == "True" ]]; then
+            printf -- '::warning::%s\n' "pytest-xdist isn't installed: running the tests serially."
+            PARALLEL_JOBS=""
+          elif [[ -z "${{ inputs.parallel }}" ]]; then
+            PARALLEL_JOBS="auto"
+          elif [[ "${{ inputs.parallel }}" =~ ^(auto|[1-9][0-9]*)$ ]]; then
+            PARALLEL_JOBS="${{ inputs.parallel }}"
+          else
+            printf -- '::error title=%s::%s\n' "parallel" "Input 'parallel' is '${{ inputs.parallel }}', but expected 'auto', a number of workers or 'false'."
+            exit 1
+          fi
+
+          PYTEST_ARGS=""
+          [[ -n "${PARALLEL_JOBS}" ]]                   && PYTEST_ARGS="${PYTEST_ARGS} -n ${PARALLEL_JOBS}"
+          [[ -n '${{ inputs.apptest_xml_artifact }}' ]] && PYTEST_ARGS="${PYTEST_ARGS} --junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}"
+
+          printf -- '%s\n' "python -m pytest -raP ${PYTEST_ARGS} --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
+          python -m pytest -raP ${PYTEST_ARGS} --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
 
       - name: ✅ Run application tests (Windows)
         id: pytest_posh
@@ -275,7 +298,25 @@ jobs:
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
-          $PYTEST_ARGS = if ("${{ inputs.apptest_xml_artifact }}") { "--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}" } else { "" }
+
+          if ("${{ inputs.parallel }}" -eq "false") {
+            $PARALLEL_JOBS = ""
+          } elseif ((python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)") -eq "True") {
+            Write-Host "::warning::pytest-xdist isn't installed: running the tests serially."
+            $PARALLEL_JOBS = ""
+          } elseif ("${{ inputs.parallel }}" -eq "") {
+            $PARALLEL_JOBS = "auto"
+          } elseif ("${{ inputs.parallel }}" -cmatch '^(auto|[1-9][0-9]*)$') {
+            $PARALLEL_JOBS = "${{ inputs.parallel }}"
+          } else {
+            Write-Host "::error title=parallel::Input 'parallel' is '${{ inputs.parallel }}', but expected 'auto', a number of workers or 'false'."
+            exit 1
+          }
+
+          $PYTEST_ARGS = @()
+          if ($PARALLEL_JOBS)                       { $PYTEST_ARGS += "-n", $PARALLEL_JOBS }
+          if ("${{ inputs.apptest_xml_artifact }}") { $PYTEST_ARGS += "--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}" }
+
           Write-Host "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
           python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
 
@@ -306,11 +347,11 @@ jobs:
         run: |
           exitCode=0
           if [[ "${{ steps.pytest_bash.outcome }}" == "failure" || "${{ steps.pytest_posh.outcome }}" == "failure" ]]; then
-            printf "❌ pytest: %s\n" "Error in pytest execution."
-            printf "::error title=%s::%s\n" "pytest" "Error in pytest execution."
+            printf -- '❌ pytest: %s\n' "Error in pytest execution."
+            printf -- '::error title=%s::%s\n' "pytest" "Error in pytest execution."
             exitCode=1
           else
-            printf "✅ pytest: No errors.\n"
+            printf -- '✅ pytest: No errors.\n'
           fi
 
-          exit $exitCode
+          exit ${exitCode}

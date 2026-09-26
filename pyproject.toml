@@ -68,6 +68,7 @@ ignore-setters = true
 [tool.coverage.run]
 branch = true
 relative_files = true
+patch = ["subprocess"]
 omit = [
 	"*site-packages*",
 	"setup.py",

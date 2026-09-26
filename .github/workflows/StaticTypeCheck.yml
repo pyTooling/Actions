@@ -144,24 +144,24 @@ jobs:
           ANSI_NOCOLOR=$'\x1b[0m'
 
           if [[ "${{ fromJson(inputs.html_report).directory }}" != "" ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.html_report).directory }}' ..."
+            printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.html_report).directory }}' ..."
             tree ${{ fromJson(inputs.html_report).directory }}
-            printf "::endgroup::\n"
+            printf -- '::endgroup::\n'
           fi
 
           if [[ "${{ fromJson(inputs.junit_report).directory }}" != "" ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.junit_report).directory }}' ..."
+            printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.junit_report).directory }}' ..."
             tree ${{ fromJson(inputs.junit_report).directory }}
-            printf "::endgroup::\n"
+            printf -- '::endgroup::\n'
             if [[ "${{ fromJson(inputs.cobertura_report).directory }}" != "" && "${{ fromJson(inputs.junit_report).directory }}" != "${{ fromJson(inputs.cobertura_report).directory }}" ]]; then
-              printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.cobertura_report).directory }}' ..."
+              printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.cobertura_report).directory }}' ..."
               tree ${{ fromJson(inputs.cobertura_report).directory }}
-              printf "::endgroup::\n"
+              printf -- '::endgroup::\n'
             fi
           elif [[ "${{ fromJson(inputs.cobertura_report).directory }}" != "" ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.cobertura_report).directory }}' ..."
+            printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '${{ fromJson(inputs.cobertura_report).directory }}' ..."
             tree ${{ fromJson(inputs.cobertura_report).directory }}
-            printf "::endgroup::\n"
+            printf -- '::endgroup::\n'
           fi
 
       - name: 📤 Upload '${{ inputs.html_artifact }}' HTML artifact

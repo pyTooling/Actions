@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-26.04
     steps:
       - name: Package creation
-        run: printf "%s\n" "Package" >> package.txt
+        run: printf -- '%s\n' "Package" >> package.txt
 
       - name: 📤 Upload artifact for ${{ matrix.system }}-${{ matrix.python }}
         uses: pyTooling/upload-artifact@v7

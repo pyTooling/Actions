@@ -183,12 +183,12 @@ jobs:
 
       - name: 🖉 GitHub context information
         run: |
-          printf "%s\n" "github.event_name: ${{ github.event_name }}"
-          printf "%s\n" "github.actor:      ${{ github.actor }}"
-          printf "%s\n" "github.ref:        ${{ github.ref }}"
-          printf "%s\n" "github.base_ref:   ${{ github.base_ref }}"
-          printf "%s\n" "github.head_ref:   ${{ github.head_ref }}"
-          printf "%s\n" "github.sha:        ${{ github.sha }}"
+          printf -- '%s\n' "github.event_name: ${{ github.event_name }}"
+          printf -- '%s\n' "github.actor:      ${{ github.actor }}"
+          printf -- '%s\n' "github.ref:        ${{ github.ref }}"
+          printf -- '%s\n' "github.base_ref:   ${{ github.base_ref }}"
+          printf -- '%s\n' "github.head_ref:   ${{ github.head_ref }}"
+          printf -- '%s\n' "github.sha:        ${{ github.sha }}"
 
       - name: 🖉 Classify commit
         id: Classify
@@ -224,157 +224,157 @@ jobs:
           git_submodule_names=""
           git_submodule_paths=""
 
-          printf "Classify Git reference '%s' " "${ref}"
+          printf -- "Classify Git reference '%s' " "${ref}"
           if [[ "${ref:0:11}" == "refs/heads/" ]]; then
-            printf "${ANSI_LIGHT_GREEN}[BRANCH]\n"
+            printf -- "${ANSI_LIGHT_GREEN}[BRANCH]\n"
             ref_kind="branch"
             branch="${ref:11}"
 
-            printf "Get default branch name ... "
+            printf -- 'Get default branch name ... '
             defaultBranch=$(gh repo view "${{ github.repository }}" --json defaultBranchRef --jq '.defaultBranchRef.name' 2>&1)
             if [[ $? -eq 0 ]]; then
-              printf "${ANSI_LIGHT_GREEN} [OK]\n"
+              printf -- "${ANSI_LIGHT_GREEN} [OK]\n"
 
               default_branch="${defaultBranch}"
-              printf "  Default branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${default_branch}"
+              printf -- "  Default branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR}\n" "${default_branch}"
             else
-              printf "${ANSI_LIGHT_RED} [FAILED]\n"
-              printf "  ${ANSI_LIGHT_RED}%s${ANSI_NOCOLOR}\n" "${default_branch}"
+              printf -- "${ANSI_LIGHT_RED} [FAILED]\n"
+              printf -- "  ${ANSI_LIGHT_RED}%s${ANSI_NOCOLOR}\n" "${default_branch}"
             fi
 
-            printf "Commit checks:\n"
-            printf "  Commit: %s\n" "${{ github.sha }}"
-            printf "  Commit kind "
+            printf -- 'Commit checks:\n'
+            printf -- '  Commit: %s\n' "${{ github.sha }}"
+            printf -- '  Commit kind '
             if [[ -z "$(git rev-list -1 --merges ${{ github.sha }}~1..${{ github.sha }})" ]]; then
               is_regular_commit="true"
-              printf "${ANSI_LIGHT_YELLOW}[REGULAR]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_YELLOW}[REGULAR]${ANSI_NOCOLOR}\n"
             else
               is_merge_commit="true"
-              printf "${ANSI_LIGHT_GREEN}[MERGE]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[MERGE]${ANSI_NOCOLOR}\n"
             fi
 
-            printf "Branch checks:\n"
-            printf "  Branch: %s\n" "${branch}"
-            printf "  Commit on default branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${defaultBranch}"
+            printf -- 'Branch checks:\n'
+            printf -- '  Branch: %s\n' "${branch}"
+            printf -- "  Commit on default branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${defaultBranch}"
             if [[ "${branch}" == "${defaultBranch}" ]]; then
               on_default_branch="true"
-              printf "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
             else
-              printf "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
             fi
 
-            printf "  Commit on main branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${{ inputs.main_branch }}"
+            printf -- "  Commit on main branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${{ inputs.main_branch }}"
             if [[ "${branch}" == "${{ inputs.main_branch }}" ]]; then
               on_main_branch="true"
-              printf "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
             else
-              printf "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
             fi
 
-            printf "  Commit on release branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${{ inputs.release_branch }}"
+            printf -- "  Commit on release branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${{ inputs.release_branch }}"
             if [[ "${branch}" == "${{ inputs.release_branch }}" ]]; then
               on_release_branch="true"
-              printf "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
             else
-              printf "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
             fi
 
-            printf "  Commit on development branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${{ inputs.development_branch }}"
+            printf -- "  Commit on development branch ${ANSI_LIGHT_BLUE}'%s'${ANSI_NOCOLOR} " "${{ inputs.development_branch }}"
             if [[ "${branch}" == "${{ inputs.development_branch }}" ]]; then
               on_dev_branch="true"
-              printf "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[YES]${ANSI_NOCOLOR}\n"
             else
-              printf "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_RED}[NO]${ANSI_NOCOLOR}\n"
             fi
 
             if [[ "${is_merge_commit}" == "true" ]]; then
-              printf "Release checks:\n"
-              printf "  Release kind "
+              printf -- 'Release checks:\n'
+              printf -- '  Release kind '
               if [[ "${on_main_branch}" == "true" ]]; then
                 is_release_commit="true"
-                printf "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
+                printf -- "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
               elif [[ "${on_version_branch}" == "true" ]]; then
                 is_release_commit="true"
-                printf "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
+                printf -- "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
               elif [[ "${on_release_branch}" == "true" ]]; then
                 is_prerelease_commit="true"
-                printf "${ANSI_LIGHT_YELLOW}[PRERELEASE]${ANSI_NOCOLOR}\n"
+                printf -- "${ANSI_LIGHT_YELLOW}[PRERELEASE]${ANSI_NOCOLOR}\n"
               fi
             fi
           elif [[ "${ref:0:10}" == "refs/tags/" ]]; then
-            printf "${ANSI_LIGHT_GREEN}[TAG]\n"
+            printf -- "${ANSI_LIGHT_GREEN}[TAG]\n"
             ref_kind="tag"
             tag="${ref:10}"
 
-            printf "Tag checks:\n"
-            printf "  Check if tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
+            printf -- 'Tag checks:\n'
+            printf -- "  Check if tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
             git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
             if [[ $? -eq 0 ]]; then
-              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
             else
-              printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-              printf "${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
-              printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
+              printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
+              printf -- "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
               exit 1
             fi
 
             NIGHTLY_TAG_PATTERN='^${{ inputs.nightly_tag_pattern }}$'
             RELEASE_TAG_PATTERN='^${{ inputs.release_tag_pattern }}$'
 
-            printf "Tag checks:\n"
-            printf "  Tag: %s\n" "${tag}"
-            printf "  Check tag '%s' against regexp ... " "${tag}"
+            printf -- 'Tag checks:\n'
+            printf -- '  Tag: %s\n' "${tag}"
+            printf -- "  Check tag '%s' against regexp ... " "${tag}"
             if [[ "${tag}" =~ ${NIGHTLY_TAG_PATTERN} ]]; then
-              printf "${ANSI_LIGHT_GREEN}[NIGHTLY]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[NIGHTLY]${ANSI_NOCOLOR}\n"
               is_nightly_tag="true"
             elif [[ "${tag}" =~ ${RELEASE_TAG_PATTERN} ]]; then
-              printf "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n"
               version="${tag}"
               is_release_tag="true"
             else
-              printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-              printf "${ANSI_LIGHT_RED}Tag name '%s' doesn't conform to regexp${ANSI_NOCOLOR}\n" "${tag}"
-              printf "  ${ANSI_LIGHT_RED}nightly tag: %s${ANSI_NOCOLOR}\n" "${NIGHTLY_TAG_PATTERN}"
-              printf "  ${ANSI_LIGHT_RED}release tag: %s${ANSI_NOCOLOR}\n" "${RELEASE_TAG_PATTERN}"
-              printf "::error title=RexExpCheck::Tag name '%s' doesn't conform to regexp '%s' nor '%s'.\n" "${tag}" "${NIGHTLY_TAG_PATTERN}" "${RELEASE_TAG_PATTERN}"
+              printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_RED}Tag name '%s' doesn't conform to regexp${ANSI_NOCOLOR}\n" "${tag}"
+              printf -- "  ${ANSI_LIGHT_RED}nightly tag: %s${ANSI_NOCOLOR}\n" "${NIGHTLY_TAG_PATTERN}"
+              printf -- "  ${ANSI_LIGHT_RED}release tag: %s${ANSI_NOCOLOR}\n" "${RELEASE_TAG_PATTERN}"
+              printf -- "::error title=RexExpCheck::Tag name '%s' doesn't conform to regexp '%s' nor '%s'.\n" "${tag}" "${NIGHTLY_TAG_PATTERN}" "${RELEASE_TAG_PATTERN}"
               exit 1
             fi
 
             if [[ "${is_nightly_tag}" == "true" ]]; then
-              printf "  Check if nightly tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
+              printf -- "  Check if nightly tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
               git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
               if [[ $? -eq 0 ]]; then
-                printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
               else
-                printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-                printf "    ${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
-                printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
+                printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                printf -- "    ${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
+                printf -- "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
                 exit 1
               fi
             elif [[ "${is_release_tag}" == "true" ]]; then
-              printf "  Check if release tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
+              printf -- "  Check if release tag is on main branch '%s' ... " "${{ inputs.main_branch }}"
               git branch --remotes --contains $(git rev-parse --verify "tags/${tag}~0") | grep "origin/${{ inputs.main_branch }}" > /dev/null
               if [[ $? -eq 0 ]]; then
-                printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
               else
-                printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-                printf "    ${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
-                printf "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
+                printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                printf -- "    ${ANSI_LIGHT_RED}Tag '%s' isn't on branch '%s'.${ANSI_NOCOLOR}\n" "${tag}" "${{ inputs.main_branch }}"
+                printf -- "::error title=TagCheck::Tag '%s' isn't on branch '%s'.\n" "${tag}" "${{ inputs.main_branch }}"
                 exit 1
               fi
             fi
           elif [[ "${ref:0:10}" == "refs/pull/" ]]; then
-            printf "${ANSI_LIGHT_YELLOW}[PULL REQUEST]\n"
+            printf -- "${ANSI_LIGHT_YELLOW}[PULL REQUEST]\n"
             ref_kind="pullrequest"
             pr_number=${ref:11}
             pr_number=${pr_number%%/*}
 
-            printf "Pull Request checks:\n"
-            printf "  Number: %s\n" "${pr_number}"
+            printf -- 'Pull Request checks:\n'
+            printf -- '  Number: %s\n' "${pr_number}"
           else
-            printf "${ANSI_LIGHT_RED}[UNKNOWN]\n"
-            printf "${ANSI_LIGHT_RED}Unknown Git reference '%s'.${ANSI_NOCOLOR}\n" "${{ github.ref }}"
-            printf "::error title=Classify Commit::Unknown Git reference '%s'.\n" "${{ github.ref }}"
+            printf -- "${ANSI_LIGHT_RED}[UNKNOWN]\n"
+            printf -- "${ANSI_LIGHT_RED}Unknown Git reference '%s'.${ANSI_NOCOLOR}\n" "${{ github.ref }}"
+            printf -- "::error title=Classify Commit::Unknown Git reference '%s'.\n" "${{ github.ref }}"
             exit 1
           fi
 
@@ -387,7 +387,7 @@ jobs:
             git_submodule_paths="$(git config --file "${git_modules_file}" --null --name-only --get-regexp '\.path$' | xargs -0 -n1 git config --file "${git_modules_file}" --get | paste -sd ':' -)"
           fi
 
-          printf "\nWriting output variables ...\n"
+          printf -- '\nWriting output variables ...\n'
           tee --append "${GITHUB_OUTPUT}" <<EOF
           on_default_branch=${on_default_branch}
           on_main_branch=${on_main_branch}
@@ -427,7 +427,7 @@ jobs:
           publish_pages="false"
           errorCount=0
 
-          printf "Evaluate conditions for publishing GitHub Pages on %s '%s':\n" "${refKind}" "${GITHUB_REF}"
+          printf -- "Evaluate conditions for publishing GitHub Pages on %s '%s':\n" "${refKind}" "${GITHUB_REF}"
           while IFS= read -r line; do
             # trim leading and trailing whitespace
             line="${line#"${line%%[![:space:]]*}"}"
@@ -451,8 +451,8 @@ jobs:
                 # exit code 2 means the regular expression doesn't compile
                 [[ "" =~ ${pattern} ]]
                 if [[ $? -eq 2 ]]; then
-                  printf "  %-40s ${ANSI_LIGHT_RED}[INVALID]${ANSI_NOCOLOR}\n" "${line}"
-                  printf "::error title=PagesConditions::'%s' is not a valid regular expression.\n" "${line}"
+                  printf -- "  %-40s ${ANSI_LIGHT_RED}[INVALID]${ANSI_NOCOLOR}\n" "${line}"
+                  printf -- "::error title=PagesConditions::'%s' is not a valid regular expression.\n" "${line}"
                   errorCount=$((errorCount + 1))
                   continue
                 fi
@@ -464,8 +464,8 @@ jobs:
                 fi
                 ;;
               *)
-                printf "  %-40s ${ANSI_LIGHT_RED}[UNKNOWN]${ANSI_NOCOLOR}\n" "${line}"
-                printf "::error title=PagesConditions::'%s' is not a condition of 'publish_pages_on'.\n" "${line}"
+                printf -- "  %-40s ${ANSI_LIGHT_RED}[UNKNOWN]${ANSI_NOCOLOR}\n" "${line}"
+                printf -- "::error title=PagesConditions::'%s' is not a condition of 'publish_pages_on'.\n" "${line}"
                 errorCount=$((errorCount + 1))
                 continue
                 ;;
@@ -473,22 +473,22 @@ jobs:
 
             if [[ "${result}" == "true" ]]; then
               publish_pages="true"
-              printf "  %-40s ${ANSI_LIGHT_GREEN}[MATCH]${ANSI_NOCOLOR}\n" "${line}"
+              printf -- "  %-40s ${ANSI_LIGHT_GREEN}[MATCH]${ANSI_NOCOLOR}\n" "${line}"
             else
-              printf "  %-40s ${ANSI_LIGHT_YELLOW}[NO MATCH]${ANSI_NOCOLOR}\n" "${line}"
+              printf -- "  %-40s ${ANSI_LIGHT_YELLOW}[NO MATCH]${ANSI_NOCOLOR}\n" "${line}"
             fi
           done <<'CONDITIONS'
           ${{ inputs.publish_pages_on }}
           CONDITIONS
 
           if [[ ${errorCount} -ne 0 ]]; then
-            printf "${ANSI_LIGHT_RED}%d invalid condition(s) in 'publish_pages_on'.${ANSI_NOCOLOR}\n" "${errorCount}"
+            printf -- "${ANSI_LIGHT_RED}%d invalid condition(s) in 'publish_pages_on'.${ANSI_NOCOLOR}\n" "${errorCount}"
             exit 1
           fi
 
-          printf "Publish GitHub Pages: ${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "${publish_pages}"
+          printf -- "Publish GitHub Pages: ${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "${publish_pages}"
 
-          printf "\nWriting output variables ...\n"
+          printf -- '\nWriting output variables ...\n'
           tee --append "${GITHUB_OUTPUT}" <<EOF
           publish_pages=${publish_pages}
           EOF
@@ -513,79 +513,79 @@ jobs:
 
           export GH_TOKEN=${{ github.token }}
 
-          printf "Read second parent of current SHA (%s) ... " "${{ github.ref }}"
+          printf -- 'Read second parent of current SHA (%s) ... ' "${{ github.ref }}"
           SECOND_PARENT_SHA=$(git rev-parse ${{ github.ref }}^2 2> /dev/null)
           if [[ $? -ne 0 || "${SECOND_PARENT_SHA}" == "" ]]; then
-            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "${ANSI_LIGHT_RED}Couldn't read second parent (father) of '%s'.${ANSI_NOCOLOR}\n" "${{ github.ref }}^2"
-            printf "::error title=GitCommitHistoryError::Couldn't read second parent (father) of '%s'. -> %s\n" "${{ github.ref }}^2" "${SECOND_PARENT_SHA}"
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_RED}Couldn't read second parent (father) of '%s'.${ANSI_NOCOLOR}\n" "${{ github.ref }}^2"
+            printf -- "::error title=GitCommitHistoryError::Couldn't read second parent (father) of '%s'. -> %s\n" "${{ github.ref }}^2" "${SECOND_PARENT_SHA}"
             exit 1
           else
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           fi
 
-          printf "Search Pull Request to '%s' and branch containing SHA %s ... " "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
+          printf -- "Search Pull Request to '%s' and branch containing SHA %s ... " "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
           PULL_REQUESTS=$(gh pr list --base "${{ inputs.release_branch }}" --search "${SECOND_PARENT_SHA}" --state "merged" --json "title,number,headRefOid,mergedBy,mergedAt")
           if [[ $? -ne 0 ]]; then
-            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "${ANSI_LIGHT_RED}Couldn't search Pull Requests to '%s'. -> %s${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
-            printf "::error title=PullRequest::Couldn't search Pull Requests to '%s'. -> %s\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_RED}Couldn't search Pull Requests to '%s'. -> %s${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
+            printf -- "::error title=PullRequest::Couldn't search Pull Requests to '%s'. -> %s\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
             exit 1
           fi
-          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+          printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
           # The search lists every Pull Request *containing* that commit, so it can report more than one - for example
           # an older release Pull Request built from an ancestor. The second parent (father) of a merge commit is the
           # head commit of the merged branch, so a Pull Request whose 'headRefOid' equals it is the one that created
           # this merge commit. Newest first, in case a Pull Request was closed and redone from the same branch.
-          MATCHES=$(printf "%s\n" "${PULL_REQUESTS}" | jq --arg sha "${SECOND_PARENT_SHA}" '[.[] | select(.headRefOid == $sha)] | sort_by(.mergedAt) | reverse')
-          MATCH_COUNT=$(printf "%s\n" "${MATCHES}" | jq 'length')
+          MATCHES=$(printf -- '%s\n' "${PULL_REQUESTS}" | jq --arg sha "${SECOND_PARENT_SHA}" '[.[] | select(.headRefOid == $sha)] | sort_by(.mergedAt) | reverse')
+          MATCH_COUNT=$(printf -- '%s\n' "${MATCHES}" | jq 'length')
 
-          printf "Select Pull Request with head commit %s ... " "${SECOND_PARENT_SHA}"
+          printf -- 'Select Pull Request with head commit %s ... ' "${SECOND_PARENT_SHA}"
           if [[ "${MATCH_COUNT}" -eq 0 ]]; then
-            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "${ANSI_LIGHT_RED}No merged Pull Request to '%s' has head commit '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
-            if [[ "$(printf "%s\n" "${PULL_REQUESTS}" | jq 'length')" -eq 0 ]]; then
-              printf "${ANSI_LIGHT_RED}The search returned no candidates at all.${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_RED}No merged Pull Request to '%s' has head commit '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
+            if [[ "$(printf -- '%s\n' "${PULL_REQUESTS}" | jq 'length')" -eq 0 ]]; then
+              printf -- "${ANSI_LIGHT_RED}The search returned no candidates at all.${ANSI_NOCOLOR}\n"
             else
-              printf "${ANSI_LIGHT_RED}Candidates returned by the search: %s${ANSI_NOCOLOR}\n" "$(printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output '[.[] | "#\(.number) (\(.headRefOid[0:7]))"] | join(", ")')"
+              printf -- "${ANSI_LIGHT_RED}Candidates returned by the search: %s${ANSI_NOCOLOR}\n" "$(printf -- '%s\n' "${PULL_REQUESTS}" | jq --raw-output '[.[] | "#\(.number) (\(.headRefOid[0:7]))"] | join(", ")')"
             fi
-            printf "::error title=PullRequest::No merged Pull Request to '%s' has head commit '%s'.\n" "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
+            printf -- "::error title=PullRequest::No merged Pull Request to '%s' has head commit '%s'.\n" "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
             exit 1
           fi
-          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+          printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
           if [[ "${MATCH_COUNT}" -gt 1 ]]; then
             # Rare, but possible: a Pull Request was closed and recreated from the same branch, so both share a head
             # commit. The most recently merged one describes this release.
-            printf "${ANSI_LIGHT_YELLOW}%s Pull Requests share head commit '%s': %s${ANSI_NOCOLOR}\n" "${MATCH_COUNT}" "${SECOND_PARENT_SHA}" "$(printf "%s\n" "${MATCHES}" | jq --raw-output '[.[] | "#\(.number)"] | join(", ")')"
-            printf "${ANSI_LIGHT_YELLOW}Using the most recently merged one.${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_YELLOW}%s Pull Requests share head commit '%s': %s${ANSI_NOCOLOR}\n" "${MATCH_COUNT}" "${SECOND_PARENT_SHA}" "$(printf -- '%s\n' "${MATCHES}" | jq --raw-output '[.[] | "#\(.number)"] | join(", ")')"
+            printf -- "${ANSI_LIGHT_YELLOW}Using the most recently merged one.${ANSI_NOCOLOR}\n"
           fi
 
-          PR_TITLE="$(    printf "%s\n" "${MATCHES}" | jq --raw-output ".[0].title")"
-          PR_NUMBER="$(   printf "%s\n" "${MATCHES}" | jq --raw-output ".[0].number")"
-          PR_MERGED_BY="$(printf "%s\n" "${MATCHES}" | jq --raw-output ".[0].mergedBy.login")"
-          PR_MERGED_AT="$(printf "%s\n" "${MATCHES}" | jq --raw-output ".[0].mergedAt")"
+          PR_TITLE="$(    printf -- '%s\n' "${MATCHES}" | jq --raw-output ".[0].title")"
+          PR_NUMBER="$(   printf -- '%s\n' "${MATCHES}" | jq --raw-output ".[0].number")"
+          PR_MERGED_BY="$(printf -- '%s\n' "${MATCHES}" | jq --raw-output ".[0].mergedBy.login")"
+          PR_MERGED_AT="$(printf -- '%s\n' "${MATCHES}" | jq --raw-output ".[0].mergedAt")"
 
-          printf "${ANSI_LIGHT_BLUE}Found Pull Request:${ANSI_NOCOLOR}\n"
-          printf "  %s\n" "Title:    ${PR_TITLE}"
-          printf "  %s\n" "Number:   ${PR_NUMBER}"
-          printf "  %s\n" "MergedBy: ${PR_MERGED_BY}"
-          printf "  %s\n" "MergedAt: ${PR_MERGED_AT} ($(date -d"${PR_MERGED_AT}" '+%d.%m.%Y - %H:%M:%S'))"
+          printf -- "${ANSI_LIGHT_BLUE}Found Pull Request:${ANSI_NOCOLOR}\n"
+          printf -- '  %s\n' "Title:    ${PR_TITLE}"
+          printf -- '  %s\n' "Number:   ${PR_NUMBER}"
+          printf -- '  %s\n' "MergedBy: ${PR_MERGED_BY}"
+          printf -- '  %s\n' "MergedAt: ${PR_MERGED_AT} ($(date -d"${PR_MERGED_AT}" '+%d.%m.%Y - %H:%M:%S'))"
 
           RELEASE_TAG_PATTERN='^${{ inputs.release_tag_pattern }}$'
-          printf "Check Pull Request title against regexp '%s' ... " "${RELEASE_TAG_PATTERN}"
-          if [[ "${PR_TITLE}" =~ $RELEASE_TAG_PATTERN ]]; then
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+          printf -- "Check Pull Request title against regexp '%s' ... " "${RELEASE_TAG_PATTERN}"
+          if [[ "${PR_TITLE}" =~ ${RELEASE_TAG_PATTERN} ]]; then
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
             RELEASE_VERSION="${PR_TITLE}"
           else
-            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "${ANSI_LIGHT_RED}Pull Request title '%s' doesn't conform to regexp '%s'.${ANSI_NOCOLOR}\n" "${PR_TITLE}" "${RELEASE_TAG_PATTERN}"
-            printf "::error title=RexExpCheck::Pull Request title '%s' doesn't conform to regexp '%s'.\n" "${PR_TITLE}" "${RELEASE_TAG_PATTERN}"
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_RED}Pull Request title '%s' doesn't conform to regexp '%s'.${ANSI_NOCOLOR}\n" "${PR_TITLE}" "${RELEASE_TAG_PATTERN}"
+            printf -- "::error title=RexExpCheck::Pull Request title '%s' doesn't conform to regexp '%s'.\n" "${PR_TITLE}" "${RELEASE_TAG_PATTERN}"
             exit 1
           fi
 
-          printf "Release tag: ${ANSI_LIGHT_GREEN}%s${ANSI_NOCOLOR}\n" "${RELEASE_VERSION}"
+          printf -- "Release tag: ${ANSI_LIGHT_GREEN}%s${ANSI_NOCOLOR}\n" "${RELEASE_VERSION}"
           tee --append "${GITHUB_OUTPUT}" <<EOF
           pr_version=${RELEASE_VERSION}
           pr_title=${PR_TITLE}
@@ -596,29 +596,29 @@ jobs:
 
       - name: Debug
         run: |
-          printf "on_default_branch:    %s\n" "${{ steps.Classify.outputs.on_default_branch }}"
-          printf "on_main_branch:       %s\n" "${{ steps.Classify.outputs.on_main_branch }}"
-          printf "on_release_branch:    %s\n" "${{ steps.Classify.outputs.on_release_branch }}"
-          printf "on_dev_branch:        %s\n" "${{ steps.Classify.outputs.on_dev_branch }}"
-          printf "is_regular_commit:    %s\n" "${{ steps.Classify.outputs.is_regular_commit }}"
-          printf "is_merge_commit:      %s\n" "${{ steps.Classify.outputs.is_merge_commit }}"
-          printf "is_release_commit:    %s\n" "${{ steps.Classify.outputs.is_release_commit }}"
-          printf "is_nightly_tag:       %s\n" "${{ steps.Classify.outputs.is_nightly_tag }}"
-          printf "is_release_tag:       %s\n" "${{ steps.Classify.outputs.is_release_tag }}"
-          printf "has_submodules:       %s\n" "${{ steps.Classify.outputs.has_submodules }}"
-          printf "ref_kind:             %s\n" "${{ steps.Classify.outputs.ref_kind }}"
-          printf "default_branch:       %s\n" "${{ steps.Classify.outputs.default_branch }}"
-          printf "branch:               %s\n" "${{ steps.Classify.outputs.branch }}"
-          printf "tag:                  %s\n" "${{ steps.Classify.outputs.tag }}"
-          printf "version:              %s\n" "${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}"
-          printf "  from tag:           %s\n" "${{ steps.Classify.outputs.version }}"
-          printf "  from pr:            %s\n" "${{ steps.FindPullRequest.outputs.pr_version }}"
-          printf "pr title:             %s\n" "${{ steps.FindPullRequest.outputs.pr_title }}"
-          printf "pr number:            %s\n" "${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}"
-          printf "  from merge:         %s\n" "${{ steps.Classify.outputs.pr_number }}"
-          printf "  from pr:            %s\n" "${{ steps.FindPullRequest.outputs.pr_number }}"
-          printf "git_submodule_*:\n"
-          printf "  *_count_:           %s\n" "${{ steps.FindPullRequest.outputs.git_submodule_count }}"
-          printf "  *_names:            %s\n" "${{ steps.FindPullRequest.outputs.git_submodule_names }}"
-          printf "  *_paths:            %s\n" "${{ steps.FindPullRequest.outputs.git_submodule_paths }}"
-          printf "publish_pages:        %s\n" "${{ steps.PagesConditions.outputs.publish_pages }}"
+          printf -- 'on_default_branch:    %s\n' "${{ steps.Classify.outputs.on_default_branch }}"
+          printf -- 'on_main_branch:       %s\n' "${{ steps.Classify.outputs.on_main_branch }}"
+          printf -- 'on_release_branch:    %s\n' "${{ steps.Classify.outputs.on_release_branch }}"
+          printf -- 'on_dev_branch:        %s\n' "${{ steps.Classify.outputs.on_dev_branch }}"
+          printf -- 'is_regular_commit:    %s\n' "${{ steps.Classify.outputs.is_regular_commit }}"
+          printf -- 'is_merge_commit:      %s\n' "${{ steps.Classify.outputs.is_merge_commit }}"
+          printf -- 'is_release_commit:    %s\n' "${{ steps.Classify.outputs.is_release_commit }}"
+          printf -- 'is_nightly_tag:       %s\n' "${{ steps.Classify.outputs.is_nightly_tag }}"
+          printf -- 'is_release_tag:       %s\n' "${{ steps.Classify.outputs.is_release_tag }}"
+          printf -- 'has_submodules:       %s\n' "${{ steps.Classify.outputs.has_submodules }}"
+          printf -- 'ref_kind:             %s\n' "${{ steps.Classify.outputs.ref_kind }}"
+          printf -- 'default_branch:       %s\n' "${{ steps.Classify.outputs.default_branch }}"
+          printf -- 'branch:               %s\n' "${{ steps.Classify.outputs.branch }}"
+          printf -- 'tag:                  %s\n' "${{ steps.Classify.outputs.tag }}"
+          printf -- 'version:              %s\n' "${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}"
+          printf -- '  from tag:           %s\n' "${{ steps.Classify.outputs.version }}"
+          printf -- '  from pr:            %s\n' "${{ steps.FindPullRequest.outputs.pr_version }}"
+          printf -- 'pr title:             %s\n' "${{ steps.FindPullRequest.outputs.pr_title }}"
+          printf -- 'pr number:            %s\n' "${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}"
+          printf -- '  from merge:         %s\n' "${{ steps.Classify.outputs.pr_number }}"
+          printf -- '  from pr:            %s\n' "${{ steps.FindPullRequest.outputs.pr_number }}"
+          printf -- 'git_submodule_*:\n'
+          printf -- '  *_count_:           %s\n' "${{ steps.FindPullRequest.outputs.git_submodule_count }}"
+          printf -- '  *_names:            %s\n' "${{ steps.FindPullRequest.outputs.git_submodule_names }}"
+          printf -- '  *_paths:            %s\n' "${{ steps.FindPullRequest.outputs.git_submodule_paths }}"
+          printf -- 'publish_pages:        %s\n' "${{ steps.PagesConditions.outputs.publish_pages }}"
