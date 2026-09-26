@@ -129,7 +129,7 @@ jobs:
           if [[ -n "${{ inputs.testsuite-summary-name }}" ]]; then
             name="\"--name=${{ inputs.testsuite-summary-name }}\""
           fi
-          pyedaa-reports -v unittest $name "--merge=${{ inputs.merge-input-dialect }}:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=${{ inputs.merge-output-dialect }}:${{ inputs.merged_junit_filename }}"
+          pyedaa-reports -v unittest ${name} "--merge=${{ inputs.merge-input-dialect }}:junit/*.xml" ${{ inputs.additional_merge_args }} "--output=${{ inputs.merge-output-dialect }}:${{ inputs.merged_junit_filename }}"
           printf "%s\n" "cat ${{ inputs.merged_junit_filename }}"
           cat ${{ inputs.merged_junit_filename }}
 
@@ -185,4 +185,4 @@ jobs:
             printf "✅ CodeCov: No errors to report.\n"
           fi
 
-          exit $exitCode
+          exit ${exitCode}

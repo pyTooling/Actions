@@ -429,4 +429,4 @@ jobs:
             printf "✅ pytest: No errors.\n"
           fi
 
-          exit $exitCode
+          exit ${exitCode}

@@ -575,7 +575,7 @@ jobs:
 
           RELEASE_TAG_PATTERN='^${{ inputs.release_tag_pattern }}$'
           printf "Check Pull Request title against regexp '%s' ... " "${RELEASE_TAG_PATTERN}"
-          if [[ "${PR_TITLE}" =~ $RELEASE_TAG_PATTERN ]]; then
+          if [[ "${PR_TITLE}" =~ ${RELEASE_TAG_PATTERN} ]]; then
             printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
             RELEASE_VERSION="${PR_TITLE}"
           else
