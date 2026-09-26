@@ -180,9 +180,11 @@ Releasing This Repository
 The verification workflows check; :file:`.github/workflows/Pipeline.yml` releases. It holds no test jobs, so a release
 run is short enough to read.
 
-1. A merge commit on ``main`` starts it. ``Prepare`` (:ref:`JOBTMPL/PrepareJob`) classifies the commit, and
-   ``Verifications`` waits for the runs of the five :file:`_Checking_*.yml` workflows for that commit - they were
-   started by the same push - and fails if one of them didn't succeed.
+1. A merge commit on ``main`` starts it. ``Prepare`` (:ref:`JOBTMPL/PrepareJob`) classifies the commit,
+   ``References`` checks that every reference to a job template or action of this repository in
+   :file:`.github/workflows/*.yml` points to ``@main``, and ``Verifications`` waits for the runs of the five
+   :file:`_Checking_*.yml` workflows for that commit - they were started by the same push - and fails if one of them
+   didn't succeed.
 2. ``TriggerTaggedRelease`` (:ref:`JOBTMPL/TagReleaseCommit`) tags a release commit, using the version from the
    pull-request's title.
 3. A tag created with the pipeline's token raises no ``push`` event, so the job template starts this workflow again
@@ -195,3 +197,14 @@ run is short enough to read.
 
    The verification workflows keep their own ``push`` trigger and are **not** called from here. Calling them would
    collect every job of this repository - about 170 - into one run, where a single failure is hard to find.
+
+
+.. _DEV/Release/References:
+
+References to This Repository
+*****************************
+
+``References`` runs on every push to ``dev``, ``main`` and a version branch ``rN``, and expects the branch's own
+name: ``@dev`` on ``dev``, ``@main`` on ``main``, ``@r8`` on ``r8``. Commented-out references count, too. A wrong
+reference is reported with its file and line. Other branches (e.g. ``claude/*``, or ``update/r8`` carrying the
+rewritten references) aren't checked; the ``update/r8`` pull-request is checked once it lands on ``r8``.
