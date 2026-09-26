@@ -350,19 +350,32 @@ jobs:
           $env:PYTHONPATH = (Get-Location).ToString()
 
           cd "${{ inputs.root_directory || '.' }}"
-          $PARALLEL = "${{ inputs.parallel }}"
-          if ($PARALLEL -eq "false") {
-            $PARALLEL = ""
+
+          if ("${{ inputs.parallel }}" -eq "false") {
+            $PARALLEL_JOBS = ""
           } elseif ((python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)") -eq "True") {
             Write-Host "::warning::pytest-xdist isn't installed: running the tests serially."
-            $PARALLEL = ""
-          } elseif ("${{ inputs.coverage_config }}" -and ((python -c "from coverage import Coverage; print('subprocess' not in getattr(Coverage(config_file='pyproject.toml').config, 'patch', []))") -eq "True")) {
-            Write-Host "::warning::Coverage.py measures pytest-xdist workers only with 'patch = [`"subprocess`"]' in '[tool.coverage.run]': running the tests serially."
-            $PARALLEL = ""
+            $PARALLEL_JOBS = ""
+          } elseif ("${{ inputs.parallel }}" -eq "") {
+            $PARALLEL_JOBS = "auto"
+          } elseif ("${{ inputs.parallel }}" -cmatch '^(auto|[1-9][0-9]*)$') {
+            $PARALLEL_JOBS = "${{ inputs.parallel }}"
+          } else {
+            Write-Host "::error title=parallel::Input 'parallel' is '${{ inputs.parallel }}', but expected 'auto', a number of workers or 'false'."
+            exit 1
           }
+
+          if ($PARALLEL_JOBS -and "${{ inputs.coverage_config }}") {
+            if ((python -c "from coverage import Coverage; print('subprocess' not in getattr(Coverage(config_file='${{ inputs.coverage_config }}').config, 'patch', []))") -eq "True") {
+              Write-Host "::warning::Coverage.py measures pytest-xdist workers only with 'patch = [`"subprocess`"]' in '[tool.coverage.run]': running the tests serially."
+              $PARALLEL_JOBS = ""
+            }
+          }
+
           $PYTEST_ARGS = @()
+          if ($PARALLEL_JOBS)                        { $PYTEST_ARGS += "-n", $PARALLEL_JOBS }
           if ("${{ inputs.unittest_xml_artifact }}") { $PYTEST_ARGS += "--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}" }
-          if ($PARALLEL) { $PYTEST_ARGS += "-n", $PARALLEL }
+
           if ("${{ inputs.coverage_config }}") {
             Write-Host "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
