@@ -25,20 +25,26 @@ It is intended to run in the *tag pipeline*, beside :ref:`JOBTMPL/PublishRelease
 
    * Create the major-version branch, if it doesn't exist yet.
    * Rewrite references to this repository so they name the version branch.
-   * Open (or retitle) the pull-request updating the version branch from the main branch.
+   * Open (or retitle) the pull-request updating the version branch from the main branch, with the release notes as
+     its description.
+   * Push changes to workflow files with a GitHub App token (:ref:`JOBTMPL/UpdateVersionBranch/Input/app_id`).
 
 .. topic:: Behavior
 
-   1. Derive the branch name from :ref:`JOBTMPL/UpdateVersionBranch/Input/prefix` and either
+   1. With :ref:`JOBTMPL/UpdateVersionBranch/Input/app_id`, create a token of that GitHub App; every following step
+      works with it instead of the workflow's own token.
+   2. Derive the branch name from :ref:`JOBTMPL/UpdateVersionBranch/Input/prefix` and either
       :ref:`JOBTMPL/UpdateVersionBranch/Input/major` or the major number of
       :ref:`JOBTMPL/UpdateVersionBranch/Input/version`. A major that isn't a number is an error.
-   2. Create the branch if it is missing, from the highest existing lower major, or from
+   3. Create the branch if it is missing, from the highest existing lower major, or from
       :ref:`JOBTMPL/UpdateVersionBranch/Input/main_branch` when there is none.
-   3. Rewrite references to this repository - ``<owner>/<repository>[/<path>]@<ref>`` and the ``branch=`` parameter of
+   4. Rewrite references to this repository - ``<owner>/<repository>[/<path>]@<ref>`` and the ``branch=`` parameter of
       a workflow-status badge - in the tracked ``*.yml``, ``*.yaml`` and ``*.md`` files. Where a rewrite is needed, it
       becomes a commit on ``<update_branch_prefix><branch>`` and the pull-request is opened from there; where nothing
       needs rewriting, the pull-request is a plain merge of the main branch.
-   4. Open the pull-request, or retitle the one still open from the previous release.
+   5. Open the pull-request, or retitle the one still open from the previous release. Its description is the body of
+      the release :ref:`JOBTMPL/UpdateVersionBranch/Input/version` - the release notes; a release without notes gets
+      a generated description and a warning.
 
    The job does nothing when the version branch is already level with the main branch.
 
@@ -53,6 +59,7 @@ It is intended to run in the *tag pipeline*, beside :ref:`JOBTMPL/PublishRelease
 .. topic:: Dependencies
 
    * :gh:`actions/checkout`
+   * :gh:`actions/create-github-app-token`
    * GitHub CLI (``gh``), pre-installed on GitHub-hosted runners.
 
 .. _JOBTMPL/UpdateVersionBranch/Instantiation:
@@ -91,6 +98,9 @@ gated on ``is_release_tag`` from a ``Prepare`` job derived from job template :re
        with:
          version: ${{ needs.Prepare.outputs.version }}
          prefix:  'r'
+         app_id:  ${{ vars.RELEASE_APP_ID }}
+       secrets:
+         app_private_key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
 
 
 .. _JOBTMPL/UpdateVersionBranch/Parameters:
@@ -115,10 +125,16 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/UpdateVersionBranch/Input/update_branch_prefix`       | no       | string   | ``'update/'``                                                     |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/UpdateVersionBranch/Input/app_id`                     | no       | string   | ``''``                                                            |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/UpdateVersionBranch/Secrets>`
 
-This job template needs no secrets.
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| Token Name                                                          | Required | Type     | Default                                                           |
++=====================================================================+==========+==========+===================================================================+
+| :ref:`JOBTMPL/UpdateVersionBranch/Secret/app_private_key`           | no       | string   | — — — —                                                           |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`output parameters <JOBTMPL/UpdateVersionBranch/Outputs>`
 
@@ -224,13 +240,45 @@ update_branch_prefix
                   and is force-pushed on every release, so nothing should pin it.
 
 
+.. _JOBTMPL/UpdateVersionBranch/Input/app_id:
+
+app_id
+======
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: The ID of a GitHub App, or empty.
+:Description:     ID of a GitHub App installed on the repository with write access to *Contents*, *Workflows* and
+                  *Pull requests*. Together with :ref:`JOBTMPL/UpdateVersionBranch/Secret/app_private_key`, the job
+                  creates a token of that App (:gh:`actions/create-github-app-token`) and uses it for all its steps.
+                  |br|
+                  The workflow's own ``GITHUB_TOKEN`` can't push a change to a file in :file:`.github/workflows/` -
+                  no ``permissions:`` key grants that - so a release changing a workflow file needs the App. When
+                  empty, the job uses ``GITHUB_TOKEN``. |br|
+                  The App ID isn't secret, so a repository variable is enough, e.g. ``${{ vars.RELEASE_APP_ID }}``.
+
+
 .. _JOBTMPL/UpdateVersionBranch/Secrets:
 
 Secrets
 *******
 
-This job template needs no secrets. It uses the automatic ``GITHUB_TOKEN``, which needs ``contents: write`` and
-``pull-requests: write`` granted by the calling job.
+Without :ref:`JOBTMPL/UpdateVersionBranch/Input/app_id`, this job template needs no secrets. It then uses the
+automatic ``GITHUB_TOKEN``, which needs ``contents: write`` and ``pull-requests: write`` granted by the calling job.
+
+
+.. _JOBTMPL/UpdateVersionBranch/Secret/app_private_key:
+
+app_private_key
+===============
+
+:Type:            string
+:Required:        no
+:Default Value:   — — — —
+:Description:     Private key of the GitHub App named by :ref:`JOBTMPL/UpdateVersionBranch/Input/app_id`, as the
+                  PEM file's full content, e.g. ``${{ secrets.RELEASE_APP_PRIVATE_KEY }}``. A secret can hold several
+                  lines, so the file is stored unchanged: ``gh secret set RELEASE_APP_PRIVATE_KEY < app.pem``.
 
 
 .. _JOBTMPL/UpdateVersionBranch/Outputs:

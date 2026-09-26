@@ -6,6 +6,7 @@ This is a summary of dependencies used by the provided job templates. For more d
 * Actions provided by GitHub
 
   * :gh:`actions/checkout`
+  * :gh:`actions/create-github-app-token`
   * :gh:`actions/setup-python`
   * :gh:`actions/github-script`
   * :gh:`actions/upload-pages-artifact`

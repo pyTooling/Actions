@@ -25,6 +25,76 @@ jobs:
   Prepare:
     uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@main
 
+  # Every reference to a job template or action of this repository names the branch it is on: '@dev' on 'dev',
+  # '@main' on 'main', '@rN' on a version branch 'rN'. Other branches (e.g. 'claude/*') aren't checked.
+  References:
+    name: 🔍 Check references to pyTooling/Actions
+    runs-on: ubuntu-26.04
+    needs:
+      - Prepare
+    if: >-
+      ${{ needs.Prepare.outputs.on_dev_branch == 'true'
+       || needs.Prepare.outputs.on_main_branch == 'true'
+       || startsWith(needs.Prepare.outputs.branch, 'r')
+      }}
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v7
+
+      - name: 🔍 Check that all references point to '@${{ needs.Prepare.outputs.branch }}'
+        run: |
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          expected="${{ needs.Prepare.outputs.branch }}"
+          if [[ ! "${expected}" =~ ^(dev|main|r[0-9]+)$ ]]; then
+            printf -- "Branch '%s' is neither 'dev', 'main' nor a version branch 'rN': nothing to check.\n" \
+                   "${expected}"
+            exit 0
+          fi
+
+          pattern='pyTooling/Actions/\.github/(workflows|actions)/[^@[:space:]]+@[^[:space:]]+'
+
+          printf -- "Checking references to 'pyTooling/Actions' in '.github/workflows/*.yml' for '@%s' ... " \
+                 "${expected}"
+          retCode=0
+          references="$(grep --line-number --only-matching --extended-regexp "${pattern}" .github/workflows/*.yml)" \
+            || retCode=$?
+          if [[ ${retCode} -gt 1 ]]; then
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "::error title=%s::%s\n" "References" \
+                   "Couldn't search '.github/workflows/*.yml' (grep exit code ${retCode})."
+            exit 1
+          elif [[ ${retCode} -eq 1 ]]; then
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "::error title=%s::%s\n" "References" \
+                   "No reference to 'pyTooling/Actions' found in '.github/workflows/*.yml'."
+            exit 1
+          fi
+
+          referenceCount=0
+          errorCount=0
+          while IFS=':' read -r file line reference; do
+            referenceCount=$((referenceCount + 1))
+            if [[ "${reference##*@}" != "${expected}" ]]; then
+              [[ ${errorCount} -eq 0 ]] && printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+              printf -- "  ${ANSI_LIGHT_RED}%s:%s${ANSI_NOCOLOR} %s\n" "${file}" "${line}" "${reference}"
+              printf -- "::error file=%s,line=%s,title=%s::%s\n" "${file}" "${line}" "References" \
+                     "'${reference}' doesn't point to '@${expected}'."
+              errorCount=$((errorCount + 1))
+            fi
+          done <<< "${references}"
+
+          if [[ ${errorCount} -ne 0 ]]; then
+            printf -- "${ANSI_LIGHT_RED}%s of %s references don't point to '@%s'.${ANSI_NOCOLOR}\n" \
+                   "${errorCount}" "${referenceCount}" "${expected}"
+            exit 1
+          fi
+
+          printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR} (%s references)\n" "${referenceCount}"
+
   # The verification workflows run on their own push events. A release commit is tagged only after all of them
   # succeeded for this commit, so this job waits for them instead of duplicating their jobs into this pipeline.
   Verifications:
@@ -148,6 +218,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@main
     needs:
       - Prepare
+      - References
       - Verifications
     # 'is_release_commit' is only 'true' for a merge commit on the main branch, so this job cannot tag from a topic
     # branch. The ref is compared a second time anyway - creating a tag is the one irreversible step here.
@@ -188,3 +259,6 @@ jobs:
     with:
       version: ${{ needs.Prepare.outputs.version }}
       prefix:  'r'
+      app_id:  ${{ vars.RELEASE_APP_ID }}
+    secrets:
+      app_private_key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
