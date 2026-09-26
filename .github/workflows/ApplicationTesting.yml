@@ -112,7 +112,7 @@ on:
       parallel:
         description: 'Number of pytest-xdist workers: a number, ''auto'' or ''logical''. Empty: run the tests serially.'
         required: false
-        default: ''
+        default: 'auto'
         type: string
       apptest_report_xml:
         description: 'JSON object describing the path where to save the application test summary report XML.'
@@ -269,9 +269,14 @@ jobs:
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
+          PARALLEL='${{ inputs.parallel }}'
+          if [ -n "${PARALLEL}" ] && [ "$(python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)")" = "True" ]; then
+            printf "::notice::%s\n" "pytest-xdist isn't installed: running the tests serially."
+            PARALLEL=''
+          fi
           [ -n '${{ inputs.apptest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}' || unset PYTEST_ARGS
-          if [ -n '${{ inputs.parallel }}' ]; then
-            PYTEST_ARGS="${PYTEST_ARGS} -n ${{ inputs.parallel }}"
+          if [ -n "${PARALLEL}" ]; then
+            PYTEST_ARGS="${PYTEST_ARGS} -n ${PARALLEL}"
           fi
           printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
           python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
@@ -283,9 +288,14 @@ jobs:
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
+          $PARALLEL = "${{ inputs.parallel }}"
+          if ($PARALLEL -and ((python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)") -eq "True")) {
+            Write-Host "::notice::pytest-xdist isn't installed: running the tests serially."
+            $PARALLEL = ""
+          }
           $PYTEST_ARGS = @()
           if ("${{ inputs.apptest_xml_artifact }}") { $PYTEST_ARGS += "--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}" }
-          if ("${{ inputs.parallel }}") { $PYTEST_ARGS += "-n", "${{ inputs.parallel }}" }
+          if ($PARALLEL) { $PYTEST_ARGS += "-n", $PARALLEL }
           Write-Host "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
           python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
 

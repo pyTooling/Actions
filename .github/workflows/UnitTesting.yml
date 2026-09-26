@@ -107,7 +107,7 @@ on:
       parallel:
         description: 'Number of pytest-xdist workers: a number, ''auto'' or ''logical''. Empty: run the tests serially.'
         required: false
-        default: ''
+        default: 'auto'
         type: string
       unittest_report_xml:
         description: 'JSON object describing the path where to save the unittest summary report XML.'
@@ -307,11 +307,20 @@ jobs:
           export PYTHONPATH=$(pwd)
 
           cd "${{ inputs.root_directory || '.' }}"
-          [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}' || unset PYTEST_ARGS
-          if [ -n '${{ inputs.parallel }}' ]; then
-            PYTEST_ARGS="${PYTEST_ARGS} -n ${{ inputs.parallel }}"
+          PARALLEL='${{ inputs.parallel }}'
+          if [ -n "${PARALLEL}" ] && [ "$(python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)")" = "True" ]; then
+            printf "::notice::%s\n" "pytest-xdist isn't installed: running the tests serially."
+            PARALLEL=''
           fi
-          if [ -n '${{ inputs.coverage_config }}' ] && [ -n '${{ inputs.parallel }}' ]; then
+          if [ -n "${PARALLEL}" ] && [ -n '${{ inputs.coverage_config }}' ] && [ "$(python -c "from importlib.util import find_spec; print(find_spec('pytest_cov') is None)")" = "True" ]; then
+            printf "::notice::%s\n" "pytest-cov isn't installed: running the tests serially to collect the coverage."
+            PARALLEL=''
+          fi
+          [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}' || unset PYTEST_ARGS
+          if [ -n "${PARALLEL}" ]; then
+            PYTEST_ARGS="${PYTEST_ARGS} -n ${PARALLEL}"
+          fi
+          if [ -n '${{ inputs.coverage_config }}' ] && [ -n "${PARALLEL}" ]; then
             # With pytest-xdist, pytest-cov collects the coverage of every worker into '.coverage'.
             export COVERAGE_FILE=.coverage
             printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --cov --cov-config=${{ inputs.coverage_config }} --cov-report= --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
@@ -333,10 +342,19 @@ jobs:
           $env:PYTHONPATH = (Get-Location).ToString()
 
           cd "${{ inputs.root_directory || '.' }}"
+          $PARALLEL = "${{ inputs.parallel }}"
+          if ($PARALLEL -and ((python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)") -eq "True")) {
+            Write-Host "::notice::pytest-xdist isn't installed: running the tests serially."
+            $PARALLEL = ""
+          }
+          if ($PARALLEL -and "${{ inputs.coverage_config }}" -and ((python -c "from importlib.util import find_spec; print(find_spec('pytest_cov') is None)") -eq "True")) {
+            Write-Host "::notice::pytest-cov isn't installed: running the tests serially to collect the coverage."
+            $PARALLEL = ""
+          }
           $PYTEST_ARGS = @()
           if ("${{ inputs.unittest_xml_artifact }}") { $PYTEST_ARGS += "--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}" }
-          if ("${{ inputs.parallel }}") { $PYTEST_ARGS += "-n", "${{ inputs.parallel }}" }
-          if ("${{ inputs.coverage_config }}" -and "${{ inputs.parallel }}") {
+          if ($PARALLEL) { $PYTEST_ARGS += "-n", $PARALLEL }
+          if ("${{ inputs.coverage_config }}" -and $PARALLEL) {
             # With pytest-xdist, pytest-cov collects the coverage of every worker into '.coverage'.
             $env:COVERAGE_FILE = ".coverage"
             Write-Host "python -m pytest -raP $PYTEST_ARGS --cov --cov-config=${{ inputs.coverage_config }} --cov-report= --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"

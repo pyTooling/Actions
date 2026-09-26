@@ -43,7 +43,7 @@ Configuration options for :term:`pytest` should be given via section ``[tool.pyt
    6. Install the wheel using :term:`pip`.
    7. Run the application tests using :term:`pytest` (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_directory`,
       :ref:`JOBTMPL/ApplicationTesting/Input/tests_directory`,
-      :ref:`JOBTMPL/ApplicationTesting/Input/root_directory`), optionally in parallel
+      :ref:`JOBTMPL/ApplicationTesting/Input/root_directory`), in parallel if :file:`pytest-xdist` is installed
       (:ref:`JOBTMPL/ApplicationTesting/Input/parallel`).
    8. Upload the test report summary as an artifact (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_xml_artifact`,
       :ref:`JOBTMPL/ApplicationTesting/Input/apptest_report_xml`).
@@ -164,7 +164,7 @@ Parameter Summary
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/ApplicationTesting/Input/apptest_directory`         | no       | string        | ``'app'``                                                                                                                    |
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/ApplicationTesting/Input/parallel`                  | no       | string        | ``''``                                                                                                                       |
+| :ref:`JOBTMPL/ApplicationTesting/Input/parallel`                  | no       | string        | ``'auto'``                                                                                                                   |
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/ApplicationTesting/Input/apptest_report_xml`        | no       | string (JSON) | :jsoncode:`{"directory": "report/app", "filename": "TestReportSummary.xml", "fullpath": "report/app/TestReportSummary.xml"}` |
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
@@ -415,7 +415,7 @@ parallel
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'auto'``
 :Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
 :Description:     Run the tests in parallel with `pytest-xdist <https://pytest-xdist.readthedocs.io/>`__, passed as
                   ``-n <value>``. With ``'auto'`` or ``'logical'``, pytest-xdist derives the number of workers from the
@@ -424,7 +424,8 @@ parallel
                   .. attention::
 
                      :file:`pytest-xdist` has to be listed in the requirements
-                     (:ref:`JOBTMPL/ApplicationTesting/Input/requirements`).
+                     (:ref:`JOBTMPL/ApplicationTesting/Input/requirements`). If it's missing, the tests run serially
+                     and the job reports a notice.
 
 .. _JOBTMPL/ApplicationTesting/Input/apptest_report_xml:
 

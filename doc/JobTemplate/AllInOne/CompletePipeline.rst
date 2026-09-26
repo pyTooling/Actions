@@ -441,7 +441,7 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`        | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                          |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_parallel`            | no       | string | ``''``                                                                     |
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_parallel`            | no       | string | ``'auto'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`       | no       | string | ``'3.14'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -473,7 +473,7 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`         | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                          |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_parallel`             | no       | string | ``''``                                                                     |
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_parallel`             | no       | string | ``'auto'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest`                      | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -724,7 +724,7 @@ unittest_parallel
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'auto'``
 :Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
 :Description:     Number of :file:`pytest-xdist` workers for the unit tests. If empty, the tests run serially. |br|
                   Passed on as :ref:`JOBTMPL/UnitTesting/Input/parallel`.
@@ -833,7 +833,7 @@ apptest_parallel
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'auto'``
 :Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
 :Description:     Number of :file:`pytest-xdist` workers for the application tests. If empty, the tests run serially. |br|
                   Passed on as :ref:`JOBTMPL/ApplicationTesting/Input/parallel`.

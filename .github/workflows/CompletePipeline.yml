@@ -71,7 +71,7 @@ on:
       unittest_parallel:
         description: 'Number of pytest-xdist workers for unit tests: a number, ''auto'' or ''logical''. Empty: serial.'
         required: false
-        default: ''
+        default: 'auto'
         type: string
       apptest:
         description: 'Run Application Testing.'
@@ -111,7 +111,7 @@ on:
       apptest_parallel:
         description: 'Number of pytest-xdist workers for application tests: a number, ''auto'' or ''logical''. Empty: serial.'
         required: false
-        default: ''
+        default: 'auto'
         type: string
       bandit:
         description: 'Run Static Application Security Testing (SAST) using Bandit.'

@@ -41,7 +41,7 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
    5. Run the unit tests using :term:`pytest` (:ref:`JOBTMPL/UnitTesting/Input/unittest_directory`,
       :ref:`JOBTMPL/UnitTesting/Input/tests_directory`, :ref:`JOBTMPL/UnitTesting/Input/root_directory`), in
       combination with :term:`Coverage.py` if code coverage is enabled
-      (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`), optionally in parallel
+      (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`), in parallel if :file:`pytest-xdist` is installed
       (:ref:`JOBTMPL/UnitTesting/Input/parallel`).
    6. Convert the collected code coverage to Cobertura XML, JSON and HTML format
       (:ref:`JOBTMPL/UnitTesting/Input/coverage_report_xml`, :ref:`JOBTMPL/UnitTesting/Input/coverage_report_json`,
@@ -174,7 +174,7 @@ Parameter Summary
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/UnitTesting/Input/unittest_directory`        | no       | string | ``'unit'``                                                                                                                       |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/parallel`                  | no       | string | ``''``                                                                                                                           |
+| :ref:`JOBTMPL/UnitTesting/Input/parallel`                  | no       | string | ``'auto'``                                                                                                                       |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/UnitTesting/Input/unittest_report_xml`       | no       | string | :jsoncode:`{"directory": "report/unit", "filename":  "TestReportSummary.xml", "fullpath":  "report/unit/TestReportSummary.xml"}` |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
@@ -557,7 +557,7 @@ parallel
 
 :Type:            string
 :Required:        no
-:Default Value:   ``''``
+:Default Value:   ``'auto'``
 :Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
 :Description:     Run the tests in parallel with `pytest-xdist <https://pytest-xdist.readthedocs.io/>`__, passed as
                   ``-n <value>``. With ``'auto'`` or ``'logical'``, pytest-xdist derives the number of workers from the
@@ -570,6 +570,8 @@ parallel
                      (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`), :file:`pytest-cov` has to be listed too:
                      :term:`Coverage.py`'s ``coverage run`` measures only the process controlling the workers, so
                      in parallel the coverage is collected by ``pytest --cov`` instead. Both write :file:`.coverage`.
+
+                     If a package is missing, the tests run serially and the job reports a notice.
 
                   .. note::
 
