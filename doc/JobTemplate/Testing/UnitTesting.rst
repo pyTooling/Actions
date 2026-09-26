@@ -43,10 +43,11 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
       combination with :term:`Coverage.py` if code coverage is enabled
       (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`), in parallel if :file:`pytest-xdist` is installed
       (:ref:`JOBTMPL/UnitTesting/Input/parallel`).
-   6. Convert the collected code coverage to Cobertura XML, JSON and HTML format
+   6. Combine the code coverage data of all processes into :file:`.coverage`, if there are several.
+   7. Convert the collected code coverage to Cobertura XML, JSON and HTML format
       (:ref:`JOBTMPL/UnitTesting/Input/coverage_report_xml`, :ref:`JOBTMPL/UnitTesting/Input/coverage_report_json`,
       :ref:`JOBTMPL/UnitTesting/Input/coverage_report_html`).
-   7. Upload the test report and the code coverage reports as artifacts
+   8. Upload the test report and the code coverage reports as artifacts
       (:ref:`JOBTMPL/UnitTesting/Input/unittest_xml_artifact`,
       :ref:`JOBTMPL/UnitTesting/Input/unittest_html_artifact`,
       :ref:`JOBTMPL/UnitTesting/Input/coverage_sqlite_artifact`,
@@ -558,20 +559,22 @@ parallel
 :Type:            string
 :Required:        no
 :Default Value:   ``'auto'``
-:Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
+:Possible Values: ``'auto'``, a number of workers, or ``'false'``.
 :Description:     Run the tests in parallel with `pytest-xdist <https://pytest-xdist.readthedocs.io/>`__, passed as
-                  ``-n <value>``. With ``'auto'`` or ``'logical'``, pytest-xdist derives the number of workers from the
-                  runner's CPUs. If empty, the tests run serially.
+                  ``-n <value>``. With ``'auto'``, pytest-xdist starts one worker per CPU of the runner. With
+                  ``'false'``, the tests run serially.
 
                   .. attention::
 
                      :file:`pytest-xdist` has to be listed in the requirements
                      (:ref:`JOBTMPL/UnitTesting/Input/requirements`). If code coverage is enabled
-                     (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`), :file:`pytest-cov` has to be listed too:
-                     :term:`Coverage.py`'s ``coverage run`` measures only the process controlling the workers, so
-                     in parallel the coverage is collected by ``pytest --cov`` instead. Both write :file:`.coverage`.
+                     (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`), :term:`Coverage.py` measures the workers
+                     only with ``patch = ["subprocess"]`` in section ``[tool.coverage.run]`` (Coverage.py 7.10 or
+                     newer); otherwise it measures only the process controlling them. The data files of all processes
+                     are combined into :file:`.coverage`.
 
-                     If a package is missing, the tests run serially and the job reports a notice.
+                     If :file:`pytest-xdist` or the ``patch`` setting is missing, the tests run serially and the job
+                     reports a warning.
 
                   .. note::
 

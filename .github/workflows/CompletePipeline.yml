@@ -69,7 +69,7 @@ on:
         default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
         type: string
       unittest_parallel:
-        description: 'Number of pytest-xdist workers for unit tests: a number, ''auto'' or ''logical''. Empty: serial.'
+        description: 'Number of pytest-xdist workers for unit tests: ''auto'', a number, or ''false'' (serial).'
         required: false
         default: 'auto'
         type: string
@@ -109,7 +109,7 @@ on:
         default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
         type: string
       apptest_parallel:
-        description: 'Number of pytest-xdist workers for application tests: a number, ''auto'' or ''logical''. Empty: serial.'
+        description: 'Number of pytest-xdist workers for application tests: ''auto'', a number, or ''false'' (serial).'
         required: false
         default: 'auto'
         type: string

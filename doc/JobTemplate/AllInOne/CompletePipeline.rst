@@ -725,8 +725,8 @@ unittest_parallel
 :Type:            string
 :Required:        no
 :Default Value:   ``'auto'``
-:Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
-:Description:     Number of :file:`pytest-xdist` workers for the unit tests. If empty, the tests run serially. |br|
+:Possible Values: ``'auto'``, a number of workers, or ``'false'``.
+:Description:     Number of :file:`pytest-xdist` workers for the unit tests. With ``'false'``, the tests run serially. |br|
                   Passed on as :ref:`JOBTMPL/UnitTesting/Input/parallel`.
 
 
@@ -834,8 +834,8 @@ apptest_parallel
 :Type:            string
 :Required:        no
 :Default Value:   ``'auto'``
-:Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
-:Description:     Number of :file:`pytest-xdist` workers for the application tests. If empty, the tests run serially. |br|
+:Possible Values: ``'auto'``, a number of workers, or ``'false'``.
+:Description:     Number of :file:`pytest-xdist` workers for the application tests. With ``'false'``, the tests run serially. |br|
                   Passed on as :ref:`JOBTMPL/ApplicationTesting/Input/parallel`.
 
 

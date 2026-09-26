@@ -105,7 +105,7 @@ on:
         default: 'unit'
         type: string
       parallel:
-        description: 'Number of pytest-xdist workers: a number, ''auto'' or ''logical''. Empty: run the tests serially.'
+        description: 'Number of pytest-xdist workers: ''auto'', a number, or ''false'' to run the tests serially.'
         required: false
         default: 'auto'
         type: string
@@ -308,24 +308,18 @@ jobs:
 
           cd "${{ inputs.root_directory || '.' }}"
           PARALLEL='${{ inputs.parallel }}'
-          if [ -n "${PARALLEL}" ] && [ "$(python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)")" = "True" ]; then
-            printf "::notice::%s\n" "pytest-xdist isn't installed: running the tests serially."
+          if [ "${PARALLEL}" = "false" ]; then
             PARALLEL=''
-          fi
-          if [ -n "${PARALLEL}" ] && [ -n '${{ inputs.coverage_config }}' ] && [ "$(python -c "from importlib.util import find_spec; print(find_spec('pytest_cov') is None)")" = "True" ]; then
-            printf "::notice::%s\n" "pytest-cov isn't installed: running the tests serially to collect the coverage."
+          elif [ "$(python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)")" = "True" ]; then
+            printf "::warning::%s\n" "pytest-xdist isn't installed: running the tests serially."
+            PARALLEL=''
+          elif [ -n '${{ inputs.coverage_config }}' ] && [ "$(python -c "from coverage import Coverage; print('subprocess' not in getattr(Coverage(config_file='pyproject.toml').config, 'patch', []))")" = "True" ]; then
+            printf "::warning::%s\n" "Coverage.py measures pytest-xdist workers only with 'patch = [\"subprocess\"]' in '[tool.coverage.run]': running the tests serially."
             PARALLEL=''
           fi
           [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}' || unset PYTEST_ARGS
-          if [ -n "${PARALLEL}" ]; then
-            PYTEST_ARGS="${PYTEST_ARGS} -n ${PARALLEL}"
-          fi
-          if [ -n '${{ inputs.coverage_config }}' ] && [ -n "${PARALLEL}" ]; then
-            # With pytest-xdist, pytest-cov collects the coverage of every worker into '.coverage'.
-            export COVERAGE_FILE=.coverage
-            printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --cov --cov-config=${{ inputs.coverage_config }} --cov-report= --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
-            python -m pytest -raP $PYTEST_ARGS --cov --cov-config=${{ inputs.coverage_config }} --cov-report= --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
-          elif [ -n '${{ inputs.coverage_config }}' ]; then
+          [ -n "${PARALLEL}" ] && PYTEST_ARGS="${PYTEST_ARGS} -n ${PARALLEL}"
+          if [ -n '${{ inputs.coverage_config }}' ]; then
             printf "%s\n" "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           else
@@ -343,29 +337,31 @@ jobs:
 
           cd "${{ inputs.root_directory || '.' }}"
           $PARALLEL = "${{ inputs.parallel }}"
-          if ($PARALLEL -and ((python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)") -eq "True")) {
-            Write-Host "::notice::pytest-xdist isn't installed: running the tests serially."
+          if ($PARALLEL -eq "false") {
             $PARALLEL = ""
-          }
-          if ($PARALLEL -and "${{ inputs.coverage_config }}" -and ((python -c "from importlib.util import find_spec; print(find_spec('pytest_cov') is None)") -eq "True")) {
-            Write-Host "::notice::pytest-cov isn't installed: running the tests serially to collect the coverage."
+          } elseif ((python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)") -eq "True") {
+            Write-Host "::warning::pytest-xdist isn't installed: running the tests serially."
+            $PARALLEL = ""
+          } elseif ("${{ inputs.coverage_config }}" -and ((python -c "from coverage import Coverage; print('subprocess' not in getattr(Coverage(config_file='pyproject.toml').config, 'patch', []))") -eq "True")) {
+            Write-Host "::warning::Coverage.py measures pytest-xdist workers only with 'patch = [`"subprocess`"]' in '[tool.coverage.run]': running the tests serially."
             $PARALLEL = ""
           }
           $PYTEST_ARGS = @()
           if ("${{ inputs.unittest_xml_artifact }}") { $PYTEST_ARGS += "--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}" }
           if ($PARALLEL) { $PYTEST_ARGS += "-n", $PARALLEL }
-          if ("${{ inputs.coverage_config }}" -and $PARALLEL) {
-            # With pytest-xdist, pytest-cov collects the coverage of every worker into '.coverage'.
-            $env:COVERAGE_FILE = ".coverage"
-            Write-Host "python -m pytest -raP $PYTEST_ARGS --cov --cov-config=${{ inputs.coverage_config }} --cov-report= --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
-            python -m pytest -raP $PYTEST_ARGS --cov --cov-config=${{ inputs.coverage_config }} --cov-report= --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
-          } elseif ("${{ inputs.coverage_config }}") {
-            Write-Host "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
+          if ("${{ inputs.coverage_config }}") {
+            Write-Host "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           } else {
             Write-Host "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           }
+
+      - name: Combine coverage data
+        id: combine
+        if: inputs.coverage_config != '' && hashFiles('.coverage.*') != ''
+        continue-on-error: true
+        run: coverage combine --append --data-file=.coverage
 
       - name: Convert coverage to XML format (Cobertura)
         id: convert_xml

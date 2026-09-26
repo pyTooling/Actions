@@ -416,16 +416,21 @@ parallel
 :Type:            string
 :Required:        no
 :Default Value:   ``'auto'``
-:Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
+:Possible Values: ``'auto'``, a number of workers, or ``'false'``.
 :Description:     Run the tests in parallel with `pytest-xdist <https://pytest-xdist.readthedocs.io/>`__, passed as
-                  ``-n <value>``. With ``'auto'`` or ``'logical'``, pytest-xdist derives the number of workers from the
-                  runner's CPUs. If empty, the tests run serially.
+                  ``-n <value>``. With ``'auto'``, pytest-xdist starts one worker per CPU of the runner. With
+                  ``'false'``, the tests run serially.
 
                   .. attention::
 
                      :file:`pytest-xdist` has to be listed in the requirements
                      (:ref:`JOBTMPL/ApplicationTesting/Input/requirements`). If it's missing, the tests run serially
-                     and the job reports a notice.
+                     and the job reports a warning.
+
+                  .. note::
+
+                     The tests have to be independent of each other and of the order they run in, as each worker runs
+                     a share of them in a process of its own.
 
 .. _JOBTMPL/ApplicationTesting/Input/apptest_report_xml:
 
