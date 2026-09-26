@@ -61,6 +61,20 @@ on:
         type: string
         required: false
         default: 'update/'
+      app_id:
+        description: |
+          ID of a GitHub App with write access to contents, workflows and pull-requests. With 'app_private_key', the
+          job works with a token of that App instead of the workflow's own token, which can't push a change to a
+          file in '.github/workflows/'.
+        type: string
+        required: false
+        default: ''
+
+    secrets:
+      app_private_key:
+        description: |
+          Private key of the GitHub App named by 'app_id'.
+        required: false
 
     outputs:
       branch:
@@ -102,11 +116,23 @@ jobs:
       pull-request:   ${{ steps.pullrequest.outputs.pull-request }}
 
     steps:
+      - name: 🔑 Create a token of GitHub App '${{ inputs.app_id }}'
+        id: token
+        if: inputs.app_id != ''
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id:                   ${{ inputs.app_id }}
+          private-key:              ${{ secrets.app_private_key }}
+          permission-contents:      write
+          permission-workflows:     write
+          permission-pull-requests: write
+
       - name: ⏬ Checkout the main branch
         uses: actions/checkout@v7
         with:
           ref:         ${{ inputs.main_branch }}
           fetch-depth: 0
+          token:       ${{ steps.token.outputs.token || github.token }}
 
       - name: 🔢 Resolve and create the version branch
         id: version
@@ -121,7 +147,7 @@ jobs:
           ANSI_LIGHT_YELLOW=$'\x1b[93m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
-          export GH_TOKEN=${{ github.token }}
+          export GH_TOKEN=${{ steps.token.outputs.token || github.token }}
 
           # The version may be tagged with or without a prefix of its own ('v1.2.3' as well as '1.2.3'), and the
           # branch prefix is independent of it: 'v1.2.3' with prefix 'r' is branch 'r1'. Where the version branch
@@ -276,9 +302,10 @@ jobs:
 
           ANSI_LIGHT_RED=$'\x1b[91m'
           ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
-          export GH_TOKEN=${{ github.token }}
+          export GH_TOKEN=${{ steps.token.outputs.token || github.token }}
 
           printf -- 'pull-request=%s\n' "" >> "${GITHUB_OUTPUT}"
 
@@ -305,18 +332,30 @@ jobs:
           fi
 
           title="Updating ${{ steps.version.outputs.branch }} from ${{ inputs.version }}"
-          # Built line by line rather than from a here-document: a here-document's terminator has to start at column
-          # zero, which would end this YAML block scalar.
-          body="$(printf -- '%s\n' \
-            "This pull-request advances the \`${{ steps.version.outputs.branch }}\` branch to the **${{ inputs.version }}** release." \
-            "" \
-            "Consumers pin \`${{ github.repository }}@${{ steps.version.outputs.branch }}\`, so merging this makes that reference point at \`${{ inputs.version }}\`." \
-            "" \
-            "${rewriteNote}" \
-            "* Release: https://github.com/${{ github.repository }}/releases/tag/${{ inputs.version }}" \
-            "* Changes: https://github.com/${{ github.repository }}/compare/${{ steps.version.outputs.branch }}...${{ steps.rewrite.outputs.head }}" \
-            "" \
-            "Opened automatically by the \`UpdateVersionBranch\` workflow.")"
+
+          # The description is the release's notes, i.e. the release pull-request's description. The generated text
+          # below is the fallback for a release without notes.
+          printf -- '%s' "Reading the release notes of '${{ inputs.version }}' ... "
+          body="$(gh api "repos/${{ github.repository }}/releases/tags/${{ inputs.version }}" --jq '.body // ""' 2>&1)"
+          if [[ $? -eq 0 && -n "${body}" ]]; then
+            printf -- '%s\n' "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}"
+          else
+            printf -- '%s\n' "${ANSI_LIGHT_YELLOW}[NONE]${ANSI_NOCOLOR}"
+            printf -- '::warning title=%s::%s\n' "UpdateVersionBranch" \
+                   "No release notes for '${{ inputs.version }}': the pull-request gets a generated description."
+            # Built line by line rather than from a here-document: a here-document's terminator has to start at column
+            # zero, which would end this YAML block scalar.
+            body="$(printf -- '%s\n' \
+              "This pull-request advances the \`${{ steps.version.outputs.branch }}\` branch to the **${{ inputs.version }}** release." \
+              "" \
+              "Consumers pin \`${{ github.repository }}@${{ steps.version.outputs.branch }}\`, so merging this makes that reference point at \`${{ inputs.version }}\`." \
+              "" \
+              "${rewriteNote}" \
+              "* Release: https://github.com/${{ github.repository }}/releases/tag/${{ inputs.version }}" \
+              "* Changes: https://github.com/${{ github.repository }}/compare/${{ steps.version.outputs.branch }}...${{ steps.rewrite.outputs.head }}" \
+              "" \
+              "Opened automatically by the \`UpdateVersionBranch\` workflow.")"
+          fi
 
           # A patch release on an existing version branch finds the pull-request from the previous one still open.
           existing="$(gh pr list --repo "${{ github.repository }}" --base "${{ steps.version.outputs.branch }}" --head "${{ steps.rewrite.outputs.head }}" --state open --json number --jq '.[0].number' 2> /dev/null)"

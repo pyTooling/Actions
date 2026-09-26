@@ -259,3 +259,6 @@ jobs:
     with:
       version: ${{ needs.Prepare.outputs.version }}
       prefix:  'r'
+      app_id:  ${{ vars.RELEASE_APP_ID }}
+    secrets:
+      app_private_key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
