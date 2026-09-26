@@ -229,7 +229,7 @@ jobs:
           addNotes=("--notes-file" "__PRELIMINARY_NOTES__.md")
 
           printf "Creating release '%s' ... " "${{ inputs.tag }}"
-          message="$(gh release create "${{ inputs.tag }}" --verify-tag --draft $addPreRelease $addLatest "${addTitle[@]}" "${addNotes[@]}" 2>&1)"
+          message="$(gh release create "${{ inputs.tag }}" --verify-tag --draft ${addPreRelease} ${addLatest} "${addTitle[@]}" "${addNotes[@]}" 2>&1)"
           if [[ $? -eq 0 ]]; then
             printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
             printf "  Release page: %s\n" "${message}"
@@ -278,7 +278,7 @@ jobs:
           addNotes=("--notes-file" "__PRELIMINARY_NOTES__.md")
 
           printf "Creating release '%s' ... " "${{ inputs.tag }}"
-          message="$(gh release create "${{ inputs.tag }}" --verify-tag --draft $addPreRelease $addLatest "${addTitle[@]}" "${addNotes[@]}" 2>&1)"
+          message="$(gh release create "${{ inputs.tag }}" --verify-tag --draft ${addPreRelease} ${addLatest} "${addTitle[@]}" "${addNotes[@]}" 2>&1)"
           if [[ $? -eq 0 ]]; then
             printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
             printf "  Release page: %s\n" "${message}"
@@ -306,13 +306,13 @@ jobs:
             line="$1"
             while IFS=$'\r\n' read -r patternLine; do
               # skip empty lines
-              [[ "$patternLine" == "" ]] && continue
+              [[ "${patternLine}" == "" ]] && continue
 
               pattern="${patternLine%%=*}"
               replacement="${patternLine#*=}"
-              line="${line//"%$pattern%"/"$replacement"}"
+              line="${line//"%${pattern}%"/"${replacement}"}"
             done <<<'${{ inputs.replacements }}'
-            printf "%s\n" "$line"
+            printf "%s\n" "${line}"
           }
 
           # Create JSON inventory
@@ -414,23 +414,23 @@ jobs:
 
             printf "${ANSI_LIGHT_BLUE}Publish asset '%s' from artifact '%s' with title '%s'${ANSI_NOCOLOR}\n" "${asset}" "${artifact}" "${title}"
             printf "  Checked asset for duplicates ... "
-            if [[ -n "${assetFilenames[$asset]}" ]]; then
+            if [[ -n "${assetFilenames[${asset}]}" ]]; then
               printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
               printf "::error title=%s::%s\n" "DuplicateAsset" "Asset '${asset}' from artifact '${artifact}' was already uploaded to release '${{ inputs.tag }}'."
               ERRORS=$((ERRORS + 1))
               continue
             else
               printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
-              assetFilenames[$asset]=1
+              assetFilenames[${asset}]=1
             fi
 
             # Download artifact by artifact name
-            if [[ -n "${downloadedArtifacts[$artifact]}" ]]; then
+            if [[ -n "${downloadedArtifacts[${artifact}]}" ]]; then
               printf "  downloading artifact '%s' ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n" "${artifact}"
             else
               printf "  downloading '${artifact}' ...\n"
-              printf "    gh run download $GITHUB_RUN_ID --dir \"%s\" --name \"%s\" " "${artifact}" "${artifact}"
-              gh run download $GITHUB_RUN_ID --dir "${artifact}" --name "${artifact}"
+              printf "    gh run download ${GITHUB_RUN_ID} --dir \"%s\" --name \"%s\" " "${artifact}" "${artifact}"
+              gh run download ${GITHUB_RUN_ID} --dir "${artifact}" --name "${artifact}"
               if [[ $? -eq 0 ]]; then
                 printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
               else
@@ -440,7 +440,7 @@ jobs:
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
-              downloadedArtifacts[$artifact]=1
+              downloadedArtifacts[${artifact}]=1
 
               printf "  Checking for embedded tarball ... "
               if [[ -f "${artifact}/${{ inputs.tarball-name }}" ]]; then
@@ -482,7 +482,7 @@ jobs:
               )
               retCode=$?
               printf "::endgroup::\n"
-              if [[ $retCode -eq 0 ]]; then
+              if [[ ${retCode} -eq 0 ]]; then
                 printf "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
                 uploadFile="${asset}"
               else
@@ -511,7 +511,7 @@ jobs:
                 retCode=$?
               fi
 
-              if [[ $retCode -eq 0 ]]; then
+              if [[ ${retCode} -eq 0 ]]; then
                 printf "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
                 uploadFile="${asset}"
               else
@@ -540,7 +540,7 @@ jobs:
                 retCode=$?
               fi
 
-              if [[ $retCode -eq 0 ]]; then
+              if [[ ${retCode} -eq 0 ]]; then
                 printf "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
                 uploadFile="${asset}"
               else
@@ -563,7 +563,7 @@ jobs:
 
             printf "  compute SHA256 checksum of '${uploadFile}' ... "
             sha256=$(sha256sum -b ${uploadFile} | cut -d " " -f1)
-            sha256Checksums[$asset]="sha256:${sha256}"
+            sha256Checksums[${asset}]="sha256:${sha256}"
             printf "${ANSI_LIGHT_BLUE}${sha256}${ANSI_NOCOLOR}\n"
 
             # Add asset to Markdown table
@@ -609,14 +609,14 @@ jobs:
 
               printf "  checking assets SHA256 checksum ... "
               ghSHA256=$(gh release view --json assets --jq ".assets[] | select(.name == \"${asset}\") | .digest" ${{ inputs.tag }})
-              if [[ "${ghSHA256}" == "${sha256Checksums[$asset]}" ]]; then
+              if [[ "${ghSHA256}" == "${sha256Checksums[${asset}]}" ]]; then
                 printf "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
               else
                 printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
                 printf "    ${ANSI_LIGHT_RED}SHA256 checksum compare failed.${ANSI_NOCOLOR}\n"
-                printf "      ${ANSI_LIGHT_RED}Local:  %s${ANSI_NOCOLOR}\n" "${sha256Checksums[$asset]}"
+                printf "      ${ANSI_LIGHT_RED}Local:  %s${ANSI_NOCOLOR}\n" "${sha256Checksums[${asset}]}"
                 printf "      ${ANSI_LIGHT_RED}GitHub: %s${ANSI_NOCOLOR}\n" "${ghSHA256}"
-                printf "::error title=%s::%s\n" "ChecksumError" "SHA256 checksum compare failed. Local=${sha256Checksums[$asset]} GitHub=${ghSHA256}"
+                printf "::error title=%s::%s\n" "ChecksumError" "SHA256 checksum compare failed. Local=${sha256Checksums[${asset}]} GitHub=${ghSHA256}"
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
@@ -656,7 +656,7 @@ jobs:
           tree -pash -L 3 .
           printf "::endgroup::\n"
 
-          if [[ $ERRORS -ne 0 ]]; then
+          if [[ ${ERRORS} -ne 0 ]]; then
             printf "${ANSI_LIGHT_RED}%s errors detected in previous steps.${ANSI_NOCOLOR}\n" "${ERRORS}"
             exit 1
           fi
@@ -819,11 +819,11 @@ jobs:
           printf -- "Apply replacements ... "
           while IFS=$'\r\n' read -r patternLine; do
             # skip empty lines
-            [[ "$patternLine" == "" ]] && continue
+            [[ "${patternLine}" == "" ]] && continue
 
             pattern="%${patternLine%%=*}%"
             replacement="${patternLine#*=}"
-            NOTES="${NOTES//$pattern/$replacement}"
+            NOTES="${NOTES//${pattern}/${replacement}}"
           done <<<'${{ inputs.replacements }}'
           printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 

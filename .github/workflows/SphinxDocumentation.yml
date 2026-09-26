@@ -233,7 +233,7 @@ jobs:
                 break
               fi
             done
-            if [[ $found -eq 0 ]]; then
+            if [[ ${found} -eq 0 ]]; then
               printf "[SKIPPED]\n"
             fi
           done < <(find . -type f -not -iname "*.cls" -not -iname "*.sty" -not -iname "*.xdy" -not -iname "*.svg" -not -iname "*.png" -not -iname "*.jpg" | sed 's:./::')
@@ -250,7 +250,7 @@ jobs:
             while IFS=$'\n' read -r imageFile; do
               newFile="${imageFile//%/_}";
 
-              printf "    %s\n" "$imageFile";
+              printf "    %s\n" "${imageFile}";
               if [[ "${imageFile}" != "${newFile}" ]]; then
                 printf "      Rename file to '%s' " "${newFile}"
                 mv "${imageFile}" "${newFile}"
@@ -268,7 +268,7 @@ jobs:
                   printf "[FAILED]\n"
                 fi
               fi
-            done < <(find . -type f -iname "*.$imageExt" | sed 's:./::')
+            done < <(find . -type f -iname "*.${imageExt}" | sed 's:./::')
           done
 
       - name: 📤 Upload 'LaTeX Documentation' artifact
