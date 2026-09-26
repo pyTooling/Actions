@@ -151,16 +151,16 @@ jobs:
           ANSI_LIGHT_BLUE=$'\x1b[94m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
-          printf "Release mode: ${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "${{ inputs.mode }}"
+          printf -- "Release mode: ${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "${{ inputs.mode }}"
           case "${{ inputs.mode }}" in
             "release")
               ;;
             "nightly")
-              printf "→ Allow deletion and recreation of existing release pages for rolling releases (nightly releases)\n"
+              printf -- '→ Allow deletion and recreation of existing release pages for rolling releases (nightly releases)\n'
               ;;
             *)
-              printf "Unknown mode '%s'\n" "${{ inputs.mode }}"
-              printf "::error title=%s::%s\n" "InternalError" "Unknown mode '${{ inputs.mode }}'."
+              printf -- "Unknown mode '%s'\n" "${{ inputs.mode }}"
+              printf -- '::error title=%s::%s\n' "InternalError" "Unknown mode '${{ inputs.mode }}'."
               exit 1
           esac
 
@@ -178,16 +178,16 @@ jobs:
 
           export GH_TOKEN=${{ github.token }}
 
-          printf "Deleting release '%s' ... " "${{ inputs.tag }}"
+          printf -- "Deleting release '%s' ... " "${{ inputs.tag }}"
           message="$(gh release delete ${{ inputs.tag }} --yes 2>&1)"
           if [[ $? -eq 0 ]]; then
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           elif [[ "${message}" == "release not found" ]]; then
-            printf "${ANSI_LIGHT_YELLOW}[NOT FOUND]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_YELLOW}[NOT FOUND]${ANSI_NOCOLOR}\n"
           else
-            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "  ${ANSI_LIGHT_RED}Couldn't delete release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
-            printf "::error title=%s::%s\n" "InternalError" "Couldn't delete release '${{ inputs.tag }}' -> Error: '${message}'."
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "  ${ANSI_LIGHT_RED}Couldn't delete release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
+            printf -- '::error title=%s::%s\n' "InternalError" "Couldn't delete release '${{ inputs.tag }}' -> Error: '${message}'."
             exit 1
           fi
 
@@ -228,15 +228,15 @@ jobs:
 
           addNotes=("--notes-file" "__PRELIMINARY_NOTES__.md")
 
-          printf "Creating release '%s' ... " "${{ inputs.tag }}"
+          printf -- "Creating release '%s' ... " "${{ inputs.tag }}"
           message="$(gh release create "${{ inputs.tag }}" --verify-tag --draft ${addPreRelease} ${addLatest} "${addTitle[@]}" "${addNotes[@]}" 2>&1)"
           if [[ $? -eq 0 ]]; then
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
-            printf "  Release page: %s\n" "${message}"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- '  Release page: %s\n' "${message}"
           else
-            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "  ${ANSI_LIGHT_RED}Couldn't create release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
-            printf "::error title=%s::%s\n" "InternalError" "Couldn't create release '${{ inputs.tag }}' -> Error: '${message}'."
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "  ${ANSI_LIGHT_RED}Couldn't create release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
+            printf -- '::error title=%s::%s\n' "InternalError" "Couldn't create release '${{ inputs.tag }}' -> Error: '${message}'."
             exit 1
           fi
 
@@ -277,15 +277,15 @@ jobs:
 
           addNotes=("--notes-file" "__PRELIMINARY_NOTES__.md")
 
-          printf "Creating release '%s' ... " "${{ inputs.tag }}"
+          printf -- "Creating release '%s' ... " "${{ inputs.tag }}"
           message="$(gh release create "${{ inputs.tag }}" --verify-tag --draft ${addPreRelease} ${addLatest} "${addTitle[@]}" "${addNotes[@]}" 2>&1)"
           if [[ $? -eq 0 ]]; then
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
-            printf "  Release page: %s\n" "${message}"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- '  Release page: %s\n' "${message}"
           else
-            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "  ${ANSI_LIGHT_RED}Couldn't recreate release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
-            printf "::error title=%s::%s\n" "InternalError" "Couldn't recreate release '${{ inputs.tag }}' -> Error: '${message}'."
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "  ${ANSI_LIGHT_RED}Couldn't recreate release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
+            printf -- '::error title=%s::%s\n' "InternalError" "Couldn't recreate release '${{ inputs.tag }}' -> Error: '${message}'."
             exit 1
           fi
 
@@ -312,7 +312,7 @@ jobs:
               replacement="${patternLine#*=}"
               line="${line//"%${pattern}%"/"${replacement}"}"
             done <<<'${{ inputs.replacements }}'
-            printf "%s\n" "${line}"
+            printf -- '%s\n' "${line}"
           }
 
           # Create JSON inventory
@@ -320,22 +320,22 @@ jobs:
             STRUCT_VERSION="1.1"
 
             # Use GitHub API to ask for latest version
-            printf "Get latest released version via GitHub API ...\n"
-            printf "  gh release list --json tagName,isLatest --jq '.[] | select(.isLatest == true) | .tagName' "
+            printf -- 'Get latest released version via GitHub API ...\n'
+            printf -- "  gh release list --json tagName,isLatest --jq '.[] | select(.isLatest == true) | .tagName' "
             latestVersion=$(gh release list --json tagName,isLatest --jq '.[] | select(.isLatest == true) | .tagName')
             if [[ $? -eq 0 ]]; then
               if [[ -z "${latestVersion}" ]]; then
-                printf "${ANSI_LIGHT_RED}[UNKNOWN]${ANSI_NOCOLOR}\n"
-                printf "    latest=unknown\n"
+                printf -- "${ANSI_LIGHT_RED}[UNKNOWN]${ANSI_NOCOLOR}\n"
+                printf -- '    latest=unknown\n'
                 latestVersion="unknown"
               else
-                printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
-                printf "    latest=%s\n" "${latestVersion}"
+                printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                printf -- '    latest=%s\n' "${latestVersion}"
               fi
             else
-              printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
-              printf "    ${ANSI_LIGHT_RED}Couldn't get latest released version '%s'.${ANSI_NOCOLOR}\n" "${latestVersion}"
-              printf "::error title=%s::%s\n" "GitHub Release API" "Couldn't get latest released version '${latestVersion}'."
+              printf -- "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+              printf -- "    ${ANSI_LIGHT_RED}Couldn't get latest released version '%s'.${ANSI_NOCOLOR}\n" "${latestVersion}"
+              printf -- '::error title=%s::%s\n' "GitHub Release API" "Couldn't get latest released version '${latestVersion}'."
 
               latestVersion="error"
             fi
@@ -375,8 +375,8 @@ jobs:
           fi
 
           # Write Markdown table header
-          printf "| Asset Name | File Size | SHA256 |\n"  > __ASSETS__.md
-          printf "|------------|-----------|--------|\n" >> __ASSETS__.md
+          printf -- '| Asset Name | File Size | SHA256 |\n'  > __ASSETS__.md
+          printf -- '|------------|-----------|--------|\n' >> __ASSETS__.md
 
           ERRORS=0
           # A dictionary of 0/1 to avoid duplicate downloads
@@ -412,98 +412,98 @@ jobs:
             asset="$(Replace "${asset}")"
             title="$(Replace "${title}")"
 
-            printf "${ANSI_LIGHT_BLUE}Publish asset '%s' from artifact '%s' with title '%s'${ANSI_NOCOLOR}\n" "${asset}" "${artifact}" "${title}"
-            printf "  Checked asset for duplicates ... "
+            printf -- "${ANSI_LIGHT_BLUE}Publish asset '%s' from artifact '%s' with title '%s'${ANSI_NOCOLOR}\n" "${asset}" "${artifact}" "${title}"
+            printf -- '  Checked asset for duplicates ... '
             if [[ -n "${assetFilenames[${asset}]}" ]]; then
-              printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
-              printf "::error title=%s::%s\n" "DuplicateAsset" "Asset '${asset}' from artifact '${artifact}' was already uploaded to release '${{ inputs.tag }}'."
+              printf -- "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+              printf -- '::error title=%s::%s\n' "DuplicateAsset" "Asset '${asset}' from artifact '${artifact}' was already uploaded to release '${{ inputs.tag }}'."
               ERRORS=$((ERRORS + 1))
               continue
             else
-              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
               assetFilenames[${asset}]=1
             fi
 
             # Download artifact by artifact name
             if [[ -n "${downloadedArtifacts[${artifact}]}" ]]; then
-              printf "  downloading artifact '%s' ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n" "${artifact}"
+              printf -- "  downloading artifact '%s' ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n" "${artifact}"
             else
-              printf "  downloading '${artifact}' ...\n"
-              printf "    gh run download ${GITHUB_RUN_ID} --dir \"%s\" --name \"%s\" " "${artifact}" "${artifact}"
+              printf -- "  downloading '${artifact}' ...\n"
+              printf -- "    gh run download ${GITHUB_RUN_ID} --dir \"%s\" --name \"%s\" " "${artifact}" "${artifact}"
               gh run download ${GITHUB_RUN_ID} --dir "${artifact}" --name "${artifact}"
               if [[ $? -eq 0 ]]; then
-                printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
               else
-                printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
-                printf "      ${ANSI_LIGHT_RED}Couldn't download artifact '%s'.${ANSI_NOCOLOR}\n" "${artifact}"
-                printf "::error title=%s::%s\n" "ArtifactNotFound" "Couldn't download artifact '${artifact}'."
+                printf -- "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+                printf -- "      ${ANSI_LIGHT_RED}Couldn't download artifact '%s'.${ANSI_NOCOLOR}\n" "${artifact}"
+                printf -- '::error title=%s::%s\n' "ArtifactNotFound" "Couldn't download artifact '${artifact}'."
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
               downloadedArtifacts[${artifact}]=1
 
-              printf "  Checking for embedded tarball ... "
+              printf -- '  Checking for embedded tarball ... '
               if [[ -f "${artifact}/${{ inputs.tarball-name }}" ]]; then
-                printf "${ANSI_LIGHT_GREEN}[FOUND]${ANSI_NOCOLOR}\n"
+                printf -- "${ANSI_LIGHT_GREEN}[FOUND]${ANSI_NOCOLOR}\n"
 
                 pushd "${artifact}" > /dev/null
 
-                printf "    Extracting embedded tarball ... "
+                printf -- '    Extracting embedded tarball ... '
                 tar -xf "${{ inputs.tarball-name }}"
                 if [[ $? -ne 0 ]]; then
-                  printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                  printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
                 else
-                  printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                  printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
                 fi
 
-                printf "    Removing temporary tarball ... "
+                printf -- '    Removing temporary tarball ... '
                 rm -f "${{ inputs.tarball-name }}"
                 if [[ $? -ne 0 ]]; then
-                  printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                  printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
                 else
-                  printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                  printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
                 fi
 
                 popd > /dev/null
               else
-                printf "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
+                printf -- "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
               fi
             fi
 
             # Check if artifact should be compressed (zip, tgz) or if asset was part of the downloaded artifact.
-            printf "  checking asset '%s' ... " "${artifact}/${asset}"
+            printf -- "  checking asset '%s' ... " "${artifact}/${asset}"
             if [[ "${asset}" == !*.zip ]]; then
-              printf "${ANSI_LIGHT_GREEN}[ZIP]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[ZIP]${ANSI_NOCOLOR}\n"
               asset="${asset##*!}"
-              printf "::group::    %s\n" "Compressing artifact '${artifact}' to '${asset}' ..."
+              printf -- '::group::    %s\n' "Compressing artifact '${artifact}' to '${asset}' ..."
               (
                 cd "${artifact}" && \
                 zip -r "../${asset}" *
               )
               retCode=$?
-              printf "::endgroup::\n"
+              printf -- '::endgroup::\n'
               if [[ ${retCode} -eq 0 ]]; then
-                printf "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                printf -- "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
                 uploadFile="${asset}"
               else
-                printf "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
-                printf "      ${ANSI_LIGHT_RED}Couldn't compress '%s' to zip file '%s'.${ANSI_NOCOLOR}\n" "${artifact}" "${asset}"
-                printf "::error title=%s::%s\n" "CompressionError" "Couldn't compress '${artifact}' to zip file '${asset}'."
+                printf -- "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+                printf -- "      ${ANSI_LIGHT_RED}Couldn't compress '%s' to zip file '%s'.${ANSI_NOCOLOR}\n" "${artifact}" "${asset}"
+                printf -- '::error title=%s::%s\n' "CompressionError" "Couldn't compress '${artifact}' to zip file '${asset}'."
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
             elif [[ "${asset}" == !*.tgz || "${asset}" == !*.tar.gz || "${asset}" == \$*.tgz || "${asset}" == \$*.tar.gz ]]; then
-              printf "${ANSI_LIGHT_GREEN}[TAR/GZ]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[TAR/GZ]${ANSI_NOCOLOR}\n"
 
               if [[ "${asset:0:1}" == "\$" ]]; then
                 asset="${asset##*$}"
                 dirName="${asset%.*}"
-                printf "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
+                printf -- "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
                 tar -c --gzip --owner=0 --group=0 --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
                 retCode=$?
               else
                 asset="${asset##*!}"
-                printf "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
+                printf -- "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
                 (
                   cd "${artifact}" && \
                   tar -c --gzip --owner=0 --group=0 --file="../${asset}" *
@@ -512,27 +512,27 @@ jobs:
               fi
 
               if [[ ${retCode} -eq 0 ]]; then
-                printf "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                printf -- "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
                 uploadFile="${asset}"
               else
-                printf "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
-                printf "      ${ANSI_LIGHT_RED}Couldn't compress '%s' to tgz file '%s'.${ANSI_NOCOLOR}\n" "${artifact}" "${asset}"
-                printf "::error title=%s::%s\n" "CompressionError" "Couldn't compress '${artifact}' to tgz file '${asset}'."
+                printf -- "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+                printf -- "      ${ANSI_LIGHT_RED}Couldn't compress '%s' to tgz file '%s'.${ANSI_NOCOLOR}\n" "${artifact}" "${asset}"
+                printf -- '::error title=%s::%s\n' "CompressionError" "Couldn't compress '${artifact}' to tgz file '${asset}'."
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
             elif [[ "${asset}" == !*.tzst || "${asset}" == !*.tar.zst || "${asset}" == \$*.tzst || "${asset}" == \$*.tar.zst ]]; then
-              printf "${ANSI_LIGHT_GREEN}[ZST]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[ZST]${ANSI_NOCOLOR}\n"
 
               if [[ "${asset:0:1}" == "\$" ]]; then
                 asset="${asset##*$}"
                 dirName="${asset%.*}"
-                printf "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
+                printf -- "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
                 tar -c --zstd --owner=0 --group=0 --file="${asset}" --directory="${artifact}" --transform "s|^\.|${dirName%.tar}|" .
                 retCode=$?
               else
                 asset="${asset##*!}"
-                printf "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
+                printf -- "    Compressing artifact '%s' to '%s' ...\n" "${artifact}" "${asset}"
                 (
                   cd "${artifact}" && \
                   tar -c --zstd --owner=0 --group=0 --file="../${asset}" *
@@ -541,33 +541,33 @@ jobs:
               fi
 
               if [[ ${retCode} -eq 0 ]]; then
-                printf "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+                printf -- "    Compression ${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
                 uploadFile="${asset}"
               else
-                printf "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
-                printf "      ${ANSI_LIGHT_RED}Couldn't compress '%s' to zst file '%s'.${ANSI_NOCOLOR}\n" "${artifact}" "${asset}"
-                printf "::error title=%s::%s\n" "CompressionError" "Couldn't compress '${artifact}' to zst file '${asset}'."
+                printf -- "    Compression ${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+                printf -- "      ${ANSI_LIGHT_RED}Couldn't compress '%s' to zst file '%s'.${ANSI_NOCOLOR}\n" "${artifact}" "${asset}"
+                printf -- '::error title=%s::%s\n' "CompressionError" "Couldn't compress '${artifact}' to zst file '${asset}'."
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
             elif [[ -e "${artifact}/${asset}" ]]; then
-              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
               uploadFile="${artifact}/${asset}"
             else
-              printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
-              printf "    ${ANSI_LIGHT_RED}Couldn't find asset '%s' in artifact '%s'.${ANSI_NOCOLOR}\n" "${asset}" "${artifact}"
-              printf "::error title=%s::%s\n" "FileNotFound" "Couldn't find asset '${asset}' in artifact '${artifact}'."
+              printf -- "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+              printf -- "    ${ANSI_LIGHT_RED}Couldn't find asset '%s' in artifact '%s'.${ANSI_NOCOLOR}\n" "${asset}" "${artifact}"
+              printf -- '::error title=%s::%s\n' "FileNotFound" "Couldn't find asset '${asset}' in artifact '${artifact}'."
               ERRORS=$((ERRORS + 1))
               continue
             fi
 
-            printf "  compute SHA256 checksum of '${uploadFile}' ... "
+            printf -- "  compute SHA256 checksum of '${uploadFile}' ... "
             sha256=$(sha256sum -b ${uploadFile} | cut -d " " -f1)
             sha256Checksums[${asset}]="sha256:${sha256}"
-            printf "${ANSI_LIGHT_BLUE}${sha256}${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_BLUE}${sha256}${ANSI_NOCOLOR}\n"
 
             # Add asset to Markdown table
-            printf "| %s | %s | %s |\n" \
+            printf -- '| %s | %s | %s |\n' \
               "[${title}](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ inputs.tag }}/${uploadFile#*/})" \
               "$(stat --printf="%s" "${uploadFile}" | numfmt --format "%.1f" --suffix=B --to=iec-i)" \
               "\`${sha256}\`" \
@@ -576,7 +576,7 @@ jobs:
             # Add asset to JSON inventory
             if [[ "${{ inputs.inventory-json }}" != "" ]]; then
               if [[ "${categories}" != "${title}" ]]; then
-                printf "  adding file '%s' with '%s' to JSON inventory ...\n" "${uploadFile#*/}" "${categories//;/ → }"
+                printf -- "  adding file '%s' with '%s' to JSON inventory ...\n" "${uploadFile#*/}" "${categories//;/ → }"
                 category=""
                 jsonEntry=$(jq -c -n \
                   --arg title "${title}" \
@@ -597,33 +597,33 @@ jobs:
                   '$inventory * {"files": $file}' \
                 )
               else
-                printf "  adding file '%s' to JSON inventory ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n" "${uploadFile#*/}"
+                printf -- "  adding file '%s' to JSON inventory ... ${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n" "${uploadFile#*/}"
               fi
             fi
 
             # Upload asset to existing release page
-            printf "  uploading asset '%s' from '%s' with title '%s' ... " "${asset}" "${uploadFile}" "${title}"
+            printf -- "  uploading asset '%s' from '%s' with title '%s' ... " "${asset}" "${uploadFile}" "${title}"
             gh release upload ${{ inputs.tag }} "${uploadFile}#${title}" --clobber
             if [[ $? -eq 0 ]]; then
-              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
-              printf "  checking assets SHA256 checksum ... "
+              printf -- '  checking assets SHA256 checksum ... '
               ghSHA256=$(gh release view --json assets --jq ".assets[] | select(.name == \"${asset}\") | .digest" ${{ inputs.tag }})
               if [[ "${ghSHA256}" == "${sha256Checksums[${asset}]}" ]]; then
-                printf "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
+                printf -- "${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
               else
-                printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-                printf "    ${ANSI_LIGHT_RED}SHA256 checksum compare failed.${ANSI_NOCOLOR}\n"
-                printf "      ${ANSI_LIGHT_RED}Local:  %s${ANSI_NOCOLOR}\n" "${sha256Checksums[${asset}]}"
-                printf "      ${ANSI_LIGHT_RED}GitHub: %s${ANSI_NOCOLOR}\n" "${ghSHA256}"
-                printf "::error title=%s::%s\n" "ChecksumError" "SHA256 checksum compare failed. Local=${sha256Checksums[${asset}]} GitHub=${ghSHA256}"
+                printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+                printf -- "    ${ANSI_LIGHT_RED}SHA256 checksum compare failed.${ANSI_NOCOLOR}\n"
+                printf -- "      ${ANSI_LIGHT_RED}Local:  %s${ANSI_NOCOLOR}\n" "${sha256Checksums[${asset}]}"
+                printf -- "      ${ANSI_LIGHT_RED}GitHub: %s${ANSI_NOCOLOR}\n" "${ghSHA256}"
+                printf -- '::error title=%s::%s\n' "ChecksumError" "SHA256 checksum compare failed. Local=${sha256Checksums[${asset}]} GitHub=${ghSHA256}"
                 ERRORS=$((ERRORS + 1))
                 continue
               fi
             else
-              printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
-              printf "    ${ANSI_LIGHT_RED}Couldn't upload asset '%s' from '%s' to release '%s'.${ANSI_NOCOLOR}\n" "${asset}" "${uploadFile}" "${{ inputs.tag }}"
-              printf "::error title=%s::%s\n" "UploadError" "Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.tag }}'."
+              printf -- "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+              printf -- "    ${ANSI_LIGHT_RED}Couldn't upload asset '%s' from '%s' to release '%s'.${ANSI_NOCOLOR}\n" "${asset}" "${uploadFile}" "${{ inputs.tag }}"
+              printf -- '::error title=%s::%s\n' "UploadError" "Couldn't upload asset '${asset}' from '${uploadFile}' to release '${{ inputs.tag }}'."
               ERRORS=$((ERRORS + 1))
               continue
             fi
@@ -632,32 +632,32 @@ jobs:
           if [[ "${{ inputs.inventory-json }}" != "" ]]; then
             inventoryTitle="Release Inventory (JSON)"
 
-            printf "Publish asset '%s' with title '%s'\n" "${{ inputs.inventory-json }}" "${inventoryTitle}"
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Writing JSON inventory to '${{ inputs.inventory-json }}' ...."
-            printf "%s\n" "$(jq -n --argjson inventory "${jsonInventory}" '$inventory')" > "${{ inputs.inventory-json }}"
+            printf -- "Publish asset '%s' with title '%s'\n" "${{ inputs.inventory-json }}" "${inventoryTitle}"
+            printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Writing JSON inventory to '${{ inputs.inventory-json }}' ...."
+            printf -- '%s\n' "$(jq -n --argjson inventory "${jsonInventory}" '$inventory')" > "${{ inputs.inventory-json }}"
             cat "${{ inputs.inventory-json }}"
-            printf "::endgroup::\n"
+            printf -- '::endgroup::\n'
 
             # Upload inventory asset to existing release page
-            printf "  uploading asset '%s' title '%s' ... " "${{ inputs.inventory-json }}" "${inventoryTitle}"
+            printf -- "  uploading asset '%s' title '%s' ... " "${{ inputs.inventory-json }}" "${inventoryTitle}"
             gh release upload ${{ inputs.tag }} "${{ inputs.inventory-json }}#${inventoryTitle}" --clobber
             if [[ $? -eq 0 ]]; then
-              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
             else
-              printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
-              printf "    ${ANSI_LIGHT_RED}Couldn't upload asset '%s' to release '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.inventory-json }}" "${{ inputs.tag }}"
-              printf "::error title=%s::%s\n" "UploadError" "Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.tag }}'."
+              printf -- "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+              printf -- "    ${ANSI_LIGHT_RED}Couldn't upload asset '%s' to release '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.inventory-json }}" "${{ inputs.tag }}"
+              printf -- '::error title=%s::%s\n' "UploadError" "Couldn't upload asset '${{ inputs.inventory-json }}' to release '${{ inputs.tag }}'."
               ERRORS=$((ERRORS + 1))
               continue
             fi
           fi
 
-          printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Inspecting downloaded artifacts ..."
+          printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Inspecting downloaded artifacts ..."
           tree -pash -L 3 .
-          printf "::endgroup::\n"
+          printf -- '::endgroup::\n'
 
           if [[ ${ERRORS} -ne 0 ]]; then
-            printf "${ANSI_LIGHT_RED}%s errors detected in previous steps.${ANSI_NOCOLOR}\n" "${ERRORS}"
+            printf -- "${ANSI_LIGHT_RED}%s errors detected in previous steps.${ANSI_NOCOLOR}\n" "${ERRORS}"
             exit 1
           fi
 
@@ -688,70 +688,70 @@ jobs:
           #  Readout second parent's SHA
           #  Search PR with that SHA
           #  Load description of that PR
-          printf "Read second parent of current SHA (%s) ... " "${{ github.ref }}"
+          printf -- 'Read second parent of current SHA (%s) ... ' "${{ github.ref }}"
           SECOND_PARENT_SHA=$(git rev-parse ${{ github.ref }}^2 2> /dev/null)
           if [[ $? -ne 0 || "${SECOND_PARENT_SHA}" == "" ]]; then
-            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "→ ${ANSI_LIGHT_YELLOW}Skipped readout of pull request description. This is not a merge commit.${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "→ ${ANSI_LIGHT_YELLOW}Skipped readout of pull request description. This is not a merge commit.${ANSI_NOCOLOR}\n"
           else
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
-            printf "Search pull-request to '%s' and branch containing SHA %s ... " "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
+            printf -- "Search pull-request to '%s' and branch containing SHA %s ... " "${{ inputs.release_branch }}" "${SECOND_PARENT_SHA}"
             PULL_REQUESTS=$(gh pr list --base "${{ inputs.release_branch }}" --search "${SECOND_PARENT_SHA}" --state "merged" --json "title,number,mergedBy,mergedAt,body")
             if [[ $? -ne 0 || "${PULL_REQUESTS}" == "" ]]; then
-              printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-              printf "${ANSI_LIGHT_RED}Couldn't find a merged Pull Request to '%s'. -> %s${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
-              printf "::error title=PullRequest::Couldn't find a merged Pull Request to '%s'. -> %s\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
+              printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_RED}Couldn't find a merged Pull Request to '%s'. -> %s${ANSI_NOCOLOR}\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
+              printf -- "::error title=PullRequest::Couldn't find a merged Pull Request to '%s'. -> %s\n" "${{ inputs.release_branch }}" "${PULL_REQUESTS}"
               exit 1
             else
-              printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+              printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
-              PR_TITLE="$(    printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].title")"
-              PR_NUMBER="$(   printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].number")"
-              PR_BODY="$(     printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].body")"
-              PR_MERGED_BY="$(printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].mergedBy.login")"
-              PR_MERGED_AT="$(printf "%s\n" "${PULL_REQUESTS}" | jq --raw-output ".[0].mergedAt")"
+              PR_TITLE="$(    printf -- '%s\n' "${PULL_REQUESTS}" | jq --raw-output ".[0].title")"
+              PR_NUMBER="$(   printf -- '%s\n' "${PULL_REQUESTS}" | jq --raw-output ".[0].number")"
+              PR_BODY="$(     printf -- '%s\n' "${PULL_REQUESTS}" | jq --raw-output ".[0].body")"
+              PR_MERGED_BY="$(printf -- '%s\n' "${PULL_REQUESTS}" | jq --raw-output ".[0].mergedBy.login")"
+              PR_MERGED_AT="$(printf -- '%s\n' "${PULL_REQUESTS}" | jq --raw-output ".[0].mergedAt")"
 
-              printf "Found Pull Request:\n"
-              printf "  %s\n" "Title:    ${PR_TITLE}"
-              printf "  %s\n" "Number:   ${PR_NUMBER}"
-              printf "  %s\n" "MergedBy: ${PR_MERGED_BY}"
-              printf "  %s\n" "MergedAt: ${PR_MERGED_AT} ($(date -d"${PR_MERGED_AT}" '+%d.%m.%Y - %H:%M:%S'))"
+              printf -- 'Found Pull Request:\n'
+              printf -- '  %s\n' "Title:    ${PR_TITLE}"
+              printf -- '  %s\n' "Number:   ${PR_NUMBER}"
+              printf -- '  %s\n' "MergedBy: ${PR_MERGED_BY}"
+              printf -- '  %s\n' "MergedAt: ${PR_MERGED_AT} ($(date -d"${PR_MERGED_AT}" '+%d.%m.%Y - %H:%M:%S'))"
             fi
 
-            printf "Write pull-request body of '%s' to '__PULLREQUEST__.md' ... " "${PR_TITLE}"
-            printf "%s\n" "${PR_BODY}" > __PULLREQUEST__.md
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- "Write pull-request body of '%s' to '__PULLREQUEST__.md' ... " "${PR_TITLE}"
+            printf -- '%s\n' "${PR_BODY}" > __PULLREQUEST__.md
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           fi
 
           # Check if a release description file should be used and exists.
           if [[ "${{ inputs.description_file }}" != "" ]]; then
             if [[ ! -f "${{ inputs.description_file }}" ]]; then
-              printf "${ANSI_LIGHT_RED}Release description file '%s' not found.${ANSI_NOCOLOR}\n" "${{ inputs.description_file }}"
-              printf "::error title=%s::%s\n" "FileNotFound" "Release description file '${{ inputs.description_file }}' not found."
+              printf -- "${ANSI_LIGHT_RED}Release description file '%s' not found.${ANSI_NOCOLOR}\n" "${{ inputs.description_file }}"
+              printf -- '::error title=%s::%s\n' "FileNotFound" "Release description file '${{ inputs.description_file }}' not found."
               exit 1
             elif [[ -s "${{ inputs.description_file }}" ]]; then
-              printf "Use '%s' as main release description.\n" "${{ inputs.description_file }}"
+              printf -- "Use '%s' as main release description.\n" "${{ inputs.description_file }}"
               cp -v "${{ inputs.description_file }}" __NOTES__.md
             else
-              printf "${ANSI_LIGHT_RED}Release description file '%s' is empty.${ANSI_NOCOLOR}\n" "${{ inputs.description_file }}"
-              printf "::error title=%s::%s\n" "FileNotFound" "Release description file '${{ inputs.description_file }}' is empty."
+              printf -- "${ANSI_LIGHT_RED}Release description file '%s' is empty.${ANSI_NOCOLOR}\n" "${{ inputs.description_file }}"
+              printf -- '::error title=%s::%s\n' "FileNotFound" "Release description file '${{ inputs.description_file }}' is empty."
               exit 1
             fi
           # Check if the main release description is provided by a template parameter
           elif [[ -s __DESCRIPTION__.md ]]; then
-            printf "Use '__DESCRIPTION__.md' as main release description.\n"
+            printf -- "Use '__DESCRIPTION__.md' as main release description.\n"
             mv -v __DESCRIPTION__.md __NOTES__.md
           # Check if the pull request serves as the main release description text.
           elif [[ -s __PULLREQUEST__.md ]]; then
-            printf "Use '__PULLREQUEST__.md' as main release description.\n"
+            printf -- "Use '__PULLREQUEST__.md' as main release description.\n"
             mv -v __PULLREQUEST__.md __NOTES__.md
 
-            printf "Append '%%%%FOOTER%%%%' to '__NOTES__.md'.\n"
-            printf "\n%%%%FOOTER%%%%\n" >> __NOTES__.md
+            printf -- "Append '%%%%FOOTER%%%%' to '__NOTES__.md'.\n"
+            printf -- '\n%%%%FOOTER%%%%\n' >> __NOTES__.md
           else
-            printf "${ANSI_LIGHT_RED}No release description specified (file, parameter, PR text).${ANSI_NOCOLOR}\n"
-            printf "::error title=%s::%s\n" "MissingDescription" "No release description specified (file, parameter, PR text)."
+            printf -- "${ANSI_LIGHT_RED}No release description specified (file, parameter, PR text).${ANSI_NOCOLOR}\n"
+            printf -- '::error title=%s::%s\n' "MissingDescription" "No release description specified (file, parameter, PR text)."
             exit 1
           fi
 
@@ -762,10 +762,10 @@ jobs:
           printf -- "Inline '__DESCRIPTION__.md' ... "
           if [[ -s __DESCRIPTION__.md ]]; then
             NOTES="${NOTES//%%DESCRIPTION%%/$(cat __DESCRIPTION__.md | sed 's/&/\\&/g')}"
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             NOTES="${NOTES//%%DESCRIPTION%%/}"
-            printf "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
           fi
 
           # Inline PullRequest and increase headline levels
@@ -787,32 +787,32 @@ jobs:
                   ;;
               esac
             done
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             while [[ "${NOTES}" =~ %%(PULLREQUEST(\+[0-3])?)%% ]]; do
               NOTES="${NOTES//${BASH_REMATCH[0]}/}"
             done
-            printf "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
           fi
 
           # Inline Files table
           printf -- "Inline '__ASSETS__.md' ... "
           if [[ -s __ASSETS__.md ]]; then
             NOTES="${NOTES//%%ASSETS%%/$(cat __ASSETS__.md | sed 's/&/\\&/g')}"
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             NOTES="${NOTES//%%ASSETS%%/}"
-            printf "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
           fi
 
           # Inline Footer
           printf -- "Inline '__FOOTER__.md' ... "
           if [[ -s __FOOTER__.md ]]; then
             NOTES="${NOTES//%%FOOTER%%/$(cat __FOOTER__.md | sed 's/&/\\&/g')}"
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
           else
             NOTES="${NOTES//%%FOOTER%%/}"
-            printf "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_YELLOW}[SKIPPED]${ANSI_NOCOLOR}\n"
           fi
 
           # Apply replacements
@@ -825,7 +825,7 @@ jobs:
             replacement="${patternLine#*=}"
             NOTES="${NOTES//${pattern}/${replacement}}"
           done <<<'${{ inputs.replacements }}'
-          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+          printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
           # Workarounds for stupid GitHub variables
           owner_repo="${{ github.repository }}"
@@ -834,7 +834,7 @@ jobs:
           # Replace special identifiers
           printf -- "Replace pyTooling/Action variables ... "
           NOTES="${NOTES//%%TAG%%/${{ inputs.tag }}}"
-          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+          printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
           printf -- "Replace GitHub variables ... "
           NOTES="${NOTES//%%gh_server%%/${{ github.server_url }}}"
@@ -849,47 +849,47 @@ jobs:
           NOTES="${NOTES//%%date%%/$(date '+%Y-%m-%d')}"
           NOTES="${NOTES//%%time%%/$(date '+%H:%M:%S %Z')}"
           NOTES="${NOTES//%%datetime%%/$(date '+%Y-%m-%d %H:%M:%S %Z')}"
-          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+          printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
           # Write final release notes to file
-          printf "Write final release note '__NOTES__.md' ... "
-          printf "%s\n" "${NOTES}" > __NOTES__.md
-          printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+          printf -- "Write final release note '__NOTES__.md' ... "
+          printf -- '%s\n' "${NOTES}" > __NOTES__.md
+          printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
 
           # Display partial contents for debugging
           if [[ -s __DESCRIPTION__.md ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__DESCRIPTION__.md' ($(stat --printf="%s" "__DESCRIPTION__.md") B) ...."
+            printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__DESCRIPTION__.md' ($(stat --printf="%s" "__DESCRIPTION__.md") B) ...."
             cat __DESCRIPTION__.md
-            printf "::endgroup::\n"
+            printf -- '::endgroup::\n'
           else
-            printf "${ANSI_LIGHT_YELLOW}No '__DESCRIPTION__.md' found.${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_YELLOW}No '__DESCRIPTION__.md' found.${ANSI_NOCOLOR}\n"
           fi
           if [[ -s __PULLREQUEST__.md ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__PULLREQUEST__.md' ($(stat --printf="%s" "__PULLREQUEST__.md") B) ...."
+            printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__PULLREQUEST__.md' ($(stat --printf="%s" "__PULLREQUEST__.md") B) ...."
             cat __PULLREQUEST__.md
-            printf "::endgroup::\n"
+            printf -- '::endgroup::\n'
           else
-            printf "${ANSI_LIGHT_YELLOW}No '__PULLREQUEST__.md' found.${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_YELLOW}No '__PULLREQUEST__.md' found.${ANSI_NOCOLOR}\n"
           fi
           if [[ -s __ASSETS__.md ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__ASSETS__.md' ($(stat --printf="%s" "__ASSETS__.md") B) ...."
+            printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__ASSETS__.md' ($(stat --printf="%s" "__ASSETS__.md") B) ...."
             cat __ASSETS__.md
-            printf "::endgroup::\n"
+            printf -- '::endgroup::\n'
           else
-            printf "${ANSI_LIGHT_YELLOW}No '__ASSETS__.md' found.${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_YELLOW}No '__ASSETS__.md' found.${ANSI_NOCOLOR}\n"
           fi
           if [[ -s __FOOTER__.md ]]; then
-            printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__FOOTER__.md' ($(stat --printf="%s" "__FOOTER__.md") B) ...."
+            printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__FOOTER__.md' ($(stat --printf="%s" "__FOOTER__.md") B) ...."
             cat __FOOTER__.md
-            printf "::endgroup::\n"
+            printf -- '::endgroup::\n'
           else
-            printf "${ANSI_LIGHT_YELLOW}No '__FOOTER__.md' found.${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_YELLOW}No '__FOOTER__.md' found.${ANSI_NOCOLOR}\n"
           fi
 
           # Print final release notes
-          printf "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__NOTES__.md' ($(stat --printf="%s" "__NOTES__.md") B) ...."
+          printf -- "::group::${ANSI_LIGHT_BLUE}%s${ANSI_NOCOLOR}\n" "Content of '__NOTES__.md' ($(stat --printf="%s" "__NOTES__.md") B) ...."
           cat __NOTES__.md
-          printf "::endgroup::\n"
+          printf -- '::endgroup::\n'
 
       - name: 📑 Update release notes
         id: updateReleaseNotes
@@ -907,20 +907,20 @@ jobs:
           if [[ -s __NOTES__.md ]]; then
             addNotes=("--notes-file" "__NOTES__.md")
           else
-            printf "  ${ANSI_LIGHT_RED}File '%s' not found.${ANSI_NOCOLOR}\n" "__NOTES__.md"
-            printf "::error title=%s::%s\n" "InternalError" "File '__NOTES__.md' not found."
+            printf -- "  ${ANSI_LIGHT_RED}File '%s' not found.${ANSI_NOCOLOR}\n" "__NOTES__.md"
+            printf -- '::error title=%s::%s\n' "InternalError" "File '__NOTES__.md' not found."
             exit 1
           fi
 
-          printf "Updating release '%s' ... " "${{ inputs.tag }}"
+          printf -- "Updating release '%s' ... " "${{ inputs.tag }}"
           message="$(gh release edit "${addNotes[@]}" "${{ inputs.tag }}" 2>&1)"
           if [[ $? -eq 0 ]]; then
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
-            printf "  Release page: %s\n" "${message}"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- '  Release page: %s\n' "${message}"
           else
-            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "  ${ANSI_LIGHT_RED}Couldn't update release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
-            printf "::error title=%s::%s\n" "InternalError" "Couldn't update release '${{ inputs.tag }}' -> Error: '${message}'."
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "  ${ANSI_LIGHT_RED}Couldn't update release '%s' -> Error: '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}" "${message}"
+            printf -- '::error title=%s::%s\n' "InternalError" "Couldn't update release '${{ inputs.tag }}' -> Error: '${message}'."
             exit 1
           fi
 
@@ -937,15 +937,15 @@ jobs:
           export GH_TOKEN=${{ github.token }}
 
           # Remove draft-state from release page
-          printf "Remove draft-state from release '%s' ... " "${title}"
+          printf -- "Remove draft-state from release '%s' ... " "${title}"
           releasePage=$(gh release edit --draft=false "${{ inputs.tag }}")
           if [[ $? -eq 0 ]]; then
-            printf "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
-            printf "  Release page: %s\n" "${releasePage}"
+            printf -- "${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n"
+            printf -- '  Release page: %s\n' "${releasePage}"
 
-            printf "release_page=%s\n" "${releasePage}" >> "${GITHUB_OUTPUT}"
+            printf -- 'release_page=%s\n' "${releasePage}" >> "${GITHUB_OUTPUT}"
           else
-            printf "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
-            printf "  ${ANSI_LIGHT_RED}Couldn't remove draft-state from release '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}"
-            printf "::error title=%s::%s\n" "ReleasePage" "Couldn't remove draft-state from release '${{ inputs.tag }}'."
+            printf -- "${ANSI_LIGHT_RED}[ERROR]${ANSI_NOCOLOR}\n"
+            printf -- "  ${ANSI_LIGHT_RED}Couldn't remove draft-state from release '%s'.${ANSI_NOCOLOR}\n" "${{ inputs.tag }}"
+            printf -- '::error title=%s::%s\n' "ReleasePage" "Couldn't remove draft-state from release '${{ inputs.tag }}'."
           fi

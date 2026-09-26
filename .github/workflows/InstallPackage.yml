@@ -104,17 +104,17 @@ jobs:
           ANSI_LIGHT_GREEN=$'\x1b[92m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
-          printf "Import package and checking package version ...\n  "
+          printf -- 'Import package and checking package version ...\n  '
           python3 - << EOF | tee ImportTest.log | grep -E "^Package version:\s+[0-9]+\.[0-9]+\.[0-9]+"
           from ${{ inputs.package_name }} import __version__
 
           print(f"Package version: {__version__}")
           EOF
           if [[ $? -eq 0 ]]; then
-            printf "  ${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
+            printf -- "  ${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
           else
-            printf "  ${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "::error title=%s::%s\n" "InstallPackage" "Couldn't check package version of '${{ inputs.package_name }}'."
+            printf -- "  ${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- '::error title=%s::%s\n' "InstallPackage" "Couldn't check package version of '${{ inputs.package_name }}'."
             exit 1
           fi
 

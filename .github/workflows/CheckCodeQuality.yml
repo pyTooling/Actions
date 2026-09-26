@@ -103,24 +103,24 @@ jobs:
           EOF
 
           mkdir -p ${bandit_directory}
-          printf "\nRun bandit ...\n"
+          printf -- '\nRun bandit ...\n'
           bandit -c pyproject.toml -r ${{ inputs.package_directory }} -f xml -o ${bandit_fullpath}
           if [[ $? -eq 0 ]]; then
-            printf "Bandit result: ${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
+            printf -- "Bandit result: ${ANSI_LIGHT_GREEN}[PASSED]${ANSI_NOCOLOR}\n"
 
-            printf "bandit_passed=true\n" >> "${GITHUB_OUTPUT}"
+            printf -- 'bandit_passed=true\n' >> "${GITHUB_OUTPUT}"
           else
             faults=$(grep -Poh '(?<=<testsuite\sname="bandit"\stests=")(\d+)(?=">)' ${bandit_fullpath})
 
-            printf "Bandit result: ${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "  ${ANSI_LIGHT_RED}Bandit found %s issues.${ANSI_NOCOLOR}\n" "${faults}"
-            printf "::error title=%s::%s\n" "🚨 Security Scanning (Bandit)" "Bandi found ${faults} issues."
+            printf -- "Bandit result: ${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "  ${ANSI_LIGHT_RED}Bandit found %s issues.${ANSI_NOCOLOR}\n" "${faults}"
+            printf -- '::error title=%s::%s\n' "🚨 Security Scanning (Bandit)" "Bandi found ${faults} issues."
 
-            printf "bandit_passed=false\n" >> "${GITHUB_OUTPUT}"
+            printf -- 'bandit_passed=false\n' >> "${GITHUB_OUTPUT}"
 
-            printf "::group::${ANSI_LIGHT_BLUE}JUnit XML report created by Bandit ...${ANSI_NOCOLOR}\n"
+            printf -- "::group::${ANSI_LIGHT_BLUE}JUnit XML report created by Bandit ...${ANSI_NOCOLOR}\n"
             cat ${bandit_fullpath}
-            printf "\n::endgroup::\n"
+            printf -- '\n::endgroup::\n'
           fi
 
       - name: 📊 Publish Bandit Results
