@@ -482,11 +482,11 @@ jobs:
         run: |
           exitCode=0
           if [[ "${{ steps.pytest_bash.outcome }}" == "failure" || "${{ steps.pytest_posh.outcome }}" == "failure" ]]; then
-            printf "❌ pytest: %s\n" "Error in pytest execution."
-            printf "::error title=%s::%s\n" "pytest" "Error in pytest execution."
+            printf -- '❌ pytest: %s\n' "Error in pytest execution."
+            printf -- '::error title=%s::%s\n' "pytest" "Error in pytest execution."
             exitCode=1
           else
-            printf "✅ pytest: No errors.\n"
+            printf -- '✅ pytest: No errors.\n'
           fi
 
           exit ${exitCode}

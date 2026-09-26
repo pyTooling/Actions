@@ -68,7 +68,7 @@ jobs:
 
           interrogate -c pyproject.toml --fail-under=${{ inputs.fail_under }} ${{ inputs.directory }}
           if [[ $? -ne 0 ]]; then
-            printf "::error title=%s::%s\n" "interrogate" "Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
+            printf -- '::error title=%s::%s\n' "interrogate" "Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
           fi
 
       - name: Run 'docstr_coverage' Documentation Coverage Check
@@ -78,5 +78,5 @@ jobs:
 
           docstr-coverage --fail-under=${{ inputs.fail_under }} ${{ inputs.directory }}
           if [[ $? -ne 0 ]]; then
-            printf "%s\n" "::error title=docstr-coverage::Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
+            printf -- '%s\n' "::error title=docstr-coverage::Insufficient documentation quality (goal: ${{ inputs.fail_under }})"
           fi

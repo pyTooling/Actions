@@ -65,16 +65,16 @@ jobs:
           waited=0
           errorCount=0
 
-          printf "Waiting for %s verification workflows of commit %s (every %ss, at most %ss):\n" \
+          printf -- 'Waiting for %s verification workflows of commit %s (every %ss, at most %ss):\n' \
                  "${#workflows[@]}" "${{ github.sha }}" "${pollInterval}" "${pollTimeout}"
 
           while true; do
             answer="$(gh api "repos/${{ github.repository }}/actions/runs?head_sha=${{ github.sha }}&per_page=100" \
               --jq '.workflow_runs[] | "\(.path)|\(.status)|\(.conclusion)"' 2>&1)"
             if [[ $? -ne 0 ]]; then
-              printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-              printf "%s\n" "$(sed 's/^/  ↪ /g' <<< "${answer}")"
-              printf "::error title=Release::Couldn't query the workflow runs of commit '%s'.\n" "${{ github.sha }}"
+              printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+              printf -- '%s\n' "$(sed 's/^/  ↪ /g' <<< "${answer}")"
+              printf -- "::error title=Release::Couldn't query the workflow runs of commit '%s'.\n" "${{ github.sha }}"
               exit 1
             fi
 
@@ -100,17 +100,17 @@ jobs:
               if [[ "${status[${workflow}]:-}" == "completed" ]]; then
                 conclusions["${workflow}"]="${result[${workflow}]}"
                 if [[ "${result[${workflow}]}" == "success" ]]; then
-                  printf "%s${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n" "${line}"
+                  printf -- "%s${ANSI_LIGHT_GREEN}[OK]${ANSI_NOCOLOR}\n" "${line}"
                 else
-                  printf "%s${ANSI_LIGHT_RED}[%s]${ANSI_NOCOLOR}\n" "${line}" "${result[${workflow}]}"
-                  printf "::error title=Release::'%s' concluded '%s' for commit '%s'.\n" \
+                  printf -- "%s${ANSI_LIGHT_RED}[%s]${ANSI_NOCOLOR}\n" "${line}" "${result[${workflow}]}"
+                  printf -- "::error title=Release::'%s' concluded '%s' for commit '%s'.\n" \
                          "${workflow}" "${result[${workflow}]}" "${{ github.sha }}"
                   errorCount=$((errorCount + 1))
                 fi
               elif [[ -z "${status[${workflow}]:-}" && ${waited} -ge ${noRunTimeout} ]]; then
                 conclusions["${workflow}"]="no-run"
-                printf "%s${ANSI_LIGHT_YELLOW}[NO RUN]${ANSI_NOCOLOR}\n" "${line}"
-                printf "::error title=Release::'%s' has no run for commit '%s'.\n" "${workflow}" "${{ github.sha }}"
+                printf -- "%s${ANSI_LIGHT_YELLOW}[NO RUN]${ANSI_NOCOLOR}\n" "${line}"
+                printf -- "::error title=Release::'%s' has no run for commit '%s'.\n" "${workflow}" "${{ github.sha }}"
                 errorCount=$((errorCount + 1))
               else
                 pendingCount=$((pendingCount + 1))
@@ -124,9 +124,9 @@ jobs:
             if [[ ${waited} -ge ${pollTimeout} ]]; then
               for workflow in "${workflows[@]}"; do
                 [[ -n "${conclusions[${workflow}]:-}" ]] && continue
-                printf "  %-45s ${ANSI_LIGHT_RED}[%s]${ANSI_NOCOLOR}\n" \
+                printf -- "  %-45s ${ANSI_LIGHT_RED}[%s]${ANSI_NOCOLOR}\n" \
                        "${workflow}" "${status[${workflow}]:-unknown}"
-                printf "::error title=Release::'%s' didn't complete within %s seconds.\n" "${workflow}" "${pollTimeout}"
+                printf -- "::error title=Release::'%s' didn't complete within %s seconds.\n" "${workflow}" "${pollTimeout}"
                 errorCount=$((errorCount + 1))
               done
               break
@@ -138,11 +138,11 @@ jobs:
 
           if [[ ${errorCount} -ne 0 ]]; then
             message="Refusing to release: %s verification workflow(s) didn't succeed."
-            printf "${ANSI_LIGHT_RED}${message}${ANSI_NOCOLOR}\n" "${errorCount}"
+            printf -- "${ANSI_LIGHT_RED}${message}${ANSI_NOCOLOR}\n" "${errorCount}"
             exit 1
           fi
 
-          printf "${ANSI_LIGHT_GREEN}Every verification workflow succeeded.${ANSI_NOCOLOR}\n"
+          printf -- "${ANSI_LIGHT_GREEN}Every verification workflow succeeded.${ANSI_NOCOLOR}\n"
 
   TriggerTaggedRelease:
     uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@dev

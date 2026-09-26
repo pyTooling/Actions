@@ -224,9 +224,9 @@ jobs:
 
           check() {  # <output> <expected> <generated>
             if [[ "$3" == "$2" ]]; then
-              printf "  %-50s OK '%s'\n" "$1" "$3"
+              printf -- "  %-50s OK '%s'\n" "$1" "$3"
             else
-              printf "::error title=Params_Check_Version::%s: expected '%s', got '%s'.\n" "$1" "$2" "$3"
+              printf -- "::error title=Params_Check_Version::%s: expected '%s', got '%s'.\n" "$1" "$2" "$3"
               errorCount=$((errorCount + 1))
             fi
           }
