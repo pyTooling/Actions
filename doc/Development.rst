@@ -205,6 +205,23 @@ References to This Repository
 *****************************
 
 ``References`` runs on every push to ``dev``, ``main`` and a version branch ``rN``, and expects the branch's own
-name: ``@dev`` on ``dev``, ``@main`` on ``main``, ``@r8`` on ``r8``. Commented-out references count, too. A wrong
-reference is reported with its file and line. Other branches (e.g. ``claude/*``, or ``update/r8`` carrying the
-rewritten references) aren't checked; the ``update/r8`` pull-request is checked once it lands on ``r8``.
+name: ``@dev`` on ``dev``, ``@main`` on ``main``, ``@r8`` on ``r8``. On ``update/r8``, the branch carrying the
+rewritten references for the pull-request *Updating r8 from vX.Y.Z* (:ref:`JOBTMPL/UpdateVersionBranch`), it expects
+``@r8`` as well. Commented-out references count, too. A wrong reference is reported with its file and line. Other
+branches (e.g. ``claude/*``) aren't checked.
+
+
+.. _DEV/Release/UpdateBranches:
+
+Update Branches
+***************
+
+A push to ``update/rN`` starts only :file:`Pipeline.yml`: the five :file:`_Checking_*.yml` workflows ignore the
+branches ``update/**``, and ``Verifications`` is skipped there, as it would wait for their runs in vain. The run
+consists of ``Prepare`` and ``References``, which checks the rewritten references before the pull-request is merged.
+
+.. note::
+
+   If a release adds an input to a job template that :file:`Pipeline.yml` passes, the run on ``update/rN`` fails at
+   startup: :file:`Pipeline.yml` calls the templates ``@rN``, which don't know the input until the pull-request is
+   merged.
