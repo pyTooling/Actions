@@ -307,18 +307,29 @@ jobs:
           export PYTHONPATH=$(pwd)
 
           cd "${{ inputs.root_directory || '.' }}"
-          PARALLEL='${{ inputs.parallel }}'
-          if [[ "${PARALLEL}" == "false" ]]; then
-            PARALLEL=''
+
+          if [[ -z "${{ inputs.parallel }}" ]]; then
+            PARALLEL_JOBS="auto"
+          elif [[ "${{ inputs.parallel }}" == "false" ]]; then
+            PARALLEL_JOBS=""
           elif [[ "$(python -c "from importlib.util import find_spec; print(find_spec('xdist') is None)")" == "True" ]]; then
             printf -- '::warning::%s\n' "pytest-xdist isn't installed: running the tests serially."
-            PARALLEL=''
-          elif [[ -n '${{ inputs.coverage_config }}' && "$(python -c "from coverage import Coverage; print('subprocess' not in getattr(Coverage(config_file='pyproject.toml').config, 'patch', []))")" == "True" ]]; then
-            printf -- '::warning::%s\n' "Coverage.py measures pytest-xdist workers only with 'patch = [\"subprocess\"]' in '[tool.coverage.run]': running the tests serially."
-            PARALLEL=''
+            PARALLEL_JOBS=""
+          elif [[ "${{ inputs.parallel }}" =~ ^(auto|[1-9][0-9]*)$ ]]; then
+            PARALLEL_JOBS="${{ inputs.parallel }}"
           fi
-          [[ -n '${{ inputs.unittest_xml_artifact }}' ]] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}' || unset PYTEST_ARGS
-          [[ -n "${PARALLEL}" ]] && PYTEST_ARGS="${PYTEST_ARGS} -n ${PARALLEL}"
+
+          if [[ -n "${{ inputs.coverage_config }}" ]]; then
+            if [[ "$(python -c "from coverage import Coverage; print('subprocess' not in getattr(Coverage(config_file='${{ inputs.coverage_config }}').config, 'patch', []))")" == "True" ]]; then
+              printf -- '::warning::%s\n' "Coverage.py measures pytest-xdist workers only with 'patch = [\"subprocess\"]' in '[tool.coverage.run]': running the tests serially."
+              PARALLEL_JOBS=""
+            fi
+          fi
+
+          PYTEST_ARGS=""
+          [[ -n "${PARALLEL_JOBS}" ]]                    && PYTEST_ARGS="${PYTEST_ARGS} -n '${PARALLEL_JOBS}'"
+          [[ -n '${{ inputs.unittest_xml_artifact }}' ]] && PYTEST_ARGS="${PYTEST_ARGS} --junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}"
+
           if [[ -n '${{ inputs.coverage_config }}' ]]; then
             printf -- '%s\n' "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP ${PYTEST_ARGS} --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP ${PYTEST_ARGS} --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
