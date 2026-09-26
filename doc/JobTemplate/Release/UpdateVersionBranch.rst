@@ -59,7 +59,7 @@ It is intended to run in the *tag pipeline*, beside :ref:`JOBTMPL/PublishRelease
 .. topic:: Dependencies
 
    * :gh:`actions/checkout`
-   * :gh:`actions/create-github-app-token` (with :ref:`JOBTMPL/UpdateVersionBranch/Input/app_id`)
+   * :gh:`actions/create-github-app-token`
    * GitHub CLI (``gh``), pre-installed on GitHub-hosted runners.
 
 .. _JOBTMPL/UpdateVersionBranch/Instantiation:
