@@ -30,19 +30,25 @@ jobs:
   References:
     name: 🔍 Check references to pyTooling/Actions
     runs-on: ubuntu-26.04
-    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/r')
+    needs:
+      - Prepare
+    if: >-
+      ${{ needs.Prepare.outputs.on_dev_branch == 'true'
+       || needs.Prepare.outputs.on_main_branch == 'true'
+       || startsWith(needs.Prepare.outputs.branch, 'r')
+      }}
 
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v7
 
-      - name: 🔍 Check that all references point to '@${{ github.ref_name }}'
+      - name: 🔍 Check that all references point to '@${{ needs.Prepare.outputs.branch }}'
         run: |
           ANSI_LIGHT_RED=$'\x1b[91m'
           ANSI_LIGHT_GREEN=$'\x1b[92m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
-          expected="${{ github.ref_name }}"
+          expected="${{ needs.Prepare.outputs.branch }}"
           if [[ ! "${expected}" =~ ^(dev|main|r[0-9]+)$ ]]; then
             printf -- "Branch '%s' is neither 'dev', 'main' nor a version branch 'rN': nothing to check.\n" \
                    "${expected}"
