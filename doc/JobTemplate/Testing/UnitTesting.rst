@@ -41,7 +41,8 @@ Configuration options to :term:`pytest` should be given via section ``[tool.pyte
    5. Run the unit tests using :term:`pytest` (:ref:`JOBTMPL/UnitTesting/Input/unittest_directory`,
       :ref:`JOBTMPL/UnitTesting/Input/tests_directory`, :ref:`JOBTMPL/UnitTesting/Input/root_directory`), in
       combination with :term:`Coverage.py` if code coverage is enabled
-      (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`).
+      (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`), optionally in parallel
+      (:ref:`JOBTMPL/UnitTesting/Input/parallel`).
    6. Convert the collected code coverage to Cobertura XML, JSON and HTML format
       (:ref:`JOBTMPL/UnitTesting/Input/coverage_report_xml`, :ref:`JOBTMPL/UnitTesting/Input/coverage_report_json`,
       :ref:`JOBTMPL/UnitTesting/Input/coverage_report_html`).
@@ -172,6 +173,8 @@ Parameter Summary
 | :ref:`JOBTMPL/UnitTesting/Input/tests_directory`           | no       | string | ``'tests'``                                                                                                                      |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/UnitTesting/Input/unittest_directory`        | no       | string | ``'unit'``                                                                                                                       |
++------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/UnitTesting/Input/parallel`                  | no       | string | ``''``                                                                                                                           |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/UnitTesting/Input/unittest_report_xml`       | no       | string | :jsoncode:`{"directory": "report/unit", "filename":  "TestReportSummary.xml", "fullpath":  "report/unit/TestReportSummary.xml"}` |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
@@ -545,6 +548,33 @@ unittest_directory
 :Default Value:   ``'unit'``
 :Possible Values: Any valid directory or sub-directory.
 :Description:     Path to the directory containing unit tests (relative from :ref:`JOBTMPL/UnitTesting/Input/tests_directory`).
+
+
+.. _JOBTMPL/UnitTesting/Input/parallel:
+
+parallel
+========
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
+:Description:     Run the tests in parallel with `pytest-xdist <https://pytest-xdist.readthedocs.io/>`__, passed as
+                  ``-n <value>``. With ``'auto'`` or ``'logical'``, pytest-xdist derives the number of workers from the
+                  runner's CPUs. If empty, the tests run serially.
+
+                  .. attention::
+
+                     :file:`pytest-xdist` has to be listed in the requirements
+                     (:ref:`JOBTMPL/UnitTesting/Input/requirements`). If code coverage is enabled
+                     (:ref:`JOBTMPL/UnitTesting/Input/coverage_config`), :file:`pytest-cov` has to be listed too:
+                     :term:`Coverage.py`'s ``coverage run`` measures only the process controlling the workers, so
+                     in parallel the coverage is collected by ``pytest --cov`` instead. Both write :file:`.coverage`.
+
+                  .. note::
+
+                     The tests have to be independent of each other and of the order they run in, as each worker runs
+                     a share of them in a process of its own.
 
 
 .. _JOBTMPL/UnitTesting/Input/unittest_report_xml:

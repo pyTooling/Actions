@@ -441,6 +441,8 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`        | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                          |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_parallel`            | no       | string | ``''``                                                                     |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`       | no       | string | ``'3.14'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/bandit`                       | no       | string | ``'false'``                                                                |
@@ -470,6 +472,8 @@ Parameter Summary
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`         | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`         | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                          |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_parallel`             | no       | string | ``''``                                                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest`                      | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -713,6 +717,19 @@ unittest_disable_list
                   For more details see :ref:`JOBTMPL/Parameters/Input/disable_list`.
 
 
+.. _JOBTMPL/CompletePipeline/Input/unittest_parallel:
+
+unittest_parallel
+=================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
+:Description:     Number of :file:`pytest-xdist` workers for the unit tests. If empty, the tests run serially. |br|
+                  Passed on as :ref:`JOBTMPL/UnitTesting/Input/parallel`.
+
+
 .. _JOBTMPL/CompletePipeline/Input/apptest_python_version:
 
 apptest_python_version
@@ -807,6 +824,19 @@ apptest_disable_list
                   Each disabled item creates a warning in the workflow log.
 
                   For more details see :ref:`JOBTMPL/Parameters/Input/disable_list`.
+
+
+.. _JOBTMPL/CompletePipeline/Input/apptest_parallel:
+
+apptest_parallel
+================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: ``''``, a number of workers, ``'auto'`` or ``'logical'``.
+:Description:     Number of :file:`pytest-xdist` workers for the application tests. If empty, the tests run serially. |br|
+                  Passed on as :ref:`JOBTMPL/ApplicationTesting/Input/parallel`.
 
 
 .. _JOBTMPL/CompletePipeline/Input/apptest:

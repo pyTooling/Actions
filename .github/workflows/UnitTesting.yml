@@ -104,6 +104,11 @@ on:
         required: false
         default: 'unit'
         type: string
+      parallel:
+        description: 'Number of pytest-xdist workers: a number, ''auto'' or ''logical''. Empty: run the tests serially.'
+        required: false
+        default: ''
+        type: string
       unittest_report_xml:
         description: 'JSON object describing the path where to save the unittest summary report XML.'
         required: false
@@ -293,7 +298,6 @@ jobs:
 
 # Run pytests
 
-      # TODO: allow configuration of pytest_args
       - name: ✅ Run unit tests (Ubuntu/macOS)
         id: pytest_bash
         if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
@@ -304,7 +308,15 @@ jobs:
 
           cd "${{ inputs.root_directory || '.' }}"
           [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}' || unset PYTEST_ARGS
-          if [ -n '${{ inputs.coverage_config }}' ]; then
+          if [ -n '${{ inputs.parallel }}' ]; then
+            PYTEST_ARGS="${PYTEST_ARGS} -n ${{ inputs.parallel }}"
+          fi
+          if [ -n '${{ inputs.coverage_config }}' ] && [ -n '${{ inputs.parallel }}' ]; then
+            # With pytest-xdist, pytest-cov collects the coverage of every worker into '.coverage'.
+            export COVERAGE_FILE=.coverage
+            printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --cov --cov-config=${{ inputs.coverage_config }} --cov-report= --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
+            python -m pytest -raP $PYTEST_ARGS --cov --cov-config=${{ inputs.coverage_config }} --cov-report= --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
+          elif [ -n '${{ inputs.coverage_config }}' ]; then
             printf "%s\n" "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           else
@@ -321,8 +333,15 @@ jobs:
           $env:PYTHONPATH = (Get-Location).ToString()
 
           cd "${{ inputs.root_directory || '.' }}"
-          $PYTEST_ARGS = if ("${{ inputs.unittest_xml_artifact }}") { "--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}" } else { "" }
-          if ("${{ inputs.coverage_config }}") {
+          $PYTEST_ARGS = @()
+          if ("${{ inputs.unittest_xml_artifact }}") { $PYTEST_ARGS += "--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}" }
+          if ("${{ inputs.parallel }}") { $PYTEST_ARGS += "-n", "${{ inputs.parallel }}" }
+          if ("${{ inputs.coverage_config }}" -and "${{ inputs.parallel }}") {
+            # With pytest-xdist, pytest-cov collects the coverage of every worker into '.coverage'.
+            $env:COVERAGE_FILE = ".coverage"
+            Write-Host "python -m pytest -raP $PYTEST_ARGS --cov --cov-config=${{ inputs.coverage_config }} --cov-report= --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
+            python -m pytest -raP $PYTEST_ARGS --cov --cov-config=${{ inputs.coverage_config }} --cov-report= --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
+          } elseif ("${{ inputs.coverage_config }}") {
             Write-Host "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
             coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           } else {
