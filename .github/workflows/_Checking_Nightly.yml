@@ -13,9 +13,9 @@ jobs:
     steps:
       - name: 🖉 Build 1
         run: |
-          printf "%s\n" "Document 1 $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > document1.txt
-          printf "%s\n" "Analysis log $(date --utc '+%d.%m.%Y - %H:%M:%S')" > analysis.log
-          printf "%s\n" "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
+          printf -- '%s\n' "Document 1 $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > document1.txt
+          printf -- '%s\n' "Analysis log $(date --utc '+%d.%m.%Y - %H:%M:%S')" > analysis.log
+          printf -- '%s\n' "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
 
       - name: 📤 Upload artifact
         uses: pyTooling/upload-artifact@v7
@@ -29,9 +29,9 @@ jobs:
 
       - name: 🖉 Program
         run: |
-          printf "%s\n" "Document other $(date --utc '+%d.%m.%Y - %H:%M:%S')" > document1.txt
-          printf "%s\n" "Document other $(date --utc '+%d.%m.%Y - %H:%M:%S')" > document2.txt
-          printf "%s\n" "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"        > program.py
+          printf -- '%s\n' "Document other $(date --utc '+%d.%m.%Y - %H:%M:%S')" > document1.txt
+          printf -- '%s\n' "Document other $(date --utc '+%d.%m.%Y - %H:%M:%S')" > document2.txt
+          printf -- '%s\n' "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"        > program.py
 
       - name: 📤 Upload artifact
         uses: actions/upload-artifact@v7

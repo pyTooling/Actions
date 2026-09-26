@@ -38,9 +38,9 @@ jobs:
         env:
           PUBLISH_PAGES: ${{ needs.PagesConditions.outputs.publish_pages }}
         run: |
-          printf "publish_pages: %s\n" "${PUBLISH_PAGES}"
+          printf -- 'publish_pages: %s\n' "${PUBLISH_PAGES}"
           if [[ "${PUBLISH_PAGES}" != "true" ]]; then
-            printf "::error title=PagesConditions::Expected 'true', got '%s'.\n" "${PUBLISH_PAGES}"
+            printf -- "::error title=PagesConditions::Expected 'true', got '%s'.\n" "${PUBLISH_PAGES}"
             exit 1
           fi
 

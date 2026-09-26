@@ -517,13 +517,13 @@ jobs:
       - name: Verify out parameters
         id: verify
         run: |
-          printf "python_version:        %s\n" '${{ steps.variables.outputs.python_version }}'
-          printf "package_fullname:      %s\n" '${{ steps.variables.outputs.package_fullname }}'
-          printf "package_directory:     %s\n" '${{ steps.variables.outputs.package_directory }}'
-          printf "package_version_file:  %s\n" '${{ steps.variables.outputs.package_version_file }}'
-          printf "artifact_basename:     %s\n" '${{ steps.variables.outputs.artifact_basename }}'
-          printf "================================================================================\n"
-          printf "artifact_names:        %s\n" '${{ steps.artifacts.outputs.artifact_names }}'
-          printf "================================================================================\n"
-          printf "python_jobs:           %s\n" '${{ steps.jobs.outputs.python_jobs }}'
-          printf "================================================================================\n"
+          printf -- 'python_version:        %s\n' '${{ steps.variables.outputs.python_version }}'
+          printf -- 'package_fullname:      %s\n' '${{ steps.variables.outputs.package_fullname }}'
+          printf -- 'package_directory:     %s\n' '${{ steps.variables.outputs.package_directory }}'
+          printf -- 'package_version_file:  %s\n' '${{ steps.variables.outputs.package_version_file }}'
+          printf -- 'artifact_basename:     %s\n' '${{ steps.variables.outputs.artifact_basename }}'
+          printf -- '================================================================================\n'
+          printf -- 'artifact_names:        %s\n' '${{ steps.artifacts.outputs.artifact_names }}'
+          printf -- '================================================================================\n'
+          printf -- 'python_jobs:           %s\n' '${{ steps.jobs.outputs.python_jobs }}'
+          printf -- '================================================================================\n'

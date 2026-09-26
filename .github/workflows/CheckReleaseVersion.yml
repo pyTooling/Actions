@@ -125,25 +125,25 @@ jobs:
           ANSI_NOCOLOR=$'\x1b[0m'
 
           if [[ -z "${{ inputs.pypi_package }}" ]]; then
-            printf "::error title=CheckReleaseVersion::'check_pypi_duplicate' requires 'pypi_package'.\n"
+            printf -- "::error title=CheckReleaseVersion::'check_pypi_duplicate' requires 'pypi_package'.\n"
             exit 1
           fi
 
           registry="${{ inputs.pypi_url }}"
           registry="${registry%/}"
 
-          printf "Check if '%s' has release '%s' of package '%s' ... " "${registry}" "${{ inputs.version }}" "${{ inputs.pypi_package }}"
+          printf -- "Check if '%s' has release '%s' of package '%s' ... " "${registry}" "${{ inputs.version }}" "${{ inputs.pypi_package }}"
           status="$(curl --silent --output /dev/null --write-out '%{http_code}' --retry 3 --retry-delay 5 \
             "${registry}/pypi/${{ inputs.pypi_package }}/${{ inputs.version }}/json")"
           if [[ "${status}" == "404" ]]; then
-            printf "${ANSI_LIGHT_GREEN}[NOT RELEASED]${ANSI_NOCOLOR}\n"
+            printf -- "${ANSI_LIGHT_GREEN}[NOT RELEASED]${ANSI_NOCOLOR}\n"
           elif [[ "${status}" == "200" ]]; then
-            printf "${ANSI_LIGHT_RED}[RELEASED]${ANSI_NOCOLOR}\n"
-            printf "  ${ANSI_LIGHT_RED}%s/project/%s/%s/${ANSI_NOCOLOR}\n" "${registry}" "${{ inputs.pypi_package }}" "${{ inputs.version }}"
-            printf "::error title=CheckReleaseVersion::'%s' already has release '%s' of '%s'.\n" "${registry}" "${{ inputs.version }}" "${{ inputs.pypi_package }}"
+            printf -- "${ANSI_LIGHT_RED}[RELEASED]${ANSI_NOCOLOR}\n"
+            printf -- "  ${ANSI_LIGHT_RED}%s/project/%s/%s/${ANSI_NOCOLOR}\n" "${registry}" "${{ inputs.pypi_package }}" "${{ inputs.version }}"
+            printf -- "::error title=CheckReleaseVersion::'%s' already has release '%s' of '%s'.\n" "${registry}" "${{ inputs.version }}" "${{ inputs.pypi_package }}"
             exit 1
           else
-            printf "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
-            printf "::error title=CheckReleaseVersion::Couldn't query '%s' (HTTP status '%s').\n" "${registry}" "${status}"
+            printf -- "${ANSI_LIGHT_RED}[FAILED]${ANSI_NOCOLOR}\n"
+            printf -- "::error title=CheckReleaseVersion::Couldn't query '%s' (HTTP status '%s').\n" "${registry}" "${status}"
             exit 1
           fi
