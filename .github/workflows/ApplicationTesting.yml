@@ -276,10 +276,10 @@ jobs:
             printf -- '::warning::%s\n' "pytest-xdist isn't installed: running the tests serially."
             PARALLEL=''
           fi
-          [ -n '${{ inputs.apptest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}' || unset PYTEST_ARGS
+          [[ -n '${{ inputs.apptest_xml_artifact }}' ]] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.apptest_report_xml).fullpath }}' || unset PYTEST_ARGS
           [[ -n "${PARALLEL}" ]] && PYTEST_ARGS="${PYTEST_ARGS} -n ${PARALLEL}"
-          printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
-          python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
+          printf -- '%s\n' "python -m pytest -raP ${PYTEST_ARGS} --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}"
+          python -m pytest -raP ${PYTEST_ARGS} --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.apptest_directory }}
 
       - name: ✅ Run application tests (Windows)
         id: pytest_posh

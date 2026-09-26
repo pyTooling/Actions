@@ -317,14 +317,14 @@ jobs:
             printf -- '::warning::%s\n' "Coverage.py measures pytest-xdist workers only with 'patch = [\"subprocess\"]' in '[tool.coverage.run]': running the tests serially."
             PARALLEL=''
           fi
-          [ -n '${{ inputs.unittest_xml_artifact }}' ] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}' || unset PYTEST_ARGS
+          [[ -n '${{ inputs.unittest_xml_artifact }}' ]] && PYTEST_ARGS='--junitxml=${{ fromJson(inputs.unittest_report_xml).fullpath }}' || unset PYTEST_ARGS
           [[ -n "${PARALLEL}" ]] && PYTEST_ARGS="${PYTEST_ARGS} -n ${PARALLEL}"
-          if [ -n '${{ inputs.coverage_config }}' ]; then
-            printf "%s\n" "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
-            coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
+          if [[ -n '${{ inputs.coverage_config }}' ]]; then
+            printf -- '%s\n' "coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP ${PYTEST_ARGS} --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
+            coverage run --data-file=.coverage --rcfile=pyproject.toml -m pytest -raP ${PYTEST_ARGS} --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           else
-            printf "%s\n" "python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
-            python -m pytest -raP $PYTEST_ARGS --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
+            printf -- '%s\n' "python -m pytest -raP ${PYTEST_ARGS} --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}"
+            python -m pytest -raP ${PYTEST_ARGS} --color=yes ${{ inputs.tests_directory || '.' }}/${{ inputs.unittest_directory }}
           fi
 
       - name: ✅ Run unit tests (Windows)
