@@ -26,7 +26,8 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r8
 
   # Every reference to a job template or action of this repository names the branch it is on: '@dev' on 'dev',
-  # '@main' on 'main', '@rN' on a version branch 'rN'. Other branches (e.g. 'claude/*') aren't checked.
+  # '@main' on 'main', '@rN' on a version branch 'rN' and on its update branch 'update/rN'. Other branches (e.g.
+  # 'claude/*') aren't checked.
   References:
     name: 🔍 Check references to pyTooling/Actions
     runs-on: ubuntu-26.04
@@ -36,22 +37,24 @@ jobs:
       ${{ needs.Prepare.outputs.on_dev_branch == 'true'
        || needs.Prepare.outputs.on_main_branch == 'true'
        || startsWith(needs.Prepare.outputs.branch, 'r')
+       || startsWith(needs.Prepare.outputs.branch, 'update/r')
       }}
 
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v7
 
-      - name: 🔍 Check that all references point to '@${{ needs.Prepare.outputs.branch }}'
+      - name: 🔍 Check the references on '${{ needs.Prepare.outputs.branch }}'
         run: |
           ANSI_LIGHT_RED=$'\x1b[91m'
           ANSI_LIGHT_GREEN=$'\x1b[92m'
           ANSI_NOCOLOR=$'\x1b[0m'
 
-          expected="${{ needs.Prepare.outputs.branch }}"
-          if [[ ! "${expected}" =~ ^(dev|main|r[0-9]+)$ ]]; then
-            printf -- "Branch '%s' is neither 'dev', 'main' nor a version branch 'rN': nothing to check.\n" \
-                   "${expected}"
+          branch="${{ needs.Prepare.outputs.branch }}"
+          expected="${branch#update/}"
+          if [[ ! "${branch}" =~ ^(dev|main|r[0-9]+|update/r[0-9]+)$ ]]; then
+            printf -- "Branch '%s' isn't 'dev', 'main', a version branch 'rN' or 'update/rN': nothing to check.\n" \
+                   "${branch}"
             exit 0
           fi
 
@@ -100,7 +103,7 @@ jobs:
   Verifications:
     name: 🔍 Wait for the verification workflows
     runs-on: ubuntu-26.04
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && !startsWith(github.ref, 'refs/heads/update/')
     timeout-minutes: 120
 
     steps:
@@ -242,7 +245,9 @@ jobs:
       contents: write
       actions:  write
     with:
-      tag: ${{ needs.Prepare.outputs.version }}
+      tag:        ${{ needs.Prepare.outputs.version }}
+      prerelease: ${{ needs.Prepare.outputs.is_prerelease == 'true' }}
+      latest:     ${{ needs.Prepare.outputs.is_prerelease != 'true' }}
     secrets: inherit
 
   # Consumers pin '@r8', so every release has to move that branch. This opens the pull-request doing it, titled like
@@ -252,7 +257,7 @@ jobs:
     needs:
       - Prepare
       - ReleasePage
-    if: needs.Prepare.outputs.is_release_tag == 'true'
+    if: needs.Prepare.outputs.is_release_tag == 'true' && needs.Prepare.outputs.is_prerelease != 'true'
     permissions:
       contents:      write   # required to create a version branch
       pull-requests: write   # required to open the pull-request
