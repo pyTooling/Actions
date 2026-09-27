@@ -265,6 +265,8 @@ jobs:
       - name: ✅ Run application tests (Ubuntu/macOS)
         id: pytest_bash
         if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           export ENVIRONMENT_NAME="${{ matrix.envname }}"
 
@@ -294,6 +296,8 @@ jobs:
       - name: ✅ Run application tests (Windows)
         id: pytest_posh
         if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
 
