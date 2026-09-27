@@ -257,7 +257,6 @@ jobs:
     needs:
       - Prepare
       - ReleasePage
-    # A pre-release (e.g. 'v8.5.0-rc1') doesn't move the version branch consumers pin.
     if: needs.Prepare.outputs.is_release_tag == 'true' && needs.Prepare.outputs.is_prerelease != 'true'
     permissions:
       contents:      write   # required to create a version branch
