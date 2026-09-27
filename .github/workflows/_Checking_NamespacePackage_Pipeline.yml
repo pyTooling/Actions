@@ -3,6 +3,11 @@ run-name: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
 
 on:
   push:
+    # 'update/rN' carries a version branch's rewritten references; only 'Pipeline.yml' runs there.
+    branches-ignore:
+      - 'update/**'
+    tags:
+      - '**'
   workflow_dispatch:
 
 concurrency:
