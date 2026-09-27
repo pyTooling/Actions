@@ -245,7 +245,9 @@ jobs:
       contents: write
       actions:  write
     with:
-      tag: ${{ needs.Prepare.outputs.version }}
+      tag:        ${{ needs.Prepare.outputs.version }}
+      prerelease: ${{ needs.Prepare.outputs.is_prerelease == 'true' }}
+      latest:     ${{ needs.Prepare.outputs.is_prerelease != 'true' }}
     secrets: inherit
 
   # Consumers pin '@r8', so every release has to move that branch. This opens the pull-request doing it, titled like
@@ -255,7 +257,7 @@ jobs:
     needs:
       - Prepare
       - ReleasePage
-    if: needs.Prepare.outputs.is_release_tag == 'true'
+    if: needs.Prepare.outputs.is_release_tag == 'true' && needs.Prepare.outputs.is_prerelease != 'true'
     permissions:
       contents:      write   # required to create a version branch
       pull-requests: write   # required to open the pull-request

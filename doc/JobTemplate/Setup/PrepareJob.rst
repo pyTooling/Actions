@@ -115,25 +115,27 @@ Parameter Summary
 
 .. rubric:: Goto :ref:`input parameters <JOBTMPL/PrepareJob/Inputs>`
 
-+-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
-| Parameter Name                                      | Required | Type   | Default                                                          |
-+=====================================================+==========+========+==================================================================+
-| :ref:`JOBTMPL/PrepareJob/Input/ubuntu_image`        | no       | string | ``'ubuntu-26.04'``                                               |
-+-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/pipeline-delay`      | no       | number | ``0``                                                            |
-+-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/main_branch`         | no       | string | ``'main'``                                                       |
-+-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/development_branch`  | no       | string | ``'dev'``                                                        |
-+-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/release_branch`      | no       | string | ``'main'``                                                       |
-+-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/nightly_tag_pattern` | no       | string | ``'nightly'``                                                    |
-+-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern` | no       | string | ``'(v|r)?[0-9]+(\.[0-9]+){0,2}(-(dev|alpha|beta|rc)([0-9]*))?'`` |
-+-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
-| :ref:`JOBTMPL/PrepareJob/Input/publish_pages_on`    | no       | string | four conditions - see description                                |
-+-----------------------------------------------------+----------+--------+------------------------------------------------------------------+
++--------------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| Parameter Name                                         | Required | Type   | Default                                                          |
++========================================================+==========+========+==================================================================+
+| :ref:`JOBTMPL/PrepareJob/Input/ubuntu_image`           | no       | string | ``'ubuntu-26.04'``                                               |
++--------------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/pipeline-delay`         | no       | number | ``0``                                                            |
++--------------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/main_branch`            | no       | string | ``'main'``                                                       |
++--------------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/development_branch`     | no       | string | ``'dev'``                                                        |
++--------------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/release_branch`         | no       | string | ``'main'``                                                       |
++--------------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/nightly_tag_pattern`    | no       | string | ``'nightly'``                                                    |
++--------------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`    | no       | string | ``'(v|r)?[0-9]+(\.[0-9]+){0,2}(-(dev|alpha|beta|rc)([0-9]*))?'`` |
++--------------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/prerelease_tag_pattern` | no       | string | ``'(v|r)?[0-9]+(\.[0-9]+){0,2}-(dev|alpha|beta|rc)([0-9]*)'``    |
++--------------------------------------------------------+----------+--------+------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Input/publish_pages_on`       | no       | string | four conditions - see description                                |
++--------------------------------------------------------+----------+--------+------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PrepareJob/Secrets>`
 
@@ -173,6 +175,8 @@ This job template needs no secrets.
 | :ref:`JOBTMPL/PrepareJob/Output/tag`                 | string | Tag name, if the pipeline runs on a tag.                              |
 +------------------------------------------------------+--------+-----------------------------------------------------------------------+
 | :ref:`JOBTMPL/PrepareJob/Output/version`             | string | Version derived from the tag or the pull-request title.               |
++------------------------------------------------------+--------+-----------------------------------------------------------------------+
+| :ref:`JOBTMPL/PrepareJob/Output/is_prerelease`       | string | The version matches the pre-release tag pattern.                      |
 +------------------------------------------------------+--------+-----------------------------------------------------------------------+
 | :ref:`JOBTMPL/PrepareJob/Output/pr_title`            | string | Title of the associated merged pull-request.                          |
 +------------------------------------------------------+--------+-----------------------------------------------------------------------+
@@ -293,6 +297,23 @@ release_tag_pattern
                   * ``v3.13.5-alpha2``
                   * ``v4.7.22-beta3``
                   * ``v10.2-rc1``
+
+
+.. _JOBTMPL/PrepareJob/Input/prerelease_tag_pattern:
+
+prerelease_tag_pattern
+======================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'(v|r)?[0-9]+(\.[0-9]+){0,2}-(dev|alpha|beta|rc)([0-9]*)'``
+:Possible Values: Any valid regular expression.
+:Description:     A regular expression describing which versions are **pre-releases**, checked against
+                  :ref:`JOBTMPL/PrepareJob/Output/version`. The result is
+                  :ref:`JOBTMPL/PrepareJob/Output/is_prerelease`.
+
+                  The default pattern is :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`'s with a mandatory postfix:
+                  ``v10.0.0-rc1``, ``v1.2.8-dev`` and ``v3.13.5-alpha2`` are pre-releases, ``v10.0.0`` isn't.
 
 
 .. _JOBTMPL/PrepareJob/Input/publish_pages_on:
@@ -512,6 +533,20 @@ version
                   searched. When a matching PR can be located and it's title matches
                   :ref:`JOBTMPL/PrepareJob/Input/release_tag_pattern`, then this title is returned as a version,
                   otherwise it returns an empty string ``''``.
+
+
+.. _JOBTMPL/PrepareJob/Output/is_prerelease:
+
+is_prerelease
+=============
+
+:Type:            string
+:Possible Values: ``'true'``, ``'false'``
+:Description:     Returns ``'true'``, if :ref:`JOBTMPL/PrepareJob/Output/version` matches
+                  :ref:`JOBTMPL/PrepareJob/Input/prerelease_tag_pattern`, e.g. ``v10.0.0-rc1``, otherwise ``'false'`` -
+                  also when there is no version. |br|
+                  :ref:`JOBTMPL/CompletePipeline` publishes such a release page as a pre-release, which doesn't become
+                  the repository's *latest* release.
 
 
 .. _JOBTMPL/PrepareJob/Output/pr_title:

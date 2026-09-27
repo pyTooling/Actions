@@ -54,6 +54,11 @@ on:
         required: false
         default: '(v|r)?[0-9]+(\.[0-9]+){0,2}(-(dev|alpha|beta|rc)([0-9]*))?'
         type: string
+      prerelease_tag_pattern:
+        description: 'Pattern for the release tags, which are pre-releases. Usually: vXX.YY.ZZ-rcN'
+        required: false
+        default: '(v|r)?[0-9]+(\.[0-9]+){0,2}-(dev|alpha|beta|rc)([0-9]*)'
+        type: string
       publish_pages_on:
         description: 'Newline separated, or-ed conditions on the ref under which GitHub Pages are published.'
         required: false
@@ -115,6 +120,9 @@ on:
       version:
         description: ""
         value: ${{ jobs.Prepare.outputs.version }}
+      is_prerelease:
+        description: "'true' if 'version' is a pre-release, i.e. matches 'prerelease_tag_pattern'."
+        value: ${{ jobs.Prepare.outputs.is_prerelease }}
       pr_title:
         description: ""
         value: ${{ jobs.Prepare.outputs.pr_title }}
@@ -160,6 +168,7 @@ jobs:
       branch:              ${{ steps.Classify.outputs.branch }}
       tag:                 ${{ steps.Classify.outputs.tag }}
       version:             ${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}
+      is_prerelease:       ${{ steps.Version.outputs.is_prerelease }}
 #      release_version:     ${{ steps.FindPullRequest.outputs.release_version }}
       pr_title:            ${{ steps.FindPullRequest.outputs.pr_title }}
       pr_number:           ${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}
@@ -594,6 +603,27 @@ jobs:
           pr_mergedat=${PR_MERGED_AT}
           EOF
 
+      - name: 🔢 Classify the version
+        id: Version
+        run: |
+          ANSI_LIGHT_GREEN=$'\x1b[92m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          version='${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}'
+          PRERELEASE_TAG_PATTERN='^${{ inputs.prerelease_tag_pattern }}$'
+
+          isPrerelease="false"
+          if [[ -z "${version}" ]]; then
+            printf -- 'No version.\n'
+          elif [[ "${version}" =~ ${PRERELEASE_TAG_PATTERN} ]]; then
+            printf -- "Version '%s' ... ${ANSI_LIGHT_YELLOW}[PRERELEASE]${ANSI_NOCOLOR}\n" "${version}"
+            isPrerelease="true"
+          else
+            printf -- "Version '%s' ... ${ANSI_LIGHT_GREEN}[RELEASE]${ANSI_NOCOLOR}\n" "${version}"
+          fi
+          printf -- 'is_prerelease=%s\n' "${isPrerelease}" >> "${GITHUB_OUTPUT}"
+
       - name: Debug
         run: |
           printf -- 'on_default_branch:    %s\n' "${{ steps.Classify.outputs.on_default_branch }}"
@@ -613,6 +643,7 @@ jobs:
           printf -- 'version:              %s\n' "${{ steps.Classify.outputs.version || steps.FindPullRequest.outputs.pr_version }}"
           printf -- '  from tag:           %s\n' "${{ steps.Classify.outputs.version }}"
           printf -- '  from pr:            %s\n' "${{ steps.FindPullRequest.outputs.pr_version }}"
+          printf -- 'is_prerelease:        %s\n' "${{ steps.Version.outputs.is_prerelease }}"
           printf -- 'pr title:             %s\n' "${{ steps.FindPullRequest.outputs.pr_title }}"
           printf -- 'pr number:            %s\n' "${{ steps.Classify.outputs.pr_number || steps.FindPullRequest.outputs.pr_number }}"
           printf -- '  from merge:         %s\n' "${{ steps.Classify.outputs.pr_number }}"

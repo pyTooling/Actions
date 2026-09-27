@@ -192,6 +192,8 @@ run is short enough to read.
 4. In that run ``ReleasePage`` (:ref:`JOBTMPL/PublishReleaseNotes`) publishes the release notes from the
    pull-request's description, and ``UpdateVersionBranch`` (:ref:`JOBTMPL/UpdateVersionBranch`) opens the
    pull-request moving the major-version branch, e.g. ``Updating r8 from v8.1.0``.
+5. A pre-release - a version like ``v8.5.0-rc1``, see :ref:`JOBTMPL/PrepareJob/Output/is_prerelease` - gets a
+   release page marked as pre-release, which doesn't become the *latest* release, and doesn't move ``r8``.
 
 .. note::
 
