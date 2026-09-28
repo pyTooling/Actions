@@ -265,8 +265,10 @@ jobs:
       - name: ✅ Run application tests (Ubuntu/macOS)
         id: pytest_bash
         if: ( matrix.system != 'windows' && matrix.system != 'windows-arm' )
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ENVIRONMENT_NAME: ${{ matrix.envname }}
         run: |
-          export ENVIRONMENT_NAME="${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
 
@@ -294,8 +296,10 @@ jobs:
       - name: ✅ Run application tests (Windows)
         id: pytest_posh
         if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ENVIRONMENT_NAME: ${{ matrix.envname }}
         run: |
-          $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
 

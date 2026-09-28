@@ -116,7 +116,7 @@ runs:
             "cli":               "python-matplotlib:p",   # 'cli' is 'diagram' + 'terminal'
             "diagram":           "python-matplotlib:p",
             "pypi":              "python-aiohttp:p",
-            "sphinx":            "python-markupsafe:p",
+            "sphinx":            "python-markupsafe:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           },
           # pyTooling's 'packaging', 'terminal' and 'testing' extras add setuptools, colorama and pytest, which
