@@ -50,6 +50,7 @@ packages = {
 }
 subPackages = {
 	"pytooling": {
+		"sphinx": "python-markupsafe:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 		"yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 	},
 }

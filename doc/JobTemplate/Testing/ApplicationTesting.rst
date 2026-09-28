@@ -44,7 +44,9 @@ Configuration options for :term:`pytest` should be given via section ``[tool.pyt
    7. Run the application tests using :term:`pytest` (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_directory`,
       :ref:`JOBTMPL/ApplicationTesting/Input/tests_directory`,
       :ref:`JOBTMPL/ApplicationTesting/Input/root_directory`), in parallel if :file:`pytest-xdist` is installed
-      (:ref:`JOBTMPL/ApplicationTesting/Input/parallel`).
+      (:ref:`JOBTMPL/ApplicationTesting/Input/parallel`). The environment variable ``GITHUB_TOKEN`` holds the job's
+      token, so a program reading GitHub's REST API authenticates and isn't limited to 60 requests per hour per IP
+      address.
    8. Upload the test report summary as an artifact (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_xml_artifact`,
       :ref:`JOBTMPL/ApplicationTesting/Input/apptest_report_xml`).
 
