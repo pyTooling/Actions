@@ -298,8 +298,8 @@ jobs:
         if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          ENVIRONMENT_NAME: ${{ matrix.envname }}
         run: |
-          $env:ENVIRONMENT_NAME = "${{ matrix.envname }}"
 
           cd "${{ inputs.root_directory || '.' }}"
 
