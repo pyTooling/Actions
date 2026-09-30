@@ -113,15 +113,16 @@ runs:
             "osvvm":             "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p python-types-pyyaml:p",
           },
           "pytooling": {
-            "cli":               "python-matplotlib:p",   # 'cli' is 'diagram' + 'terminal'
-            "diagram":           "python-matplotlib:p",
+            "cli":               "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",   # 'cli' is 'diagram' + 'terminal'
+            "diagram":           "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+            "github":            "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             "pypi":              "python-aiohttp:p",
             "sphinx":            "python-markupsafe:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           },
           # pyTooling's 'packaging', 'terminal' and 'testing' extras add setuptools, colorama and pytest, which
           # are pure Python and install from PyPI on MSYS2 without help. So would a 'plotly' extra: plotly needs
-          # only narwhals and packaging. That is also why 'cli' rewrites to matplotlib alone: it installs the
+          # only narwhals and packaging. That is also why 'cli' rewrites to what 'diagram' needs: it installs the
           # 'diagram' and 'terminal' dependencies, and only the first of them has compiled code.
         }
 
