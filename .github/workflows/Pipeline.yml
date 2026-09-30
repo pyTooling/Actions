@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   Prepare:
-    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@main
+    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r8
 
   # Every reference to a job template or action of this repository names the branch it is on: '@dev' on 'dev',
   # '@main' on 'main', '@rN' on a version branch 'rN' and on its update branch 'update/rN'. Other branches (e.g.
@@ -218,7 +218,7 @@ jobs:
           printf -- "${ANSI_LIGHT_GREEN}Every verification workflow succeeded.${ANSI_NOCOLOR}\n"
 
   TriggerTaggedRelease:
-    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@main
+    uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@r8
     needs:
       - Prepare
       - References
@@ -237,7 +237,7 @@ jobs:
     secrets: inherit
 
   ReleasePage:
-    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@main
+    uses: pyTooling/Actions/.github/workflows/PublishReleaseNotes.yml@r8
     needs:
       - Prepare
     if: needs.Prepare.outputs.is_release_tag == 'true'
@@ -253,7 +253,7 @@ jobs:
   # Consumers pin '@r8', so every release has to move that branch. This opens the pull-request doing it, titled like
   # 'Updating r8 from v8.1.0'.
   UpdateVersionBranch:
-    uses: pyTooling/Actions/.github/workflows/UpdateVersionBranch.yml@main
+    uses: pyTooling/Actions/.github/workflows/UpdateVersionBranch.yml@r8
     needs:
       - Prepare
       - ReleasePage
