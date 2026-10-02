@@ -66,7 +66,7 @@ on:
       unittest_disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
         required: false
-        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
+        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11 windows-arm:pypy-3.12'
         type: string
       unittest_parallel:
         description: 'Number of pytest-xdist workers for unit tests: ''auto'', a number, or ''false'' (serial).'
@@ -106,7 +106,7 @@ on:
       apptest_disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
         required: false
-        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
+        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11 windows-arm:pypy-3.12'
         type: string
       apptest_parallel:
         description: 'Number of pytest-xdist workers for application tests: ''auto'', a number, or ''false'' (serial).'

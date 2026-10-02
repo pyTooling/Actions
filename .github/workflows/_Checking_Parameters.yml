@@ -24,7 +24,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
-      python_version_list: "3.12 3.13 pypy-3.10 pypy-3.11"       # py-2, py-1, pypy-1, pypy-0
+      python_version_list: "3.12 3.13 pypy-3.11 pypy-3.12"       # py-2, py-1, pypy-1, pypy-0
 
   Params_Systems:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
@@ -119,9 +119,9 @@ jobs:
         uses: ./.github/actions/CheckJobMatrix
         with:
           expected-default-version: '3.14'
-          expected-python-versions: '["3.12", "3.13", "pypy-3.10", "pypy-3.11"]'
+          expected-python-versions: '["3.12", "3.13", "pypy-3.11", "pypy-3.12"]'
           expected-systems:         '["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]'
-          expected-exclude-jobs:    '["windows-arm:pypy-3.10", "windows-arm:pypy-3.11"]'
+          expected-exclude-jobs:    '["windows-arm:pypy-3.11", "windows-arm:pypy-3.12"]'
           expected-include-jobs:    '["ucrt64:3.14"]'
           generated-default-version: ${{ needs.Params_PythonVersions.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_PythonVersions.outputs.python_jobs }}

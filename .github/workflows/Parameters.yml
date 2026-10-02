@@ -78,7 +78,7 @@ on:
       disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
         required: false
-        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
+        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11 windows-arm:pypy-3.12'
         type: string
       ubuntu_image:
         description: 'The used GitHub Action image for Ubuntu (x86-64) based jobs.'
@@ -399,9 +399,10 @@ jobs:
               "3.13":      { "icon": "🟢",  "until": "2029.10" },
               "3.14":      { "icon": "🟢",  "until": "2030.10" },
               "3.15":      { "icon": "🟣",  "until": "2031.10" },
-              "pypy-3.9":  { "icon": "⟲🔴", "until": "????.??" },
-              "pypy-3.10": { "icon": "⟲🟠", "until": "????.??" },
-              "pypy-3.11": { "icon": "⟲🟡", "until": "????.??" },
+              "pypy-3.9":  { "icon": "⟲⚫", "until": "????.??" },
+              "pypy-3.10": { "icon": "⟲🔴", "until": "????.??" },
+              "pypy-3.11": { "icon": "⟲🟠", "until": "????.??" },
+              "pypy-3.12": { "icon": "⟲🟡", "until": "????.??" },
             },
             # Runner systems (runner images) supported by GitHub Actions
             "sys": {
