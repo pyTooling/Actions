@@ -61,7 +61,7 @@ on:
       unittest_exclude_list:
         description: 'Space separated list of system:python items to be excluded from the list of test.'
         required: false
-        default: 'windows-arm:3.9 windows-arm:3.10'
+        default: 'windows-arm:3.10'
         type: string
       unittest_disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
@@ -101,7 +101,7 @@ on:
       apptest_exclude_list:
         description: 'Space separated list of system:python items to be excluded from the list of test.'
         required: false
-        default: 'windows-arm:3.9 windows-arm:3.10'
+        default: 'windows-arm:3.10'
         type: string
       apptest_disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
