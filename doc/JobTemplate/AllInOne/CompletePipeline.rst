@@ -437,7 +437,7 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_include_list`        | no       | string | ``''``                                                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`        | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`        | no       | string | ``'windows-arm:3.10'``                                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`        | no       | string | ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``                          |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -469,7 +469,7 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_include_list`         | no       | string | ``''``                                                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`         | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`         | no       | string | ``'windows-arm:3.10'``                                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`         | no       | string | ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``                          |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -693,7 +693,7 @@ unittest_exclude_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'windows-arm:3.9 windows-arm:3.10'``
+:Default Value:   ``'windows-arm:3.10'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be excluded from the list of unittest
                   variants.
@@ -802,7 +802,7 @@ apptest_exclude_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'windows-arm:3.9 windows-arm:3.10'``
+:Default Value:   ``'windows-arm:3.10'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be excluded from the list of
                   application test variants.
