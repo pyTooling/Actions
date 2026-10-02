@@ -76,7 +76,6 @@ data = {
 	# Runtimes provided by MSYS2
 	"runtime": {
 		"msys": {"icon": "🪟🟪", "name": "Windows+MSYS2 (x86-64) - MSYS"},
-		"mingw32": {"icon": "🪟⬛", "name": "Windows+MSYS2 (x86-64) - MinGW32"},
 		"mingw64": {"icon": "🪟🟦", "name": "Windows+MSYS2 (x86-64) - MinGW64"},
 		"clang32": {"icon": "🪟🟫", "name": "Windows+MSYS2 (x86-64) - Clang32"},
 		"clang64": {"icon": "🪟🟧", "name": "Windows+MSYS2 (x86-64) - Clang64"},
