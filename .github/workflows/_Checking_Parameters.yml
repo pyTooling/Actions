@@ -30,7 +30,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       name: Example
-      system_list: "windows mingw32 mingw64"
+      system_list: "windows mingw64 ucrt64"
 
   Params_Include:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
@@ -144,7 +144,7 @@ jobs:
           expected-python-versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
           expected-systems:         '["windows"]'
           expected-exclude-jobs:    '[]'
-          expected-include-jobs:    '["mingw32:3.14", "mingw64:3.14"]'
+          expected-include-jobs:    '["mingw64:3.14", "ucrt64:3.14"]'
           generated-default-version: ${{ needs.Params_Systems.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_Systems.outputs.python_jobs }}
 

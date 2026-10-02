@@ -380,6 +380,9 @@ jobs:
             print("::warning title=Deprecated::Support for Python 3.9 ended in 2025.10.")
           if "msys2" in systems:
             print("::warning title=Deprecated::System 'msys2' will be replaced by 'mingw64'.")
+          for removed in ("mingw32", ):
+            if removed in systems:
+              print(f"::warning title=Removed::System '{removed}' isn't supported anymore.")
           if currentAlphaVersion in versions:
             print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
           for disable in disabled:
@@ -412,7 +415,6 @@ jobs:
             # Runtimes provided by MSYS2
             "runtime": {
               "msys":    { "icon": "🪟🟪", "name": "Windows+MSYS2 (x86-64) - MSYS"    },
-              "mingw32": { "icon": "🪟⬛", "name": "Windows+MSYS2 (x86-64) - MinGW32" },
               "mingw64": { "icon": "🪟🟦", "name": "Windows+MSYS2 (x86-64) - MinGW64" },
               "clang32": { "icon": "🪟🟫", "name": "Windows+MSYS2 (x86-64) - Clang32" },
               "clang64": { "icon": "🪟🟧", "name": "Windows+MSYS2 (x86-64) - Clang64" },

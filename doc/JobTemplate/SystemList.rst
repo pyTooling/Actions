@@ -1,7 +1,7 @@
 .. rubric:: Possible values
 
 * Native systems: ``ubuntu``, ``ubuntu-arm``, ``windows``, ``windows-arm``, ``macos``, ``macos-arm``
-* MSYS2 runtimes: ``msys``, ``mingw32``, ``mingw64``, ``clang32``, ``clang64``, ``ucrt64``
+* MSYS2 runtimes: ``msys``, ``mingw64``, ``clang32``, ``clang64``, ``ucrt64``
 
 The image used per system is configurable via the ``*_image`` parameters of :ref:`JOBTMPL/Parameters`.
 The versions listed below are the defaults.
@@ -22,8 +22,6 @@ The versions listed below are the defaults.
 | 🍏   | macos-arm   | macOS 15 (ARM64)            | ``macos_arm_image``          |                                      |
 +------+-------------+-----------------------------+------------------------------+--------------------------------------+
 | 🪟🟪 | msys        | MSYS2 - MSYS                | runtime of ``windows_image`` |                                      |
-+------+-------------+-----------------------------+------------------------------+--------------------------------------+
-| 🪟⬛ | mingw32     | MSYS2 - MinGW32             | runtime of ``windows_image`` | deprecated                           |
 +------+-------------+-----------------------------+------------------------------+--------------------------------------+
 | 🪟🟦 | mingw64     | MSYS2 - MinGW64             | runtime of ``windows_image`` | on decline, superseded by ``ucrt64`` |
 +------+-------------+-----------------------------+------------------------------+--------------------------------------+
