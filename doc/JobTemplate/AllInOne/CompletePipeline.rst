@@ -429,9 +429,9 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/version_file`                 | no       | string | ``'__init__.py'``                                                          |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`      | no       | string | ``'3.14'``                                                                 |
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version`      | no       | string | ``'3.15'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list` | no       | string | ``'3.10 3.11 3.12 3.13 3.14'``                                             |
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list` | no       | string | ``'3.11 3.12 3.13 3.14 3.15'``                                             |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`         | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``         |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -443,7 +443,7 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_parallel`            | no       | string | ``'auto'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`       | no       | string | ``'3.14'``                                                                 |
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version`       | no       | string | ``'3.15'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/bandit`                       | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -631,7 +631,7 @@ unittest_python_version
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.14'``
+:Default Value:   ``'3.15'``
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
                   and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
@@ -649,7 +649,7 @@ unittest_python_version_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.10 3.11 3.12 3.13 3.14'``
+:Default Value:   ``'3.11 3.12 3.13 3.14 3.15'``
 :Possible Values: A space separated list of valid Python versions conforming to the pattern ``<major>.<minor>`` or
                   ``pypy-<major>.<minor>``.
 :Description:     The list of space-separated Python versions used for unit testing.
@@ -737,7 +737,7 @@ apptest_python_version
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.14'``
+:Default Value:   ``'3.15'``
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
                   and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.

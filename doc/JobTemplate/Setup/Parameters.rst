@@ -179,9 +179,9 @@ Parameter Summary
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/package_name`         | no       | string | ``''``                                                                     |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/python_version`       | no       | string | ``'3.14'``                                                                 |
+| :ref:`JOBTMPL/Parameters/Input/python_version`       | no       | string | ``'3.15'``                                                                 |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/python_version_list`  | no       | string | ``'3.10 3.11 3.12 3.13 3.14'``                                             |
+| :ref:`JOBTMPL/Parameters/Input/python_version_list`  | no       | string | ``'3.11 3.12 3.13 3.14 3.15'``                                             |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/system_list`          | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``         |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -376,7 +376,7 @@ python_version
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.14'``
+:Default Value:   ``'3.15'``
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
                   and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
@@ -392,7 +392,7 @@ python_version_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.10 3.11 3.12 3.13 3.14'``
+:Default Value:   ``'3.11 3.12 3.13 3.14 3.15'``
 :Possible Values: A space separated list of valid Python versions conforming to the pattern ``<major>.<minor>`` or
                   ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
@@ -607,7 +607,7 @@ python_version
 ==============
 
 :Type:            string
-:Default Value:   ``'3.14'``
+:Default Value:   ``'3.15'``
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``.
 :Description:     Returns
 

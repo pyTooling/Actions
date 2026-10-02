@@ -90,10 +90,10 @@ jobs:
       - name: Checking job matrix from 'Params_Default'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
-          expected-python-versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
+          expected-default-version: '3.15'
+          expected-python-versions: '["3.11", "3.12", "3.13", "3.14", "3.15"]'
           expected-systems:         '["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]'
-          expected-exclude-jobs:    '["windows-arm:3.10"]'
+          expected-exclude-jobs:    '[]'
           expected-include-jobs:    '["ucrt64:3.14"]'
           generated-default-version: ${{ needs.Params_Default.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_Default.outputs.python_jobs }}
@@ -118,7 +118,7 @@ jobs:
       - name: Checking job matrix from 'Params_PythonVersions'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
+          expected-default-version: '3.15'
           expected-python-versions: '["3.12", "3.13", "pypy-3.11", "pypy-3.12"]'
           expected-systems:         '["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]'
           expected-exclude-jobs:    '["windows-arm:pypy-3.11", "windows-arm:pypy-3.12"]'
@@ -140,8 +140,8 @@ jobs:
       - name: Checking job matrix from 'Params_Systems'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
-          expected-python-versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
+          expected-default-version: '3.15'
+          expected-python-versions: '["3.11", "3.12", "3.13", "3.14", "3.15"]'
           expected-systems:         '["windows"]'
           expected-exclude-jobs:    '[]'
           expected-include-jobs:    '["clang64:3.14", "ucrt64:3.14"]'
@@ -162,7 +162,7 @@ jobs:
       - name: Checking job matrix from 'Params_Include'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
+          expected-default-version: '3.15'
           expected-python-versions: '["3.12"]'
           expected-systems:         '["ubuntu", "windows", "macos", "macos-arm"]'
           expected-exclude-jobs:    '[]'
@@ -184,7 +184,7 @@ jobs:
       - name: Checking job matrix from 'Params_Exclude'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
+          expected-default-version: '3.15'
           expected-python-versions: '["3.13"]'
           expected-systems:         '["ubuntu", "macos", "macos-arm"]'
           expected-exclude-jobs:    '[]'
@@ -206,7 +206,7 @@ jobs:
       - name: Checking job matrix from 'Params_Disable'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
+          expected-default-version: '3.15'
           expected-python-versions: '["3.13"]'
           expected-systems:         '["ubuntu", "windows", "macos", "macos-arm"]'
           expected-exclude-jobs:    '["windows:3.13"]'
@@ -265,7 +265,7 @@ jobs:
       - name: Checking job matrix from 'Params_All'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
+          expected-default-version: '3.15'
           expected-python-versions: '["3.12", "3.13"]'
           expected-systems:         '["ubuntu", "windows", "macos-arm"]'
           expected-exclude-jobs:    '[]'

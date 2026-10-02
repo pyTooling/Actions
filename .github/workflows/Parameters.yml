@@ -53,12 +53,12 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.14'
+        default: '3.15'
         type: string
       python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.10 3.11 3.12 3.13 3.14'
+        default: '3.11 3.12 3.13 3.14 3.15'
         type: string
       system_list:
         description: 'Space separated list of systems to run tests on.'
@@ -348,8 +348,8 @@ jobs:
           disable_list =   "${{ inputs.disable_list }}".strip()
 
           currentMSYS2Version = "3.14"
-          currentAlphaVersion = "3.15"
-          currentAlphaRelease = "3.15.0-a.4"
+          currentAlphaVersion = "3.16"
+          currentAlphaRelease = "3.16.0-a.1"
 
           if systems == "":
             print("::error title=Parameters::system_list is empty.")
@@ -376,8 +376,8 @@ jobs:
           else:
             disabled = [disable.strip() for disable in disable_list.split(" ")]
 
-          if "3.9" in versions:
-            print("::warning title=Deprecated::Support for Python 3.9 ended in 2025.10.")
+          if "3.10" in versions:
+            print("::warning title=Deprecated::Support for Python 3.10 ended in 2026.10.")
           if "msys2" in systems:
             print("::warning title=Deprecated::System 'msys2' will be replaced by 'ucrt64'.")
           for removed in ("mingw32", "mingw64"):
@@ -392,13 +392,12 @@ jobs:
           data = {
             # Python and PyPy versions supported by "setup-python" action
             "python": {
-              "3.9":       { "icon": "⚫",  "until": "2025.10" },
-              "3.10":      { "icon": "🔴",  "until": "2026.10" },
-              "3.11":      { "icon": "🟠",  "until": "2027.10" },
-              "3.12":      { "icon": "🟡",  "until": "2028.10" },
-              "3.13":      { "icon": "🟢",  "until": "2029.10" },
+              "3.10":      { "icon": "⚫",  "until": "2026.10" },
+              "3.11":      { "icon": "🔴",  "until": "2027.10" },
+              "3.12":      { "icon": "🟠",  "until": "2028.10" },
+              "3.13":      { "icon": "🟡",  "until": "2029.10" },
               "3.14":      { "icon": "🟢",  "until": "2030.10" },
-              "3.15":      { "icon": "🟣",  "until": "2031.10" },
+              "3.15":      { "icon": "🟢",  "until": "2031.10" },
               "pypy-3.11": { "icon": "⟲🟠", "until": "????.??" },
               "pypy-3.12": { "icon": "⟲🟡", "until": "????.??" },
             },

@@ -56,7 +56,7 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@dev
     with:
       package_name:        'myPackage'
-      python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11 pypy-3.12'
+      python_version_list: '3.11 3.12 3.13 3.14 3.15 pypy-3.11 pypy-3.12'
       disable_list:        'windows-arm:pypy-3.11 windows-arm:pypy-3.12'
       documentation_steps: 'all'
 
