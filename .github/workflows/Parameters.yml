@@ -63,7 +63,7 @@ on:
       system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'
+        default: 'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'
         type: string
       include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'
@@ -379,8 +379,8 @@ jobs:
           if "3.9" in versions:
             print("::warning title=Deprecated::Support for Python 3.9 ended in 2025.10.")
           if "msys2" in systems:
-            print("::warning title=Deprecated::System 'msys2' will be replaced by 'mingw64'.")
-          for removed in ("mingw32", ):
+            print("::warning title=Deprecated::System 'msys2' will be replaced by 'ucrt64'.")
+          for removed in ("mingw32", "mingw64"):
             if removed in systems:
               print(f"::warning title=Removed::System '{removed}' isn't supported anymore.")
           if currentAlphaVersion in versions:
@@ -415,7 +415,6 @@ jobs:
             # Runtimes provided by MSYS2
             "runtime": {
               "msys":    { "icon": "🪟🟪", "name": "Windows+MSYS2 (x86-64) - MSYS"    },
-              "mingw64": { "icon": "🪟🟦", "name": "Windows+MSYS2 (x86-64) - MinGW64" },
               "clang32": { "icon": "🪟🟫", "name": "Windows+MSYS2 (x86-64) - Clang32" },
               "clang64": { "icon": "🪟🟧", "name": "Windows+MSYS2 (x86-64) - Clang64" },
               "ucrt64":  { "icon": "🪟🟨", "name": "Windows+MSYS2 (x86-64) - UCRT64"  },

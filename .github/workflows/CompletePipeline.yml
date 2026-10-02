@@ -51,7 +51,7 @@ on:
       unittest_system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'
+        default: 'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'
         type: string
       unittest_include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'

@@ -433,7 +433,7 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_python_version_list` | no       | string | ``'3.10 3.11 3.12 3.13 3.14'``                                             |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`         | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'`` |
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_system_list`         | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``         |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_include_list`        | no       | string | ``''``                                                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -664,7 +664,7 @@ unittest_system_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'``
+:Default Value:   ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``
 :Possible Values: A space separated list of system names.
 :Description:     The list of space-separated systems used for unit testing.
 
