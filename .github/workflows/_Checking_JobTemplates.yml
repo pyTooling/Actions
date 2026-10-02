@@ -66,7 +66,7 @@ jobs:
       package_name:        'myPackage'
       name:                'Platform'
       python_version_list: ''
-      system_list:         'ubuntu ubuntu-arm windows windows-arm macos mingw64 clang64 ucrt64'
+      system_list:         'ubuntu ubuntu-arm windows windows-arm macos clang64 ucrt64'
       documentation_steps: 'none'
 
   AppTestingParams:

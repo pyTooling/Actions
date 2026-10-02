@@ -156,8 +156,6 @@ Parameter Summary
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/ApplicationTesting/Input/windows_arm_before_script` | no       | string        | ``''``                                                                                                                       |
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/ApplicationTesting/Input/mingw64_before_script`     | no       | string        | ``''``                                                                                                                       |
-+-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/ApplicationTesting/Input/ucrt64_before_script`      | no       | string        | ``''``                                                                                                                       |
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/ApplicationTesting/Input/root_directory`            | no       | string        | ``''``                                                                                                                       |
@@ -292,7 +290,7 @@ mingw_requirements
 :Required:        no
 :Default Value:   ``''``
 :Possible Values: Any valid list of parameters for ``pip install``.
-:Description:     Overrides :ref:`JOBTMPL/ApplicationTesting/Input/requirements` on MSYS2 (MinGW64, UCRT64) only. |br|
+:Description:     Overrides :ref:`JOBTMPL/ApplicationTesting/Input/requirements` on MSYS2 only. |br|
                   MSYS2 provides some Python packages through *pacboy*, so the pip requirements often differ there. |br|
                   The value is resolved and its existence checked exactly like
                   :ref:`JOBTMPL/ApplicationTesting/Input/requirements`. |br|
@@ -352,17 +350,6 @@ windows_arm_before_script
 :Default Value:   ``''``
 :Possible Values: Any valid PowerShell script.
 :Description:     Scripts to execute on Windows (aarch64) before *pytest* is started.
-
-.. _JOBTMPL/ApplicationTesting/Input/mingw64_before_script:
-
-mingw64_before_script
-=====================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``''``
-:Possible Values: Any valid Bash script.
-:Description:     Scripts to execute on Windows within MSYS2 MinGW64 before *pytest* is started.
 
 .. _JOBTMPL/ApplicationTesting/Input/ucrt64_before_script:
 

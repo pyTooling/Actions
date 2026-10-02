@@ -103,8 +103,6 @@ class Application(Base):
 			self._value += 3
 		elif platform.IsMSYSOnWindows:
 			self._value += 11
-		elif platform.IsMinGW64OnWindows:
-			self._value += 13
 		elif platform.IsUCRT64OnWindows:
 			self._value += 14
 		elif platform.IsClang32OnWindows:
