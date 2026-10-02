@@ -189,7 +189,7 @@ Parameter Summary
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/exclude_list`         | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/disable_list`         | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11 windows-arm:pypy-3.12'``    |
+| :ref:`JOBTMPL/Parameters/Input/disable_list`         | no       | string | ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``                          |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/ubuntu_image`         | no       | string | ``'ubuntu-26.04'``                                                         |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -467,7 +467,7 @@ disable_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11 windows-arm:pypy-3.12'``
+:Default Value:   ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be temporarily disabled from the list
                   of test variants. |br|

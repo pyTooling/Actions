@@ -439,7 +439,7 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_exclude_list`        | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`        | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11 windows-arm:pypy-3.12'``    |
+| :ref:`JOBTMPL/CompletePipeline/Input/unittest_disable_list`        | no       | string | ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``                          |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/unittest_parallel`            | no       | string | ``'auto'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -471,7 +471,7 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_exclude_list`         | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`         | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11 windows-arm:pypy-3.12'``    |
+| :ref:`JOBTMPL/CompletePipeline/Input/apptest_disable_list`         | no       | string | ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``                          |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_parallel`             | no       | string | ``'auto'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -708,7 +708,7 @@ unittest_disable_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11 windows-arm:pypy-3.12'``
+:Default Value:   ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be temporarily disabled from the list
                   of unittest variants. |br|
@@ -817,7 +817,7 @@ apptest_disable_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11 windows-arm:pypy-3.12'``
+:Default Value:   ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be temporarily disabled from the list
                   of application test variants. |br|
