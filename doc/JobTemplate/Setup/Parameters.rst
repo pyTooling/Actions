@@ -179,9 +179,9 @@ Parameter Summary
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/package_name`         | no       | string | ``''``                                                                     |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/python_version`       | no       | string | ``'3.14'``                                                                 |
+| :ref:`JOBTMPL/Parameters/Input/python_version`       | no       | string | ``'3.15'``                                                                 |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/python_version_list`  | no       | string | ``'3.10 3.11 3.12 3.13 3.14'``                                             |
+| :ref:`JOBTMPL/Parameters/Input/python_version_list`  | no       | string | ``'3.11 3.12 3.13 3.14 3.15'``                                             |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/system_list`          | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``         |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -189,7 +189,7 @@ Parameter Summary
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/exclude_list`         | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/disable_list`         | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                          |
+| :ref:`JOBTMPL/Parameters/Input/disable_list`         | no       | string | ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``                          |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/ubuntu_image`         | no       | string | ``'ubuntu-26.04'``                                                         |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -376,7 +376,7 @@ python_version
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.14'``
+:Default Value:   ``'3.15'``
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
                   and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
@@ -392,7 +392,7 @@ python_version_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.10 3.11 3.12 3.13 3.14'``
+:Default Value:   ``'3.11 3.12 3.13 3.14 3.15'``
 :Possible Values: A space separated list of valid Python versions conforming to the pattern ``<major>.<minor>`` or
                   ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
@@ -467,7 +467,7 @@ disable_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``
+:Default Value:   ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be temporarily disabled from the list
                   of test variants. |br|
@@ -607,7 +607,7 @@ python_version
 ==============
 
 :Type:            string
-:Default Value:   ``'3.14'``
+:Default Value:   ``'3.15'``
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``.
 :Description:     Returns
 

@@ -57,7 +57,7 @@ The following instantiation example creates a ``VerifyDocs`` job derived from jo
      VerifyDocs:
        uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@r8
        with:
-         python_version: '3.14'
+         python_version: '3.15'
 
 
 .. seealso::
@@ -78,7 +78,7 @@ Parameter Summary
 +======================================================+==========+========+=============+
 | :ref:`JOBTMPL/VerifyDocs/Input/ubuntu_image_version` | no       | string | ``'26.04'`` |
 +------------------------------------------------------+----------+--------+-------------+
-| :ref:`JOBTMPL/VerifyDocs/Input/python_version`       | no       | string | ``'3.14'``  |
+| :ref:`JOBTMPL/VerifyDocs/Input/python_version`       | no       | string | ``'3.15'``  |
 +------------------------------------------------------+----------+--------+-------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/VerifyDocs/Secrets>`
