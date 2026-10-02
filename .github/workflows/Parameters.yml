@@ -349,7 +349,7 @@ jobs:
 
           currentMSYS2Version = "3.14"
           currentAlphaVersion = "3.16"
-          currentAlphaRelease = "3.16.0-a.1"
+          currentAlphaRelease = "3.16.0-alpha.1"
 
           if systems == "":
             print("::error title=Parameters::system_list is empty.")
@@ -398,6 +398,7 @@ jobs:
               "3.13":      { "icon": "🟡",  "until": "2029.10" },
               "3.14":      { "icon": "🟢",  "until": "2030.10" },
               "3.15":      { "icon": "🟢",  "until": "2031.10" },
+              "3.16":      { "icon": "🟣",  "until": "2032.10" },
               "pypy-3.11": { "icon": "⟲🟠", "until": "????.??" },
               "pypy-3.12": { "icon": "⟲🟡", "until": "????.??" },
             },
