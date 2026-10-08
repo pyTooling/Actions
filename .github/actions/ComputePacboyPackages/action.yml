@@ -105,6 +105,7 @@ runs:
           "pyedaa.toolsetup":    "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           "pyedaa.ucis":         "python-lxml:p",
           "pyedaa.workflow":     "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "pytooling.sphinx":    "python-aiohttp:p python-markupsafe:p",
           "pyversioning":        "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           "sphinx_reports":      "python-coverage:p python-jsonschema:p python-lxml:p python-markupsafe:p python-pyaml:p python-types-pyyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
         }
@@ -124,6 +125,9 @@ runs:
           # are pure Python and install from PyPI on MSYS2 without help. So would a 'plotly' extra: plotly needs
           # only narwhals and packaging. That is also why 'cli' rewrites to what 'diagram' needs: it installs the
           # 'diagram' and 'terminal' dependencies, and only the first of them has compiled code.
+          "pytooling.sphinx": {
+            "reports":           "python-jsonschema:p python-lxml:p python-pyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p python-types-pyyaml:p",
+          },
         }
 
         regExp = compile(r"(?P<PackageName>[\w_\-\.]+)(?:\[(?P<SubPackages>(?:\w+)(?:\s*,\s*\w+)*)\])?(?:\s*(?P<Comperator>[<>~=]+)\s*)(?P<Version>\d+(?:\.\d+)*)(?:-(?P<VersionExtension>\w+))?")
