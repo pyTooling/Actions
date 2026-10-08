@@ -41,13 +41,16 @@ Configuration options for :term:`pytest` should be given via section ``[tool.pyt
       :ref:`JOBTMPL/ApplicationTesting/Input/ubuntu_before_script`.
    5. Download the Python package artifact containing the wheel (:ref:`JOBTMPL/ApplicationTesting/Input/wheel`).
    6. Install the wheel using :term:`pip`.
-   7. Run the application tests using :term:`pytest` (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_directory`,
+   7. Download further artifacts the tests read, if requested
+      (:ref:`JOBTMPL/ApplicationTesting/Input/download_artifacts`,
+      :ref:`JOBTMPL/ApplicationTesting/Input/artifacts_directory`).
+   8. Run the application tests using :term:`pytest` (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_directory`,
       :ref:`JOBTMPL/ApplicationTesting/Input/tests_directory`,
       :ref:`JOBTMPL/ApplicationTesting/Input/root_directory`), in parallel if :file:`pytest-xdist` is installed
       (:ref:`JOBTMPL/ApplicationTesting/Input/parallel`). The environment variable ``GITHUB_TOKEN`` holds the job's
       token, so a program reading GitHub's REST API authenticates and isn't limited to 60 requests per hour per IP
       address.
-   8. Upload the test report summary as an artifact (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_xml_artifact`,
+   9. Upload the test report summary as an artifact (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_xml_artifact`,
       :ref:`JOBTMPL/ApplicationTesting/Input/apptest_report_xml`).
 
    .. note::
@@ -136,6 +139,10 @@ Parameter Summary
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/ApplicationTesting/Input/wheel`                     | no       | string        | ``''``                                                                                                                       |
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/ApplicationTesting/Input/download_artifacts`        | no       | string        | ``''``                                                                                                                       |
++-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
+| :ref:`JOBTMPL/ApplicationTesting/Input/artifacts_directory`       | no       | string        | ``'artifacts'``                                                                                                              |
++-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/ApplicationTesting/Input/apt`                       | no       | string        | ``''``                                                                                                                       |
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/ApplicationTesting/Input/brew`                      | no       | string        | ``''``                                                                                                                       |
@@ -220,6 +227,32 @@ wheel
 :Description:     Name of the artifact containing the wheel package to install and test. |br|
                   Produced by :ref:`JOBTMPL/Package`. If empty, no package is downloaded and the tests run against
                   whatever is installed in the environment.
+
+.. _JOBTMPL/ApplicationTesting/Input/download_artifacts:
+
+download_artifacts
+==================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``''``
+:Possible Values: A glob pattern of artifact names, e.g. ``'Example-*'``. An empty string disables the download.
+:Description:     Artifacts to download before the application tests run, e.g. the reports example jobs wrote, which the
+                  tests read with the installed package. Each artifact is extracted into a subdirectory of
+                  :ref:`JOBTMPL/ApplicationTesting/Input/artifacts_directory` named after the artifact. |br|
+                  The jobs uploading them must be listed in the calling job's ``needs``.
+
+.. _JOBTMPL/ApplicationTesting/Input/artifacts_directory:
+
+artifacts_directory
+===================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'artifacts'``
+:Possible Values: Any valid directory path, relative to the repository's root.
+:Description:     Directory the artifacts of :ref:`JOBTMPL/ApplicationTesting/Input/download_artifacts` are downloaded
+                  into.
 
 .. _JOBTMPL/ApplicationTesting/Input/apt:
 
