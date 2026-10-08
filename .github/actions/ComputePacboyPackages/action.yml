@@ -101,12 +101,12 @@ runs:
           "pyedaa.ipxact":       "python-lxml:p",
           "pyedaa.osvvm":        "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-types-pyyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           "pyedaa.outputfilter": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-          "pyedaa.reports":      "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
+          "pyedaa.reports":      "python-jsonschema:p python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
           "pyedaa.toolsetup":    "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           "pyedaa.ucis":         "python-lxml:p",
           "pyedaa.workflow":     "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           "pyversioning":        "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-          "sphinx_reports":      "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-types-pyyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "sphinx_reports":      "python-coverage:p python-jsonschema:p python-lxml:p python-markupsafe:p python-pyaml:p python-types-pyyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
         }
         subPackages = {
           "pyedaa.projectmodel": {
