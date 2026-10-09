@@ -4,62 +4,12 @@
 .. include:: <isonum.txt>
 .. include:: <mmlalias.txt>
 
-.. # define a hard line break for HTML
-.. |br| raw:: html
-
-   <br />
-
-.. # define horizontal line for HTML
-.. |hr| raw:: html
-
-   <hr />
-
-.. # define additional CSS based styles and ReST roles for HTML
-.. raw:: html
-
-   <style type="text/css">
-     span.bolditalic {font-weight: bold; font-style: italic; }
-     span.underline {text-decoration: underline; }
-     span.strike {text-decoration: line-through; }
-     span.xlarge {font-size: x-large; }
-     span.colorred {color: #CC0000; }
-     span.colorgreen {color: #009933; }
-     span.colorblue {color: #0066FF; }
-     span.colorpurple {color: #9900CC; }
-   </style>
-
-.. role:: bolditalic
-   :class: bolditalic
-
-.. role:: underline
-   :class: underline
-
-.. role:: strike
-   :class: strike
-
-.. role:: xlarge
-   :class: xlarge
-
-.. role:: red
-   :class: colorred
-.. role:: green
-   :class: colorgreen
-.. role:: blue
-   :class: colorblue
-.. role:: purple
-   :class: colorpurple
-
-.. role:: deletion
-   :class: colorred strike
-.. role:: addition
-   :class: colorgreen
+.. # |degree|, |br| and |hr|, the style roles and :pycode: are registered by the
+   # 'pyTooling.Sphinx' extension, so they are declared once for every project instead of being
+   # copied into each one's prolog.
 
 .. role:: bashcode(code)
    :language: bash
-   :class: highlight
-
-.. role:: pycode(code)
-   :language: python
    :class: highlight
 
 .. role:: jsoncode(code)
