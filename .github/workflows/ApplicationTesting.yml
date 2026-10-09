@@ -34,6 +34,16 @@ on:
         required: false
         default: ''
         type: string
+      artifacts_pattern:
+        description: 'Glob of the names of artifacts to download before the tests run, e.g. ''Example-*''.'
+        required: false
+        default: ''
+        type: string
+      artifacts_directory:
+        description: 'Directory the artifacts are downloaded into, each into a subdirectory named after the artifact.'
+        required: false
+        default: 'artifacts'
+        type: string
       apt:
         description: 'Ubuntu dependencies to be installed through apt.'
         required: false
@@ -250,6 +260,13 @@ jobs:
         if: ( matrix.system == 'windows' || matrix.system == 'windows-arm' )
         run: |
           python -m pip install -v --disable-pip-version-check (Get-Item .\install\*.whl).FullName
+
+      - name: 📥 Download artifacts '${{ inputs.artifacts_pattern }}'
+        if: inputs.artifacts_pattern != ''
+        uses: pyTooling/download-artifact@v8
+        with:
+          pattern: ${{ inputs.artifacts_pattern }}
+          path: ${{ inputs.artifacts_directory }}
 
 # Run pytests
 

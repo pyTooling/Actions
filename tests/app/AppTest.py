@@ -30,6 +30,7 @@
 #
 from importlib.metadata import version as get_version
 from json               import loads as json_loads, JSONDecodeError
+from pathlib            import Path
 from re                 import IGNORECASE, MULTILINE
 from shutil             import which
 from subprocess import CompletedProcess, run as subprocess_run, TimeoutExpired
@@ -107,3 +108,14 @@ class Basic(Testcase):
 	def test_NoArguments(self) -> None:
 		result = self.RunEntrypoint()
 		self.assertExitCode(result, 0)
+
+
+class DownloadedArtifacts(TestCase):
+	"""``ApplicationTesting.yml`` downloads the artifacts ``artifacts_pattern`` names into ``artifacts/<name>/``."""
+
+	def test_ExampleReport(self) -> None:
+		directory = Path("artifacts")
+		if not directory.exists():
+			self.skipTest("No artifacts downloaded: the calling pipeline sets no 'artifacts_pattern'.")
+
+		self.assertEqual("Report of an example job.\n", (directory / "Example-Report" / "Example.txt").read_text())
