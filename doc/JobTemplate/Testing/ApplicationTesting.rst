@@ -42,7 +42,7 @@ Configuration options for :term:`pytest` should be given via section ``[tool.pyt
    5. Download the Python package artifact containing the wheel (:ref:`JOBTMPL/ApplicationTesting/Input/wheel`).
    6. Install the wheel using :term:`pip`.
    7. Download further artifacts the tests read, if requested
-      (:ref:`JOBTMPL/ApplicationTesting/Input/download_artifacts`,
+      (:ref:`JOBTMPL/ApplicationTesting/Input/artifacts_pattern`,
       :ref:`JOBTMPL/ApplicationTesting/Input/artifacts_directory`).
    8. Run the application tests using :term:`pytest` (:ref:`JOBTMPL/ApplicationTesting/Input/apptest_directory`,
       :ref:`JOBTMPL/ApplicationTesting/Input/tests_directory`,
@@ -139,7 +139,7 @@ Parameter Summary
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/ApplicationTesting/Input/wheel`                     | no       | string        | ``''``                                                                                                                       |
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/ApplicationTesting/Input/download_artifacts`        | no       | string        | ``''``                                                                                                                       |
+| :ref:`JOBTMPL/ApplicationTesting/Input/artifacts_pattern`         | no       | string        | ``''``                                                                                                                       |
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/ApplicationTesting/Input/artifacts_directory`       | no       | string        | ``'artifacts'``                                                                                                              |
 +-------------------------------------------------------------------+----------+---------------+------------------------------------------------------------------------------------------------------------------------------+
@@ -228,10 +228,10 @@ wheel
                   Produced by :ref:`JOBTMPL/Package`. If empty, no package is downloaded and the tests run against
                   whatever is installed in the environment.
 
-.. _JOBTMPL/ApplicationTesting/Input/download_artifacts:
+.. _JOBTMPL/ApplicationTesting/Input/artifacts_pattern:
 
-download_artifacts
-==================
+artifacts_pattern
+=================
 
 :Type:            string
 :Required:        no
@@ -251,7 +251,7 @@ artifacts_directory
 :Required:        no
 :Default Value:   ``'artifacts'``
 :Possible Values: Any valid directory path, relative to the repository's root.
-:Description:     Directory the artifacts of :ref:`JOBTMPL/ApplicationTesting/Input/download_artifacts` are downloaded
+:Description:     Directory the artifacts of :ref:`JOBTMPL/ApplicationTesting/Input/artifacts_pattern` are downloaded
                   into.
 
 .. _JOBTMPL/ApplicationTesting/Input/apt:

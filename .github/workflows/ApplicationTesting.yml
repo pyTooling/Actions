@@ -34,7 +34,7 @@ on:
         required: false
         default: ''
         type: string
-      download_artifacts:
+      artifacts_pattern:
         description: 'Glob of the names of artifacts to download before the tests run, e.g. ''Example-*''.'
         required: false
         default: ''
@@ -261,11 +261,11 @@ jobs:
         run: |
           python -m pip install -v --disable-pip-version-check (Get-Item .\install\*.whl).FullName
 
-      - name: 📥 Download artifacts '${{ inputs.download_artifacts }}'
-        if: inputs.download_artifacts != ''
+      - name: 📥 Download artifacts '${{ inputs.artifacts_pattern }}'
+        if: inputs.artifacts_pattern != ''
         uses: pyTooling/download-artifact@v8
         with:
-          pattern: ${{ inputs.download_artifacts }}
+          pattern: ${{ inputs.artifacts_pattern }}
           path: ${{ inputs.artifacts_directory }}
 
 # Run pytests

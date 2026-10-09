@@ -111,11 +111,11 @@ class Basic(Testcase):
 
 
 class DownloadedArtifacts(TestCase):
-	"""``ApplicationTesting.yml`` downloads the artifacts ``download_artifacts`` names into ``artifacts/<name>/``."""
+	"""``ApplicationTesting.yml`` downloads the artifacts ``artifacts_pattern`` names into ``artifacts/<name>/``."""
 
 	def test_ExampleReport(self) -> None:
 		directory = Path("artifacts")
 		if not directory.exists():
-			self.skipTest("No artifacts downloaded: the calling pipeline sets no 'download_artifacts'.")
+			self.skipTest("No artifacts downloaded: the calling pipeline sets no 'artifacts_pattern'.")
 
 		self.assertEqual("Report of an example job.\n", (directory / "Example-Report" / "Example.txt").read_text())
