@@ -386,31 +386,38 @@ version ``@r8``. It only requires the `package_name` parameter to run a full pip
             .. tab-item:: Simple Package
                :sync: Simple
 
-               .. code-block::
+               .. tree::
+                  :root-icon: 📂
+                  :node-icon: 📂
+                  :leaf-icon: 🐍
+                  :icons:     * 📦
 
-                  📂ProjectRoot/
-                    📂myFramework/
-
-                      📦SubPackage/
-                        🐍__init__.py
-                        🐍SubModuleA.py
-                      🐍__init__.py
-                      🐍ModuleB.py
+                  - :file:`ProjectRoot/`
+                    - :file:`myFramework/`
+                      * :file:`SubPackage/`
+                        - :file:`__init__.py`
+                        - :file:`SubModuleA.py`
+                      - :file:`__init__.py`
+                      - :file:`ModuleB.py`
 
 
             .. tab-item:: Namespace Package
                :sync: Namespace
 
-               .. code-block::
+               .. tree::
+                  :root-icon: 📂
+                  :node-icon: 📂
+                  :leaf-icon: 🐍
+                  :icons:     * 📦
 
-                  📂ProjectRoot/
-                    📂myFramework/
-                      📂Extension/
-                        📦SubPackage/
-                          🐍__init__.py
-                          🐍SubModuleA.py
-                        🐍__init__.py
-                        🐍ModuleB.py
+                  - :file:`ProjectRoot/`
+                    - :file:`myFramework/`
+                      - :file:`Extension/`
+                        * :file:`SubPackage/`
+                          - :file:`__init__.py`
+                          - :file:`SubModuleA.py`
+                        - :file:`__init__.py`
+                        - :file:`ModuleB.py`
 
 
 .. _JOBTMPL/CompletePipeline/Parameters:
@@ -549,16 +556,20 @@ package_namespace
 
                         .. rubric:: Example Directory Structure
 
-                        .. code-block::
+                        .. tree::
+                           :root-icon: 📂
+                           :node-icon: 📂
+                           :leaf-icon: 🐍
+                           :icons:     * 📦
 
-                           📂ProjectRoot/
-                             📂myFramework/
-                               📂Extension/
-                                 📦SubPackage/
-                                   🐍__init__.py
-                                   🐍SubModuleA.py
-                                 🐍__init__.py
-                                 🐍ModuleB.py
+                           - :file:`ProjectRoot/`
+                             - :file:`myFramework/`
+                               - :file:`Extension/`
+                                 * :file:`SubPackage/`
+                                   - :file:`__init__.py`
+                                   - :file:`SubModuleA.py`
+                                 - :file:`__init__.py`
+                                 - :file:`ModuleB.py`
 
 
 .. _JOBTMPL/CompletePipeline/Input/package_name:
@@ -596,15 +607,19 @@ package_name
 
                         .. rubric:: Example Directory Structure
 
-                        .. code-block::
+                        .. tree::
+                           :root-icon: 📂
+                           :node-icon: 📂
+                           :leaf-icon: 🐍
+                           :icons:     * 📦
 
-                           📂ProjectRoot/
-                             📂myFramework/
-                               📦SubPackage/
-                                 🐍__init__.py
-                                 🐍SubModuleA.py
-                               🐍__init__.py
-                               🐍ModuleB.py
+                           - :file:`ProjectRoot/`
+                             - :file:`myFramework/`
+                               * :file:`SubPackage/`
+                                 - :file:`__init__.py`
+                                 - :file:`SubModuleA.py`
+                               - :file:`__init__.py`
+                               - :file:`ModuleB.py`
 
 
 .. _JOBTMPL/CompletePipeline/Input/version_file:

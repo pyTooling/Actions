@@ -472,15 +472,19 @@ ucrt64_before_script
 
          .. card:: Directory Structure
 
-            .. code-block::
+            .. tree::
+               :root-icon: 📂
+               :node-icon: 📂
+               :leaf-icon: 🐍
+               :icons:     > 📂
 
-               <RepositoryRoot>/
-                 doc/
-                 myPackage/
-                   __init__.py
-                 tests/
-                   unit/
-                     myTests.py
+               - :file:`<RepositoryRoot>/`
+                 > :file:`doc/`
+                 - :file:`myPackage/`
+                   - :file:`__init__.py`
+                 - :file:`tests/`
+                   - :file:`unit/`
+                     - :file:`myTests.py`
 
       .. grid-item::
          :columns: 3
