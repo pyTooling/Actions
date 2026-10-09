@@ -78,34 +78,38 @@ Example Pipelines
 
          .. tab-item:: Directory Structure
 
-            .. code-block::
+            .. tree::
+               :root-icon: 📂
+               :node-icon: 📂
+               :leaf-icon: 📄
+               :icons:     + 🐍
 
-               <RepositoryRoot>/
-                 .github/
-                   workflows/
-                     Pipeline.yml
-                 dist/
-                   requirements.txt
-                 docs/
-                   conf.py
-                   index.rst
-                   requirements.txt
-                 myPackage/
-                   ModuleA.py
-                   __init__.py
-                   py.typed
-                 tests/
-                   unit/
-                     TestA.py
-                     requirements.txt
-                   requirements.txt
-                 .editorconfig
-                 .gitignore
-                 LICENSE.md
-                 pyproject.toml
-                 README.md
-                 requirements.txt
-                 setup.py
+               - :file:`<RepositoryRoot>/`
+                 - :file:`.github/`
+                   - :file:`workflows/`
+                     - :file:`Pipeline.yml`
+                 - :file:`dist/`
+                   - :file:`requirements.txt`
+                 - :file:`doc/`
+                   + :file:`conf.py`
+                   - :file:`index.rst`
+                   - :file:`requirements.txt`
+                 - :file:`myPackage/`
+                   + :file:`ModuleA.py`
+                   + :file:`__init__.py`
+                   - :file:`py.typed`
+                 - :file:`tests/`
+                   - :file:`unit/`
+                     + :file:`TestA.py`
+                     - :file:`requirements.txt`
+                   - :file:`requirements.txt`
+                 - :file:`.editorconfig`
+                 - :file:`.gitignore`
+                 - :file:`LICENSE.md`
+                 - :file:`pyproject.toml`
+                 - :file:`README.md`
+                 - :file:`requirements.txt`
+                 + :file:`setup.py`
 
          .. tab-item:: Simple Package
             :selected:

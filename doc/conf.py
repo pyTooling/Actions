@@ -142,8 +142,10 @@ latex_elements = {
 	"fontpkg":    dedent("""\
 		\\usepackage[fontfamily=libertinus]{pytooling}
 	"""),
+	# A 'tree' is a nested bullet list in LaTeX, which allows 4 levels unless 'maxlistdepth' is set.
 	"passoptionstopackages": dedent("""\
 		\\PassOptionsToPackage{verbatimvisiblespace=\\ }{sphinx}
+		\\PassOptionsToPackage{maxlistdepth=10}{sphinx}
 	"""),
 # "sphinxsetup": "verbatimvisiblespace=\\textvisiblespace"
 # "figure_align": "htbp",     # Latex figure (float) alignment

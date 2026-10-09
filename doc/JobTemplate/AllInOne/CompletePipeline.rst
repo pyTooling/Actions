@@ -110,6 +110,126 @@ It can be used for simple Python packages as well as namespace packages.
 
    .. image:: ../../_static/pyTooling-Actions-SimplePackage.png
 
+.. topic:: Workflow Hierarchy
+
+   The jobs of :file:`CompletePipeline.yml` in job order, each with the reusable workflow it calls, and the actions
+   that workflow uses: 📄 a workflow, 🧩 a composite action with the actions it uses, 🔗 a third-party action, 🐳 a
+   container image.
+
+   .. tree::
+      :root-icon:       📄
+      :node-icon:       📄
+      :leaf-icon:       📄
+      :icons:           + 🧩, > 🔗, = 🐳
+      :expanded-levels: 1
+
+      - :file:`CompletePipeline.yml`
+        - :ref:`PrepareJob.yml <JOBTMPL/PrepareJob>`                         | job ``Prepare``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+        - :ref:`ExtractConfiguration.yml <JOBTMPL/ExtractConfiguration>`     | job ``ConfigParams``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+        - :ref:`Parameters.yml <JOBTMPL/Parameters>`                         | job ``UnitTestingParams``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+        - :ref:`Parameters.yml <JOBTMPL/Parameters>`                         | job ``AppTestingParams``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+        - :ref:`Parameters.yml <JOBTMPL/Parameters>`                         | job ``InstallParams``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+        - :ref:`CheckReleaseVersion.yml <JOBTMPL/CheckReleaseVersion>`       | job ``VersionCheck``
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+        - :ref:`UnitTesting.yml <JOBTMPL/UnitTesting>`                       | job ``UnitTesting``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          + :ghsrc:`ComputeRequirements <.github/actions/ComputeRequirements>` | Compute paths to requirements files
+          + :ghsrc:`ComputePacboyPackages <.github/actions/ComputePacboyPackages>` | Compute pacman/pacboy packages
+          > :gh:`msys2/setup-msys2@v2 <msys2/setup-msys2>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+          + :gh:`pyTooling/upload-artifact@v7 <pyTooling/upload-artifact>`
+            > :gh:`actions/upload-artifact@v7 <actions/upload-artifact>`
+        - :ref:`StaticTypeCheck.yml <JOBTMPL/StaticTypeCheck>`               | job ``StaticTypeCheck``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+          + :ghsrc:`ComputeRequirements <.github/actions/ComputeRequirements>` | Compute paths to requirements files
+          + :gh:`pyTooling/upload-artifact@v7 <pyTooling/upload-artifact>`
+            > :gh:`actions/upload-artifact@v7 <actions/upload-artifact>`
+        - :ref:`CheckCodeQuality.yml <JOBTMPL/CheckCodeQuality>`             | job ``CodeQuality``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+          > :gh:`dorny/test-reporter@v3 <dorny/test-reporter>`
+        - :ref:`CheckDocumentation.yml <JOBTMPL/CheckDocumentation>`         | job ``DocCoverage``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+        - :ref:`Package.yml <JOBTMPL/Package>`                               | job ``Package``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+          + :gh:`pyTooling/upload-artifact@v7 <pyTooling/upload-artifact>`
+            > :gh:`actions/upload-artifact@v7 <actions/upload-artifact>`
+        - :ref:`InstallPackage.yml <JOBTMPL/InstallPackage>`                 | job ``Install``
+          + :gh:`pyTooling/download-artifact@v8 <pyTooling/download-artifact>`
+            > :gh:`actions/download-artifact@v8 <actions/download-artifact>`
+          > :gh:`msys2/setup-msys2@v2 <msys2/setup-msys2>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+        - :ref:`ApplicationTesting.yml <JOBTMPL/ApplicationTesting>`         | job ``AppTesting``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          + :ghsrc:`ComputeRequirements <.github/actions/ComputeRequirements>` | Compute paths to requirements files
+          + :ghsrc:`ComputePacboyPackages <.github/actions/ComputePacboyPackages>` | Compute pacman/pacboy packages
+          > :gh:`msys2/setup-msys2@v2 <msys2/setup-msys2>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+          + :gh:`pyTooling/download-artifact@v8 <pyTooling/download-artifact>`
+            > :gh:`actions/download-artifact@v8 <actions/download-artifact>`
+          + :gh:`pyTooling/upload-artifact@v7 <pyTooling/upload-artifact>`
+            > :gh:`actions/upload-artifact@v7 <actions/upload-artifact>`
+        - :ref:`PublishCoverageResults.yml <JOBTMPL/PublishCoverageResults>` | job ``PublishCoverageResults``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          + :gh:`pyTooling/download-artifact@v8 <pyTooling/download-artifact>`
+            > :gh:`actions/download-artifact@v8 <actions/download-artifact>`
+          + :gh:`pyTooling/upload-artifact@v7 <pyTooling/upload-artifact>`
+            > :gh:`actions/upload-artifact@v7 <actions/upload-artifact>`
+          > :gh:`codecov/codecov-action@v7 <codecov/codecov-action>`
+          > :gh:`codacy/codacy-coverage-reporter-action@v1 <codacy/codacy-coverage-reporter-action>`
+        - :ref:`PublishTestResults.yml <JOBTMPL/PublishTestResults>`         | job ``PublishTestResults``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          + :gh:`pyTooling/download-artifact@v8 <pyTooling/download-artifact>`
+            > :gh:`actions/download-artifact@v8 <actions/download-artifact>`
+          > :gh:`dorny/test-reporter@v3 <dorny/test-reporter>`
+          > :gh:`codecov/codecov-action@v7 <codecov/codecov-action>`
+          + :gh:`pyTooling/upload-artifact@v7 <pyTooling/upload-artifact>`
+            > :gh:`actions/upload-artifact@v7 <actions/upload-artifact>`
+        - :ref:`SphinxDocumentation.yml <JOBTMPL/SphinxDocumentation>`       | job ``Documentation``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+          + :gh:`pyTooling/download-artifact@v8 <pyTooling/download-artifact>`
+            > :gh:`actions/download-artifact@v8 <actions/download-artifact>`
+          + :gh:`pyTooling/upload-artifact@v7 <pyTooling/upload-artifact>`
+            > :gh:`actions/upload-artifact@v7 <actions/upload-artifact>`
+        - :ref:`CleanupArtifacts.yml <JOBTMPL/CleanupArtifacts>`             | job ``IntermediateCleanUp``
+          > :gh:`geekyeggo/delete-artifact@v6 <geekyeggo/delete-artifact>`
+        - :ref:`LaTeXDocumentation.yml <JOBTMPL/LaTeXDocumentation>`         | job ``PDFDocumentation``
+          = :dockerhub:`pytooling/miktex:sphinx <pytooling/miktex>` | container image
+          + :gh:`pyTooling/download-artifact@v8 <pyTooling/download-artifact>`
+            > :gh:`actions/download-artifact@v8 <actions/download-artifact>`
+          + :gh:`pyTooling/upload-artifact@v7 <pyTooling/upload-artifact>`
+            > :gh:`actions/upload-artifact@v7 <actions/upload-artifact>`
+        - :ref:`PublishToGitHubPages.yml <JOBTMPL/PublishToGitHubPages>`     | job ``PublishToGitHubPages``
+          + :gh:`pyTooling/download-artifact@v8 <pyTooling/download-artifact>`
+            > :gh:`actions/download-artifact@v8 <actions/download-artifact>`
+          > :gh:`geekyeggo/delete-artifact@v6 <geekyeggo/delete-artifact>`
+          > :gh:`actions/upload-pages-artifact@v5 <actions/upload-pages-artifact>`
+          > :gh:`actions/deploy-pages@v5 <actions/deploy-pages>`
+        - :ref:`TagReleaseCommit.yml <JOBTMPL/TagReleaseCommit>`             | job ``TriggerTaggedRelease``
+          > :gh:`actions/github-script@v9 <actions/github-script>`
+        - :ref:`PublishReleaseNotes.yml <JOBTMPL/PublishReleaseNotes>`       | job ``ReleasePage``
+          > :gh:`actions/checkout@v7 <actions/checkout>`
+        - :ref:`PublishOnPyPI.yml <JOBTMPL/PublishOnPyPI>`                   | job ``PublishOnPyPI``
+          + :gh:`pyTooling/download-artifact@v8 <pyTooling/download-artifact>`
+            > :gh:`actions/download-artifact@v8 <actions/download-artifact>`
+          > :gh:`actions/setup-python@v7 <actions/setup-python>`
+          > :gh:`geekyeggo/delete-artifact@v6 <geekyeggo/delete-artifact>`
+        - :ref:`CleanupArtifacts.yml <JOBTMPL/CleanupArtifacts>`             | job ``ArtifactCleanUp``
+          > :gh:`geekyeggo/delete-artifact@v6 <geekyeggo/delete-artifact>`
+
 .. topic:: Dependencies
 
    .. dropdown:: Expand List
@@ -386,31 +506,38 @@ version ``@r8``. It only requires the `package_name` parameter to run a full pip
             .. tab-item:: Simple Package
                :sync: Simple
 
-               .. code-block::
+               .. tree::
+                  :root-icon: 📂
+                  :node-icon: 📂
+                  :leaf-icon: 🐍
+                  :icons:     * 📦
 
-                  📂ProjectRoot/
-                    📂myFramework/
-
-                      📦SubPackage/
-                        🐍__init__.py
-                        🐍SubModuleA.py
-                      🐍__init__.py
-                      🐍ModuleB.py
+                  - :file:`ProjectRoot/`
+                    - :file:`myFramework/`
+                      * :file:`SubPackage/`
+                        - :file:`__init__.py`
+                        - :file:`SubModuleA.py`
+                      - :file:`__init__.py`
+                      - :file:`ModuleB.py`
 
 
             .. tab-item:: Namespace Package
                :sync: Namespace
 
-               .. code-block::
+               .. tree::
+                  :root-icon: 📂
+                  :node-icon: 📂
+                  :leaf-icon: 🐍
+                  :icons:     * 📦
 
-                  📂ProjectRoot/
-                    📂myFramework/
-                      📂Extension/
-                        📦SubPackage/
-                          🐍__init__.py
-                          🐍SubModuleA.py
-                        🐍__init__.py
-                        🐍ModuleB.py
+                  - :file:`ProjectRoot/`
+                    - :file:`myFramework/`
+                      - :file:`Extension/`
+                        * :file:`SubPackage/`
+                          - :file:`__init__.py`
+                          - :file:`SubModuleA.py`
+                        - :file:`__init__.py`
+                        - :file:`ModuleB.py`
 
 
 .. _JOBTMPL/CompletePipeline/Parameters:
@@ -549,16 +676,20 @@ package_namespace
 
                         .. rubric:: Example Directory Structure
 
-                        .. code-block::
+                        .. tree::
+                           :root-icon: 📂
+                           :node-icon: 📂
+                           :leaf-icon: 🐍
+                           :icons:     * 📦
 
-                           📂ProjectRoot/
-                             📂myFramework/
-                               📂Extension/
-                                 📦SubPackage/
-                                   🐍__init__.py
-                                   🐍SubModuleA.py
-                                 🐍__init__.py
-                                 🐍ModuleB.py
+                           - :file:`ProjectRoot/`
+                             - :file:`myFramework/`
+                               - :file:`Extension/`
+                                 * :file:`SubPackage/`
+                                   - :file:`__init__.py`
+                                   - :file:`SubModuleA.py`
+                                 - :file:`__init__.py`
+                                 - :file:`ModuleB.py`
 
 
 .. _JOBTMPL/CompletePipeline/Input/package_name:
@@ -596,15 +727,19 @@ package_name
 
                         .. rubric:: Example Directory Structure
 
-                        .. code-block::
+                        .. tree::
+                           :root-icon: 📂
+                           :node-icon: 📂
+                           :leaf-icon: 🐍
+                           :icons:     * 📦
 
-                           📂ProjectRoot/
-                             📂myFramework/
-                               📦SubPackage/
-                                 🐍__init__.py
-                                 🐍SubModuleA.py
-                               🐍__init__.py
-                               🐍ModuleB.py
+                           - :file:`ProjectRoot/`
+                             - :file:`myFramework/`
+                               * :file:`SubPackage/`
+                                 - :file:`__init__.py`
+                                 - :file:`SubModuleA.py`
+                               - :file:`__init__.py`
+                               - :file:`ModuleB.py`
 
 
 .. _JOBTMPL/CompletePipeline/Input/version_file:
