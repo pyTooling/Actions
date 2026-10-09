@@ -24,46 +24,46 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
       name: Example
-      python_version_list: "3.12 3.13 pypy-3.10 pypy-3.11"       # py-2, py-1, pypy-1, pypy-0
+      python_version_list: "3.13 3.14 pypy-3.11 pypy-3.12"       # py-2, py-1, pypy-1, pypy-0
 
   Params_Systems:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
       name: Example
-      system_list: "windows mingw32 mingw64"
+      system_list: "windows clang64 ucrt64"
 
   Params_Include:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
       name: Example
-      python_version_list: "3.12"                                # py-2
+      python_version_list: "3.13"                                # py-2
       system_list: "ubuntu windows macos macos-arm"
-      include_list: "ubuntu:3.13 ubuntu:3.14 ubuntu-arm:3.12"
+      include_list: "ubuntu:3.14 ubuntu:3.15 ubuntu-arm:3.13"
 
   Params_Exclude:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
       name: Example
-      python_version_list: "3.13"                                # py-1
+      python_version_list: "3.14"                                # py-1
       system_list: "ubuntu windows macos macos-arm"
-      exclude_list: "windows:3.13 windows:3.14"
+      exclude_list: "windows:3.14 windows:3.15"
 
   Params_Disable:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
       name: Example
-      python_version_list: "3.13"                                # py-1
+      python_version_list: "3.14"                                # py-1
       system_list: "ubuntu windows macos macos-arm"
-      disable_list: "windows:3.13 windows:3.14"
+      disable_list: "windows:3.14 windows:3.15"
 
   Params_All:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
       name: Example
-      python_version_list: "3.12 3.13"                           # py-2, py-1
+      python_version_list: "3.13 3.14"                           # py-2, py-1
       system_list: "ubuntu windows macos macos-arm"
-      include_list: "windows:3.10 windows:3.11 windows:3.13"
-      exclude_list: "macos:3.12 macos:3.13"
+      include_list: "windows:3.11 windows:3.12 windows:3.14"
+      exclude_list: "macos:3.13 macos:3.14"
 
   Params_SimplePackage:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
@@ -90,11 +90,11 @@ jobs:
       - name: Checking job matrix from 'Params_Default'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
-          expected-python-versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
+          expected-default-version: '3.15'
+          expected-python-versions: '["3.11", "3.12", "3.13", "3.14", "3.15"]'
           expected-systems:         '["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]'
-          expected-exclude-jobs:    '["windows-arm:3.10"]'
-          expected-include-jobs:    '["mingw64:3.14", "ucrt64:3.14"]'
+          expected-exclude-jobs:    '[]'
+          expected-include-jobs:    '["ucrt64:3.14"]'
           generated-default-version: ${{ needs.Params_Default.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_Default.outputs.python_jobs }}
 
@@ -118,11 +118,11 @@ jobs:
       - name: Checking job matrix from 'Params_PythonVersions'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
-          expected-python-versions: '["3.12", "3.13", "pypy-3.10", "pypy-3.11"]'
+          expected-default-version: '3.15'
+          expected-python-versions: '["3.13", "3.14", "pypy-3.11", "pypy-3.12"]'
           expected-systems:         '["ubuntu", "ubuntu-arm", "windows", "windows-arm", "macos", "macos-arm"]'
-          expected-exclude-jobs:    '["windows-arm:pypy-3.10", "windows-arm:pypy-3.11"]'
-          expected-include-jobs:    '["mingw64:3.14", "ucrt64:3.14"]'
+          expected-exclude-jobs:    '["windows-arm:pypy-3.11", "windows-arm:pypy-3.12"]'
+          expected-include-jobs:    '["ucrt64:3.14"]'
           generated-default-version: ${{ needs.Params_PythonVersions.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_PythonVersions.outputs.python_jobs }}
 
@@ -140,11 +140,11 @@ jobs:
       - name: Checking job matrix from 'Params_Systems'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
-          expected-python-versions: '["3.10", "3.11", "3.12", "3.13", "3.14"]'
+          expected-default-version: '3.15'
+          expected-python-versions: '["3.11", "3.12", "3.13", "3.14", "3.15"]'
           expected-systems:         '["windows"]'
           expected-exclude-jobs:    '[]'
-          expected-include-jobs:    '["mingw32:3.14", "mingw64:3.14"]'
+          expected-include-jobs:    '["clang64:3.14", "ucrt64:3.14"]'
           generated-default-version: ${{ needs.Params_Systems.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_Systems.outputs.python_jobs }}
 
@@ -162,11 +162,11 @@ jobs:
       - name: Checking job matrix from 'Params_Include'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
-          expected-python-versions: '["3.12"]'
+          expected-default-version: '3.15'
+          expected-python-versions: '["3.13"]'
           expected-systems:         '["ubuntu", "windows", "macos", "macos-arm"]'
           expected-exclude-jobs:    '[]'
-          expected-include-jobs:    '["ubuntu:3.13", "ubuntu:3.14", "ubuntu-arm:3.12"]'
+          expected-include-jobs:    '["ubuntu:3.14", "ubuntu:3.15", "ubuntu-arm:3.13"]'
           generated-default-version: ${{ needs.Params_Include.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_Include.outputs.python_jobs }}
 
@@ -184,8 +184,8 @@ jobs:
       - name: Checking job matrix from 'Params_Exclude'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
-          expected-python-versions: '["3.13"]'
+          expected-default-version: '3.15'
+          expected-python-versions: '["3.14"]'
           expected-systems:         '["ubuntu", "macos", "macos-arm"]'
           expected-exclude-jobs:    '[]'
           expected-include-jobs:    '[]'
@@ -206,10 +206,10 @@ jobs:
       - name: Checking job matrix from 'Params_Disable'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
-          expected-python-versions: '["3.13"]'
+          expected-default-version: '3.15'
+          expected-python-versions: '["3.14"]'
           expected-systems:         '["ubuntu", "windows", "macos", "macos-arm"]'
-          expected-exclude-jobs:    '["windows:3.13"]'
+          expected-exclude-jobs:    '["windows:3.14"]'
           expected-include-jobs:    '[]'
           generated-default-version: ${{ needs.Params_Disable.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_Disable.outputs.python_jobs }}
@@ -265,11 +265,11 @@ jobs:
       - name: Checking job matrix from 'Params_All'
         uses: ./.github/actions/CheckJobMatrix
         with:
-          expected-default-version: '3.14'
-          expected-python-versions: '["3.12", "3.13"]'
+          expected-default-version: '3.15'
+          expected-python-versions: '["3.13", "3.14"]'
           expected-systems:         '["ubuntu", "windows", "macos-arm"]'
           expected-exclude-jobs:    '[]'
-          expected-include-jobs:    '["windows:3.10", "windows:3.11", "windows:3.13"]'
+          expected-include-jobs:    '["windows:3.11", "windows:3.12", "windows:3.14"]'
           generated-default-version: ${{ needs.Params_All.outputs.python_version }}
           generated-jobmatrix:       ${{ needs.Params_All.outputs.python_jobs }}
 

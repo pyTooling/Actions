@@ -36,7 +36,7 @@ __author__ =            "Patrick Lehmann"
 __email__ =             "Paebbels@gmail.com"
 __copyright__ =         "2017-2026, Patrick Lehmann"
 __license__ =           "Apache License, Version 2.0"
-__version__ =           "8.5.2"
+__version__ =           "9.0.0"
 __keywords__ =          ["GitHub Actions"]
 __project_url__ =       "https://github.com/pyTooling/Actions"
 __documentation_url__ = "https://pyTooling.github.io/Actions"
@@ -100,10 +100,6 @@ class Application(Base):
 			self._value += 3
 		elif platform.IsMSYSOnWindows:
 			self._value += 11
-		elif platform.IsMinGW32OnWindows:
-			self._value += 12
-		elif platform.IsMinGW64OnWindows:
-			self._value += 13
 		elif platform.IsUCRT64OnWindows:
 			self._value += 14
 		elif platform.IsClang32OnWindows:

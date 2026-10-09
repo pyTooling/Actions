@@ -41,17 +41,17 @@ on:
       unittest_python_version:
         description: 'Python version.'
         required: false
-        default: '3.14'
+        default: '3.15'
         type: string
       unittest_python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
         required: false
-        default: '3.10 3.11 3.12 3.13 3.14'
+        default: '3.11 3.12 3.13 3.14 3.15'
         type: string
       unittest_system_list:
         description: 'Space separated list of systems to run tests on.'
         required: false
-        default: 'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'
+        default: 'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'
         type: string
       unittest_include_list:
         description: 'Space separated list of system:python items to be included into the list of test.'
@@ -61,12 +61,12 @@ on:
       unittest_exclude_list:
         description: 'Space separated list of system:python items to be excluded from the list of test.'
         required: false
-        default: 'windows-arm:3.9 windows-arm:3.10'
+        default: 'windows-arm:3.10'
         type: string
       unittest_disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
         required: false
-        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
+        default: 'windows-arm:pypy-3.11 windows-arm:pypy-3.12'
         type: string
       unittest_parallel:
         description: 'Number of pytest-xdist workers for unit tests: ''auto'', a number, or ''false'' (serial).'
@@ -81,7 +81,7 @@ on:
       apptest_python_version:
         description: 'Python version.'
         required: false
-        default: '3.14'
+        default: '3.15'
         type: string
       apptest_python_version_list:
         description: 'Space separated list of Python versions to run tests with.'
@@ -101,12 +101,12 @@ on:
       apptest_exclude_list:
         description: 'Space separated list of system:python items to be excluded from the list of test.'
         required: false
-        default: 'windows-arm:3.9 windows-arm:3.10'
+        default: 'windows-arm:3.10'
         type: string
       apptest_disable_list:
         description: 'Space separated list of system:python items to be disabled from the list of test.'
         required: false
-        default: 'windows-arm:pypy-3.10 windows-arm:pypy-3.11'
+        default: 'windows-arm:pypy-3.11 windows-arm:pypy-3.12'
         type: string
       apptest_parallel:
         description: 'Number of pytest-xdist workers for application tests: ''auto'', a number, or ''false'' (serial).'

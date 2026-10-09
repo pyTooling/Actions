@@ -19,7 +19,7 @@ It generates output parameters containing a list of artifact names and a job mat
      * architecture (x64-64, aarch64)
      * Python versions (3.9, 3.10, ..., 3.13),
      * Python implementation (CPython, PyPy), and
-     * environments (Native, MinGW64, UCRT64, ...).
+     * environments (Native, UCRT64, ...).
 
    * Provide a (default) Python version for other jobs.
 
@@ -96,7 +96,7 @@ Complex Example
       The following instantiation example creates 3 jobs from the same template, but with differing input parameters.
 
       The first ``UnitTestingParams`` job might be used to create a job matrix of unit tests. It creates the cross of
-      default systems (Windows, Ubuntu, macOS, macOS-ARM, MinGW64, UCRT64) and the given list of Python versions
+      default systems (Windows, Ubuntu, macOS, macOS-ARM, UCRT64) and the given list of Python versions
       including some mypy versions. In addition a list of excludes (marked as :deletion:`deletions`) and includes
       (marked as :addition:`additions`) is handed over resulting in the following combinations.
 
@@ -118,7 +118,7 @@ Complex Example
                package_namespace:   myFramework
                package_name:        Extension
                python_version_list: '3.9 3.10 3.11 3.12 pypy-3.10 pypy-3.11'
-               system_list:         'ubuntu windows macos macos-arm mingw64 ucrt64'
+               system_list:         'ubuntu windows macos macos-arm ucrt64'
                include_list:        'ubuntu:3.13 macos:3.13 macos-arm:3.13'
                exclude_list:        'windows:pypy-3.10 windows:pypy-3.11'
 
@@ -136,7 +136,7 @@ Complex Example
                package_namespace:   myFramework
                package_name:        Extension
                python_version_list: '3.13'
-               system_list:         'ubuntu windows macos macos-arm mingw32 mingw64 clang64 ucrt64'
+               system_list:         'ubuntu windows macos macos-arm clang64 ucrt64'
 
 +--------------------------------+----------------+-----------------+-----------------+-----------------+----------------------------+------------+-------------+-------------------------------+-------------------------------+
 | Version                        | 3.9 🔴         | 3.10 🟠         | 3.11 🟡         |    3.12 🟢      | 3.13 🟢                    | 3.14.b1 🟣 | pypy-3.9 🔴 | pypy-3.10 🟠                  | pypy-3.11 🟡                  |
@@ -150,10 +150,6 @@ Complex Example
 | Windows Server 🪟              | windows:3.9    | windows:3.10    | windows:3.11    | windows:3.12    |                            |            |             | :deletion:`windows:pypy-3.10` | :deletion:`windows:pypy-3.11` |
 +--------------------------------+----------------+-----------------+-----------------+-----------------+----------------------------+------------+-------------+-------------------------------+-------------------------------+
 | Windows Server 🪟 + MSYS 🟪    |                |                 |                 |                 |                            |            |             |                               |                               |
-+--------------------------------+----------------+-----------------+-----------------+-----------------+----------------------------+------------+-------------+-------------------------------+-------------------------------+
-| Windows Server 🪟 + MinGW32 ⬛ |                |                 |                 |                 |                            |            |             |                               |                               |
-+--------------------------------+----------------+-----------------+-----------------+-----------------+----------------------------+------------+-------------+-------------------------------+-------------------------------+
-| Windows Server 🪟 + MinGW64 🟦 |                |                 |                 | mingw64:3.12    |                            |            |             |                               |                               |
 +--------------------------------+----------------+-----------------+-----------------+-----------------+----------------------------+------------+-------------+-------------------------------+-------------------------------+
 | Windows Server 🪟 + Clang32 🟫 |                |                 |                 |                 |                            |            |             |                               |                               |
 +--------------------------------+----------------+-----------------+-----------------+-----------------+----------------------------+------------+-------------+-------------------------------+-------------------------------+
@@ -183,17 +179,17 @@ Parameter Summary
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/package_name`         | no       | string | ``''``                                                                     |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/python_version`       | no       | string | ``'3.14'``                                                                 |
+| :ref:`JOBTMPL/Parameters/Input/python_version`       | no       | string | ``'3.15'``                                                                 |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/python_version_list`  | no       | string | ``'3.10 3.11 3.12 3.13 3.14'``                                             |
+| :ref:`JOBTMPL/Parameters/Input/python_version_list`  | no       | string | ``'3.11 3.12 3.13 3.14 3.15'``                                             |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/system_list`          | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'`` |
+| :ref:`JOBTMPL/Parameters/Input/system_list`          | no       | string | ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``         |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/include_list`         | no       | string | ``''``                                                                     |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/exclude_list`         | no       | string | ``'windows-arm:3.9 windows-arm:3.10'``                                     |
+| :ref:`JOBTMPL/Parameters/Input/exclude_list`         | no       | string | ``'windows-arm:3.10'``                                                     |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/Parameters/Input/disable_list`         | no       | string | ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``                          |
+| :ref:`JOBTMPL/Parameters/Input/disable_list`         | no       | string | ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``                          |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/Parameters/Input/ubuntu_image`         | no       | string | ``'ubuntu-26.04'``                                                         |
 +------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -380,7 +376,7 @@ python_version
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.14'``
+:Default Value:   ``'3.15'``
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
                   and `actions/setup-python - configurable Python versions <https://github.com/actions/setup-python>`__.
@@ -396,7 +392,7 @@ python_version_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.10 3.11 3.12 3.13 3.14'``
+:Default Value:   ``'3.11 3.12 3.13 3.14 3.15'``
 :Possible Values: A space separated list of valid Python versions conforming to the pattern ``<major>.<minor>`` or
                   ``pypy-<major>.<minor>``. |br|
                   See `actions/python-versions - available Python versions <https://github.com/actions/python-versions>`__
@@ -413,7 +409,7 @@ system_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm mingw64 ucrt64'``
+:Default Value:   ``'ubuntu ubuntu-arm windows windows-arm macos macos-arm ucrt64'``
 :Possible Values: A space separated list of system names.
 :Description:     The list of space-separated systems used for application testing.
 
@@ -449,7 +445,7 @@ exclude_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'windows-arm:3.9 windows-arm:3.10'``
+:Default Value:   ``'windows-arm:3.10'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be excluded from the list of test
                   variants.
@@ -471,7 +467,7 @@ disable_list
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'windows-arm:pypy-3.10 windows-arm:pypy-3.11'``
+:Default Value:   ``'windows-arm:pypy-3.11 windows-arm:pypy-3.12'``
 :Possible Values: A space separated list of ``<system>:<python_version>`` tuples.
 :Description:     List of space-separated ``<system>:<python_version>`` tuples to be temporarily disabled from the list
                   of test variants. |br|
@@ -611,7 +607,7 @@ python_version
 ==============
 
 :Type:            string
-:Default Value:   ``'3.14'``
+:Default Value:   ``'3.15'``
 :Possible Values: Any valid Python version conforming to the pattern ``<major>.<minor>`` or ``pypy-<major>.<minor>``.
 :Description:     Returns
 
@@ -806,7 +802,6 @@ python_jobs
                        {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-15",     "runtime": "native",  "shell": "bash",      "pyicon": "🟡", "python": "3.11", "envname": "macOS (aarch64)"                 },
                        {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-15",     "runtime": "native",  "shell": "bash",      "pyicon": "🟢", "python": "3.12", "envname": "macOS (aarch64)"                 },
                        {"sysicon": "🍏",  "system": "macos-arm", "runs-on": "macos-15",     "runtime": "native",  "shell": "bash",      "pyicon": "🟢", "python": "3.13", "envname": "macOS (aarch64)"                 },
-                       {"sysicon": "🪟🟦", "system": "msys2",    "runs-on": "windows-2025", "runtime": "MINGW64", "shell": "msys2 {0}", "pyicon": "🟢", "python": "3.12", "envname": "Windows+MSYS2 (x86-64) - MinGW64"},
                        {"sysicon": "🪟🟨", "system": "msys2",    "runs-on": "windows-2025", "runtime": "UCRT64",  "shell": "msys2 {0}", "pyicon": "🟢", "python": "3.12", "envname": "Windows+MSYS2 (x86-64) - UCRT64" }
                      ]
 

@@ -32,7 +32,7 @@ on:
       python_version:
         description: 'Python version.'
         required: false
-        default: '3.14'
+        default: '3.15'
         type: string
       version:
         description: 'Version to be released, e.g. v1.2.3.'

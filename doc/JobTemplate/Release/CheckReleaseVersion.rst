@@ -104,7 +104,7 @@ Parameter Summary
 +===============================================================+==========+========+========================+
 | :ref:`JOBTMPL/CheckReleaseVersion/Input/ubuntu_image`         | no       | string | ``'ubuntu-26.04'``     |
 +---------------------------------------------------------------+----------+--------+------------------------+
-| :ref:`JOBTMPL/CheckReleaseVersion/Input/python_version`       | no       | string | ``'3.14'``             |
+| :ref:`JOBTMPL/CheckReleaseVersion/Input/python_version`       | no       | string | ``'3.15'``             |
 +---------------------------------------------------------------+----------+--------+------------------------+
 | :ref:`JOBTMPL/CheckReleaseVersion/Input/version`              | yes      | string | — — — —                |
 +---------------------------------------------------------------+----------+--------+------------------------+
@@ -151,7 +151,7 @@ python_version
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.14'``
+:Default Value:   ``'3.15'``
 :Possible Values: Any Python version provided by :gh:`actions/setup-python`.
 :Description:     Python version used to compare the versions.
 
