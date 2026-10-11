@@ -113,8 +113,11 @@ It can be used for simple Python packages as well as namespace packages.
 .. topic:: Workflow Hierarchy
 
    The jobs of :file:`CompletePipeline.yml` in job order, each with the reusable workflow it calls, and the actions
-   that workflow uses: 📄 a workflow, 🧩 a composite action with the actions it uses, 🔗 a third-party action, 🐳 a
-   container image.
+   that workflow uses.
+
+   .. only:: html
+
+      📄 a workflow, 🧩 a composite action with the actions it uses, 🔗 a third-party action, 🐳 a container image.
 
    .. tree::
       :root-icon:       📄
