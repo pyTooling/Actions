@@ -118,4 +118,5 @@ class DownloadedArtifacts(TestCase):
 		if not directory.exists():
 			self.skipTest("No artifacts downloaded: the calling pipeline sets no 'artifacts_pattern'.")
 
-		self.assertEqual("Report of an example job.\n", (directory / "Example-Report" / "Example.txt").read_text())
+		report = directory / "Example-Report" / "report" / "Example.txt"
+		self.assertEqual("Report of an example job.\n", report.read_text())
