@@ -241,7 +241,7 @@ jobs:
           ANSI_NOCOLOR=$'\x1b[0m'
 
           # A workflow, action or badge on the version branch has to reference *that* branch. Only self-references
-          # are rewritten - a reference to another repository ('pyTooling/Actions@r8', 'actions/checkout@v7') is a
+          # are rewritten - a reference to another repository ('pyTooling/Actions@r9', 'actions/checkout@v7') is a
           # separate decision and is left alone.
           repoPattern="${{ github.repository }}"
           repoPattern="${repoPattern//./\\.}"
