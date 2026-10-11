@@ -67,18 +67,6 @@ class PlatformTesting(TestCase):
 
 		self.assertEqual(11, app.Value)
 
-	@mark.skipif(not CurrentPlatform.IsMinGW32OnWindows, reason="Skipped, if current platform isn't MinGW32 on Windows.")
-	def test_ApplicationOnMinGW32OnWindows(self) -> None:
-		app = Application()
-
-		self.assertEqual(12, app.Value)
-
-	@mark.skipif(not CurrentPlatform.IsMinGW64OnWindows, reason="Skipped, if current platform isn't MinGW64 on Windows.")
-	def test_ApplicationOnMinGW64OnWindows(self) -> None:
-		app = Application()
-
-		self.assertEqual(13, app.Value)
-
 	@mark.skipif(not CurrentPlatform.IsUCRT64OnWindows, reason="Skipped, if current platform isn't UCRT64 on Windows.")
 	def test_ApplicationOnURTC64OnWindows(self) -> None:
 		app = Application()

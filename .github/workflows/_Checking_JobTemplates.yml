@@ -16,10 +16,10 @@ concurrency:
 
 jobs:
   Prepare:
-    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r8
+    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r9
 
   PagesConditions:
-    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r8
+    uses: pyTooling/Actions/.github/workflows/PrepareJob.yml@r9
     with:
       publish_pages_on: |
         # a comment line and an empty line
@@ -50,33 +50,33 @@ jobs:
           fi
 
   ConfigParams:
-    uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r8
+    uses: pyTooling/Actions/.github/workflows/ExtractConfiguration.yml@r9
 
   UnitTestingParams:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r9
     with:
       package_name:        'myPackage'
-      python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11'
-      disable_list:        'windows-arm:pypy-3.11'
+      python_version_list: '3.11 3.12 3.13 3.14 3.15 pypy-3.11 pypy-3.12'
+      disable_list:        'windows-arm:pypy-3.11 windows-arm:pypy-3.12'
       documentation_steps: 'all'
 
   PlatformTestingParams:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r9
     with:
       package_name:        'myPackage'
       name:                'Platform'
       python_version_list: ''
-      system_list:         'ubuntu ubuntu-arm windows windows-arm macos mingw64 clang64 ucrt64'
+      system_list:         'ubuntu ubuntu-arm windows windows-arm macos clang64 ucrt64'
       documentation_steps: 'none'
 
   AppTestingParams:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r9
     with:
       package_name:        'myPackage'
       python_version_list: ''                # just the default Python version, but on all systems
 
   InstallParams:
-    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r8
+    uses: pyTooling/Actions/.github/workflows/Parameters.yml@r9
     with:
       package_name:        'myPackage'
       python_version:      ${{ needs.UnitTestingParams.outputs.python_version }}
@@ -84,7 +84,7 @@ jobs:
       documentation_steps: ''
 
   UnitTesting:
-    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r8
+    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r9
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -102,7 +102,7 @@ jobs:
       coverage_html_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
 
   PlatformTesting:
-    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r8
+    uses: pyTooling/Actions/.github/workflows/UnitTesting.yml@r9
     needs:
       - ConfigParams
       - PlatformTestingParams
@@ -122,7 +122,7 @@ jobs:
       coverage_html_artifact:   ${{ fromJson(needs.PlatformTestingParams.outputs.artifact_names).codecoverage_html }}
 
   StaticTypeCheck:
-    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r8
+    uses: pyTooling/Actions/.github/workflows/StaticTypeCheck.yml@r9
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -132,7 +132,7 @@ jobs:
       html_artifact:  ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   CodeQuality:
-    uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@r8
+    uses: pyTooling/Actions/.github/workflows/CheckCodeQuality.yml@r9
     needs:
       - UnitTestingParams
       - PublishTestResults  # artificial dependency to delay start when pipeline has free job resources
@@ -144,7 +144,7 @@ jobs:
       artifact:          'CodeQuality'
 
   DocCoverage:
-    uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@r8
+    uses: pyTooling/Actions/.github/workflows/CheckDocumentation.yml@r9
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -155,7 +155,7 @@ jobs:
 #      fail_below: 70
 
   Package:
-    uses: pyTooling/Actions/.github/workflows/Package.yml@r8
+    uses: pyTooling/Actions/.github/workflows/Package.yml@r9
     needs:
       - UnitTestingParams
 #      - UnitTesting
@@ -165,7 +165,7 @@ jobs:
       artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
 
   Install:
-    uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@r8
+    uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@r9
     needs:
       - UnitTestingParams
       - InstallParams
@@ -175,21 +175,38 @@ jobs:
       wheel:        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
       package_name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
 
+  ExampleReport:
+    name: 📄 Example report for the application tests
+    runs-on: ubuntu-26.04
+    steps:
+      - name: 📄 Write an example report
+        run: |
+          mkdir -p report
+          printf -- '%s\n' 'Report of an example job.' > report/Example.txt
+
+      - name: 📤 Upload the example report as artifact
+        uses: pyTooling/upload-artifact@v7
+        with:
+          name: Example-Report
+          path: report/Example.txt
+
   AppTesting:
-    uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@r8
+    uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@r9
     needs:
       - ConfigParams
       - AppTestingParams
       - UnitTestingParams
       - Package
+      - ExampleReport
     with:
       jobs:                 ${{ needs.AppTestingParams.outputs.python_jobs }}
       wheel:                ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      artifacts_pattern:    'Example-*'
       apptest_report_xml:   ${{ needs.ConfigParams.outputs.unittest_report_xml }}
       apptest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).apptesting_xml }}
 
   PublishCoverageResults:
-    uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r8
+    uses: pyTooling/Actions/.github/workflows/PublishCoverageResults.yml@r9
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -208,7 +225,7 @@ jobs:
     secrets: inherit
 
   PublishTestResults:
-    uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r8
+    uses: pyTooling/Actions/.github/workflows/PublishTestResults.yml@r9
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -225,14 +242,14 @@ jobs:
     secrets: inherit
 
 #  VerifyDocs:
-#    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@r8
+#    uses: pyTooling/Actions/.github/workflows/VerifyDocs.yml@r9
 #    needs:
 #      - UnitTestingParams
 #    with:
 #      python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
 
   Documentation:
-    uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r8
+    uses: pyTooling/Actions/.github/workflows/SphinxDocumentation.yml@r9
     needs:
       - ConfigParams
       - UnitTestingParams
@@ -249,7 +266,7 @@ jobs:
       latex_artifact:         ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
 
   IntermediateCleanUp:
-    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r8
+    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r9
     needs:
       - UnitTestingParams
       - PublishCoverageResults
@@ -261,7 +278,7 @@ jobs:
         unittesting_xml:-*
 
   PDFDocumentation:
-    uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@r8
+    uses: pyTooling/Actions/.github/workflows/LaTeXDocumentation.yml@r9
     needs:
       - UnitTestingParams
       - Documentation
@@ -271,7 +288,7 @@ jobs:
       pdf_artifact:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_pdf }}
 
   PublishToGitHubPages:
-    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r8
+    uses: pyTooling/Actions/.github/workflows/PublishToGitHubPages.yml@r9
     needs:
       - UnitTestingParams
       - Documentation
@@ -284,7 +301,7 @@ jobs:
       typing:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   ReleaseCheck:
-    uses: pyTooling/Actions/.github/workflows/CheckReleaseVersion.yml@r8
+    uses: pyTooling/Actions/.github/workflows/CheckReleaseVersion.yml@r9
     with:
       version:              'v99.0.0'
       package_version:      '99.0.0'
@@ -292,7 +309,7 @@ jobs:
       pypi_package:         'pyTooling'
 
   PublishOnPyPI:
-    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r8
+    uses: pyTooling/Actions/.github/workflows/PublishOnPyPI.yml@r9
     needs:
       - UnitTestingParams
       - Package
@@ -305,7 +322,7 @@ jobs:
     secrets: inherit
 
   ArtifactCleanUp:
-    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r8
+    uses: pyTooling/Actions/.github/workflows/CleanupArtifacts.yml@r9
     needs:
       - Prepare
       - UnitTestingParams

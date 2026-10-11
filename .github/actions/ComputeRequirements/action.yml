@@ -32,7 +32,7 @@ inputs:
     required: true
     type: string
   mingw_requirements:
-    description: "Override of 'requirements' for MSYS2 (MINGW64). If empty, 'requirements' is used on MSYS2 too."
+    description: "Override of 'requirements' for MSYS2. If empty, 'requirements' is used on MSYS2 too."
     required: false
     default: ''
     type: string
