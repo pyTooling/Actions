@@ -274,7 +274,6 @@ The accompanying documentation is licensed under :ref:`Creative Commons - Attrib
 
    Action/index
    Action/With-post-step
-   Action/Releaser
 
 .. raw:: latex
 

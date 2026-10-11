@@ -27,7 +27,7 @@ available on the environment.
            with:
              main: |
                echo '${{ github.token }}' | docker login ghcr.io -u GitHub-Actions --password-stdin
-               docker push ghcr.io/pytooling/releaser
+               docker push ghcr.io/pytooling/example
              post: docker logout ghcr.io
 
 .. seealso::
