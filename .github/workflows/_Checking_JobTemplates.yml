@@ -56,8 +56,8 @@ jobs:
     uses: pyTooling/Actions/.github/workflows/Parameters.yml@main
     with:
       package_name:        'myPackage'
-      python_version_list: '3.11 3.12 3.13 3.14 pypy-3.11'
-      disable_list:        'windows-arm:pypy-3.11'
+      python_version_list: '3.11 3.12 3.13 3.14 3.15 pypy-3.11 pypy-3.12'
+      disable_list:        'windows-arm:pypy-3.11 windows-arm:pypy-3.12'
       documentation_steps: 'all'
 
   PlatformTestingParams:
@@ -66,7 +66,7 @@ jobs:
       package_name:        'myPackage'
       name:                'Platform'
       python_version_list: ''
-      system_list:         'ubuntu ubuntu-arm windows windows-arm macos mingw64 clang64 ucrt64'
+      system_list:         'ubuntu ubuntu-arm windows windows-arm macos clang64 ucrt64'
       documentation_steps: 'none'
 
   AppTestingParams:
@@ -175,6 +175,21 @@ jobs:
       wheel:        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
       package_name: ${{ needs.UnitTestingParams.outputs.package_fullname }}
 
+  ExampleReport:
+    name: 📄 Example report for the application tests
+    runs-on: ubuntu-26.04
+    steps:
+      - name: 📄 Write an example report
+        run: |
+          mkdir -p report
+          printf -- '%s\n' 'Report of an example job.' > report/Example.txt
+
+      - name: 📤 Upload the example report as artifact
+        uses: pyTooling/upload-artifact@v7
+        with:
+          name: Example-Report
+          path: report/Example.txt
+
   AppTesting:
     uses: pyTooling/Actions/.github/workflows/ApplicationTesting.yml@main
     needs:
@@ -182,9 +197,11 @@ jobs:
       - AppTestingParams
       - UnitTestingParams
       - Package
+      - ExampleReport
     with:
       jobs:                 ${{ needs.AppTestingParams.outputs.python_jobs }}
       wheel:                ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      artifacts_pattern:    'Example-*'
       apptest_report_xml:   ${{ needs.ConfigParams.outputs.unittest_report_xml }}
       apptest_xml_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).apptesting_xml }}
 

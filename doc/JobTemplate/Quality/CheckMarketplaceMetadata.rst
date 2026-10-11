@@ -101,7 +101,7 @@ Parameter Summary
 +=================================================================+==========+========+====================+
 | :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/ubuntu_image`      | no       | string | ``'ubuntu-26.04'`` |
 +-----------------------------------------------------------------+----------+--------+--------------------+
-| :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/python_version`    | no       | string | ``'3.14'``         |
+| :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/python_version`    | no       | string | ``'3.15'``         |
 +-----------------------------------------------------------------+----------+--------+--------------------+
 | :ref:`JOBTMPL/CheckMarketplaceMetadata/Input/action_file`       | no       | string | ``'action.yml'``   |
 +-----------------------------------------------------------------+----------+--------+--------------------+
@@ -142,7 +142,7 @@ python_version
 
 :Type:            string
 :Required:        no
-:Default Value:   ``'3.14'``
+:Default Value:   ``'3.15'``
 :Possible Values: Any Python version supported by :gh:`actions/setup-python`.
 :Description:     Python version used to read and check the metadata file.
 

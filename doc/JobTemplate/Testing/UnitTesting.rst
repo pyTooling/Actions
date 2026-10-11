@@ -165,8 +165,6 @@ Parameter Summary
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/UnitTesting/Input/windows_arm_before_script` | no       | string | ``''``                                                                                                                           |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
-| :ref:`JOBTMPL/UnitTesting/Input/mingw64_before_script`     | no       | string | ``''``                                                                                                                           |
-+------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/UnitTesting/Input/ucrt64_before_script`      | no       | string | ``''``                                                                                                                           |
 +------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------------------------------------------------------------+
 | :ref:`JOBTMPL/UnitTesting/Input/root_directory`            | no       | string | ``'.'``                                                                                                                          |
@@ -282,7 +280,7 @@ pacboy
                   Packages are specified as a space separated list like ``'python-lxml:p python-numpy:p'``.
 :Description:     Additional MSYS2 system dependencies to be installed through *pacboy* (*pacman*). |br|
                   Usually, Python packages start with ``python-``. The suffix ``:p`` ensures pacboy figures out the
-                  correct package repository prefix for MinGW64, UCRT64, ...
+                  correct package repository prefix for UCRT64, Clang64, ...
 
                   .. note::
 
@@ -366,7 +364,7 @@ mingw_requirements
 :Possible Values: Any valid list of parameters for ``pip install``. |br|
                   Either a requirements file can be referenced using ``'-r path/to/requirements.txt'``, or a list of
                   packages can be specified using a space separated list like ``'coverage pytest'``.
-:Description:     Override Python dependencies to be installed through *pip* in MSYS2 (MinGW64/UCRT64) only. |br|
+:Description:     Override Python dependencies to be installed through *pip* in MSYS2 only. |br|
                   The value is resolved and its existence checked exactly like
                   :ref:`JOBTMPL/UnitTesting/Input/requirements`. |br|
                   If left empty, :ref:`JOBTMPL/UnitTesting/Input/requirements` is installed on MSYS2 as well.
@@ -434,19 +432,6 @@ windows_arm_before_script
 :Possible Values: Any valid PowerShell script.
 :Description:     Scripts to execute on Windows (aarch64) before *pytest* is started.
 
-.. _JOBTMPL/UnitTesting/Input/mingw64_before_script:
-
-mingw64_before_script
-=====================
-
-:Type:            string
-:Required:        no
-:Default Value:   ``''``
-:Possible Values: Any valid *Bash* instructions as single-line or multi-line string suitable for MinGW64 on Windows.
-:Description:     These optional *Bash* instructions for MinGW64 on Windows are executed after setting up the
-                  environment and installing the platform specific dependencies and before running the unit test.
-
-
 .. _JOBTMPL/UnitTesting/Input/ucrt64_before_script:
 
 ucrt64_before_script
@@ -487,15 +472,19 @@ ucrt64_before_script
 
          .. card:: Directory Structure
 
-            .. code-block::
+            .. tree::
+               :root-icon: 📂
+               :node-icon: 📂
+               :leaf-icon: 🐍
+               :icons:     > 📂
 
-               <RepositoryRoot>/
-                 doc/
-                 myPackage/
-                   __init__.py
-                 tests/
-                   unit/
-                     myTests.py
+               - :file:`<RepositoryRoot>/`
+                 > :file:`doc/`
+                 - :file:`myPackage/`
+                   - :file:`__init__.py`
+                 - :file:`tests/`
+                   - :file:`unit/`
+                     - :file:`myTests.py`
 
       .. grid-item::
          :columns: 3

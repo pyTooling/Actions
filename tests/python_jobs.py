@@ -6,7 +6,7 @@ from typing import Iterable
 
 name = "example".strip()
 python_version = "3.12".strip()
-systems = "ubuntu windows macos-arm mingw64 ucrt64".strip()
+systems = "ubuntu windows macos-arm ucrt64".strip()
 versions = "3.8 3.9 3.10 3.11 3.12".strip()
 include_list = "".strip()
 exclude_list = "".strip()
@@ -44,7 +44,7 @@ else:
 if "3.7" in versions:
 	print("::warning title=Deprecated::Support for Python 3.7 ended in 2023.06.27.")
 if "msys2" in systems:
-	print("::warning title=Deprecated::System 'msys2' will be replaced by 'mingw64'.")
+	print("::warning title=Deprecated::System 'msys2' will be replaced by 'ucrt64'.")
 if currentAlphaVersion in versions:
 	print(f"::notice title=Experimental::Python {currentAlphaVersion} ({currentAlphaRelease}) is a pre-release.")
 for disable in disabled:
@@ -76,8 +76,6 @@ data = {
 	# Runtimes provided by MSYS2
 	"runtime": {
 		"msys": {"icon": "🪟🟪", "name": "Windows+MSYS2 (x86-64) - MSYS"},
-		"mingw32": {"icon": "🪟⬛", "name": "Windows+MSYS2 (x86-64) - MinGW32"},
-		"mingw64": {"icon": "🪟🟦", "name": "Windows+MSYS2 (x86-64) - MinGW64"},
 		"clang32": {"icon": "🪟🟫", "name": "Windows+MSYS2 (x86-64) - Clang32"},
 		"clang64": {"icon": "🪟🟧", "name": "Windows+MSYS2 (x86-64) - Clang64"},
 		"ucrt64": {"icon": "🪟🟨", "name": "Windows+MSYS2 (x86-64) - UCRT64"},

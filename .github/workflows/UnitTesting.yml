@@ -50,7 +50,7 @@ on:
         default: '-r ./requirements.txt'
         type: string
       mingw_requirements:
-        description: 'Override Python dependencies to be installed through pip on MSYS2 (MINGW64) only.'
+        description: 'Override Python dependencies to be installed through pip on MSYS2 only.'
         required: false
         default: ''
         type: string
@@ -76,11 +76,6 @@ on:
         type: string
       windows_arm_before_script:
         description: 'Scripts to execute before pytest on Windows (aarch64).'
-        required: false
-        default: ''
-        type: string
-      mingw64_before_script:
-        description: 'Scripts to execute before pytest on Windows (x64-64) within MSYS2 MinGW64.'
         required: false
         default: ''
         type: string
@@ -287,10 +282,6 @@ jobs:
       - name: 🏢 Windows (aarch64) before scripts
         if: matrix.system == 'windows-arm' && inputs.windows_arm_before_script != ''
         run: ${{ inputs.windows_arm_before_script }}
-
-      - name: 🪟🟦 Windows (x86-64) + MinGW64 before scripts
-        if: matrix.system == 'msys2' && matrix.runtime == 'MINGW64' && inputs.mingw64_before_script != ''
-        run: ${{ inputs.mingw64_before_script }}
 
       - name: 🪟🟨 Windows (x86-64) + UCRT64 before scripts
         if: matrix.system == 'msys2' && matrix.runtime == 'UCRT64' && inputs.ucrt64_before_script != ''

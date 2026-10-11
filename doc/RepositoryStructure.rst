@@ -30,32 +30,36 @@ structure.
 * Packages are build with ``build`` instead of ``setuptools``.
 * A repository overview is given in a ``README.md``.
 
-.. code-block::
+.. tree::
+   :root-icon: 📂
+   :node-icon: 📂
+   :leaf-icon: 📄
+   :icons:     > 📂, + 🐍
 
-   <Repository>/
-     .github/
-       workflows/
-         Pipeline.yml
-       dependabot.yml
-     .vscode/
-       settings.json
-     build/
-       requirements.txt
-     dist/
-       requirements.txt
-     doc/
-       conf.py
-       index.rst
-       requirements.txt
-     <package>
-       __init__.py
-     tests/
-       unit/
-       requirements.txt
-     .editorconfig
-     .gitignore
-     LICENSE.md
-     pyproject.toml
-     README.md
-     requirements.txt
-     setup.py
+   - :file:`<Repository>/`
+     - :file:`.github/`
+       - :file:`workflows/`
+         - :file:`Pipeline.yml`
+       - :file:`dependabot.yml`
+     - :file:`.vscode/`
+       - :file:`settings.json`
+     - :file:`build/`
+       - :file:`requirements.txt`
+     - :file:`dist/`
+       - :file:`requirements.txt`
+     - :file:`doc/`
+       + :file:`conf.py`
+       - :file:`index.rst`
+       - :file:`requirements.txt`
+     - :file:`<package>/`
+       + :file:`__init__.py`
+     - :file:`tests/`
+       > :file:`unit/`
+       - :file:`requirements.txt`
+     - :file:`.editorconfig`
+     - :file:`.gitignore`
+     - :file:`LICENSE.md`
+     - :file:`pyproject.toml`
+     - :file:`README.md`
+     - :file:`requirements.txt`
+     + :file:`setup.py`
