@@ -43,18 +43,21 @@ triggers a new pipeline run for that tag, a.k.a *tag pipeline* or *release pipel
 .. topic:: Features
 
    * Refuse to tag, if the tag or a release page for the version already exists.
+   * Refuse to tag, if the package has direct references, which :term:`PyPI` rejects.
    * Tag the current pipeline's commit.
    * Trigger a new pipeline run for this new tag.
 
 .. topic:: Behavior
 
-   1. Check that neither a tag nor a release page named like :ref:`JOBTMPL/TagReleaseCommit/Input/version` exists. |br|
+   1. If :ref:`JOBTMPL/TagReleaseCommit/Input/pypi_compliant` is ``'false'``, fail before anything is tagged: the
+      package has direct references, which :term:`PyPI` rejects. The *Package* job's warnings name them.
+   2. Check that neither a tag nor a release page named like :ref:`JOBTMPL/TagReleaseCommit/Input/version` exists. |br|
       Otherwise the job fails before anything is tagged.
-   2. Tag the current commit with a tag named like :ref:`JOBTMPL/TagReleaseCommit/Input/version`.
-   3. Trigger a pipeline run for the new tag (:ref:`JOBTMPL/TagReleaseCommit/Input/workflow`).
+   3. Tag the current commit with a tag named like :ref:`JOBTMPL/TagReleaseCommit/Input/version`.
+   4. Trigger a pipeline run for the new tag (:ref:`JOBTMPL/TagReleaseCommit/Input/workflow`).
 
    The job is skipped unless :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag` is ``'true'``. Tagging from a workflow does
-   not trigger a tag pipeline by itself, which is why the third step dispatches the run explicitly.
+   not trigger a tag pipeline by itself, which is why the fourth step dispatches the run explicitly.
 
    .. seealso::
 
@@ -99,13 +102,15 @@ other reason. Its outputs are used to either run a ``TriggerTaggedRelease`` job 
        uses: pyTooling/Actions/.github/workflows/TagReleaseCommit.yml@r8
        needs:
          - Prepare
+         - Package
        if: needs.Prepare.outputs.is_release_commit == 'true' && github.event_name != 'schedule'
        permissions:
          contents: write  # required for create tag
          actions:  write  # required for trigger workflow
        with:
-         version:  ${{ needs.Prepare.outputs.version }}
-         auto_tag: ${{ needs.Prepare.outputs.is_release_commit }}
+         version:        ${{ needs.Prepare.outputs.version }}
+         auto_tag:       ${{ needs.Prepare.outputs.is_release_commit }}
+         pypi_compliant: ${{ needs.Package.outputs.pypi_compliant }}
        secrets: inherit
 
      ReleasePage:
@@ -138,6 +143,8 @@ Parameter Summary
 | :ref:`JOBTMPL/TagReleaseCommit/Input/auto_tag`                      | yes      | string   | — — — —                                                           |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/TagReleaseCommit/Input/workflow`                      | no       | string   | ``'Pipeline.yml'``                                                |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/TagReleaseCommit/Input/pypi_compliant`                | no       | string   | ``'true'``                                                        |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/TagReleaseCommit/Secrets>`
@@ -209,6 +216,28 @@ workflow
                      Compared to manual tagging and pushing a tag, where a pipeline is triggered automatically, here a
                      pipeline must be trigger separately by API. Therefore the pipeline doesn't run with the name of the
                      tag, but with the name specified within the workflow YAML file.
+
+
+.. _JOBTMPL/TagReleaseCommit/Input/pypi_compliant:
+
+pypi_compliant
+==============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     The package's PyPI compliance, usually :ref:`JOBTMPL/Package/Output/pypi_compliant`. |br|
+                  ``'false'`` - refuse to tag: the package's metadata has direct references (``name @ git+...``),
+                  which :term:`PyPI` rejects. The job fails with an error before creating the tag, so no tag
+                  pipeline, release page or PyPI upload follows. |br|
+                  ``'true'`` or empty - tag as usual.
+
+                  .. hint::
+
+                     Pass ``'true'`` for a package that is never uploaded, e.g. when the release's PyPI upload is a
+                     dry run (:ref:`JOBTMPL/CompletePipeline` does so for
+                     :ref:`JOBTMPL/CompletePipeline/Input/pypi_dry_run`).
 
 
 .. _JOBTMPL/TagReleaseCommit/Secrets:

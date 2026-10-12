@@ -1,0 +1,123 @@
+# ==================================================================================================================== #
+# Authors:                                                                                                             #
+#   Patrick Lehmann                                                                                                    #
+#                                                                                                                      #
+# ==================================================================================================================== #
+# Copyright 2020-2026 The pyTooling Authors                                                                            #
+#                                                                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");                                                      #
+# you may not use this file except in compliance with the License.                                                     #
+# You may obtain a copy of the License at                                                                              #
+#                                                                                                                      #
+#   http://www.apache.org/licenses/LICENSE-2.0                                                                         #
+#                                                                                                                      #
+# Unless required by applicable law or agreed to in writing, software                                                  #
+# distributed under the License is distributed on an "AS IS" BASIS,                                                    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.                                             #
+# See the License for the specific language governing permissions and                                                  #
+# limitations under the License.                                                                                       #
+#                                                                                                                      #
+# SPDX-License-Identifier: Apache-2.0                                                                                  #
+# ==================================================================================================================== #
+name: Check PyPI compliance
+branding:
+  icon: check-circle
+  color: green
+description: Check the metadata of wheels and source distributions for direct references, which PyPI rejects.
+author: Patrick Lehmann (@Paebbels)
+
+inputs:
+  directory:
+    description: "Directory containing the packages ('*.whl', '*.tar.gz') to check."
+    required: false
+    default: 'dist'
+    type: string
+
+outputs:
+  pypi_compliant:
+    description: "'true' if no package's 'Requires-Dist' has a direct reference ('name @ git+...'), else 'false'."
+    value: ${{ steps.check.outputs.pypi_compliant }}
+
+runs:
+  using: composite
+  steps:
+    - name: 🔧 Install 'packaging'
+      shell: bash
+      run: python -m pip install --disable-pip-version-check packaging
+
+    - name: 🔎 Check packages for direct references
+      id: check
+      shell: python
+      run: |
+        from email.parser           import HeaderParser
+        from os                     import getenv
+        from pathlib                import Path
+        from re                     import compile as re_compile
+        from tarfile                import open as tarfile_open
+        from zipfile                import ZipFile
+
+        from packaging.requirements import Requirement
+
+        EXTRA_PATTERN = re_compile(r"""extra\s*==\s*["']([^"']+)["']""")
+
+        def readMetadata(path: Path) -> str:
+          """Return the core metadata of a wheel (``METADATA``) or a source distribution (``PKG-INFO``)."""
+          if path.suffix == ".whl":
+            with ZipFile(path) as wheel:
+              name = next(name for name in wheel.namelist() if name.endswith(".dist-info/METADATA"))
+              return wheel.read(name).decode("utf-8")
+
+          with tarfile_open(path) as sdist:
+            member = next(m for m in sdist.getmembers() if m.name.count("/") == 1 and m.name.endswith("/PKG-INFO"))
+            return sdist.extractfile(member).read().decode("utf-8")
+
+        directory = Path("""${{ inputs.directory }}""".strip())
+        packages = sorted((*directory.glob("*.whl"), *directory.glob("*.tar.gz")))
+        if len(packages) == 0:
+          print(f"::warning title=PyPI compliance::No packages ('*.whl', '*.tar.gz') found in '{directory}'.")
+
+        directReferences = {}
+        for package in packages:
+          print(f"Check '{package.name}' for direct references ... ", end="")
+          try:
+            metadata = readMetadata(package)
+          except Exception as ex:
+            print("❌")
+            print(f"::warning title=PyPI compliance::Can't read the metadata of '{package.name}': {ex}")
+            continue
+
+          found = 0
+          for line in HeaderParser().parsestr(metadata).get_all("Requires-Dist", []):
+            requirement = Requirement(line)
+            if requirement.url is None:
+              continue
+
+            extras = f"[{','.join(sorted(requirement.extras))}]" if requirement.extras else ""
+            entry = directReferences.setdefault(
+              f"{requirement.name}{extras} @ {requirement.url}",
+              {"extras": [], "packages": []}
+            )
+            for extra in EXTRA_PATTERN.findall(str(requirement.marker or "")):
+              if extra not in entry["extras"]:
+                entry["extras"].append(extra)
+            if package.name not in entry["packages"]:
+              entry["packages"].append(package.name)
+            found += 1
+
+          print("✅" if found == 0 else f"❌ {found}")
+
+        for reference, entry in directReferences.items():
+          where = f"extras: {', '.join(entry['extras'])}" if entry["extras"] else "a base requirement"
+          packageNames = ", ".join(entry["packages"])
+          print(
+            f"::warning title=PyPI compliance::Direct reference '{reference}' ({where}; in {packageNames}) - "
+            f"PyPI rejects a package with direct references."
+          )
+
+        pypiCompliant = "false" if len(directReferences) > 0 else "true"
+        print(f"PyPI compliant: {pypiCompliant}")
+
+        github_output = Path(getenv("GITHUB_OUTPUT"))
+        print(f"GITHUB_OUTPUT: {github_output}")
+        with github_output.open("a+", encoding="utf-8") as f:
+          f.write(f"pypi_compliant={pypiCompliant}\n")

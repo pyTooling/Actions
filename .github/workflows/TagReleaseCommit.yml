@@ -43,6 +43,11 @@ on:
         required: false
         default: 'Pipeline.yml'
         type: string
+      pypi_compliant:
+        description: "If 'false', refuse to tag: the package has direct references, which PyPI rejects."
+        required: false
+        default: 'true'
+        type: string
 
 jobs:
   AutoTag:
@@ -57,6 +62,18 @@ jobs:
       actions:  write   # required to start a new pipeline
 
     steps:
+      - name: 🔍 Check that the package is PyPI-compliant
+        if: inputs.pypi_compliant == 'false'
+        run: |
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          printf -- "${ANSI_LIGHT_RED}The package isn't PyPI-compliant.${ANSI_NOCOLOR}\n"
+          printf -- "::error title=PyPI compliance::Not tagging '%s': %s %s\n" "${{ inputs.version }}" \
+            "the package metadata has direct references, which PyPI rejects." \
+            "See the warnings of the 'Package' job."
+          exit 1
+
       - name: 🔍 Check that neither tag nor release page '${{ inputs.version }}' exists
         run: |
           set +e
