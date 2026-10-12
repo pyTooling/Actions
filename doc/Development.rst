@@ -167,8 +167,9 @@ pipeline, so a failure is read in a list of its own - and cover the relevant com
 :file:`_Checking_SimplePackage_Pipeline.yml` runs with application testing enabled, while
 :file:`_Checking_NamespacePackage_Pipeline.yml` disables it and requests ``html latex pdf``, so it combines a skipped
 job with jobs conditioned on ``documentation_steps``. :file:`_Checking_Components.yml` holds pairs of jobs, each
-verifying one component in isolation - e.g. an action against a clean and a deliberately broken input; its nightly
-release jobs run only when the workflow is started by hand.
+verifying one component in isolation - e.g. an action against a clean and a deliberately broken input.
+:file:`_Checking_Nightly.yml` verifies the nightly release pages; it runs only when started by hand, as every run
+publishes test release pages.
 
 When a new switch is added to a job template, add a combination disabling it to one of these pipelines and check the
 list of executed jobs of the resulting run, not only its conclusion.
