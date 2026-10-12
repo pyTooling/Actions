@@ -1,0 +1,133 @@
+name: Verification of Nightly Releases
+run-name: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+
+on:
+#  push:
+#    # 'update/rN' carries a version branch's rewritten references; only 'Pipeline.yml' runs there.
+#    branches-ignore:
+#      - 'update/**'
+#    tags:
+#      - '**'
+  workflow_dispatch:
+
+jobs:
+  Build:
+    name: Build something
+    runs-on: ubuntu-26.04
+
+    steps:
+      - name: 🖉 Build 1
+        run: |
+          printf -- '%s\n' "Document 1 $(date --utc '+%d.%m.%Y - %H:%M:%S')"   > document1.txt
+          printf -- '%s\n' "Analysis log $(date --utc '+%d.%m.%Y - %H:%M:%S')" > analysis.log
+          printf -- '%s\n' "Build log $(date --utc '+%d.%m.%Y - %H:%M:%S')"    > build.log
+
+      - name: 📤 Upload artifact
+        uses: pyTooling/upload-artifact@v7
+        with:
+          name: document
+          path: |
+            document1.txt
+            *.log
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: 🖉 Program
+        run: |
+          printf -- '%s\n' "Document other $(date --utc '+%d.%m.%Y - %H:%M:%S')" > document1.txt
+          printf -- '%s\n' "Document other $(date --utc '+%d.%m.%Y - %H:%M:%S')" > document2.txt
+          printf -- '%s\n' "Program $(date --utc '+%d.%m.%Y - %H:%M:%S')"        > program.py
+
+      - name: 📤 Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: other
+          path: |
+            *.txt
+            *.py
+          if-no-files-found: error
+          retention-days: 1
+
+  NightlyPage:
+    uses: ./.github/workflows/PublishReleaseNotes.yml
+    needs:
+      - Build
+    permissions:
+      contents: write
+      actions:  write
+    with:
+      can-fail: true
+      prerelease: true
+      replacements: |
+        version=4.2.0
+        tool=myTool
+        prog=program
+      tag: v4.2.0
+      title: "Nightly Test Release"
+      description: |
+        This *nightly* release contains all latest and important artifacts created by %tool%'s CI pipeline.
+
+        # %tool% %version%
+
+        * %prog%
+
+        # Attached files:
+
+        %%ASSETS%%
+      assets: |
+        document: document1.txt:   Documentation
+        document: build.log:       Logfile - %tool% - %tool%
+        other:    document2.txt:   SBOM - %version%
+        other:    %prog%.py:       Application - %tool% - %version%
+        document:!archive1.zip:    Archive 1 - zip
+        document:!archive2.tgz:    Archive 2 - tgz
+        document:!archive3.tar.gz: Archive 3 - tar.gz
+        document:!archive4.tzst:   Archive 4 - tzst
+        document:!archive5.tar.zst:Archive 5 - tar.zst
+        document:$archive6.tgz:    Archive 6 - tgz + dir
+        document:$archive7.tar.gz: Archive 7 - tar.gz + dir
+        document:$archive8.tzst:   Archive 8 - tzst + dir
+        document:$archive9.tar.zst:Archive 9 - tar.zst + dir
+    secrets: inherit
+
+  NightlyPageWithInventory:
+    uses: ./.github/workflows/PublishReleaseNotes.yml
+    needs:
+      - Build
+    permissions:
+      contents: write
+      actions:  write
+    with:
+      can-fail: true
+      replacements: |
+        version=4.2.0
+        tool=myTool
+        prog=program
+      tag: inventory
+      title: "Nightly Test Release with Inventory"
+      description: |
+        This *nightly* release contains all latest and important artifacts created by %tool%'s CI pipeline.
+
+        # %tool% %version%
+
+        * %prog%
+        * inventory.json
+      inventory-json: "inventory.json"
+      inventory-version: 4.2.5
+      inventory-categories: "kind1,kind2"
+      assets: |
+        # artifact: file:          labels:    asset title
+        document: document1.txt:   doc,html:  Documentation
+        document: build.log:       build,log: Logfile - %tool% - %tool%
+        other:    document2.txt:   build,SBOM:SBOM - %version%
+        other:    %prog%.py:       app,binary:Application - %tool% - %version%
+        document:!archive1.zip:               Archive 1 - zip
+        document:!archive2.tgz:               Archive 2 - tgz
+        document:!archive3.tar.gz:            Archive 3 - tar.gz
+        document:!archive4.tzst:              Archive 4 - tzst
+        document:!archive5.tar.zst:           Archive 5 - tar.zst
+        document:$archive6.tgz:               Archive 6 - tgz + dir
+        document:$archive7.tar.gz:            Archive 7 - tar.gz + dir
+        document:$archive8.tzst:              Archive 8 - tzst + dir
+        document:$archive9.tar.zst:           Archive 9 - tar.zst + dir
+    secrets: inherit
