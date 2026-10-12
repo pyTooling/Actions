@@ -184,7 +184,7 @@ jobs:
           fi
 
   PyPIComplianceAction:
-    name: 🔍 Check action 'CheckPyPICompliance'
+    name: 🔍 Check action 'InspectPyPICompliance'
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository to access local Action
@@ -220,13 +220,13 @@ jobs:
 
       - name: Check the clean fixture
         id: clean
-        uses: ./.github/actions/CheckPyPICompliance
+        uses: ./.github/actions/InspectPyPICompliance
         with:
           directory: fixtures/clean/dist
 
       - name: Check the dirty fixture
         id: dirty
-        uses: ./.github/actions/CheckPyPICompliance
+        uses: ./.github/actions/InspectPyPICompliance
         with:
           directory: fixtures/dirty/dist
 

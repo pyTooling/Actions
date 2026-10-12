@@ -113,9 +113,9 @@ jobs:
         if: inputs.requirements != '' && inputs.requirements != 'no-isolation'
         run: python setup.py bdist_wheel
 
-      - name: 🔎 Check packages for PyPI compliance
+      - name: 🩺 Inspect packages for PyPI compliance
         id: pypi
-        uses: pyTooling/Actions/.github/actions/CheckPyPICompliance@dev
+        uses: pyTooling/Actions/.github/actions/InspectPyPICompliance@dev
         with:
           directory: dist
 

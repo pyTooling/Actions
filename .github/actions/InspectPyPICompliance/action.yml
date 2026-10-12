@@ -19,11 +19,11 @@
 #                                                                                                                      #
 # SPDX-License-Identifier: Apache-2.0                                                                                  #
 # ==================================================================================================================== #
-name: Check PyPI compliance
+name: Inspect PyPI compliance
 branding:
   icon: check-circle
   color: green
-description: Check the metadata of wheels and source distributions for direct references, which PyPI rejects.
+description: Inspect the metadata of wheels and source distributions for direct references, which PyPI rejects.
 author: Patrick Lehmann (@Paebbels)
 
 inputs:
@@ -36,7 +36,7 @@ inputs:
 outputs:
   pypi_compliant:
     description: "'true' if no package's 'Requires-Dist' has a direct reference ('name @ git+...'), else 'false'."
-    value: ${{ steps.check.outputs.pypi_compliant }}
+    value: ${{ steps.inspect.outputs.pypi_compliant }}
 
 runs:
   using: composite
@@ -45,8 +45,8 @@ runs:
       shell: bash
       run: python -m pip install --disable-pip-version-check packaging
 
-    - name: 🔎 Check packages for direct references
-      id: check
+    - name: 🩺 Inspect packages for direct references
+      id: inspect
       shell: python
       run: |
         from email.parser           import HeaderParser
@@ -78,7 +78,7 @@ runs:
 
         directReferences = {}
         for package in packages:
-          print(f"Check '{package.name}' for direct references ... ", end="")
+          print(f"Inspect '{package.name}' for direct references ... ", end="")
           try:
             metadata = readMetadata(package)
           except Exception as ex:

@@ -164,7 +164,7 @@ It can be used for simple Python packages as well as namespace packages.
         - :ref:`Package.yml <JOBTMPL/Package>`                               | job ``Package``
           > :gh:`actions/checkout@v7 <actions/checkout>`
           > :gh:`actions/setup-python@v7 <actions/setup-python>`
-          + :ghsrc:`CheckPyPICompliance <.github/actions/CheckPyPICompliance>` | Check PyPI compliance
+          + :ghsrc:`InspectPyPICompliance <.github/actions/InspectPyPICompliance>` | Inspect PyPI compliance
           + :gh:`pyTooling/upload-artifact@v7 <pyTooling/upload-artifact>`
             > :gh:`actions/upload-artifact@v7 <actions/upload-artifact>`
         - :ref:`InstallPackage.yml <JOBTMPL/InstallPackage>`                 | job ``Install``

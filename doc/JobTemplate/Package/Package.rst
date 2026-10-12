@@ -47,7 +47,7 @@ as an artifact.
 
    * :gh:`actions/checkout`
    * :gh:`actions/setup-python`
-   * :ghsrc:`CheckPyPICompliance <.github/actions/CheckPyPICompliance>`
+   * :ghsrc:`InspectPyPICompliance <.github/actions/InspectPyPICompliance>`
 
      * :pypi:`packaging`
 
