@@ -164,6 +164,7 @@ It can be used for simple Python packages as well as namespace packages.
         - :ref:`Package.yml <JOBTMPL/Package>`                               | job ``Package``
           > :gh:`actions/checkout@v7 <actions/checkout>`
           > :gh:`actions/setup-python@v7 <actions/setup-python>`
+          + :ghsrc:`InspectPyPICompliance <.github/actions/InspectPyPICompliance>` | Inspect PyPI compliance
           + :gh:`pyTooling/upload-artifact@v7 <pyTooling/upload-artifact>`
             > :gh:`actions/upload-artifact@v7 <actions/upload-artifact>`
         - :ref:`InstallPackage.yml <JOBTMPL/InstallPackage>`                 | job ``Install``
@@ -1195,8 +1196,9 @@ pypi_dry_run
                   Forwarded to :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run`. |br|
                   Intended for a pipeline that builds a package which is never published - a fixture used to
                   exercise the job templates, or a fork that must not push to the upstream project's PyPI name. |br|
-                  ``'true'`` - check the packages and publish nothing. |br|
-                  ``'false'`` - publish the packages.
+                  ``'true'`` - check the packages and publish nothing; a package with direct references
+                  (:ref:`JOBTMPL/Package/Output/pypi_compliant`) is tagged anyway, with warnings. |br|
+                  ``'false'`` - publish the packages; a package with direct references isn't tagged.
 
 
 .. _JOBTMPL/CompletePipeline/Input/pypi_upload_url:

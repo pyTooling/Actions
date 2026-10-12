@@ -45,6 +45,7 @@ setup(
 		packageName=packageName,
 		description=f"{packageName} is a test package to verify GitHub actions for Python projects.",
 		gitHubNamespace=gitHubNamespace,
+		documentationRequirementsFile=None,
 		unittestRequirementsFile=Path("tests/unit/requirements.txt"),
 		sourceFileWithVersion=packageInformationFile,
 		dataFiles={

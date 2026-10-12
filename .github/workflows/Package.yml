@@ -45,12 +45,20 @@ on:
         required: true
         type: string
 
+    outputs:
+      pypi_compliant:
+        description: "'true' if no package's metadata has a direct reference (PyPI rejects them), else 'false'."
+        value: ${{ jobs.Package.outputs.pypi_compliant }}
+
 jobs:
   Package:
     name: 📦 Package in Source and Wheel Format
     runs-on: "ubuntu-${{ inputs.ubuntu_image_version }}"
     env:
       artifact: ${{ inputs.artifact }}
+    outputs:
+      pypi_compliant: ${{ steps.pypi.outputs.pypi_compliant }}
+
     steps:
       - name: ⏬ Checkout repository
         uses: actions/checkout@v7
@@ -104,6 +112,12 @@ jobs:
       - name: 🔨 [setuptools] Build Python package (binary distribution - wheel)
         if: inputs.requirements != '' && inputs.requirements != 'no-isolation'
         run: python setup.py bdist_wheel
+
+      - name: 🩺 Inspect packages for PyPI compliance
+        id: pypi
+        uses: pyTooling/Actions/.github/actions/InspectPyPICompliance@dev
+        with:
+          directory: dist
 
       - name: 📤 Upload wheel artifact
         uses: pyTooling/upload-artifact@v7

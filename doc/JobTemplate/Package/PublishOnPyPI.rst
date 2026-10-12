@@ -15,17 +15,20 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
 
    * Publish a Python package to :term:`PyPI` or another package registry
      (:ref:`JOBTMPL/PublishOnPyPI/Input/pypi_upload_url`).
+   * Refuse to upload a package with direct references, which :term:`PyPI` rejects.
 
 .. topic:: Behavior
 
    1. Download the package artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/artifact`).
-   2. Setup Python (:ref:`JOBTMPL/PublishOnPyPI/Input/python_version`) and install dependencies
+   2. If :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_compliant` is ``'false'``, fail before uploading - or, if
+      :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run` is enabled, only warn.
+   3. Setup Python (:ref:`JOBTMPL/PublishOnPyPI/Input/python_version`) and install dependencies
       (:ref:`JOBTMPL/PublishOnPyPI/Input/requirements`), which must provide :term:`twine`.
-   3. Publish the wheel package(s) (:file:`*.whl`) to :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_upload_url`.
-   4. Publish the source package(s) (:file:`*.tar.gz`). |br|
-      Steps 3 and 4 are replaced by a ``twine check`` of both package kinds if
+   4. Publish the wheel package(s) (:file:`*.whl`) to :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_upload_url`.
+   5. Publish the source package(s) (:file:`*.tar.gz`). |br|
+      Steps 4 and 5 are replaced by a ``twine check`` of both package kinds if
       :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run` is enabled.
-   5. Delete the artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`).
+   6. Delete the artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`).
 
 .. topic:: Preconditions
 
@@ -134,6 +137,8 @@ Parameter Summary
 +---------------------------------------------------------+----------+--------+---------------------------------------+
 | :ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`              | no       | string | ``'true'``                            |
 +---------------------------------------------------------+----------+--------+---------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_compliant`       | no       | string | ``'true'``                            |
++---------------------------------------------------------+----------+--------+---------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishOnPyPI/Secrets>`
 
@@ -234,6 +239,22 @@ cleanup
                   This job consumes the artifact, so a pipeline usually has no further use for it. |br|
                   ``'true'`` - delete the package artifact. |br|
                   ``'false'`` - keep it.
+
+
+.. _JOBTMPL/PublishOnPyPI/Input/pypi_compliant:
+
+pypi_compliant
+==============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     The package's PyPI compliance, usually :ref:`JOBTMPL/Package/Output/pypi_compliant`. |br|
+                  ``'false'`` - the package's metadata has direct references (``name @ git+...``), which
+                  :term:`PyPI` rejects with *400 Bad Request*: fail before uploading anything; with
+                  :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run` only warn. |br|
+                  ``'true'`` or empty - upload as usual.
 
 
 .. _JOBTMPL/PublishOnPyPI/Secrets:
