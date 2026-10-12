@@ -59,6 +59,11 @@ on:
         required: false
         default: 'true'
         type: string
+      pypi_compliant:
+        description: "If 'false', refuse to upload (warn on a dry run): the package has direct references."
+        required: false
+        default: 'true'
+        type: string
     secrets:
       PYPI_TOKEN:
         description: "Token for pushing releases to PyPI"
@@ -75,6 +80,24 @@ jobs:
         with:
           name: ${{ inputs.artifact }}
           path: dist
+
+      - name: 🔍 Check that the package is PyPI-compliant
+        if: inputs.pypi_compliant == 'false'
+        run: |
+          ANSI_LIGHT_RED=$'\x1b[91m'
+          ANSI_LIGHT_YELLOW=$'\x1b[93m'
+          ANSI_NOCOLOR=$'\x1b[0m'
+
+          message="the package metadata has direct references, which PyPI rejects."
+          message+=" See the warnings of the 'Package' job."
+          if [[ "${{ inputs.dry_run }}" == "true" ]]; then
+            printf -- "${ANSI_LIGHT_YELLOW}The package isn't PyPI-compliant (dry run).${ANSI_NOCOLOR}\n"
+            printf -- "::warning title=PyPI compliance::A real upload would fail: %s\n" "${message}"
+          else
+            printf -- "${ANSI_LIGHT_RED}The package isn't PyPI-compliant.${ANSI_NOCOLOR}\n"
+            printf -- "::error title=PyPI compliance::Not uploading: %s\n" "${message}"
+            exit 1
+          fi
 
       - name: 🐍 Setup Python ${{ inputs.python_version }}
         uses: actions/setup-python@v7

@@ -130,6 +130,7 @@ jobs:
             "_Checking_SimplePackage_Pipeline.yml"
             "_Checking_NamespacePackage_Pipeline.yml"
             "_Checking_AvailableRunners.yml"
+            "_Checking_Components.yml"
           )
 
           # Resolved workflows are removed from the wait: one request per interval reports every run of this commit,

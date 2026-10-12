@@ -1,0 +1,109 @@
+name: Verification of Components
+run-name: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+
+# Pairs of jobs, each verifying one component - an action or a job template - in isolation.
+on:
+  push:
+    # 'update/rN' carries a version branch's rewritten references; only 'Pipeline.yml' runs there.
+    branches-ignore:
+      - 'update/**'
+    tags:
+      - '**'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  Package:
+    uses: pyTooling/Actions/.github/workflows/Package.yml@main
+    with:
+      artifact: Components-Package
+
+  PackageCompliance:
+    name: 🔍 Check 'pypi_compliant' of Package
+    runs-on: ubuntu-26.04
+    needs:
+      - Package
+    steps:
+      - name: Check that the example package is reported as not PyPI-compliant
+        env:
+          PYPI_COMPLIANT: ${{ needs.Package.outputs.pypi_compliant }}
+        run: |
+          printf -- 'pypi_compliant: %s\n' "${PYPI_COMPLIANT}"
+          if [[ "${PYPI_COMPLIANT}" == "" ]]; then
+            printf -- "::notice title=PackageCompliance::'Package.yml@main' has no output 'pypi_compliant' yet.\n"
+          elif [[ "${PYPI_COMPLIANT}" != "true" ]]; then
+            printf -- "::error title=PackageCompliance::Expected 'true', got '%s'.\n" "${PYPI_COMPLIANT}"
+            exit 1
+          fi
+
+      - name: 🗑️ Delete the package artifact
+        uses: geekyeggo/delete-artifact@v6
+        with:
+          name: Components-Package
+
+  PyPIComplianceAction:
+    name: 🔍 Check action 'InspectPyPICompliance'
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repository to access local Action
+        uses: actions/checkout@v7
+
+      - name: 🐍 Setup Python 3.14
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.14'
+
+      - name: Build a clean and a dirty fixture package
+        run: |
+          python -m pip install --disable-pip-version-check build
+
+          writeFixture() {  # <kind> <extras_require>
+            local kind="$1" extras="$2"
+
+            mkdir -p "fixtures/${kind}"
+            printf -- '%s\n' \
+              'from setuptools import setup' \
+              '' \
+              "setup(name=\"fixture_${kind}\", version=\"1.0.0\", py_modules=[], extras_require=${extras})" \
+              > "fixtures/${kind}/setup.py"
+            if ! python -m build --outdir "fixtures/${kind}/dist" "fixtures/${kind}"; then
+              printf -- "::error title=PyPIComplianceAction::Building the %s fixture failed.\n" "${kind}"
+              exit 1
+            fi
+          }
+
+          reference='fixture_dependency @ git+https://github.com/pyTooling/Actions.git@main'
+          writeFixture "clean" '{"doc": ["sphinx"]}'
+          writeFixture "dirty" "{\"doc\": [\"sphinx\", \"${reference}\"], \"all\": [\"${reference}\"]}"
+
+      - name: Check the clean fixture
+        id: clean
+        uses: ./.github/actions/InspectPyPICompliance
+        with:
+          directory: fixtures/clean/dist
+
+      - name: Check the dirty fixture
+        id: dirty
+        uses: ./.github/actions/InspectPyPICompliance
+        with:
+          directory: fixtures/dirty/dist
+
+      - name: Check the action's verdicts
+        env:
+          CLEAN: ${{ steps.clean.outputs.pypi_compliant }}
+          DIRTY: ${{ steps.dirty.outputs.pypi_compliant }}
+        run: |
+          errors=0
+          printf -- 'clean: %s, dirty: %s\n' "${CLEAN}" "${DIRTY}"
+          if [[ "${CLEAN}" != "true" ]]; then
+            printf -- "::error title=PyPIComplianceAction::Clean fixture: expected 'true', got '%s'.\n" "${CLEAN}"
+            errors=$((errors + 1))
+          fi
+          if [[ "${DIRTY}" != "false" ]]; then
+            printf -- "::error title=PyPIComplianceAction::Dirty fixture: expected 'false', got '%s'.\n" "${DIRTY}"
+            errors=$((errors + 1))
+          fi
+          [[ ${errors} -eq 0 ]] || exit 1
