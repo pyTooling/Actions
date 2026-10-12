@@ -500,8 +500,9 @@ jobs:
       contents: write  # required for create tag
       actions:  write  # required for trigger workflow
     with:
-      version:  ${{ needs.Prepare.outputs.version }}
-      auto_tag: ${{ needs.Prepare.outputs.is_release_commit == 'true' && inputs.auto_tag == 'true' }}
+      version:        ${{ needs.Prepare.outputs.version }}
+      auto_tag:       ${{ needs.Prepare.outputs.is_release_commit == 'true' && inputs.auto_tag == 'true' }}
+      pypi_compliant: ${{ inputs.pypi_dry_run == 'true' && 'true' || needs.Package.outputs.pypi_compliant }}
     secrets: inherit
 
   ReleasePage:
@@ -549,6 +550,7 @@ jobs:
       artifact:        ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
       dry_run:         ${{ inputs.pypi_dry_run }}
       pypi_upload_url: ${{ inputs.pypi_upload_url }}
+      pypi_compliant:  ${{ needs.Package.outputs.pypi_compliant }}
       cleanup:         ${{ inputs.cleanup }}
     secrets:
       PYPI_TOKEN:      ${{ secrets.PYPI_TOKEN }}

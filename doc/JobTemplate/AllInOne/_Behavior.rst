@@ -16,7 +16,8 @@
 7. Check documentation coverage using docstr_coverage and interrogate.
 8. Check code quality: security scanning using bandit (:ref:`JOBTMPL/CompletePipeline/Input/bandit`), metrics and
    complexity using radon, linting using pylint (:ref:`JOBTMPL/CompletePipeline/Input/pylint`).
-9. Package code as source distribution and wheel.
+9. Package code as source distribution and wheel, and check their metadata for direct references (``name @ git+...``),
+   which :term:`PyPI` rejects: a warning per reference.
 10. Install the wheel on every target platform and verify the installed version.
 11. Run application tests against the installed package using pytest
     (:ref:`JOBTMPL/CompletePipeline/Input/apptest`,
@@ -33,7 +34,9 @@
     :ref:`JOBTMPL/CompletePipeline/Input/miktex_image`, :ref:`JOBTMPL/CompletePipeline/Input/miktex_update`).
 16. Publish documentation to GitHub Pages (:ref:`JOBTMPL/CompletePipeline/Input/documentation_steps`: ``pages``).
 17. Tag a release commit, which triggers a second pipeline run for the new tag
-    (:ref:`JOBTMPL/CompletePipeline/Input/auto_tag`). The tag is refused, if the tag or a release page already exists.
+    (:ref:`JOBTMPL/CompletePipeline/Input/auto_tag`). The tag is refused, if the tag or a release page already exists,
+    or if the package has direct references - unless :ref:`JOBTMPL/CompletePipeline/Input/pypi_dry_run` is
+    ``'true'``.
 18. Create a GitHub release page with text derived from the pull-request description and upload release assets.
 19. Publish wheel to PyPI.
 20. Delete the remaining artifacts (:ref:`JOBTMPL/CompletePipeline/Input/cleanup`).

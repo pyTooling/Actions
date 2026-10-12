@@ -166,7 +166,10 @@ actually exercises it. The workflows in :file:`.github/workflows/_Checking_*.yml
 pipeline, so a failure is read in a list of its own - and cover the relevant combinations:
 :file:`_Checking_SimplePackage_Pipeline.yml` runs with application testing enabled, while
 :file:`_Checking_NamespacePackage_Pipeline.yml` disables it and requests ``html latex pdf``, so it combines a skipped
-job with jobs conditioned on ``documentation_steps``.
+job with jobs conditioned on ``documentation_steps``. :file:`_Checking_Components.yml` holds pairs of jobs, each
+verifying one component in isolation - e.g. an action against a clean and a deliberately broken input.
+:file:`_Checking_Nightly.yml` verifies the nightly release pages; it runs only when started by hand, as every run
+publishes test release pages.
 
 When a new switch is added to a job template, add a combination disabling it to one of these pipelines and check the
 list of executed jobs of the resulting run, not only its conclusion.
@@ -182,7 +185,7 @@ run is short enough to read.
 
 1. A merge commit on ``main`` starts it. ``Prepare`` (:ref:`JOBTMPL/PrepareJob`) classifies the commit,
    ``References`` checks that every reference to a job template or action of this repository in
-   :file:`.github/workflows/*.yml` points to ``@main``, and ``Verifications`` waits for the runs of the five
+   :file:`.github/workflows/*.yml` points to ``@main``, and ``Verifications`` waits for the runs of the six
    :file:`_Checking_*.yml` workflows for that commit - they were started by the same push - and fails if one of them
    didn't succeed.
 2. ``TriggerTaggedRelease`` (:ref:`JOBTMPL/TagReleaseCommit`) tags a release commit, using the version from the
@@ -218,7 +221,7 @@ branches (e.g. ``claude/*``) aren't checked.
 Update Branches
 ***************
 
-A push to ``update/rN`` starts only :file:`Pipeline.yml`: the five :file:`_Checking_*.yml` workflows ignore the
+A push to ``update/rN`` starts only :file:`Pipeline.yml`: the six :file:`_Checking_*.yml` workflows ignore the
 branches ``update/**``, and ``Verifications`` is skipped there, as it would wait for their runs in vain. The run
 consists of ``Prepare`` and ``References``, which checks the rewritten references before the pull-request is merged.
 

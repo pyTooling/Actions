@@ -14,6 +14,7 @@ as an artifact.
 
    * Package source code as wheel and source distribution.
    * Support packaging using :term:`build` (recommended) or :pypi:`setuptools`.
+   * Check the packages' metadata for direct references, which :term:`PyPI` rejects.
 
 .. topic:: Behavior
 
@@ -30,7 +31,11 @@ as an artifact.
 
       Both a source distribution and a wheel are built.
 
-   4. Upload both packages in a single artifact
+   4. Check both packages' metadata (``Requires-Dist``) for direct references like
+      ``name @ git+https://...``, which :term:`PyPI` rejects. Each reference is reported as a warning naming the
+      requirement, its extras and the packages it appears in. The result is the output
+      :ref:`JOBTMPL/Package/Output/pypi_compliant`.
+   5. Upload both packages in a single artifact
       (:ref:`JOBTMPL/Package/Input/artifact`).
 
 .. topic:: Job Execution
@@ -42,6 +47,10 @@ as an artifact.
 
    * :gh:`actions/checkout`
    * :gh:`actions/setup-python`
+   * :ghsrc:`InspectPyPICompliance <.github/actions/InspectPyPICompliance>`
+
+     * :pypi:`packaging`
+
    * :gh:`pyTooling/upload-artifact`
 
      * :gh:`actions/upload-artifact`
@@ -109,7 +118,11 @@ This job template needs no secrets.
 
 .. rubric:: Goto :ref:`output parameters <JOBTMPL/Package/Outputs>`
 
-This job template has no output parameters.
++---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
+| Result Name                                                         | Type     | Description                                                       |
++=====================================================================+==========+===================================================================+
+| :ref:`JOBTMPL/Package/Output/pypi_compliant`                        | string   | ``'true'``, if no package has a direct reference.                 |
++---------------------------------------------------------------------+----------+-------------------------------------------------------------------+
 
 
 .. _JOBTMPL/Package/Inputs:
@@ -169,7 +182,19 @@ This job template needs no secrets.
 Outputs
 *******
 
-This job template has no output parameters.
+.. _JOBTMPL/Package/Output/pypi_compliant:
+
+pypi_compliant
+==============
+
+:Type:            string
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     ``'false'``, if the metadata of a built package - wheel or source distribution - has a direct
+                  reference in ``Requires-Dist`` (``name @ git+https://...``, ``name @ https://...``), which
+                  :term:`PyPI` rejects with *400 Bad Request*; else ``'true'``. Each reference is reported as a
+                  warning of the *Package* job. |br|
+                  Pass it to :ref:`JOBTMPL/TagReleaseCommit/Input/pypi_compliant` to refuse tagging such a release,
+                  and to :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_compliant` to refuse its upload.
 
 
 .. _JOBTMPL/Package/Optimizations:

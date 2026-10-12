@@ -6,10 +6,3 @@
       .. rubric:: Post-Processing
 
       * :ref:`ACTION/WithPostStep`
-
-   .. grid-item::
-      :columns: 2
-
-      .. rubric:: Deprecated
-
-      * :ref:`ACTION/Releaser`
