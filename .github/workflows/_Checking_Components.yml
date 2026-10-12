@@ -156,12 +156,11 @@ jobs:
         env:
           PYPI_COMPLIANT: ${{ needs.Package.outputs.pypi_compliant }}
         run: |
-          # 'doc/requirements.txt' names pyTooling.Sphinx by a Git URL, which ends up in the 'doc' extra.
           printf -- 'pypi_compliant: %s\n' "${PYPI_COMPLIANT}"
           if [[ "${PYPI_COMPLIANT}" == "" ]]; then
             printf -- "::notice title=PackageCompliance::'Package.yml@dev' has no output 'pypi_compliant' yet.\n"
-          elif [[ "${PYPI_COMPLIANT}" != "false" ]]; then
-            printf -- "::error title=PackageCompliance::Expected 'false', got '%s'.\n" "${PYPI_COMPLIANT}"
+          elif [[ "${PYPI_COMPLIANT}" != "true" ]]; then
+            printf -- "::error title=PackageCompliance::Expected 'true', got '%s'.\n" "${PYPI_COMPLIANT}"
             exit 1
           fi
 
