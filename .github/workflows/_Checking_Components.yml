@@ -51,10 +51,10 @@ jobs:
       - name: Checkout repository to access local Action
         uses: actions/checkout@v7
 
-      - name: 🐍 Setup Python 3.14
+      - name: 🐍 Setup Python 3.15
         uses: actions/setup-python@v7
         with:
-          python-version: '3.14'
+          python-version: '3.15'
 
       - name: Build a clean and a dirty fixture package
         run: |

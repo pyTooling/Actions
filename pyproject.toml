@@ -25,7 +25,7 @@ variable-naming-style = "camelCase"
 
 [tool.mypy]
 packages = ["myPackage", "myFramework.Extension"]
-python_version = "3.14"
+python_version = "3.15"
 strict = true
 pretty = true
 show_error_context = true

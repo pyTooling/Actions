@@ -175,7 +175,7 @@ Example Pipelines
 
                [tool.mypy]
                packages = ["myPackage"]
-               python_version = "3.14"
+               python_version = "3.15"
                strict = true
                pretty = true
                show_error_context = true
