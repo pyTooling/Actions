@@ -609,6 +609,8 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/codacy`                       | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/coverage_html`                | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/dorny`                        | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/pypi_dry_run`                 | no       | string | ``'false'``                                                                |
@@ -1045,6 +1047,22 @@ codacy
 :Description:     Publish merged code coverage results to :term:`Codacy`. |br|
                   ``'true'`` - publish; secret :ref:`JOBTMPL/CompletePipeline/Secret/CODACY_TOKEN` must be set. |br|
                   ``'false'`` - do not publish.
+
+
+.. _JOBTMPL/CompletePipeline/Input/coverage_html:
+
+coverage_html
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Generate the HTML code coverage report of :term:`Coverage.py` and publish it to :term:`GitHub Pages`
+                  below ``coverage/``. |br|
+                  ``'true'`` - generate the report, and publish it, if the documentation is published. |br|
+                  ``'false'`` - neither generate nor publish it, e.g. when the documentation renders the code coverage
+                  itself, with pages per source file below ``coverage/``, which the report would overwrite.
 
 
 .. _JOBTMPL/CompletePipeline/Input/dorny:
