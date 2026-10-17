@@ -133,6 +133,11 @@ on:
         required: false
         default: 'false'
         type: string
+      coverage_html:
+        description: 'Generate the HTML coverage report of coverage.py and publish it to GitHub Pages below coverage/.'
+        required: false
+        default: 'true'
+        type: string
       dorny:
         description: 'Publish merged unittest report via Dorny Test-Reporter.'
         required: false
@@ -371,7 +376,7 @@ jobs:
       coverage_report_json:   ${{ needs.ConfigParams.outputs.coverage_report_json }}
       coverage_report_html:   ${{ needs.ConfigParams.outputs.coverage_report_html }}
       coverage_json_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_json }}
-      coverage_html_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+      coverage_html_artifact: ${{ inputs.coverage_html == 'true' && fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html || '' }}
       codecov:                ${{ inputs.codecov }}
       codacy:                 ${{ inputs.codacy }}
     secrets:
@@ -475,7 +480,7 @@ jobs:
       }}
     with:
       doc:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
-      coverage: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
+      coverage: ${{ inputs.coverage_html == 'true' && fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html || '' }}
       typing:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
       cleanup:  ${{ inputs.cleanup }}
 

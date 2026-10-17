@@ -26,6 +26,7 @@ jobs:
       pylint:              'true'
       codecov:             'true'
       codacy:              'true'
+      coverage_html:       'false'
       dorny:               'true'
       documentation_steps: 'html latex pdf'
       auto_tag:            'false'
