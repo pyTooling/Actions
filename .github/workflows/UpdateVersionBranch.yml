@@ -63,9 +63,9 @@ on:
         default: 'update/'
       app_id:
         description: |
-          ID of a GitHub App with write access to contents, workflows and pull-requests. With 'app_private_key', the
-          job works with a token of that App instead of the workflow's own token, which can't push a change to a
-          file in '.github/workflows/'.
+          ID or Client ID of a GitHub App with write access to contents, workflows and pull-requests. With
+          'app_private_key', the job works with a token of that App instead of the workflow's own token, which can't
+          push a change to a file in '.github/workflows/'.
         type: string
         required: false
         default: ''
@@ -121,7 +121,7 @@ jobs:
         if: inputs.app_id != ''
         uses: actions/create-github-app-token@v3
         with:
-          app-id:                   ${{ inputs.app_id }}
+          client-id:                ${{ inputs.app_id }}
           private-key:              ${{ secrets.app_private_key }}
           permission-contents:      write
           permission-workflows:     write
