@@ -318,7 +318,6 @@ jobs:
       requirements:   -r dist/requirements.txt
       artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
       dry_run:        'true'   # 'myPackage' is a fixture - never publish it
-      publish_sdist:  'false'  # as pyTooling's own pipeline does
       cleanup:        'false'  # 'ArtifactCleanUp' deletes it
     secrets: inherit
 
