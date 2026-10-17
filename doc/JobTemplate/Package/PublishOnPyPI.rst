@@ -24,10 +24,13 @@ Publish a wheel (``*.whl``) packages and/or source (``*.tar.gz``) package to :te
       :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run` is enabled, only warn.
    3. Setup Python (:ref:`JOBTMPL/PublishOnPyPI/Input/python_version`) and install dependencies
       (:ref:`JOBTMPL/PublishOnPyPI/Input/requirements`), which must provide :term:`twine`.
-   4. Publish the wheel package(s) (:file:`*.whl`) to :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_upload_url`.
-   5. Publish the source package(s) (:file:`*.tar.gz`). |br|
-      Steps 4 and 5 are replaced by a ``twine check`` of both package kinds if
-      :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run` is enabled.
+   4. Publish the wheel package(s) (:file:`*.whl`) to :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_upload_url`, if
+      :ref:`JOBTMPL/PublishOnPyPI/Input/publish_wheel` is ``'true'``.
+   5. Publish the source package(s) (:file:`*.tar.gz`), if :ref:`JOBTMPL/PublishOnPyPI/Input/publish_sdist` is
+      ``'true'``. |br|
+      Steps 4 and 5 are replaced by a ``twine check`` of the selected package kinds if
+      :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run` is enabled. With neither kind selected, a warning says that nothing
+      was published.
    6. Delete the artifact (:ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`).
 
 .. topic:: Preconditions
@@ -138,6 +141,10 @@ Parameter Summary
 | :ref:`JOBTMPL/PublishOnPyPI/Input/cleanup`              | no       | string | ``'true'``                            |
 +---------------------------------------------------------+----------+--------+---------------------------------------+
 | :ref:`JOBTMPL/PublishOnPyPI/Input/pypi_compliant`       | no       | string | ``'true'``                            |
++---------------------------------------------------------+----------+--------+---------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/publish_sdist`        | no       | string | ``'true'``                            |
++---------------------------------------------------------+----------+--------+---------------------------------------+
+| :ref:`JOBTMPL/PublishOnPyPI/Input/publish_wheel`        | no       | string | ``'true'``                            |
 +---------------------------------------------------------+----------+--------+---------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/PublishOnPyPI/Secrets>`
@@ -255,6 +262,40 @@ pypi_compliant
                   :term:`PyPI` rejects with *400 Bad Request*: fail before uploading anything; with
                   :ref:`JOBTMPL/PublishOnPyPI/Input/dry_run` only warn. |br|
                   ``'true'`` or empty - upload as usual.
+
+
+.. _JOBTMPL/PublishOnPyPI/Input/publish_sdist:
+
+publish_sdist
+=============
+
+.. attention::
+
+   The default value will be changed to ``'false'`` in Actions ``@r10``.
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the source distribution (:file:`*.tar.gz`). |br|
+                  ``'true'`` - upload it; :ref:`JOBTMPL/Package/Input/package_sdist` must have built it. |br|
+                  ``'false'`` - don't upload it. A pure-Python package's wheel installs on every platform, and pip
+                  builds a wheel from a source distribution by running the package's build again - which fails if a
+                  file the build reads, e.g. a :file:`requirements.txt`, isn't part of the source distribution.
+
+
+.. _JOBTMPL/PublishOnPyPI/Input/publish_wheel:
+
+publish_wheel
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the wheel (:file:`*.whl`). |br|
+                  ``'true'`` - upload it; :ref:`JOBTMPL/Package/Input/package_wheel` must have built it. |br|
+                  ``'false'`` - don't upload it.
 
 
 .. _JOBTMPL/PublishOnPyPI/Secrets:

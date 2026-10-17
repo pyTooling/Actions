@@ -64,6 +64,16 @@ on:
         required: false
         default: 'true'
         type: string
+      publish_sdist:
+        description: "If 'true', publish the source distribution (*.tar.gz). Default changes to 'false' with @r10."
+        required: false
+        default: 'true'
+        type: string
+      publish_wheel:
+        description: "If 'true', publish the wheel (*.whl)."
+        required: false
+        default: 'true'
+        type: string
     secrets:
       PYPI_TOKEN:
         description: "Token for pushing releases to PyPI"
@@ -109,17 +119,36 @@ jobs:
 
       - name: 🔎 Check Python packages instead of publishing them
         if: inputs.dry_run == 'true'
-        run: twine check dist/*.whl dist/*.tar.gz
+        run: |
+          packages=()
+          if [[ "${{ inputs.publish_wheel }}" == "true" ]]; then
+            packages+=(dist/*.whl)
+          fi
+          if [[ "${{ inputs.publish_sdist }}" == "true" ]]; then
+            packages+=(dist/*.tar.gz)
+          fi
+
+          if [[ ${#packages[@]} -eq 0 ]]; then
+            printf -- "::warning title=PublishOnPyPI::Nothing to check: 'publish_wheel' and 'publish_sdist' are both 'false'.\n"
+          elif ! twine check "${packages[@]}"; then
+            printf -- "::error title=PublishOnPyPI::'twine check' failed for: %s\n" "${packages[*]}"
+            exit 1
+          fi
+
+      - name: ⚠ Nothing selected for publishing
+        if: inputs.dry_run != 'true' && inputs.publish_wheel != 'true' && inputs.publish_sdist != 'true'
+        run: |
+          printf -- "::warning title=PublishOnPyPI::Nothing published: 'publish_wheel' and 'publish_sdist' are both 'false'.\n"
 
       - name: ⤴ Publish Python wheel package to PyPI
-        if: inputs.dry_run != 'true'
+        if: inputs.dry_run != 'true' && inputs.publish_wheel == 'true'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: twine upload --repository-url "${{ inputs.pypi_upload_url }}" dist/*.whl
 
       - name: ⤴ Publish Python source package to PyPI
-        if: inputs.dry_run != 'true'
+        if: inputs.dry_run != 'true' && inputs.publish_sdist == 'true'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}

@@ -615,6 +615,14 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/pypi_dry_run`                 | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_sdist`                | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_wheel`                | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/publish_sdist`                | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/publish_wheel`                | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/pypi_upload_url`              | no       | string | ``'https://upload.pypi.org/legacy/'``                                      |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/cleanup`                      | no       | string | ``'true'``                                                                 |
@@ -1217,6 +1225,62 @@ pypi_dry_run
                   ``'true'`` - check the packages and publish nothing; a package with direct references
                   (:ref:`JOBTMPL/Package/Output/pypi_compliant`) is tagged anyway, with warnings. |br|
                   ``'false'`` - publish the packages; a package with direct references isn't tagged.
+
+
+.. _JOBTMPL/CompletePipeline/Input/package_sdist:
+
+package_sdist
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Build a source distribution (:file:`*.tar.gz`).
+                  Forwarded to :ref:`JOBTMPL/Package/Input/package_sdist`.
+
+
+.. _JOBTMPL/CompletePipeline/Input/package_wheel:
+
+package_wheel
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Build a wheel (:file:`*.whl`).
+                  Forwarded to :ref:`JOBTMPL/Package/Input/package_wheel`.
+
+
+.. _JOBTMPL/CompletePipeline/Input/publish_sdist:
+
+publish_sdist
+=============
+
+.. attention::
+
+   The default value will be changed to ``'false'`` in Actions ``@r10``.
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the source distribution (:file:`*.tar.gz`) on a release tag.
+                  Forwarded to :ref:`JOBTMPL/PublishOnPyPI/Input/publish_sdist`.
+
+
+.. _JOBTMPL/CompletePipeline/Input/publish_wheel:
+
+publish_wheel
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the wheel (:file:`*.whl`) on a release tag.
+                  Forwarded to :ref:`JOBTMPL/PublishOnPyPI/Input/publish_wheel`.
 
 
 .. _JOBTMPL/CompletePipeline/Input/pypi_upload_url:
