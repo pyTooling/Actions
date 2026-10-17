@@ -248,7 +248,7 @@ app_id
 :Type:            string
 :Required:        no
 :Default Value:   ``''``
-:Possible Values: The ID of a GitHub App, or empty.
+:Possible Values: The ID or the Client ID of a GitHub App, or empty.
 :Description:     ID of a GitHub App installed on the repository with write access to *Contents*, *Workflows* and
                   *Pull requests*. Together with :ref:`JOBTMPL/UpdateVersionBranch/Secret/app_private_key`, the job
                   creates a token of that App (:gh:`actions/create-github-app-token`) and uses it for all its steps.
@@ -256,7 +256,9 @@ app_id
                   The workflow's own ``GITHUB_TOKEN`` can't push a change to a file in :file:`.github/workflows/` -
                   no ``permissions:`` key grants that - so a release changing a workflow file needs the App. When
                   empty, the job uses ``GITHUB_TOKEN``. |br|
-                  The App ID isn't secret, so a repository variable is enough, e.g. ``${{ vars.RELEASE_APP_ID }}``.
+                  The job passes it as ``client-id`` to :gh:`actions/create-github-app-token`, which accepts both: GitHub
+                  takes the App ID and the Client ID as issuer of the App's token. Neither is secret, so a repository
+                  variable is enough, e.g. ``${{ vars.RELEASE_APP_ID }}``.
 
 
 .. _JOBTMPL/UpdateVersionBranch/Secrets:
