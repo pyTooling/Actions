@@ -177,6 +177,16 @@ on:
         required: false
         default: 'true'
         type: string
+      package_sdist:
+        description: "If 'true', build a source distribution (*.tar.gz)."
+        required: false
+        default: 'true'
+        type: string
+      package_wheel:
+        description: "If 'true', build a wheel (*.whl)."
+        required: false
+        default: 'true'
+        type: string
       pypi_url:
         description: 'Base URL of the package registry, which is checked for an existing release.'
         required: false
@@ -191,6 +201,16 @@ on:
         description: 'Validate the packages with twine, but do not upload them to PyPI.'
         required: false
         default: 'false'
+        type: string
+      pypi_publish_sdist:
+        description: "If 'true', publish the source distribution (*.tar.gz). Default changes to 'false' with @r10."
+        required: false
+        default: 'true'
+        type: string
+      pypi_publish_wheel:
+        description: "If 'true', publish the wheel (*.whl)."
+        required: false
+        default: 'true'
         type: string
       cleanup:
         description: 'Cleanup artifacts afterwards.'
@@ -334,6 +354,8 @@ jobs:
     with:
       python_version: ${{ needs.UnitTestingParams.outputs.python_version }}
       artifact:       ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).package_all }}
+      package_sdist:  ${{ inputs.package_sdist }}
+      package_wheel:  ${{ inputs.package_wheel }}
 
   Install:
     uses: pyTooling/Actions/.github/workflows/InstallPackage.yml@main
@@ -556,6 +578,8 @@ jobs:
       dry_run:         ${{ inputs.pypi_dry_run }}
       pypi_upload_url: ${{ inputs.pypi_upload_url }}
       pypi_compliant:  ${{ needs.Package.outputs.pypi_compliant }}
+      publish_sdist:   ${{ inputs.pypi_publish_sdist }}
+      publish_wheel:   ${{ inputs.pypi_publish_wheel }}
       cleanup:         ${{ inputs.cleanup }}
     secrets:
       PYPI_TOKEN:      ${{ secrets.PYPI_TOKEN }}

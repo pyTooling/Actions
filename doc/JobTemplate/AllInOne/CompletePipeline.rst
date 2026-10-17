@@ -589,6 +589,10 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/check_pypi_duplicate`         | no       | string | ``'true'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_sdist`                | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_wheel`                | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/pypi_url`                     | no       | string | ``'https://pypi.org'``                                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`  | no       | string | ``''``                                                                     |
@@ -614,6 +618,10 @@ Parameter Summary
 | :ref:`JOBTMPL/CompletePipeline/Input/dorny`                        | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/pypi_dry_run`                 | no       | string | ``'false'``                                                                |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/pypi_publish_sdist`           | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/pypi_publish_wheel`           | no       | string | ``'true'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/pypi_upload_url`              | no       | string | ``'https://upload.pypi.org/legacy/'``                                      |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -1186,6 +1194,32 @@ check_pypi_duplicate
                   ``'false'`` - don't query PyPI, e.g. for a package that isn't published there.
 
 
+.. _JOBTMPL/CompletePipeline/Input/package_sdist:
+
+package_sdist
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Build a source distribution (:file:`*.tar.gz`).
+                  Forwarded to :ref:`JOBTMPL/Package/Input/package_sdist`.
+
+
+.. _JOBTMPL/CompletePipeline/Input/package_wheel:
+
+package_wheel
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Build a wheel (:file:`*.whl`).
+                  Forwarded to :ref:`JOBTMPL/Package/Input/package_wheel`.
+
+
 .. _JOBTMPL/CompletePipeline/Input/pypi_url:
 
 pypi_url
@@ -1217,6 +1251,36 @@ pypi_dry_run
                   ``'true'`` - check the packages and publish nothing; a package with direct references
                   (:ref:`JOBTMPL/Package/Output/pypi_compliant`) is tagged anyway, with warnings. |br|
                   ``'false'`` - publish the packages; a package with direct references isn't tagged.
+
+
+.. _JOBTMPL/CompletePipeline/Input/pypi_publish_sdist:
+
+pypi_publish_sdist
+==================
+
+.. attention::
+
+   The default value will be changed to ``'false'`` in Actions ``@r10``.
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the source distribution (:file:`*.tar.gz`) on a release tag.
+                  Forwarded to :ref:`JOBTMPL/PublishOnPyPI/Input/publish_sdist`.
+
+
+.. _JOBTMPL/CompletePipeline/Input/pypi_publish_wheel:
+
+pypi_publish_wheel
+==================
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Publish the wheel (:file:`*.whl`) on a release tag.
+                  Forwarded to :ref:`JOBTMPL/PublishOnPyPI/Input/publish_wheel`.
 
 
 .. _JOBTMPL/CompletePipeline/Input/pypi_upload_url:
