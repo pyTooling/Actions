@@ -12,7 +12,7 @@ as an artifact.
 
 .. topic:: Features
 
-   * Package source code as wheel and source distribution.
+   * Package source code as wheel and/or source distribution.
    * Support packaging using :term:`build` (recommended) or :pypi:`setuptools`.
    * Check the packages' metadata for direct references, which :term:`PyPI` rejects.
 
@@ -29,13 +29,14 @@ as an artifact.
       * If parameter :ref:`JOBTMPL/Package/Input/requirements` is non-empty, use :pypi:`setuptools` for packaging and
         execute ``python setup.py ...``.
 
-      Both a source distribution and a wheel are built.
+      A source distribution is built if :ref:`JOBTMPL/Package/Input/package_sdist` is ``'true'``, a wheel if
+      :ref:`JOBTMPL/Package/Input/package_wheel` is ``'true'``; both are by default.
 
-   4. Check both packages' metadata (``Requires-Dist``) for direct references like
+   4. Check the packages' metadata (``Requires-Dist``) for direct references like
       ``name @ git+https://...``, which :term:`PyPI` rejects. Each reference is reported as a warning naming the
       requirement, its extras and the packages it appears in. The result is the output
       :ref:`JOBTMPL/Package/Output/pypi_compliant`.
-   5. Upload both packages in a single artifact
+   5. Upload the packages in a single artifact
       (:ref:`JOBTMPL/Package/Input/artifact`).
 
 .. topic:: Job Execution
@@ -111,6 +112,10 @@ Parameter Summary
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 | :ref:`JOBTMPL/Package/Input/artifact`                               | yes      | string   | — — — —                                                           |
 +---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/Package/Input/package_sdist`                          | no       | string   | ``'true'``                                                        |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
+| :ref:`JOBTMPL/Package/Input/package_wheel`                          | no       | string   | ``'true'``                                                        |
++---------------------------------------------------------------------+----------+----------+-------------------------------------------------------------------+
 
 .. rubric:: Goto :ref:`secrets <JOBTMPL/Package/Secrets>`
 
@@ -167,6 +172,36 @@ artifact
 :Default Value:   — — — —
 :Possible Values: Any valid artifact name.
 :Description:     Name of the artifact containing the packaged Python code.
+
+
+.. _JOBTMPL/Package/Input/package_sdist:
+
+package_sdist
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Build a source distribution (:file:`*.tar.gz`). |br|
+                  ``'true'`` - the artifact contains the source distribution. |br|
+                  ``'false'`` - no source distribution is built; :ref:`JOBTMPL/PublishOnPyPI/Input/publish_sdist` must
+                  be ``'false'`` too.
+
+
+.. _JOBTMPL/Package/Input/package_wheel:
+
+package_wheel
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Build a wheel (:file:`*.whl`). |br|
+                  ``'true'`` - the artifact contains the wheel. |br|
+                  ``'false'`` - no wheel is built; :ref:`JOBTMPL/PublishOnPyPI/Input/publish_wheel` must be
+                  ``'false'`` too, and jobs installing the wheel (e.g. :ref:`JOBTMPL/InstallPackage`) can't run.
 
 
 .. _JOBTMPL/Package/Secrets:
