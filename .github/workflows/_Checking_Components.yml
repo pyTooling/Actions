@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   Package:
-    uses: pyTooling/Actions/.github/workflows/Package.yml@main
+    uses: pyTooling/Actions/.github/workflows/Package.yml@r9
     with:
       artifact: Components-Package
 
