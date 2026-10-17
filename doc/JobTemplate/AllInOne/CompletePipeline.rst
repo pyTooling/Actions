@@ -589,6 +589,10 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/check_pypi_duplicate`         | no       | string | ``'true'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_sdist`                | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
+| :ref:`JOBTMPL/CompletePipeline/Input/package_wheel`                | no       | string | ``'true'``                                                                 |
++--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/pypi_url`                     | no       | string | ``'https://pypi.org'``                                                     |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/apptest_python_version_list`  | no       | string | ``''``                                                                     |
@@ -615,13 +619,9 @@ Parameter Summary
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/pypi_dry_run`                 | no       | string | ``'false'``                                                                |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/package_sdist`                | no       | string | ``'true'``                                                                 |
+| :ref:`JOBTMPL/CompletePipeline/Input/pypi_publish_sdist`           | no       | string | ``'true'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/package_wheel`                | no       | string | ``'true'``                                                                 |
-+--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/publish_sdist`                | no       | string | ``'true'``                                                                 |
-+--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
-| :ref:`JOBTMPL/CompletePipeline/Input/publish_wheel`                | no       | string | ``'true'``                                                                 |
+| :ref:`JOBTMPL/CompletePipeline/Input/pypi_publish_wheel`           | no       | string | ``'true'``                                                                 |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
 | :ref:`JOBTMPL/CompletePipeline/Input/pypi_upload_url`              | no       | string | ``'https://upload.pypi.org/legacy/'``                                      |
 +--------------------------------------------------------------------+----------+--------+----------------------------------------------------------------------------+
@@ -1194,6 +1194,32 @@ check_pypi_duplicate
                   ``'false'`` - don't query PyPI, e.g. for a package that isn't published there.
 
 
+.. _JOBTMPL/CompletePipeline/Input/package_sdist:
+
+package_sdist
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Build a source distribution (:file:`*.tar.gz`).
+                  Forwarded to :ref:`JOBTMPL/Package/Input/package_sdist`.
+
+
+.. _JOBTMPL/CompletePipeline/Input/package_wheel:
+
+package_wheel
+=============
+
+:Type:            string
+:Required:        no
+:Default Value:   ``'true'``
+:Possible Values: ``'true'`` / ``'false'``
+:Description:     Build a wheel (:file:`*.whl`).
+                  Forwarded to :ref:`JOBTMPL/Package/Input/package_wheel`.
+
+
 .. _JOBTMPL/CompletePipeline/Input/pypi_url:
 
 pypi_url
@@ -1227,36 +1253,10 @@ pypi_dry_run
                   ``'false'`` - publish the packages; a package with direct references isn't tagged.
 
 
-.. _JOBTMPL/CompletePipeline/Input/package_sdist:
+.. _JOBTMPL/CompletePipeline/Input/pypi_publish_sdist:
 
-package_sdist
-=============
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'true'``
-:Possible Values: ``'true'`` / ``'false'``
-:Description:     Build a source distribution (:file:`*.tar.gz`).
-                  Forwarded to :ref:`JOBTMPL/Package/Input/package_sdist`.
-
-
-.. _JOBTMPL/CompletePipeline/Input/package_wheel:
-
-package_wheel
-=============
-
-:Type:            string
-:Required:        no
-:Default Value:   ``'true'``
-:Possible Values: ``'true'`` / ``'false'``
-:Description:     Build a wheel (:file:`*.whl`).
-                  Forwarded to :ref:`JOBTMPL/Package/Input/package_wheel`.
-
-
-.. _JOBTMPL/CompletePipeline/Input/publish_sdist:
-
-publish_sdist
-=============
+pypi_publish_sdist
+==================
 
 .. attention::
 
@@ -1270,10 +1270,10 @@ publish_sdist
                   Forwarded to :ref:`JOBTMPL/PublishOnPyPI/Input/publish_sdist`.
 
 
-.. _JOBTMPL/CompletePipeline/Input/publish_wheel:
+.. _JOBTMPL/CompletePipeline/Input/pypi_publish_wheel:
 
-publish_wheel
-=============
+pypi_publish_wheel
+==================
 
 :Type:            string
 :Required:        no

@@ -91,7 +91,7 @@ jobs:
           name: ${{ inputs.artifact }}
           path: dist
 
-      - name: 🔍 Check that the package is PyPI-compliant
+      - name: 🕵️ Check that the package is PyPI-compliant
         if: inputs.pypi_compliant == 'false'
         run: |
           ANSI_LIGHT_RED=$'\x1b[91m'
@@ -117,28 +117,18 @@ jobs:
       - name: ⚙ Install dependencies for packaging and release
         run: python -m pip install --disable-pip-version-check ${{ inputs.requirements }}
 
-      - name: 🔎 Check Python packages instead of publishing them
-        if: inputs.dry_run == 'true'
-        run: |
-          packages=()
-          if [[ "${{ inputs.publish_wheel }}" == "true" ]]; then
-            packages+=(dist/*.whl)
-          fi
-          if [[ "${{ inputs.publish_sdist }}" == "true" ]]; then
-            packages+=(dist/*.tar.gz)
-          fi
+      - name: 🩺 Check Python wheel package instead of publishing it
+        if: inputs.dry_run == 'true' && inputs.publish_wheel == 'true'
+        run: twine check dist/*.whl
 
-          if [[ ${#packages[@]} -eq 0 ]]; then
-            printf -- "::warning title=PublishOnPyPI::Nothing to check: 'publish_wheel' and 'publish_sdist' are both 'false'.\n"
-          elif ! twine check "${packages[@]}"; then
-            printf -- "::error title=PublishOnPyPI::'twine check' failed for: %s\n" "${packages[*]}"
-            exit 1
-          fi
+      - name: 🩺 Check Python source package instead of publishing it
+        if: inputs.dry_run == 'true' && inputs.publish_sdist == 'true'
+        run: twine check dist/*.tar.gz
 
       - name: ⚠ Nothing selected for publishing
-        if: inputs.dry_run != 'true' && inputs.publish_wheel != 'true' && inputs.publish_sdist != 'true'
+        if: inputs.publish_wheel != 'true' && inputs.publish_sdist != 'true'
         run: |
-          printf -- "::warning title=PublishOnPyPI::Nothing published: 'publish_wheel' and 'publish_sdist' are both 'false'.\n"
+          printf -- "::warning title=PublishOnPyPI::Nothing published or checked: 'publish_wheel' and 'publish_sdist' are both 'false'.\n"
 
       - name: ⤴ Publish Python wheel package to PyPI
         if: inputs.dry_run != 'true' && inputs.publish_wheel == 'true'
