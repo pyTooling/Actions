@@ -2,6 +2,8 @@
 # (unit tests, code and documentation coverage). It requires pyTooling 10 from GitHub, which conflicts with
 # 'pyTooling ~= 8.17' in '../requirements.txt', so that file isn't included here.
 pyTooling.Sphinx[reports] @ git+https://github.com/pyTooling/pyTooling.Sphinx.git@dev
+# Its extra 'reports' requires 'pyEDAA.Reports ~= 0.20.0rc1', which isn't on PyPI yet. Remove when it is.
+pyEDAA.Reports @ git+https://github.com/edaa-org/pyEDAA.Reports.git@dev
 
 # Enforce latest version on ReadTheDocs
 sphinx ~= 9.1
