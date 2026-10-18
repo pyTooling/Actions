@@ -92,5 +92,5 @@ print(f"GITHUB_OUTPUT: {github_output}")
 with github_output.open("a+", encoding="utf-8") as f:
 	f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
 
-print(f"GITHUB_OUTPUT:")
+print("GITHUB_OUTPUT:")
 print(f"pacboy_packages={' '.join(pacboyPackages)}\n")
