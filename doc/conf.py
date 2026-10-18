@@ -222,15 +222,15 @@ autodoc_typehints = "both"
 # Sphinx.Ext.ExtLinks
 # ==============================================================================
 extlinks = {
-	"gh":        (f"https://GitHub.com/%s", "GitHub: %s"),
+	"gh":        ("https://GitHub.com/%s", "GitHub: %s"),
 	"ghissue":   (f"https://GitHub.com/{githubNamespace}/{githubProject}/issues/%s", "issue #%s"),
 	"ghpull":    (f"https://GitHub.com/{githubNamespace}/{githubProject}/pull/%s", "pull request #%s"),
 	"ghsrc":     (f"https://GitHub.com/{githubNamespace}/{githubProject}/blob/main/%s", None),
-	"wiki":      (f"https://en.wikipedia.org/wiki/%s", None),
-	"pypi":      (f"https://pypi.org/project/%s/", "PyPI: %s"),
-	"rtd":       (f"https://%s.readthedocs.io/", "RTD: %s"),
-	"ucrt64":    (f"https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-%s", "UCRT64: %s"),
-	"dockerhub": (f"https://hub.docker.com/r/%s", "Docker Hub: %s"),
+	"wiki":      ("https://en.wikipedia.org/wiki/%s", None),
+	"pypi":      ("https://pypi.org/project/%s/", "PyPI: %s"),
+	"rtd":       ("https://%s.readthedocs.io/", "RTD: %s"),
+	"ucrt64":    ("https://packages.msys2.org/packages/mingw-w64-ucrt-x86_64-%s", "UCRT64: %s"),
+	"dockerhub": ("https://hub.docker.com/r/%s", "Docker Hub: %s"),
 }
 
 
