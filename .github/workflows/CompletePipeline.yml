@@ -455,9 +455,8 @@ jobs:
       - PublishTestResults
     # not 'success() || failure()', because that's false if a dependency was skipped
     if: >-
-      ${{ !cancelled()
+      !cancelled()
        && inputs.cleanup == 'true'
-      }}
     with:
       json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
       artifact-json-ids: >-
@@ -470,11 +469,10 @@ jobs:
       - UnitTestingParams
       - Documentation
     if: >-
-      ${{ !failure() && !cancelled()
+      !failure() && !cancelled()
        && needs.Documentation.result == 'success'
        && contains(inputs.documentation_steps, 'latex')
        && contains(inputs.documentation_steps, 'pdf')
-      }}
     with:
       document:       ${{ needs.UnitTestingParams.outputs.package_fullname }}
       latex_artifact: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_latex }}
@@ -493,13 +491,12 @@ jobs:
       - PublishCoverageResults
       - StaticTypeCheck
     if: >-
-      ${{ !failure() && !cancelled()
+      !failure() && !cancelled()
        && needs.Documentation.result == 'success'
        && needs.PublishCoverageResults.result == 'success'
        && needs.StaticTypeCheck.result == 'success'
        && contains(inputs.documentation_steps, 'pages')
        && needs.Prepare.outputs.publish_pages == 'true'
-      }}
     with:
       doc:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
       coverage: ${{ inputs.coverage_html == 'true' && fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html || '' }}
@@ -518,11 +515,10 @@ jobs:
       - Install
       - PublishToGitHubPages
     if: >-
-      ${{ !failure() && !cancelled()
+      !failure() && !cancelled()
        && needs.Prepare.outputs.is_release_commit == 'true'
        && needs.VersionCheck.result == 'success'
        && github.event_name != 'schedule'
-      }}
     permissions:
       contents: write  # required for create tag
       actions:  write  # required for trigger workflow
@@ -544,10 +540,9 @@ jobs:
       - Install
       - PublishToGitHubPages
     if: >-
-      ${{ !failure() && !cancelled()
+      !failure() && !cancelled()
        && needs.Prepare.outputs.is_release_tag == 'true'
        && needs.VersionCheck.result == 'success'
-      }}
     permissions:
       contents: write
       actions:  write
@@ -566,11 +561,10 @@ jobs:
       - Package
       - ReleasePage
     if: >-
-      ${{ !failure() && !cancelled()
+      !failure() && !cancelled()
        && needs.Package.result == 'success'
        && needs.Prepare.outputs.is_release_tag == 'true'
        && needs.VersionCheck.result == 'success'
-      }}
     with:
       python_version:  ${{ needs.UnitTestingParams.outputs.python_version }}
       requirements:    '-r dist/requirements.txt'
@@ -601,9 +595,8 @@ jobs:
       - IntermediateCleanUp
     # !cancelled(), because PDFDocumentation is skipped without 'latex' and 'pdf' in documentation_steps
     if: >-
-      ${{ !cancelled()
+      !cancelled()
        && inputs.cleanup == 'true'
-      }}
     with:
       json: ${{ needs.UnitTestingParams.outputs.artifact_names }}
       artifact-json-ids: >-
