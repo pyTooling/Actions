@@ -35,6 +35,7 @@ else:
 
 packages = {
 	"coverage": "python-coverage:p",
+	"idna": "python-idna:p",
 	"igraph": "igraph:p",
 	"jinja2": "python-markupsafe:p",
 	"lxml": "python-lxml:p",
@@ -51,10 +52,13 @@ packages = {
 subPackages = {
 	"pytooling": {
 		"cli": "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+		"dependencies": "python-aiohttp:p",
 		"diagram": "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 		"github": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+		"idna": "python-idna:p",
 		"pypi": "python-aiohttp:p",
 		"sphinx": "python-markupsafe:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+		"tracing": "python-jsonschema:p",
 		"yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 	},
 }
@@ -92,5 +96,5 @@ print(f"GITHUB_OUTPUT: {github_output}")
 with github_output.open("a+", encoding="utf-8") as f:
 	f.write(f"pacboy_packages={' '.join(pacboyPackages)}\n")
 
-print(f"GITHUB_OUTPUT:")
+print("GITHUB_OUTPUT:")
 print(f"pacboy_packages={' '.join(pacboyPackages)}\n")

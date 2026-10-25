@@ -196,7 +196,7 @@ print("Parameters:")
 print(f"  python_version: {python_version}")
 print(f"  python_jobs ({len(jobs)}):\n" +
 			"".join(
-				[f"    {{ " + ", ".join([f"\"{key}\": \"{value}\"" for key, value in job.items()]) + f" }},\n" for job in jobs])
+				["    { " + ", ".join([f"\"{key}\": \"{value}\"" for key, value in job.items()]) + " },\n" for job in jobs])
 			)
 print(f"  artifact_names ({len(artifact_names)}):")
 for id, name in artifact_names.items():

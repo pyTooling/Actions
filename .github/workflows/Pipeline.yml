@@ -34,11 +34,10 @@ jobs:
     needs:
       - Prepare
     if: >-
-      ${{ needs.Prepare.outputs.on_dev_branch == 'true'
+      needs.Prepare.outputs.on_dev_branch == 'true'
        || needs.Prepare.outputs.on_main_branch == 'true'
        || startsWith(needs.Prepare.outputs.branch, 'r')
        || startsWith(needs.Prepare.outputs.branch, 'update/r')
-      }}
 
     steps:
       - name: ⏬ Checkout repository
