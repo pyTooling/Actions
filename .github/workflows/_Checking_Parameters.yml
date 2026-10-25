@@ -284,7 +284,7 @@ jobs:
         run: |
           mkdir -p checking-requirements
           printf -- 'pytest ~= 8.0\nruamel.yaml ~= 0.19.1\n-r ./more.txt\n'                       > checking-requirements/requirements.txt
-          printf -- 'jsonschema ~= 4.26\npyEDAA.Reports ~= 0.18\npyTooling[yaml,dependencies,sphinx] ~= 9.0\nsphinx_reports ~= 0.11\n' > checking-requirements/more.txt
+          printf -- 'jsonschema ~= 4.26\npyEDAA.Reports ~= 0.18\npyTooling[yaml,dependencies,sphinx] ~= 9.0\n' > checking-requirements/more.txt
           printf -- 'lxml ~= 6.0\n'                                                              > checking-requirements/mingw.txt
 
       - name: Computing requirements paths
@@ -342,16 +342,13 @@ jobs:
             set(getenv("PACBOY_PACKAGES").split()),
             {
               "python-aiohttp:p",             # pyTooling[dependencies]
-              "python-coverage:p",            # sphinx_reports
               "python-jsonschema:p",          # jsonschema
-              "python-lxml:p",                # pyEDAA.Reports, sphinx_reports
-              "python-markupsafe:p",          # pyTooling[sphinx], sphinx_reports
+              "python-lxml:p",                # pyEDAA.Reports
+              "python-markupsafe:p",          # pyTooling[sphinx]
               "python-pip:p",                 # always
-              "python-pyaml:p",               # sphinx_reports
-              "python-ruamel-yaml:p",         # ruamel.yaml, pyEDAA.Reports, pyTooling[yaml], sphinx_reports
-              "python-ruamel.yaml.clib:p",    # ruamel.yaml, pyEDAA.Reports, pyTooling[yaml], sphinx_reports
+              "python-ruamel-yaml:p",         # ruamel.yaml, pyEDAA.Reports, pyTooling[yaml]
+              "python-ruamel.yaml.clib:p",    # ruamel.yaml, pyEDAA.Reports, pyTooling[yaml]
               "python-tomli:p",               # always
-              "python-types-pyyaml:p",        # sphinx_reports
               "python-wheel:p",               # always
             }
           )
