@@ -83,6 +83,7 @@ runs:
           "aiohttp":             "python-aiohttp:p",
           "coverage":            "python-coverage:p",
           "docstr_coverage":     "python-pyaml:p python-types-pyyaml:p",
+          "idna":                "python-idna:p",
           "igraph":              "igraph:p",
           "jinja2":              "python-markupsafe:p",
           "jsonschema":          "python-jsonschema:p",
@@ -99,7 +100,7 @@ runs:
           # pyEDAA.CLITool, pyEDAA.Launcher, pyEDAA.ProjectModel, pySVModel, pySystemRDLModel and pyVHDLModel need
           # no entry: nothing they depend on has compiled code. Only 'pyEDAA.ProjectModel[osvvm]' does - below.
           "pyedaa.ipxact":       "python-lxml:p",
-          "pyedaa.osvvm":        "python-coverage:p python-lxml:p python-markupsafe:p python-pyaml:p python-types-pyyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+          "pyedaa.osvvm":        "python-jsonschema:p python-lxml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           "pyedaa.outputfilter": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           "pyedaa.reports":      "python-jsonschema:p python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
           "pyedaa.toolsetup":    "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
@@ -107,7 +108,6 @@ runs:
           "pyedaa.workflow":     "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           "pytooling.sphinx":    "python-aiohttp:p python-markupsafe:p",
           "pyversioning":        "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-          "sphinx_reports":      "python-coverage:p python-jsonschema:p python-lxml:p python-markupsafe:p python-pyaml:p python-types-pyyaml:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
         }
         subPackages = {
           "pyedaa.projectmodel": {
@@ -115,10 +115,13 @@ runs:
           },
           "pytooling": {
             "cli":               "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",   # 'cli' is 'diagram' + 'terminal'
+            "dependencies":      "python-aiohttp:p",
             "diagram":           "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
             "github":            "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-            "pypi":              "python-aiohttp:p",
+            "idna":              "python-idna:p",
+            "pypi":              "python-aiohttp:p",   # pyTooling < 10.0.0rc9: 'dependencies' was 'pypi'
             "sphinx":            "python-markupsafe:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+            "tracing":           "python-jsonschema:p",
             "yaml":              "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
           },
           # pyTooling's 'packaging', 'terminal' and 'testing' extras add setuptools, colorama and pytest, which
