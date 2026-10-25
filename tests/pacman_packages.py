@@ -46,7 +46,7 @@ packages = {
 	"tomli": "python-tomli:p",
 	"wheel": "python-wheel:p",
 	"pyEDAA.ProjectModel": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
-	"pyEDAA.Reports": "python-ruamel-yaml:p python-ruamel.yaml.clib:p python-lxml:p",
+	"pyEDAA.Reports": "python-lxml:p",
 }
 subPackages = {
 	"pytooling": {
