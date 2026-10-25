@@ -35,6 +35,7 @@ else:
 
 packages = {
 	"coverage": "python-coverage:p",
+	"idna": "python-idna:p",
 	"igraph": "igraph:p",
 	"jinja2": "python-markupsafe:p",
 	"lxml": "python-lxml:p",
@@ -51,10 +52,12 @@ packages = {
 subPackages = {
 	"pytooling": {
 		"cli": "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+		"dependencies": "python-aiohttp:p",
 		"diagram": "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 		"github": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-		"pypi": "python-aiohttp:p",
+		"idna": "python-idna:p",
 		"sphinx": "python-markupsafe:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
+		"tracing": "python-jsonschema:p",
 		"yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 	},
 }
