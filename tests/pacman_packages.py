@@ -56,6 +56,7 @@ subPackages = {
 		"diagram": "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 		"github": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 		"idna": "python-idna:p",
+		"pypi": "python-aiohttp:p",
 		"sphinx": "python-markupsafe:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 		"tracing": "python-jsonschema:p",
 		"yaml": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
