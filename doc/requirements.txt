@@ -1,6 +1,7 @@
+-r ../requirements.txt
+
 # The documentation's Sphinx extension - roles, 'tree', 'shields', ... Its extra 'reports' adds the domain 'report'
-# (unit tests, code and documentation coverage). It requires pyTooling 10 from GitHub, which conflicts with
-# 'pyTooling ~= 8.17' in '../requirements.txt', so that file isn't included here.
+# (unit tests, code and documentation coverage).
 pyTooling.Sphinx[reports] @ git+https://github.com/pyTooling/pyTooling.Sphinx.git@dev
 
 # Enforce latest version on ReadTheDocs
