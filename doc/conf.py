@@ -278,12 +278,15 @@ pyTooling_Unittest_Testsuites = {
 	"src": {
 		"name":        f"{pythonProject}",
 		"xml_report":  "../report/unit/unittest.xml",
+		"pages":       "unittests/src",
 	}
 }
 pyTooling_CodeCoverage_Packages = {
 	"src": {
 		"name":        f"{pythonProject}",
 		"json_report": "../report/coverage/coverage.json",
+		"sources":     "..",
+		"pages":       "coverage/src",
 		"fail_below":  80,
 		"levels":      "default"
 	}
@@ -292,6 +295,7 @@ pyTooling_DocCoverage_Packages = {
 	"src": {
 		"name":       f"{pythonProject}",
 		"directory":  f"../{directoryName}",
+		"pages":      "doccoverage/src",
 		"fail_below": 80,
 		"levels":     "default"
 	}

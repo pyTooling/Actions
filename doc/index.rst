@@ -306,8 +306,7 @@ The accompanying documentation is licensed under :ref:`Creative Commons - Attrib
    Python Class Reference <myPackage/myPackage>
    unittests/index
    coverage/index
-   CodeCoverage
-   Doc. Coverage Report <DocCoverage>
+   Doc. Coverage Report <doccoverage/index>
    Static Type Check Report ➚ <typing/index>
 
 .. raw:: latex

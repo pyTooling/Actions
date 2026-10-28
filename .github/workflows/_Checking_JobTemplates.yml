@@ -296,9 +296,8 @@ jobs:
       - PublishCoverageResults
       - StaticTypeCheck
     with:
-      doc:      ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
-      coverage: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).codecoverage_html }}
-      typing:   ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
+      doc:    ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).documentation_html }}
+      typing: ${{ fromJson(needs.UnitTestingParams.outputs.artifact_names).statictyping_html }}
 
   ReleaseCheck:
     uses: pyTooling/Actions/.github/workflows/CheckReleaseVersion.yml@r9
