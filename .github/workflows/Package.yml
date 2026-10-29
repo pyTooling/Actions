@@ -125,7 +125,7 @@ jobs:
 
       - name: 🩺 Inspect packages for PyPI compliance
         id: pypi
-        uses: pyTooling/Actions/.github/actions/InspectPyPICompliance@main
+        uses: pyTooling/Actions/.github/actions/InspectPyPICompliance@r9
         with:
           directory: dist
 
