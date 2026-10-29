@@ -346,8 +346,8 @@ jobs:
               "python-lxml:p",                # pyEDAA.Reports
               "python-markupsafe:p",          # pyTooling[sphinx]
               "python-pip:p",                 # always
-              "python-ruamel-yaml:p",         # ruamel.yaml, pyEDAA.Reports, pyTooling[yaml]
-              "python-ruamel.yaml.clib:p",    # ruamel.yaml, pyEDAA.Reports, pyTooling[yaml]
+              "python-ruamel-yaml:p",         # ruamel.yaml, pyEDAA.Reports, pyTooling[yaml], pyTooling[dependencies]
+              "python-ruamel.yaml.clib:p",    # ruamel.yaml, pyEDAA.Reports, pyTooling[yaml], pyTooling[dependencies]
               "python-tomli:p",               # always
               "python-wheel:p",               # always
             }
