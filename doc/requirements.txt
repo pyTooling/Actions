@@ -2,7 +2,7 @@
 
 # The documentation's Sphinx extension - roles, 'tree', 'shields', ... Its extra 'reports' adds the domain 'report'
 # (unit tests, code and documentation coverage).
-pyTooling.Sphinx[reports] @ git+https://github.com/pyTooling/pyTooling.Sphinx.git@dev
+pyTooling.Sphinx[reports] ~= 1.0
 
 # Enforce latest version on ReadTheDocs
 sphinx ~= 9.1
