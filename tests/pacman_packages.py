@@ -52,7 +52,7 @@ packages = {
 subPackages = {
 	"pytooling": {
 		"cli": "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
-		"dependencies": "python-aiohttp:p",
+		"dependencies": "python-aiohttp:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 		"diagram": "python-matplotlib:p python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 		"github": "python-ruamel-yaml:p python-ruamel.yaml.clib:p",
 		"idna": "python-idna:p",
